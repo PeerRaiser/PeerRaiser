@@ -79,6 +79,7 @@ class Bootstrap {
         $this->register_admin_actions();
         $this->register_frontend_actions();
         $this->register_shortcodes();
+        $this->register_connections();
 
         // PeerRaiser loaded finished. Triggering event for other plugins
         \PeerRaiser\Hooks::get_instance()->peerraiser_ready();
@@ -117,6 +118,20 @@ class Bootstrap {
 
         // $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
         // $dispatcher->add_subscriber( $shortcode_controller );
+    }
+
+
+    /**
+     * Internal function to register P2P connections
+     *
+     * @since     1.0.0
+     * @return    void
+     */
+    private function register_connections() {
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+
+        $connections_controller = self::get_controller( 'Connections' );
+        $dispatcher->add_subscriber( $connections_controller );
     }
 
 

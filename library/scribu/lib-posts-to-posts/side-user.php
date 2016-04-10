@@ -66,7 +66,28 @@ class P2P_Side_User extends P2P_Side {
 		$uq = new WP_User_Query;
 		$uq->_p2p_capture = true; // needed by P2P_URL_Query
 
-		$uq->prepare_query( $args );
+		// see http://core.trac.wordpress.org/ticket/21119
+		$uq->query_vars = wp_parse_args( $args, array(
+			'blog_id' => $GLOBALS['blog_id'],
+			'role' => '',
+			'meta_key' => '',
+			'meta_value' => '',
+			'meta_compare' => '',
+			'include' => array(),
+			'exclude' => array(),
+			'search' => '',
+			'search_columns' => array(),
+			'orderby' => 'login',
+			'order' => 'ASC',
+			'offset' => '',
+			'number' => '',
+			'count_total' => true,
+			'fields' => 'all',
+			'who' => '',
+			'has_published_posts' => null,
+		) );
+
+		$uq->prepare_query();
 
 		return "SELECT $uq->query_fields $uq->query_from $uq->query_where $uq->query_orderby $uq->query_limit";
 	}
