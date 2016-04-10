@@ -92,6 +92,12 @@ class Hooks {
         add_action( 'admin_print_styles-post.php',        array( $this, self::$wp_action_prefix . 'peerraiser_admin_enqueue_styles_post_edit' ) );
         add_action( 'admin_print_styles-post-new.php',    array( $this, self::$wp_action_prefix . 'peerraiser_admin_enqueue_styles_post_new' ) );
         add_action( 'admin_enqueue_scripts',              array( $this, self::$wp_action_prefix . 'peerraiser_admin_enqueue_scripts' ) );
+        add_action( 'p2p_init',                           array( $this, self::$wp_action_prefix . 'peerraiser_p2p_init' ) );
+        add_action( 'add_post_meta',                      array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_added' ), 10, 3 );
+        add_action( 'added_post_meta',                    array( $this, self::$wp_action_prefix . 'peerraiser_after_post_meta_added' ), 10, 4 );
+        add_action( 'update_post_meta',                   array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_updated' ), 10, 4 );
+        add_action( 'updated_post_meta',                  array( $this, self::$wp_action_prefix . 'peerraiser_after_post_meta_updated' ), 10, 4 );
+        add_action( 'delete_post_meta',                   array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_deleted' ), 10, 4 );
 
         // add_action( 'admin_footer',                       array( $this, self::$wp_action_prefix . 'peerraiser_admin_footer' ), 1000 );
         // add_action( 'admin_bar_menu',                     array( $this, self::$wp_action_prefix . 'peerraiser_admin_bar_menu' ), 1000 );
