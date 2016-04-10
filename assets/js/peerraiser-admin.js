@@ -2,44 +2,41 @@
 
     "use strict";
 
-    // Plugin constructor
-    function Plugin ( element, options ) {
+    // Plugin constructor creates a new instance of the plugin for each DOM node
+    // that the plugin is called on
+    function RenderSelect( element, options ) {
+        self = this;
+        // The DOM node(s) that called the plugin
+        this.element = element;
         // The plugin name
-        this._name = 'PeerRaiser';
-
+        this._name = 'renderSelect';
         // The default options
-        this._defaults = $.PeerRaiser.defaults;
+        this._defaults = $.fn.renderSelect.defaults;
 
         // Merge the default options with whatever options were passed (if any)
         this.options = $.extend( {}, this._defaults, options );
 
-        // Make it easier to use 'this' to call methods
-        self = this;
-
-        // The starting point for all the plugin logic
+        // The "init" function is the starting point for all the plugin logic
         this.init();
     }
 
-    $.extend(Plugin.prototype, {
-
-        // Initialization logic
-        init: function () {
+    $.extend(RenderSelect.prototype, {
+        init: function(){
+            var self = this;
+            this.render_select();
         },
-        render_select: function( $element, options ) {
-
-            var settings = $.extend( {}, this.options.select2, options);
-
+        render_select: function() {
             var select2_args = {
-                width: settings.width,
-                allowClear: settings.allowClear,
-                placeholder: settings.placeholder,
-                escapeMarkup: settings.escapeMarkup,
+                width: this.options.width,
+                allowClear: this.options.allowClear,
+                placeholder: this.options.placeholder,
+                escapeMarkup: this.options.escapeMarkup,
                 ajax: {
                     type: 'POST',
                     url: window.peerraiser_object.ajax_url,
                     dataType: 'json',
                     delay: 250,
-                    cache: settings.cache,
+                    cache: this.options.cache,
                     data: function ( params ) {
                         var data = $.extend(
                             {
@@ -47,7 +44,7 @@
                                 s: params.term,
                                 page: params.page,
                             },
-                            settings.data
+                            self.options.data
                         );
                         return data;
                     },
@@ -83,11 +80,11 @@
 
                     },
                 },
-                templateResult: settings.templateResult,
-                templateSelection: settings.templateSelection,
+                templateResult: this.options.templateResult,
+                templateSelection: this.options.templateSelection,
             };
 
-            $element.select2( select2_args );
+            $(this.element).select2( select2_args );
         },
 
         decode_data: function( data ){
@@ -124,46 +121,38 @@
             return i;
         },
 
-        // Combines real data with a template
-        formatTemplate: function(data) {
-            return this.options.template.replace(/{(\d+)}/g, function(match, number) {
-                return typeof data[number] != 'undefined' ? data[number] : match;
-            });
-        },
-        onComplete: function() {
-            // Cache onComplete option
-            var onComplete = this.options.onComplete;
-
-            if ( typeof onComplete === 'function' ) {
-                onComplete.call(this.element);
-            }
-        }
-
     });
 
-    $.PeerRaiser = function ( options ) {
-        return new Plugin( this, options );
+    // Extend jQuery
+    $.fn.renderSelect = function ( options ) {
+        this.each(function() {
+            // Make sure the element isn't already associated with the plugin
+            if ( !$.data( this, "plugin_renderSelect" ) ) {
+                // Save each instance of the plugin associated with the element
+                $.data( this, "plugin_renderSelect", new RenderSelect( this, options ) );
+            }
+        });
+        // Return "this" allows additional jQuery chaining
+        return this;
     };
 
-    // Default Plugin Options
-    $.PeerRaiser.defaults = {
-        select2 : {
-            width: '100%',
-            allowClear: true,
-            placeholder: {
-                id: "",
-                placeholder: ""
-            },
-            escapeMarkup: function( m ){ return m; },
-            cache: false,
-            processResults: $.noop(),
-            templateResult: $.noop(),
-            templateSelection: $.noop(),
-            data: {
-                action: 'peerraiser_get_posts',
-            },
-            multiple: false,
-        }
+    // Default Options
+    $.fn.renderSelect.defaults = {
+        width: '100%',
+        allowClear: true,
+        placeholder: {
+            id: "",
+            placeholder: ""
+        },
+        escapeMarkup: function( m ){ return m; },
+        cache: false,
+        processResults: $.noop(),
+        templateResult: $.noop(),
+        templateSelection: $.noop(),
+        data: {
+            action: 'peerraiser_get_posts',
+        },
+        multiple: false,
     };
 
 })( jQuery, window, document );
