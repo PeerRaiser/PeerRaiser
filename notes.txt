@@ -1,0 +1,3 @@
+$dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+$logger = \PeerRaiser\Core\Logger::get_logger();
+$config   = \PeerRaiser\Core\Setup::get_plugin_config();

@@ -1,0 +1,65 @@
+/* Fonts */
+@font-face {
+    font-family: 'peerraiser';
+    src:    url('../fonts/peerraiser.eot?exeqo5');
+    src:    url('../fonts/peerraiser.eot?exeqo5#iefix') format('embedded-opentype'),
+        url('../fonts/peerraiser.ttf?exeqo5') format('truetype'),
+        url('../fonts/peerraiser.woff?exeqo5') format('woff'),
+        url('../fonts/peerraiser.svg?exeqo5#peerraiser') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.dashicons-peerraiser-logo:before {
+    content: "\2665";
+    font-family: 'peerraiser' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.ladd-button {
+    line-height: 1em;
+}
+.ladda-button:focus {
+    outline: none;
+}
+/* Tooltip */
+.pr_tooltip {
+    position: relative;
+}
+.pr_tooltip .pr_icon {
+    margin-left: 5px;
+    cursor: help;
+}
+.pr_tooltip .pr_icon:hover + .pr_tip {
+    display: block;
+    position: absolute;
+    top: 28px;
+    left: 3px;
+}
+.pr_tooltip .pr_tip {
+    display: none;
+    color: #fff;
+    background-color: rgba(0, 0, 0, .75);
+    font-weight: normal;
+    font-size: .85em;
+    padding: 8px;
+    border-radius: 8px;
+    width: 200px;
+}
+.pr_tooltip .pr_tip:before {
+    content: " ";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 0 0 10px;
+    border-color: transparent transparent transparent rgba(0, 0, 0, .75);
+    position: absolute;
+    top: -10px;
+}
