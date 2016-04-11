@@ -31,7 +31,7 @@
                         return $('<span>').html(html);
                     }
                 },
-                participant            : {
+                participant        : {
                     data           : function (params) {
                         return {
                             action: 'peerraiser_get_users',
@@ -47,6 +47,16 @@
                                 more: (params.page * 10) < data.total_count
                             }
                         };
+                    },
+                    templateResult: function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">User ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        return data.text;
                     },
                 },
                 team               : {
