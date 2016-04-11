@@ -8,21 +8,16 @@
         self = this;
         // The DOM node(s) that called the plugin
         this.element = element;
-        // The plugin name
-        this._name = 'renderSelect';
         // The default options
         this._defaults = $.fn.renderSelect.defaults;
-
         // Merge the default options with whatever options were passed (if any)
         this.options = $.extend( {}, this._defaults, options );
-
         // The "init" function is the starting point for all the plugin logic
         this.init();
     }
-
     $.extend(RenderSelect.prototype, {
         init: function(){
-            var self = this;
+            // var self = this;
             this.render_select();
         },
         render_select: function() {
@@ -37,56 +32,14 @@
                     dataType: 'json',
                     delay: 250,
                     cache: this.options.cache,
-                    data: function ( params ) {
-                        var data = $.extend(
-                            {
-                                action: 'peerraiser_get_posts',
-                                s: params.term,
-                                page: params.page,
-                            },
-                            self.options.data
-                        );
-                        return data;
-                    },
-                    processResults: function( data, params ){
-
-                        setTimeout(function(){
-
-                            var $prev_options = null,
-                                $prev_group = null;
-
-                            $('.select2-results__option[role="group"]').each(function(){
-                                var $options = $(this).children('ul'),
-                                    $group = $(this).children('strong');
-
-                                if ( $prev_group !== null && $group.text() == $prev_group.text() ) {
-                                    $prev_options.append( $options.children() );
-                                    $(this).remove();
-                                    return;
-                                }
-
-                                $prev_options = $options;
-                                $prev_group = $group;
-                            });
-
-                        }, 1);
-
-                        return {
-                            results: self.decode_data(data),
-                            pagination: {
-                                more: (self.count_data(data) >= 20)
-                            }
-                        };
-
-                    },
+                    data: this.options.data,
+                    processResults: this.options.processResults
                 },
                 templateResult: this.options.templateResult,
                 templateSelection: this.options.templateSelection,
             };
-
             $(this.element).select2( select2_args );
         },
-
         decode_data: function( data ){
             // Return if no data
             if( !data ) return [];
@@ -100,11 +53,9 @@
 
             return data;
         },
-
         decode: function( string ){
             return $('<div/>').html( string ).text();
         },
-
         count_data: function( data ) {
             var i = 0;
 
@@ -120,7 +71,6 @@
 
             return i;
         },
-
     });
 
     // Extend jQuery
@@ -145,14 +95,36 @@
             placeholder: ""
         },
         escapeMarkup: function( m ){ return m; },
-        cache: false,
-        processResults: $.noop(),
+        processResults: function( data, params ){
+            setTimeout(function(){
+                var $prev_options = null,
+                    $prev_group = null;
+                $('.select2-results__option[role="group"]').each(function(){
+                    var $options = $(this).children('ul'),
+                        $group = $(this).children('strong');
+                    if ( $prev_group !== null && $group.text() == $prev_group.text() ) {
+                        $prev_options.append( $options.children() );
+                        $(this).remove();
+                        return;
+                    }
+                    $prev_options = $options;
+                    $prev_group = $group;
+                });
+            }, 1);
+            return {
+                results: self.decode_data(data),
+                pagination: {
+                    more: (self.count_data(data) >= 20)
+                }
+            };
+        },
         templateResult: $.noop(),
         templateSelection: $.noop(),
         data: {
             action: 'peerraiser_get_posts',
         },
         multiple: false,
+        cache: false,
     };
 
 })( jQuery, window, document );
