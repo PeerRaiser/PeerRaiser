@@ -141,6 +141,7 @@ class Install extends Base {
 
         // Default options
         $plugin_options['currency'] = $this->config->get( 'currency.default' );
+        $plugin_options['fundraiser_slug'] = 'give';
 
         // keep the plugin version up to date
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
