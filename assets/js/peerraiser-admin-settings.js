@@ -1,22 +1,86 @@
-(function( $ ) {
+(function( $ ) {$(function() {
     'use strict';
 
-    // The page is ready
-    $(function() {
+    function peerRaiserAdminSettings(){
+        var $o = {
+            $form             : $('form#peerraiser-settings'),
+            $submitButton     : $('form#peerraiser-settings .ladda-button'),
+            submitButton      : {
+                $element      : $('form#peerraiser-settings .ladda-button'),
+                laddaInstance : undefined
+            },
+            nonce             : $('#nonce_CMB2phppeerraiser-settings'),
+            xhrRequests       : [],
+        },
 
-        var l = Ladda.create( document.querySelector( '.ladda-button' ) );
-        $('.ladda-button').on('click', function(e){
-            e.preventDefault();
-            l.start();
-            $(this).find('.ladda-label').text('Saving Settings...');
-        });
+        init = function(){
+            bindEvents();
+            createLaddaInstance();
+        },
 
+        bindEvents = function() {
+            $o.$form.on('submit', function(e){
+                e.preventDefault();
+                handle_submit( $o.submitButton.laddaInstance );
+            });
+        },
 
-    });
+        createLaddaInstance = function(){
+            $o.submitButton.laddaInstance = Ladda.create( $o.submitButton.$element[0] );
+        },
+
+        handle_submit = function( l ){
+            // If it's already loading, abort
+            if ( l.isLoading() )
+                return;
+
+            var postData = {
+                'action'     : 'peerraiser_update_settings',
+                '_wpnonce'   : $o.nonce.val(),
+                'formData'   : $o.$form.serializeArray()
+            },
+            jqxhr;
+
+            jqxhr = $.ajax({
+                'url'       : peerraiser_object.ajax_url,
+                'async'     : true,
+                'method'    : 'POST',
+                'data'      : postData,
+                beforeSend: function(jqXHR) {
+                    $o.xhrRequests.push(jqXHR);
+                    l.start();
+                    $o.submitButton.$element.find('.ladda-label').text('Saving Settings...');
+                },
+                complete: function(jqXHR) {
+                    var index = $o.xhrRequests.indexOf(jqXHR);
+                    if (index > -1) {
+                        $o.xhrRequests.splice(index, 1);
+                    }
+                }
+            });
+
+            jqxhr.done(function(data) {
+                data = JSON.parse(data);
+                if (!data || !data.success) {
+                    return;
+                }
+                l.stop();
+                $o.submitButton.$element.find('.ladda-label').text('Save Settings');
+            });
+
+            return jqxhr;
+        };
+
+        init();
+
+    }
+
+    // Kick it all off
+    peerRaiserAdminSettings();
 
     // The window has loaded
     $( window ).load(function() {
 
     });
 
-})( jQuery );
+});})(jQuery);
