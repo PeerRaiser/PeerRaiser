@@ -82,7 +82,7 @@ class Hooks {
         // add_action( 'template_redirect',                  array( $this, self::$wp_action_prefix . 'peerraiser_loaded' ) );
         // add_action( 'wp_footer',                          array( $this, self::$wp_action_prefix . 'peerraiser_post_footer' ) );
         // add_action( 'wp_enqueue_scripts',                 array( $this, self::$wp_action_prefix . 'peerraiser_enqueue_scripts' ) );
-
+        add_action( 'init',                               array( $this, self::$wp_action_prefix . 'peerraiser_wordpress_init' ) );
         add_action( 'admin_init',                         array( $this, self::$wp_action_prefix . 'peerraiser_admin_init' ) );
         add_action( 'admin_head',                         array( $this, self::$wp_action_prefix . 'peerraiser_admin_head' ) );
         add_action( 'admin_menu',                         array( $this, self::$wp_action_prefix . 'peerraiser_admin_menu' ) );
