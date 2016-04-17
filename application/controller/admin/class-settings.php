@@ -5,6 +5,22 @@ namespace PeerRaiser\Controller\Admin;
 class Settings extends Base {
 
     /**
+     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
+     */
+    public static function get_subscribed_events() {
+        return array(
+            'wp_ajax_peerraiser_update_settings' => array(
+                array( 'ajax_update_settings', 100 ),
+                array( 'peerraiser_on_plugin_is_working', 200 ),
+                array( 'peerraiser_on_ajax_send_json', 300 ),
+            ),
+            'peerraiser_wordpress_init' => array(
+                array( 'maybe_flush_rewrite_rules' )
+            ),
+        );
+    }
+
+    /**
      * @see \PeerRaiser\Core\View::render_page
      */
     public function render_page() {
@@ -69,6 +85,16 @@ class Settings extends Base {
         wp_enqueue_script( 'peerraiser-ladda' );
         wp_enqueue_script( 'peerraiser-spin' );
 
+        // Localize scripts
+        wp_localize_script(
+            'peerraiser-admin-settings',
+            'peerraiser_object',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri()
+            )
+        );
+
     }
 
 
@@ -87,6 +113,58 @@ class Settings extends Base {
             $cmb->add_field($value);
         }
 
+    }
+
+
+    public function ajax_update_settings( \PeerRaiser\Core\Event $event ) {
+        check_ajax_referer('nonce_CMB2phppeerraiser-settings');
+
+        $model = \PeerRaiser\Model\Admin\Settings::get_instance();
+        $default_fields = $model::get_field_names();
+
+        $event->set_result(
+            array(
+                'success' => false,
+                'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
+            )
+        );
+
+        $formData = $_POST['formData'];
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $settings_updated = 0;
+
+        foreach ($formData as $data) {
+            if ( in_array($data['name'], $default_fields) ) {
+                $plugin_options[$data['name']] = sanitize_text_field( $data['value'] );
+                $settings_updated++;
+            }
+        }
+
+        update_option( 'peerraiser_options', $plugin_options );
+        set_transient( 'peerraiser_options_updated', true );
+
+        $data = array(
+            'success' => true,
+            'message' => sprintf( _n( '%d setting updated.', '%d settings updated', $settings_updated, 'peerraiser' ), $settings_updated ),
+            'settings_updated' => $settings_updated
+        );
+
+        $event->set_result( $data );
+    }
+
+
+    /**
+     * If the plugin settings have recently been updated, flush the rewrite rules.
+     * This is because one of the settings modifies a custom post type.
+     *
+     * @since     1.0.0
+     * @return    null
+     */
+    public function maybe_flush_rewrite_rules() {
+        if ( get_transient( 'peerraiser_options_updated' ) ) {
+            flush_rewrite_rules();
+            delete_transient('peerraiser_options_updated');
+        }
     }
 
 }
