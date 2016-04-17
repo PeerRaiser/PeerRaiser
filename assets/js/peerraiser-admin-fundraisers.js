@@ -3,9 +3,9 @@
 
     function peerRaiserAdminFundraising(){
         var $o = {
-            dashboardTab           : $('#toplevel_page_peerraiser-dashboard-tab'),
-            dasboardTabLink        : $('#toplevel_page_peerraiser-dashboard-tab > a'),
-            fundraiserLink         : $('#toplevel_page_peerraiser-dashboard-tab a[href$="fundraiser"]'),
+            dashboardTab           : $('#toplevel_page_peerraiser-dashboard'),
+            dasboardTabLink        : $('#toplevel_page_peerraiser-dashboard > a'),
+            fundraiserLink         : $('#toplevel_page_peerraiser-dashboard a[href$="fundraiser"]'),
 
             select2Fields          : {
                 campaign           : $("#_fundraiser_campaign"),
