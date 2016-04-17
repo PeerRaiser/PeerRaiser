@@ -108,25 +108,3 @@ function peerraiser_before_start() {
     // Boot up logger
     $logger = \PeerRaiser\Core\Logger::get_logger();
 }
-
-/**
- * Setup custom post types (and taxonomies)
- *
- * @since     1.0.0
- * @return    null
- */
-function peerraiser_custom_post_types() {
-    require( plugin_dir_path( __FILE__ ) . 'application/model/class-custom-post-type.php');
-
-    // Fundraiser post type for each individual fundraiser. Users create fundraisers
-    $fundraisers = new \PeerRaiser\Model\Custom_Post_Type( 'Fundraiser', array( 'show_in_menu' => false, 'supports' => array('title') ) );
-
-    // Campaign post type for each campaign. Fundraisers are tied to specific campaigns
-    $campaigns = new \PeerRaiser\Model\Custom_Post_Type( 'Campaign', array( 'show_in_menu' => false, 'supports' => array('title') ) );
-    $campaigns->register_taxonomy( 'Campaign Type');
-    $campaigns->filters( array( 'Campaign Type' ) );
-
-    // Team post type for each team. Users can create or join teams.
-    $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Team', array( 'show_in_menu' => false ) );
-}
-peerraiser_custom_post_types();
