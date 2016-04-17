@@ -3,9 +3,9 @@
 
     // The page is ready
     $(function() {
-        $('#toplevel_page_peerraiser-dashboard-tab').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard-tab > a').addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard-tab a[href$="pr_campaign"]').addClass('current').parent().addClass('current');
+        $('#toplevel_page_peerraiser-dashboard').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
+        $('#toplevel_page_peerraiser-dashboard > a').addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
+        $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]').addClass('current').parent().addClass('current');
     });
 
     var $PeerRaiser = $.PeerRaiser();
