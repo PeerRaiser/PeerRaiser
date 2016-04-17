@@ -95,7 +95,7 @@ class Custom_Post_Type {
 
      public function __construct( $post_type_names, $options = array() ) {
 
-         $this->peerraiser_post_types = array( 'Campaign', 'Team' );
+         $this->peerraiser_post_types = array( 'Campaign', 'Team', 'Donation' );
          $this->peerraiser_taxonomies = array( 'Campaign Type' );
 
          // If post type name is an array
