@@ -23,19 +23,19 @@ class Connections {
             'name' => 'fundraiser_to_participant',
             'from' => 'fundraiser',
             'to' => 'user',
-            'cardinality' => 'one-to-one',
+            'cardinality' => 'many-to-one',
         ),
         array(
             'name' => 'fundraiser_to_team',
             'from' => 'fundraiser',
             'to' => 'pr_team',
-            'cardinality' => 'one-to-one',
+            'cardinality' => 'many-to-one',
         ),
         array(
             'name' => 'team_to_participants',
             'from' => 'pr_team',
             'to' => 'user',
-            'cardinality' => 'one-to-many',
+            'cardinality' => 'many-to-many',
         ),
         array(
             'name' => 'campaigns_to_teams',
@@ -47,8 +47,32 @@ class Connections {
             'name' => 'teams_to_captains',
             'from' => 'pr_team',
             'to' => 'user',
-            'cardinality' => 'one-to-one',
-        )
+            'cardinality' => 'many-to-one',
+        ),
+        array(
+            'name' => 'donation_to_participant',
+            'from' => 'pr_donation',
+            'to' => 'user',
+            'cardinality' => 'many-to-one',
+        ),
+        array(
+            'name' => 'donation_to_team',
+            'from' => 'pr_donation',
+            'to' => 'pr_team',
+            'cardinality' => 'many-to-one',
+        ),
+        array(
+            'name' => 'donation_to_fundraiser',
+            'from' => 'pr_donation',
+            'to' => 'fundraiser',
+            'cardinality' => 'many-to-one',
+        ),
+        array(
+            'name' => 'donation_to_campaign',
+            'from' => 'pr_donation',
+            'to' => 'pr_campaign',
+            'cardinality' => 'many-to-one',
+        ),
     );
 
 
