@@ -20,12 +20,18 @@ class Settings extends \PeerRaiser\Model\Admin {
             self::$fields = array(
                 'currency' => array(
                     'name'             => 'Currency',
-                    'desc'             => 'Select an option',
+                    // 'desc'             => 'Select an option',
                     'id'               => 'currency',
                     'type'             => 'select',
-                    'default'          => array(__CLASS__, 'get_select_value'),
+                    'default'          => array(__CLASS__, 'get_field_value'),
                     'options'          => array(__CLASS__, 'get_select_options'),
-                )
+                ),
+                'fundraiser_slug' => array(
+                    'name'             => 'Fundraiser Slug',
+                    'id'               => 'fundraiser_slug',
+                    'type'             => 'text_small',
+                    'default'          => array(__CLASS__, 'get_field_value'),
+                ),
             );
         }
 
@@ -103,12 +109,31 @@ class Settings extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_select_value( $field ) {
+    public static function get_field_value( $field ) {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        return ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'custom';
+        switch ($field['name']) {
+            case 'Currency':
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'custom';
+                break;
 
+            case 'Fundraiser Slug':
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'give';
+                break;
+
+            default:
+                $field_value = '';
+                break;
+        }
+
+        return $field_value;
+
+    }
+
+
+    public static function get_field_names(){
+        return array_keys( self::$fields );
     }
 
 }
