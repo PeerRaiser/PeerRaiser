@@ -9,9 +9,14 @@ class Admin {
     public function __construct(){
         $this->menu_items = array(
             'dashboard' => array(
-                'url'   => 'peerraiser-dashboard-tab',
+                'url'   => 'peerraiser-dashboard',
                 'title' => __( 'Dashboard', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
+            ),
+            'campaigns' => array(
+                'url'   => 'edit.php?post_type=pr_campaign',
+                'title' => __( 'Campaigns', 'peerraiser' ),
+                'cap'   => 'activate_plugins'
             ),
             'fundraisers' => array(
                 'url'   => 'edit.php?post_type=fundraiser',
@@ -23,13 +28,13 @@ class Admin {
                 'title' => __( 'Teams', 'peerraiser' ),
                 'cap'   => 'activate_plugins'
             ),
-            'campaigns' => array(
-                'url'   => 'edit.php?post_type=pr_campaign',
-                'title' => __( 'Campaigns', 'peerraiser' ),
-                'cap'   => 'activate_plugins'
+            'donations' => array(
+                'url'   => 'edit.php?post_type=pr_donation',
+                'title' => __( 'Donations', 'peerraiser' ),
+                'cap'   => 'activate_plugins',
             ),
             'settings' => array(
-                'url'   => 'peerraiser-settings-tab',
+                'url'   => 'peerraiser-settings',
                 'title' => __( 'Settings', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
             )
