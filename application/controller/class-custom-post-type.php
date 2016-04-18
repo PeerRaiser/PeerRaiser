@@ -26,8 +26,8 @@ class Custom_Post_Type extends Base {
         $fundraiser_slug = ( isset($plugin_options['fundraiser_slug']) ) ? $plugin_options['fundraiser_slug'] : 'give';
         $args = array(
             'show_in_menu' => false,
-            'supports' => array('title'),
-            'rewrite' => array(
+            'supports'     => array('title'),
+            'rewrite'      => array(
                 'slug' => $fundraiser_slug
             )
         );
@@ -36,7 +36,7 @@ class Custom_Post_Type extends Base {
         // Campaign post type for each campaign. Fundraisers are tied to specific campaigns
         $args = array(
             'show_in_menu' => false,
-            'supports' => array('title'),
+            'supports'     => array('title'),
         );
         $campaigns = new \PeerRaiser\Model\Custom_Post_Type( 'Campaign', $args );
         $campaigns->register_taxonomy( 'Campaign Type');
@@ -45,16 +45,17 @@ class Custom_Post_Type extends Base {
         // Team post type for each team. Users can create or join teams.
         $args = array(
             'show_in_menu' => false,
+            'supports'     => array('title'),
         );
         $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Team', $args );
 
         // Donation post type. Each post is a seperate donation/transaction
         $args = array(
             'exclude_from_search' => true,
-            'has_archive' => false,
-            'publicly_queryable' => false,
-            'show_in_menu' => false,
-            'supports' => false,
+            'has_archive'         => false,
+            'publicly_queryable'  => false,
+            'show_in_menu'        => false,
+            'supports'            => false,
         );
         $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Donation', $args );
     }
