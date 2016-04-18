@@ -29,6 +29,19 @@
 .ladda-button:focus {
     outline: none;
 }
+.ladda-button[data-color=blue].success {
+    background: #449d44;
+}
+.ladda-button[data-color=blue].success:hover {
+    background: #5cb85c;
+}
+.ladda-button .fa {
+    display: none;
+}
+.ladda-button.success .fa {
+    display: inline;
+    padding-left: 9px;
+}
 /* Tooltip */
 .pr_tooltip {
     position: relative;
