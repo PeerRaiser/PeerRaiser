@@ -59,6 +59,8 @@ class Settings extends Base {
             '4.0.2'
         );
         wp_enqueue_style( 'peerraiser-ladda' );
+        wp_enqueue_style( 'peerraiser-font-awesome' );
+
 
         wp_register_script(
             'peerraiser-admin-settings',
