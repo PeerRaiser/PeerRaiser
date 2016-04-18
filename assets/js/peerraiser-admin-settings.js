@@ -64,6 +64,7 @@
                 if (!data || !data.success) {
                     return;
                 }
+                console.log(data);
                 l.stop();
                 $o.submitButton.$element.find('.ladda-label').text('Save Settings');
             });

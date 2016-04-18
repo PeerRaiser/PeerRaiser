@@ -84,7 +84,7 @@ class Dashboard  extends Base {
 
         $view_args = array(
             'standard_currency'    => $plugin_options['currency'],
-            'show_welcome_message' => (bool) $plugin_options['show_welcome_message'],
+            'show_welcome_message' => filter_var($plugin_options['show_welcome_message'], FILTER_VALIDATE_BOOLEAN),
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),

@@ -146,7 +146,8 @@ class Settings extends Base {
         $data = array(
             'success' => true,
             'message' => sprintf( _n( '%d setting updated.', '%d settings updated', $settings_updated, 'peerraiser' ), $settings_updated ),
-            'settings_updated' => $settings_updated
+            'settings_updated' => $settings_updated,
+            // settings => json_encode( $plugin_options ),
         );
 
         $event->set_result( $data );

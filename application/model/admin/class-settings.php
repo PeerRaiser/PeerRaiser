@@ -132,7 +132,7 @@ class Settings extends \PeerRaiser\Model\Admin {
                 break;
 
             case 'show_welcome_message':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? var_export($plugin_options[$field['id']],1) : 'true';
+                $field_value = ( filter_var($plugin_options[$field['id']], FILTER_VALIDATE_BOOLEAN) ) ? 'true' : 'false';
                 break;
 
             default:
