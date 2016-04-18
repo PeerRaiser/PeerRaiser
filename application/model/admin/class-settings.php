@@ -19,18 +19,27 @@ class Settings extends \PeerRaiser\Model\Admin {
             self::$instance = new self();
             self::$fields = array(
                 'currency' => array(
-                    'name'             => 'Currency',
-                    // 'desc'             => 'Select an option',
-                    'id'               => 'currency',
-                    'type'             => 'select',
-                    'default'          => array(__CLASS__, 'get_field_value'),
-                    'options'          => array(__CLASS__, 'get_select_options'),
+                    'name'    => 'Currency',
+                    'id'      => 'currency',
+                    'type'    => 'select',
+                    'default' => array(__CLASS__, 'get_field_value'),
+                    'options' => array(__CLASS__, 'get_select_options'),
                 ),
                 'fundraiser_slug' => array(
-                    'name'             => 'Fundraiser Slug',
-                    'id'               => 'fundraiser_slug',
-                    'type'             => 'text_small',
-                    'default'          => array(__CLASS__, 'get_field_value'),
+                    'name'    => 'Fundraiser Slug',
+                    'id'      => 'fundraiser_slug',
+                    'type'    => 'text_small',
+                    'default' => array(__CLASS__, 'get_field_value'),
+                ),
+                'show_welcome_message' => array(
+                    'name'    => 'Show Welcome Message on Dashboard?',
+                    'id'      => 'show_welcome_message',
+                    'type'    => 'select',
+                    'default' => array(__CLASS__, 'get_field_value'),
+                    'options' => array(
+                        'true'    => __( 'Yes', 'peerraiser' ),
+                        'false'   => __( 'No', 'peerraiser' ),
+                    )
                 ),
             );
         }
@@ -113,13 +122,17 @@ class Settings extends \PeerRaiser\Model\Admin {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        switch ($field['name']) {
-            case 'Currency':
+        switch ($field['id']) {
+            case 'currency':
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'custom';
                 break;
 
-            case 'Fundraiser Slug':
+            case 'fundraiser_slug':
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'give';
+                break;
+
+            case 'show_welcome_message':
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? var_export($plugin_options[$field['id']],1) : 'true';
                 break;
 
             default:
