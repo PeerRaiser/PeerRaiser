@@ -8,12 +8,17 @@
         $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]').addClass('current').parent().addClass('current');
     });
 
-    var $PeerRaiser = $.PeerRaiser();
-
     var select2_options = {
-        data: {post_type: ['page']},
-        templateResult: function(data) {
-            var html = '<span class="display_name">' + data.text + '</span>';
+        data : function ( params ) {
+            return {
+                action: 'peerraiser_get_posts',
+                s: params.term,
+                page: params.page,
+                post_type  : ['page']
+            };
+        },
+        templateResult : function(data) {
+            var html = '<span class="pr_name">' + data.text + '</span>';
             return $('<span>').html(html);
         },
         templateSelection: function(data) {
@@ -25,7 +30,7 @@
         }
     };
 
-    $PeerRaiser.render_select( $("#_thank_you_page"), select2_options );
+    $("#_thank_you_page").renderSelect(select2_options);
 
     // The window has loaded
     $( window ).load(function() {
