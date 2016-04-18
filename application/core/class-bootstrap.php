@@ -172,6 +172,10 @@ class Bootstrap {
         $admin_notices_controller = self::get_controller( 'Admin\Admin_Notices' );
         $dispatcher->add_subscriber( $admin_notices_controller );
 
+        // dashboard controleler
+        $dashboard_controller = self::get_controller( 'Admin\Dashboard' );
+        $dispatcher->add_subscriber( $dashboard_controller );
+
         // campaigns controleler
         $campaigns_controller = self::get_controller( 'Admin\Campaigns' );
         $dispatcher->add_subscriber( $campaigns_controller );
