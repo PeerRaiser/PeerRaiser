@@ -31,6 +31,15 @@ class Dashboard  extends Base {
     public function load_assets() {
         parent::load_assets();
 
+        // load page-specific CSS
+        wp_register_style(
+            'peerraiser-admin-dashboard',
+            $this->config->get( 'css_url' ) . '/peerraiser-admin-dashboard.css',
+            array( 'peerraiser-font-awesome' ),
+            $this->config->get( 'version' )
+        );
+        wp_enqueue_style( 'peerraiser-admin-dashboard' );
+
         // load page-specific JS
         wp_register_script(
             'peerraiser-select2',
@@ -81,29 +90,18 @@ class Dashboard  extends Base {
     public function render_page() {
         $this->load_assets();
 
-        // bulk price editor data
-        $bulk_actions = array(
-            'set'      => __( 'Set price of', 'peerraiser' ),
-            'increase' => __( 'Increase price of', 'peerraiser' ),
-            'reduce'   => __( 'Reduce price of', 'peerraiser' ),
-            'free'     => __( 'Make free', 'peerraiser' ),
-            'reset'    => __( 'Reset', 'peerraiser' ),
-        );
-
-        $bulk_selectors = array(
-            'all'      => __( 'All posts', 'peerraiser' ),
-        );
-
-        $bulk_categories = get_categories();
-
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         $view_args = array(
-            'top_nav'                               => $this->get_menu(),
-            'admin_menu'                            => \PeerRaiser\Helper\View::get_admin_menu(),
-            'standard_currency'                     => $plugin_options['currency'],
-            'plugin_is_in_live_mode'                => $this->config->get( 'is_in_live_mode' ),
-            'landing_page'                          => ( isset($plugin_options['landing_page']) ) ? $plugin_options['landing_page'] : '',
+            'standard_currency'  => $plugin_options['currency'],
+            'display_name'       => $this->get_current_users_name(),
+            'plugin_version'     => $plugin_options['peerraiser_version'],
+            'admin_url'          => get_admin_url(),
+            'font_awesome_class' => array(
+                'step_1'         => 'fa-square-o',
+                'step_2'         => 'fa-square-o',
+                'step_3'         => $this->get_campaign_status()
+            )
         );
 
         $this->assign( 'peerraiser', $view_args );
@@ -256,6 +254,18 @@ class Dashboard  extends Base {
                 'message' => __( 'Landing page saved.', 'peerraiser' ),
             )
         );
+    }
+
+
+    private function get_current_users_name(){
+        $current_user = wp_get_current_user();
+        return ( isset($current_user->user_firstname) && !empty($current_user->user_firstname) ) ? $current_user->user_firstname : $current_user->display_name;
+    }
+
+
+    private function get_campaign_status() {
+        $campaigns_count = wp_count_posts( 'pr_campaign' );
+        return ( $campaigns_count->publish > 0 ) ? 'fa-check-square-o' : 'fa-square-o';
     }
 
 }
