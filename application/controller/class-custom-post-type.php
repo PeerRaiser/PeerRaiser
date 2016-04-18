@@ -54,6 +54,7 @@ class Custom_Post_Type extends Base {
             'has_archive' => false,
             'publicly_queryable' => false,
             'show_in_menu' => false,
+            'supports' => false,
         );
         $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Donation', $args );
     }
