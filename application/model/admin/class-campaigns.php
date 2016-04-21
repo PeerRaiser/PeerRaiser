@@ -110,12 +110,17 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     ),
                 ),
                 'thank_you_page' =>   array(
-                    'name'             => 'Thank You Page',
-                    'id'               => '_thank_you_page',
-                    'type'             => 'select',
-                    'default'          => 'custom',
-                    'options'          => array(self::get_instance(), 'get_selected_post'),
+                    'name'              => 'Thank You Page',
+                    'id'                => '_thank_you_page',
+                    'type'              => 'select',
+                    'options'           => array(self::get_instance(), 'get_selected_post'),
                 ),
+                'campaign_participants' => array(
+                    'name'              => 'Participants',
+                    'id'                => '_campaign_participants',
+                    'type'              => 'pr_multiselect',
+                    'options'           => array(__CLASS__, 'get_participants_for_select_field'),
+                )
                 // 'registration_donation_ask' => array(
                 //     'name'    => __('Ask for Registration Donation?', 'peerraiser'),
                 //     'id'      => '_peerraiser_registration_donation_ask',
@@ -210,6 +215,21 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
         return $results;
 
+    }
+
+
+    public static function get_participants_for_select_field( $field ) {
+        // Empty array to fill with participants
+        $results = array();
+
+        $values = ( !empty($field->value) ) ? $field->value : array();
+
+        foreach ($values as $key => $value) {
+            $user_info = get_userdata($value);
+            $results[$value] = $user_info->display_name;
+        }
+
+        return $results;
     }
 
 }
