@@ -20,6 +20,18 @@ class Connections {
             'cardinality' => 'one-to-many',
         ),
         array(
+            'name' => 'campaign_to_participant',
+            'from' => 'pr_campaign',
+            'to' => 'user',
+            'cardinality' => 'many-to-many',
+        ),
+        array(
+            'name' => 'campaigns_to_teams',
+            'from' => 'pr_campaign',
+            'to' => 'pr_team',
+            'cardinality' => 'many-to-many',
+        ),
+        array(
             'name' => 'fundraiser_to_participant',
             'from' => 'fundraiser',
             'to' => 'user',
@@ -35,12 +47,6 @@ class Connections {
             'name' => 'team_to_participants',
             'from' => 'pr_team',
             'to' => 'user',
-            'cardinality' => 'many-to-many',
-        ),
-        array(
-            'name' => 'campaigns_to_teams',
-            'from' => 'pr_campaign',
-            'to' => 'pr_team',
             'cardinality' => 'many-to-many',
         ),
         array(

@@ -26,6 +26,18 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
+            'peerraiser_after_post_meta_added' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_connections' ),
+            ),
+            'peerraiser_before_post_meta_updated' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'update_connections' ),
+            ),
+            'peerraiser_before_post_meta_deleted' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'delete_connections' ),
+            ),
         );
     }
 
@@ -113,6 +125,110 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 )
             );
 
+        }
+
+    }
+
+    /**
+     * After post meta is added, add the connections
+     *
+     * @since    1.0.0
+     * @param    \PeerRaiser\Core\Event    $event
+     * @return   null
+     */
+    public function add_connections( \PeerRaiser\Core\Event $event ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_campaign_participants' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        switch ( $meta_key ) {
+            case '_campaign_participants':
+                foreach ($_meta_value as $key => $value) {
+                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
+                        'date' => current_time('mysql')
+                    ) );
+                }
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before the post meta is updated, update the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_campaign_participants' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_campaign_participants':
+                $removed = array_diff($old_value, $_meta_value);
+                $added = array_diff($_meta_value, $old_value);
+                // Remove the value from connection
+                foreach ($removed as $key => $value) {
+                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
+                }
+                // Add the new connection
+                foreach ($added as $key => $value) {
+                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
+                        'date' => current_time('mysql')
+                    ) );
+                }
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before post meta is deleted, delete the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function delete_connections(  \PeerRaiser\Core\Event $event  ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_campaign_participants' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_campaign_participants':
+                // Remove the value from connection
+                foreach ($old_value as $key => $value) {
+                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
+                }
+                break;
+
+            default:
+                break;
         }
 
     }

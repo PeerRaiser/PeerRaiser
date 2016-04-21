@@ -35,6 +35,7 @@ if ( ! defined( 'PEERRAISER_TEXT_DOMAIN' ) ) {
 if ( file_exists(  plugin_dir_path( __FILE__ ) . 'library/CMB2/init.php' ) ) {
     // CMB2
     require_once( plugin_dir_path( __FILE__ ) . 'library/CMB2/init.php' );
+    require_once( plugin_dir_path( __FILE__ ) . 'library/CMB2-multiselect/cmb-field-multiselect.php' );
 
     // Posts 2 Posts
     require_once( plugin_dir_path( __FILE__ ) . 'library/class-peerraiser-p2p.php');

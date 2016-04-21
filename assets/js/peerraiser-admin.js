@@ -37,6 +37,7 @@
                 },
                 templateResult: this.options.templateResult,
                 templateSelection: this.options.templateSelection,
+                multiple: this.options.multiple,
             };
             $(this.element).select2( select2_args );
         },
