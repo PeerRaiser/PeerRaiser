@@ -20,7 +20,13 @@ function pr_multiselect_render( $field, $value, $object_id, $object_type, $field
 
 	$values = ( !empty($value) ) ? $value : array();
 
-	$html = "<select name=\"{$field->args['_name']}[]\" id=\"{$field->args['_id']}\" multiple>";
+	$html = "<select name=\"{$field->args['_name']}[]\" id=\"{$field->args['_id']}\"";
+	if ( isset($field->args['attributes']) ) {
+		foreach ($field->args['attributes'] as $key => $value) {
+			$html .= " " . $key . "=\"" . $value . "\"";
+		}
+	}
+	$html .= " multiple>";
 	$html .= "<option></option>";
 
 	foreach ($select_options as $k => $v) {
