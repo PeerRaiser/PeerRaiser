@@ -57,13 +57,13 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     'name' => __('Campaign Goal', 'peerraiser'),
                     'id' => '_peerraiser_campaign_goal',
                     'type' => 'text_money',
-                    // 'before_field' => '£',
+                    'before_field' => self::get_currency_symbol(),
                 ),
                 'individual_goal' => array(
                     'name' => __('Suggested Individual Goal', 'peerraiser'),
                     'id' => '_peerraiser_suggested_individual_goal',
                     'type' => 'text_money',
-                    // 'before_field' => '£',
+                    'before_field' => self::get_currency_symbol(),
                     'label_cb' => array(self::get_instance(), 'custom_label'),
                     'options'  => array(
                         'tooltip-class'   => 'fa-question-circle',
@@ -74,11 +74,11 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     'name' => __('Suggested Team Goal', 'peerraiser'),
                     'id' => '_peerraiser_suggested_team_goal',
                     'type' => 'text_money',
-                    // 'before_field' => '£',
+                    'before_field' => self::get_currency_symbol(),
                     'label_cb' => array(self::get_instance(), 'custom_label'),
                     'options'  => array(
                         'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('The amount to display as a fundraising target to team camptains.', 'peerraiser' ),
+                        'tooltip'         => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
                     ),
                 ),
                 'campaign_limit' => array(
@@ -96,7 +96,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     ),
                 ),
                 'team_limit' => array(
-                    'name' => __( 'Team Size Limit', 'peerraiser' ),
+                    'name' => __( 'Team Limit', 'peerraiser' ),
                     'id'   => '_peerraiser_team_limit',
                     'type' => 'text_small',
                     'attributes' => array(
@@ -114,12 +114,18 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     'id'                => '_thank_you_page',
                     'type'              => 'select',
                     'options'           => array(self::get_instance(), 'get_selected_post'),
+                    'attributes'        => array(
+                        'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
+                    ),
                 ),
                 'campaign_participants' => array(
                     'name'              => 'Participants',
                     'id'                => '_campaign_participants',
                     'type'              => 'pr_multiselect',
                     'options'           => array(__CLASS__, 'get_participants_for_select_field'),
+                    'attributes'        => array(
+                        'data-tooltip' => __( 'The participants involved in this campaign', 'peerraiser' ),
+                    ),
                 )
                 // 'registration_donation_ask' => array(
                 //     'name'    => __('Ask for Registration Donation?', 'peerraiser'),
@@ -230,6 +236,12 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         }
 
         return $results;
+    }
+
+    private static function get_currency_symbol(){
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
 }

@@ -82,50 +82,50 @@ class Campaigns extends \PeerRaiser\Controller\Base {
     public function load_assets() {
         parent::load_assets();
 
+        // If this isn't the Campaigns post type, exit early
         global $post_type;
-        if ( 'pr_campaign' == $post_type ) {
+        if ( 'pr_campaign' != $post_type )
+            return;
 
-            // Register and enqueue styles
-            wp_register_style(
-                'peerraiser-admin',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
-                array('peerraiser-font-awesome'),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-            );
-            wp_register_style(
-                'peerraiser-admin-campaigns',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-campaigns.css',
-                array('peerraiser-font-awesome', 'peerraiser-admin'),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-            );
-            wp_enqueue_style( 'peerraiser-admin' );
-            wp_enqueue_style( 'peerraiser-admin-campaigns' );
-            wp_enqueue_style( 'peerraiser-font-awesome' );
-            wp_enqueue_style( 'peerraiser-select2' );
+        // Register and enqueue styles
+        wp_register_style(
+            'peerraiser-admin',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
+            array('peerraiser-font-awesome'),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+        );
+        wp_register_style(
+            'peerraiser-admin-campaigns',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-campaigns.css',
+            array('peerraiser-font-awesome', 'peerraiser-admin'),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+        );
+        wp_enqueue_style( 'peerraiser-admin' );
+        wp_enqueue_style( 'peerraiser-admin-campaigns' );
+        wp_enqueue_style( 'peerraiser-font-awesome' );
+        wp_enqueue_style( 'peerraiser-select2' );
 
-            // Register and enqueue scripts
-            wp_register_script(
-                'peerraiser-admin-campaigns',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-campaigns.js',
-                array( 'jquery', 'peerraiser-admin' ),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
-                true
-            );
-            wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
-            wp_enqueue_script( 'peerraiser-admin-campaigns' );
-            wp_enqueue_script( 'peerraiser-select2' );
+        // Register and enqueue scripts
+        wp_register_script(
+            'peerraiser-admin-campaigns',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-campaigns.js',
+            array( 'jquery', 'peerraiser-admin' ),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
+            true
+        );
+        wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
+        wp_enqueue_script( 'peerraiser-admin-campaigns' );
+        wp_enqueue_script( 'peerraiser-select2' );
 
-            // Localize scripts
-            wp_localize_script(
-                'peerraiser-admin-campaigns',
-                'peerraiser_object',
-                array(
-                    'ajax_url' => admin_url( 'admin-ajax.php' ),
-                    'template_directory' => get_template_directory_uri()
-                )
-            );
-
-        }
+        // Localize scripts
+        wp_localize_script(
+            'peerraiser-admin-campaigns',
+            'peerraiser_object',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri()
+            )
+        );
 
     }
 
