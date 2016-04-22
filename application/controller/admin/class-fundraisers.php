@@ -82,50 +82,50 @@ class Fundraisers extends Base {
     public function load_assets() {
         parent::load_assets();
 
+        // If this isn't the Fundraiser post type, exit early
         global $post_type;
-        if ( 'fundraiser' == $post_type ) {
+        if ( 'fundraiser' != $post_type )
+            return;
 
-            // Register and enqueue styles
-            wp_register_style(
-                'peerraiser-admin',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
-                array('peerraiser-font-awesome', 'peerraiser-select2'),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-            );
-            wp_register_style(
-                'peerraiser-admin-fundraisers',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-fundraisers.css',
-                array('peerraiser-font-awesome', 'peerraiser-admin', 'peerraiser-select2'),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-            );
-            wp_enqueue_style( 'peerraiser-admin' );
-            wp_enqueue_style( 'peerraiser-admin-fundraisers' );
-            wp_enqueue_style( 'peerraiser-font-awesome' );
-            wp_enqueue_style( 'peerraiser-select2' );
+        // Register and enqueue styles
+        wp_register_style(
+            'peerraiser-admin',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
+            array('peerraiser-font-awesome', 'peerraiser-select2'),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+        );
+        wp_register_style(
+            'peerraiser-admin-fundraisers',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-fundraisers.css',
+            array('peerraiser-font-awesome', 'peerraiser-admin', 'peerraiser-select2'),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+        );
+        wp_enqueue_style( 'peerraiser-admin' );
+        wp_enqueue_style( 'peerraiser-admin-fundraisers' );
+        wp_enqueue_style( 'peerraiser-font-awesome' );
+        wp_enqueue_style( 'peerraiser-select2' );
 
-            // Register and enqueue scripts
-            wp_register_script(
-                'peerraiser-admin-fundraisers',
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-fundraisers.js',
-                array( 'jquery', 'peerraiser-admin', 'peerraiser-select2' ),
-                \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
-                true
-            );
-            wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
-            wp_enqueue_script( 'peerraiser-admin-fundraisers' );
-            wp_enqueue_script( 'peerraiser-select2' );
+        // Register and enqueue scripts
+        wp_register_script(
+            'peerraiser-admin-fundraisers',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-fundraisers.js',
+            array( 'jquery', 'peerraiser-admin', 'peerraiser-select2' ),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
+            true
+        );
+        wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
+        wp_enqueue_script( 'peerraiser-admin-fundraisers' );
+        wp_enqueue_script( 'peerraiser-select2' );
 
-            // Localize scripts
-            wp_localize_script(
-                'peerraiser-admin-fundraisers',
-                'peerraiser_object',
-                array(
-                    'ajax_url' => admin_url( 'admin-ajax.php' ),
-                    'template_directory' => get_template_directory_uri()
-                )
-            );
-
-        }
+        // Localize scripts
+        wp_localize_script(
+            'peerraiser-admin-fundraisers',
+            'peerraiser_object',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri()
+            )
+        );
 
     }
 
