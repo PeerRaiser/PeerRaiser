@@ -172,21 +172,25 @@ class Bootstrap {
         $admin_notices_controller = self::get_controller( 'Admin\Admin_Notices' );
         $dispatcher->add_subscriber( $admin_notices_controller );
 
-        // dashboard controleler
+        // dashboard controller
         $dashboard_controller = self::get_controller( 'Admin\Dashboard' );
         $dispatcher->add_subscriber( $dashboard_controller );
 
-        // campaigns controleler
+        // campaigns controller
         $campaigns_controller = self::get_controller( 'Admin\Campaigns' );
         $dispatcher->add_subscriber( $campaigns_controller );
 
-        // fundraiser controleler
+        // fundraiser controller
         $fundraisers_controller = self::get_controller( 'Admin\Fundraisers' );
         $dispatcher->add_subscriber( $fundraisers_controller );
 
-        // settings controleler
+        // settings controller
         $settings_controller = self::get_controller( 'Admin\Settings' );
         $dispatcher->add_subscriber( $settings_controller );
+
+        // donations controller
+        $donations_controller = self::get_controller( 'Admin\Donations' );
+        $dispatcher->add_subscriber( $donations_controller );
 
     }
 
