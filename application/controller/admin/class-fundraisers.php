@@ -59,21 +59,22 @@ class Fundraisers extends Base {
     public function __construct(){}
 
 
-    public function register_meta_boxes() {
-
-        $cmb = new_cmb2_box( array(
-            'id'           => 'peerraiser-fundraiser',
-            'title'         => 'Fundraiser Info',
-            'object_types'  => array( 'fundraiser' ),
-            'context'       => 'normal',
-            'priority'      => 'default',
-        ) );
+    public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
 
         $fundraisers_model = \PeerRaiser\Model\Admin\Fundraisers::get_instance();
-        $fundraiser_fields = $fundraisers_model->get_fields();
+        $fundraiser_field_groups = $fundraisers_model->get_fields();
 
-        foreach ($fundraiser_fields as $key => $value) {
-            $cmb->add_field($value);
+        foreach ($fundraiser_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'         => $field_group['title'],
+                'object_types'  => array( 'fundraiser' ),
+                'context'       => $field_group['context'],
+                'priority'      => $field_group['priority'],
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
         }
 
     }
