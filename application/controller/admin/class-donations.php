@@ -11,25 +11,21 @@ class Donations extends \PeerRaiser\Controller\Base {
      */
     public static function get_subscribed_events() {
         return array(
+            'peerraiser_admin_enqueue_styles_post_new' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'load_assets' )
+            ),
+            'peerraiser_admin_enqueue_styles_post_edit' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'load_assets' )
+            ),
+            'peerraiser_admin_menu' => array(
+                array( 'replace_submit_box' )
+            ),
         );
     }
-
-
-    /**
-     * Singleton to get only one Campaigns controller
-     *
-     * @return    \PeerRaiser\Admin\Campaigns
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-
-    public function __construct(){}
 
 
     public function load_assets() {
@@ -48,31 +44,31 @@ class Donations extends \PeerRaiser\Controller\Base {
             \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
         );
         wp_register_style(
-            'peerraiser-admin-campaigns',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-campaigns.css',
+            'peerraiser-admin-donations',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-donations.css',
             array('peerraiser-font-awesome', 'peerraiser-admin'),
             \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
         );
         wp_enqueue_style( 'peerraiser-admin' );
-        wp_enqueue_style( 'peerraiser-admin-campaigns' );
+        wp_enqueue_style( 'peerraiser-admin-donations' );
         wp_enqueue_style( 'peerraiser-font-awesome' );
         wp_enqueue_style( 'peerraiser-select2' );
 
         // Register and enqueue scripts
         wp_register_script(
-            'peerraiser-admin-campaigns',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-campaigns.js',
+            'peerraiser-admin-donations',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-donations.js',
             array( 'jquery', 'peerraiser-admin' ),
             \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
             true
         );
         wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
-        wp_enqueue_script( 'peerraiser-admin-campaigns' );
+        wp_enqueue_script( 'peerraiser-admin-donations' );
         wp_enqueue_script( 'peerraiser-select2' );
 
         // Localize scripts
         wp_localize_script(
-            'peerraiser-admin-campaigns',
+            'peerraiser-admin-donations',
             'peerraiser_object',
             array(
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
@@ -82,107 +78,40 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-    /**
-     * After post meta is added, add the connections
-     *
-     * @since    1.0.0
-     * @param    \PeerRaiser\Core\Event    $event
-     * @return   null
-     */
-    public function add_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
-        $fields = array( '_campaign_participants' );
 
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                foreach ($_meta_value as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
-                        'date' => current_time('mysql')
-                    ) );
-                }
-                break;
-
-            default:
-                break;
-        }
-
+    public function replace_submit_box() {
+        remove_meta_box('submitdiv', 'pr_donation', 'core');
+        add_meta_box('submitdiv', __('Donation'), array( $this, 'get_submit_box'), 'pr_donation', 'side', 'low');
     }
 
 
-    /**
-     * Before the post meta is updated, update the connections
-     *
-     * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
-     * @return    null
-     */
-    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
-        $fields = array( '_campaign_participants' );
+    public function get_submit_box( $object ) {
+        $post_type_object = get_post_type_object($object->post_type);
+        $can_publish = current_user_can($post_type_object->cap->publish_posts);
+        $is_published = ( in_array( $object->post_status, array('publish', 'future', 'private') ) );
 
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
+        $event = new \PeerRaiser\Core\Event();
+        $event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_admin_menu_data', $event );
+        $results = (array) $event->get_result();
 
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
+        // $donation_model = new \PeerRaiser\Model\Admin\Donations();
+        // $default_menu = $model->get_menu_items();
 
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                $removed = array_diff($old_value, $_meta_value);
-                $added = array_diff($_meta_value, $old_value);
-                // Remove the value from connection
-                foreach ($removed as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
-                }
-                // Add the new connection
-                foreach ($added as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
-                        'date' => current_time('mysql')
-                    ) );
-                }
-                break;
+        // $menu = array_merge( $default_menu, $results );
 
-            default:
-                break;
-        }
+        $view_args = array(
+            'object' => $object,
+            'can_publish' => $can_publish,
+            'is_published' => $is_published,
+        );
 
-    }
+        $this->assign( 'peerraiser', $view_args );
 
+        $view_file = ( $is_published ) ? 'backend/partials/donation-box-edit' : 'backend/partials/donation-box-add';
 
-    /**
-     * Before post meta is deleted, delete the connections
-     *
-     * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
-     * @return    null
-     */
-    public function delete_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
-        $fields = array( '_campaign_participants' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
-
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                // Remove the value from connection
-                foreach ($old_value as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
-                }
-                break;
-
-            default:
-                break;
-        }
+        $this->render( $view_file );
 
     }
 
