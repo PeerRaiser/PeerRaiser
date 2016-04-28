@@ -102,17 +102,18 @@ class Settings extends Base {
 
     public function register_meta_boxes() {
 
-        $cmb = new_cmb2_box( array(
-            'id'           => 'peerraiser-settings',
-            'hookup'       => false,
-            'save_fields'  => false,
-        ) );
-
         $settings_model = \PeerRaiser\Model\Admin\Settings::get_instance();
-        $settings_fields = $settings_model->get_fields();
+        $settings_field_groups = $settings_model->get_fields();
 
-        foreach ($settings_fields as $key => $value) {
-            $cmb->add_field($value);
+        foreach ($settings_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'hookup'       => false,
+                'save_fields'  => false,
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
         }
 
     }
@@ -149,6 +150,7 @@ class Settings extends Base {
             'success' => true,
             'message' => sprintf( _n( '%d setting updated.', '%d settings updated', $settings_updated, 'peerraiser' ), $settings_updated ),
             'settings_updated' => $settings_updated,
+            'field_names' => $default_fields
             // settings => json_encode( $plugin_options ),
         );
 
