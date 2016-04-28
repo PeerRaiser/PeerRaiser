@@ -184,6 +184,10 @@ class Bootstrap {
         $fundraisers_controller = self::get_controller( 'Admin\Fundraisers' );
         $dispatcher->add_subscriber( $fundraisers_controller );
 
+        // teams controller
+        $teams_controller = self::get_controller( 'Admin\Teams' );
+        $dispatcher->add_subscriber( $teams_controller );
+
         // settings controller
         $settings_controller = self::get_controller( 'Admin\Settings' );
         $dispatcher->add_subscriber( $settings_controller );
