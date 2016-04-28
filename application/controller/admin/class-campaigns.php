@@ -61,19 +61,20 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes() {
 
-        $cmb = new_cmb2_box( array(
-            'id'           => 'peerraiser-campaign',
-            'title'         => 'Campaign Options',
-            'object_types'  => array( 'pr_campaign' ),
-            'context'       => 'normal',
-            'priority'      => 'default',
-        ) );
-
         $campaigns_model = \PeerRaiser\Model\Admin\Campaigns::get_instance();
-        $campaign_fields = $campaigns_model->get_fields();
+        $campaign_field_groups = $campaigns_model->get_fields();
 
-        foreach ($campaign_fields as $key => $value) {
-            $cmb->add_field($value);
+        foreach ($campaign_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'         => $field_group['title'],
+                'object_types'  => array( 'pr_campaign' ),
+                'context'       => $field_group['context'],
+                'priority'      => $field_group['priority'],
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
         }
 
     }
