@@ -18,26 +18,34 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
             self::$fields = array(
-                'fundraiser_campaign' => array(
-                    'name'             => 'Campaign',
-                    'id'               => '_fundraiser_campaign',
-                    'type'             => 'select',
-                    'default'          => 'custom',
-                    'options'          => array(self::get_instance(), 'get_selected_post'),
-                ),
-                'fundraiser_participant' => array(
-                    'name'             => 'Participant',
-                    'id'               => '_fundraiser_participant',
-                    'type'             => 'select',
-                    'default'          => 'custom',
-                    'options'          => array(self::get_instance(), 'get_participants_for_select_field'),
-                ),
-                'fundraiser_team' => array(
-                    'name'             => 'Team',
-                    'id'               => '_fundraiser_team',
-                    'type'             => 'select',
-                    'default'          => 'custom',
-                    'options'          => array(self::get_instance(), 'get_selected_post'),
+                array(
+                    'title'    => 'Fundraiser Info',
+                    'id'       => 'peerraiser-fundraiser',
+                    'context'  => 'normal',
+                    'priority' => 'default',
+                    'fields'   => array(
+                        'fundraiser_campaign' => array(
+                            'name'             => 'Campaign',
+                            'id'               => '_fundraiser_campaign',
+                            'type'             => 'select',
+                            'default'          => 'custom',
+                            'options'          => array(self::get_instance(), 'get_selected_post'),
+                        ),
+                        'fundraiser_participant' => array(
+                            'name'             => 'Participant',
+                            'id'               => '_fundraiser_participant',
+                            'type'             => 'select',
+                            'default'          => 'custom',
+                            'options'          => array(self::get_instance(), 'get_participants_for_select_field'),
+                        ),
+                        'fundraiser_team' => array(
+                            'name'             => 'Team',
+                            'id'               => '_fundraiser_team',
+                            'type'             => 'select',
+                            'default'          => 'custom',
+                            'options'          => array(self::get_instance(), 'get_selected_post'),
+                        ),
+                    ),
                 ),
             );
         }
