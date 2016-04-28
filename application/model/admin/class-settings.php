@@ -18,28 +18,33 @@ class Settings extends \PeerRaiser\Model\Admin {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
             self::$fields = array(
-                'currency' => array(
-                    'name'    => 'Currency',
-                    'id'      => 'currency',
-                    'type'    => 'select',
-                    'default' => array(__CLASS__, 'get_field_value'),
-                    'options' => array(__CLASS__, 'get_select_options'),
-                ),
-                'fundraiser_slug' => array(
-                    'name'    => 'Fundraiser Slug',
-                    'id'      => 'fundraiser_slug',
-                    'type'    => 'text_small',
-                    'default' => array(__CLASS__, 'get_field_value'),
-                ),
-                'show_welcome_message' => array(
-                    'name'    => 'Show Welcome Message on Dashboard?',
-                    'id'      => 'show_welcome_message',
-                    'type'    => 'select',
-                    'default' => array(__CLASS__, 'get_field_value'),
-                    'options' => array(
-                        'true'    => __( 'Yes', 'peerraiser' ),
-                        'false'   => __( 'No', 'peerraiser' ),
-                    )
+                array(
+                    'id'     => 'peerraiser-settings',
+                    'fields' => array(
+                        'currency' => array(
+                            'name'    => 'Currency',
+                            'id'      => 'currency',
+                            'type'    => 'select',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(__CLASS__, 'get_select_options'),
+                        ),
+                        'fundraiser_slug' => array(
+                            'name'    => 'Fundraiser Slug',
+                            'id'      => 'fundraiser_slug',
+                            'type'    => 'text_small',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                        ),
+                        'show_welcome_message' => array(
+                            'name'    => 'Show Welcome Message on Dashboard?',
+                            'id'      => 'show_welcome_message',
+                            'type'    => 'select',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'true'    => __( 'Yes', 'peerraiser' ),
+                                'false'   => __( 'No', 'peerraiser' ),
+                            ),
+                        ),
+                    ),
                 ),
             );
         }
@@ -146,7 +151,11 @@ class Settings extends \PeerRaiser\Model\Admin {
 
 
     public static function get_field_names(){
-        return array_keys( self::$fields );
+        $field_names = array();
+        foreach (self::$fields as $field_group) {
+            $field_names = array_merge($field_names, array_keys($field_group['fields']) );
+        }
+        return $field_names;
     }
 
 }
