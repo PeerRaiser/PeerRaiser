@@ -1,0 +1,16 @@
+#_fundraiser_campaign,
+#_fundraiser_team,
+#_fundraiser_participant {
+    min-width: 300px;
+}
+.select2-results__option .display_name,
+.select2-results__option .pr_name {
+    display: block;
+    /*font-weight: bold;*/
+}
+.select2-results__option .user_id,
+.select2-results__option .pr_id {
+    font-size: 12px;
+    display: block;
+    opacity: 0.5;
+}
