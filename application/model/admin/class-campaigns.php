@@ -18,133 +18,123 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
             self::$fields = array(
-                'campaign_start_date' =>   array(
-                    'name'     => __( 'Start Date', 'peerraiser' ),
-                    'id'       => '_peerraiser_campaign_start_date',
-                    'type'     => 'text_date_timestamp',
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
+                array(
+                    'title'    => 'Campaign Options',
+                    'id'       => 'peerraiser-campaign',
+                    'context'  => 'normal',
+                    'priority' => 'default',
+                    'fields'   => array(
+                        'campaign_start_date' => array(
+                            'name'     => __( 'Start Date', 'peerraiser' ),
+                            'id'       => '_peerraiser_campaign_start_date',
+                            'type'     => 'text_date_timestamp',
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
+                            ),
+                        ),
+                        'campaign_end_date' =>   array(
+                            'name' => __( 'End Date', 'peerraiser' ),
+                            'id'   => '_peerraiser_campaign_end_date',
+                            'type' => 'text_date_timestamp',
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('Leave blank if the campaign doesn\'t end.', 'peerraiser' ),
+                            ),
+                        ),
+                        'campaign_description' => array(
+                            'name'    => __('Campaign Description', 'peerraiser'),
+                            'id'      => '_peerraiser_campaign_description',
+                            'type'    => 'wysiwyg',
+                            'options' => array(),
+                        ),
+                        'campaign_image' => array(
+                            'name'    => __('Campaign Image', 'peerraiser'),
+                            'id'      => '_peerraiser_campaign_image',
+                            'type'    => 'file',
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => 'Add Image'
+                            ),
+                        ),
+                        'campaign_goal' => array(
+                            'name' => __('Campaign Goal', 'peerraiser'),
+                            'id' => '_peerraiser_campaign_goal',
+                            'type' => 'text_money',
+                            'before_field' => self::get_currency_symbol(),
+                        ),
+                        'individual_goal' => array(
+                            'name' => __('Suggested Individual Goal', 'peerraiser'),
+                            'id' => '_peerraiser_suggested_individual_goal',
+                            'type' => 'text_money',
+                            'before_field' => self::get_currency_symbol(),
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
+                            ),
+                        ),
+                        'team_goal' => array(
+                            'name' => __('Suggested Team Goal', 'peerraiser'),
+                            'id' => '_peerraiser_suggested_team_goal',
+                            'type' => 'text_money',
+                            'before_field' => self::get_currency_symbol(),
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
+                            ),
+                        ),
+                        'campaign_limit' => array(
+                            'name' => __( 'Registration Limit', 'peerraiser' ),
+                            'id'   => '_peerraiser_campaign_limit',
+                            'type' => 'text_small',
+                            'attributes' => array(
+                                'type' => 'number',
+                                'pattern' => '\d*',
+                            ),
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('Enter the max number of participants that can register. Leave blank for unlimited.', 'peerraiser' ),
+                            ),
+                        ),
+                        'team_limit' => array(
+                            'name' => __( 'Team Limit', 'peerraiser' ),
+                            'id'   => '_peerraiser_team_limit',
+                            'type' => 'text_small',
+                            'attributes' => array(
+                                'type' => 'number',
+                                'pattern' => '\d*',
+                            ),
+                            'label_cb' => array(self::get_instance(), 'custom_label'),
+                            'options'  => array(
+                                'tooltip-class'   => 'fa-question-circle',
+                                'tooltip'         => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
+                            ),
+                        ),
+                        'thank_you_page' =>   array(
+                            'name'              => 'Thank You Page',
+                            'id'                => '_thank_you_page',
+                            'type'              => 'select',
+                            'options'           => array(self::get_instance(), 'get_selected_post'),
+                            'attributes'        => array(
+                                'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
+                            ),
+                        ),
+                        'campaign_participants' => array(
+                            'name'              => 'Participants',
+                            'id'                => '_campaign_participants',
+                            'type'              => 'pr_multiselect',
+                            'options'           => array(__CLASS__, 'get_participants_for_select_field'),
+                            'attributes'        => array(
+                                'data-tooltip' => __( 'The participants involved in this campaign', 'peerraiser' ),
+                            ),
+                        ),
                     ),
                 ),
-                'campaign_end_date' =>   array(
-                    'name' => __( 'End Date', 'peerraiser' ),
-                    'id'   => '_peerraiser_campaign_end_date',
-                    'type' => 'text_date_timestamp',
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('Leave blank if the campaign doesn\'t end.', 'peerraiser' ),
-                    ),
-                ),
-                'campaign_description' => array(
-                    'name'    => __('Campaign Description', 'peerraiser'),
-                    'id'      => '_peerraiser_campaign_description',
-                    'type'    => 'wysiwyg',
-                    'options' => array(),
-                ),
-                'campaign_image' => array(
-                    'name'    => __('Campaign Image', 'peerraiser'),
-                    'id'      => '_peerraiser_campaign_image',
-                    'type'    => 'file',
-                    'options' => array(
-                        'url' => false,
-                        'add_upload_file_text' => 'Add Image'
-                    ),
-                ),
-                'campaign_goal' => array(
-                    'name' => __('Campaign Goal', 'peerraiser'),
-                    'id' => '_peerraiser_campaign_goal',
-                    'type' => 'text_money',
-                    'before_field' => self::get_currency_symbol(),
-                ),
-                'individual_goal' => array(
-                    'name' => __('Suggested Individual Goal', 'peerraiser'),
-                    'id' => '_peerraiser_suggested_individual_goal',
-                    'type' => 'text_money',
-                    'before_field' => self::get_currency_symbol(),
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
-                    ),
-                ),
-                'team_goal' => array(
-                    'name' => __('Suggested Team Goal', 'peerraiser'),
-                    'id' => '_peerraiser_suggested_team_goal',
-                    'type' => 'text_money',
-                    'before_field' => self::get_currency_symbol(),
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
-                    ),
-                ),
-                'campaign_limit' => array(
-                    'name' => __( 'Registration Limit', 'peerraiser' ),
-                    'id'   => '_peerraiser_campaign_limit',
-                    'type' => 'text_small',
-                    'attributes' => array(
-                        'type' => 'number',
-                        'pattern' => '\d*',
-                    ),
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('Enter the max number of participants that can register. Leave blank for unlimited.', 'peerraiser' ),
-                    ),
-                ),
-                'team_limit' => array(
-                    'name' => __( 'Team Limit', 'peerraiser' ),
-                    'id'   => '_peerraiser_team_limit',
-                    'type' => 'text_small',
-                    'attributes' => array(
-                        'type' => 'number',
-                        'pattern' => '\d*',
-                    ),
-                    'label_cb' => array(self::get_instance(), 'custom_label'),
-                    'options'  => array(
-                        'tooltip-class'   => 'fa-question-circle',
-                        'tooltip'         => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
-                    ),
-                ),
-                'thank_you_page' =>   array(
-                    'name'              => 'Thank You Page',
-                    'id'                => '_thank_you_page',
-                    'type'              => 'select',
-                    'options'           => array(self::get_instance(), 'get_selected_post'),
-                    'attributes'        => array(
-                        'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
-                    ),
-                ),
-                'campaign_participants' => array(
-                    'name'              => 'Participants',
-                    'id'                => '_campaign_participants',
-                    'type'              => 'pr_multiselect',
-                    'options'           => array(__CLASS__, 'get_participants_for_select_field'),
-                    'attributes'        => array(
-                        'data-tooltip' => __( 'The participants involved in this campaign', 'peerraiser' ),
-                    ),
-                )
-                // 'registration_donation_ask' => array(
-                //     'name'    => __('Ask for Registration Donation?', 'peerraiser'),
-                //     'id'      => '_peerraiser_registration_donation_ask',
-                //     'type'    => 'radio_inline',
-                //     'options' => array(
-                //         'yes' => __( 'Yes', 'peerraiser' ),
-                //         'no'  => __( 'No', 'peerraiser' ),
-                //     ),
-                // ),
-                // 'registration_donation_required' => array(
-                //     'name'    => __('Registration donation required?', 'peerraiser'),
-                //     'id'      => '_peerraiser_registration_donation_required',
-                //     'type'    => 'radio_inline',
-                //     'options' => array(
-                //         'yes' => __( 'Yes', 'peerraiser' ),
-                //         'no'  => __( 'No', 'peerraiser' ),
-                //     ),
-                // )
             );
         }
 
@@ -155,11 +145,13 @@ class Campaigns extends \PeerRaiser\Model\Admin {
     /**
      * Get all fields
      *
+     * @param    $title    The title of the field group to get. Leave blank for all groups
+     *
      * @since     1.0.0
      * @return    array    Field data
      */
-    public static function get_fields() {
-        return self::$fields;
+    public static function get_fields( $title = null ) {
+        return ( is_null($title) ) ? self::$fields : self::$fields[$title];
     }
 
 
