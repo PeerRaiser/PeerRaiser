@@ -42,6 +42,10 @@
     display: inline;
     padding-left: 9px;
 }
+/* CMB2 */
+.cmb-th label {
+    display: inline-block !important;
+}
 /* Tooltip */
 .pr_tooltip {
     position: relative;
