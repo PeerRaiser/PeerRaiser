@@ -28,20 +28,16 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'name'     => __( 'Start Date', 'peerraiser' ),
                             'id'       => '_peerraiser_campaign_start_date',
                             'type'     => 'text_date_timestamp',
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
                             ),
                         ),
                         'campaign_end_date' =>   array(
                             'name' => __( 'End Date', 'peerraiser' ),
                             'id'   => '_peerraiser_campaign_end_date',
                             'type' => 'text_date_timestamp',
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('Leave blank if the campaign doesn\'t end.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('Leave blank if the campaign doesn\'t end.', 'peerraiser' ),
                             ),
                         ),
                         'campaign_description' => array(
@@ -70,10 +66,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'id' => '_peerraiser_suggested_individual_goal',
                             'type' => 'text_money',
                             'before_field' => self::get_currency_symbol(),
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
                             ),
                         ),
                         'team_goal' => array(
@@ -81,10 +75,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'id' => '_peerraiser_suggested_team_goal',
                             'type' => 'text_money',
                             'before_field' => self::get_currency_symbol(),
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
                             ),
                         ),
                         'campaign_limit' => array(
@@ -95,10 +87,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'type' => 'number',
                                 'pattern' => '\d*',
                             ),
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('Enter the max number of participants that can register. Leave blank for unlimited.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('Enter the max number of participants that can register. Leave blank for unlimited.', 'peerraiser' ),
                             ),
                         ),
                         'team_limit' => array(
@@ -109,10 +99,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'type' => 'number',
                                 'pattern' => '\d*',
                             ),
-                            'label_cb' => array(self::get_instance(), 'custom_label'),
-                            'options'  => array(
-                                'tooltip-class'   => 'fa-question-circle',
-                                'tooltip'         => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
                             ),
                         ),
                         'thank_you_page' =>   array(
@@ -185,20 +173,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         array_push(self::$fields, $fields);
 
         return self::$fields;
-    }
-
-
-    public static function custom_label( $field_args, $field ) {
-
-        // var_dump($field_args);
-
-        $label = $field_args['name'];
-
-        if ( $field_args['options']['tooltip'] ) {
-            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-        }
-
-        return $label;
     }
 
 
