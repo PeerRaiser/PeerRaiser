@@ -44,7 +44,7 @@
 }
 /* CMB2 */
 .cmb-th label {
-    display: inline-block !important;
+    display: inline !important;
 }
 /* Tooltip */
 .pr_tooltip {
