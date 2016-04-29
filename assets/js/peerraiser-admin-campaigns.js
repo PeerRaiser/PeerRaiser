@@ -64,6 +64,14 @@
     $("#_thank_you_page").renderSelect(select2_options.thank_you_page);
     $("#_campaign_participants").renderSelect(select2_options.participants);
 
+    // Tooltips
+    $('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
+        var tooltip = $(this).data('tooltip');
+        if ( tooltip !== undefined ) {
+            $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
+        }
+    });
+
     // The window has loaded
     $( window ).load(function() {
 
