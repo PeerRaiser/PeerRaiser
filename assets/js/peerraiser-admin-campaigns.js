@@ -1,80 +1,111 @@
-(function( $ ) {
+(function( $ ) {$(function() {
     'use strict';
 
-    // The page is ready
-    $(function() {
-        $('#toplevel_page_peerraiser-dashboard').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard > a').addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]').addClass('current').parent().addClass('current');
-    });
+    function peerRaiserAdminCampaigns(){
+        var $o = {
+            dashboardTab           : $('#toplevel_page_peerraiser-dashboard'),
+            dasboardTabLink        : $('#toplevel_page_peerraiser-dashboard > a'),
+            fundraiserLink         : $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]'),
 
-    var select2_options = {
-        thank_you_page : {
-            data : function ( params ) {
-                return {
-                    action: 'peerraiser_get_posts',
-                    s: params.term,
-                    page: params.page,
-                    post_type  : ['page']
-                };
+            select2Fields          : {
+                thank_you_page     : $("#_thank_you_page"),
+                participants       : $("#_campaign_participants")
             },
-            templateResult : function(data) {
-                var html = '<span class="pr_name">' + data.text + '</span>';
-                return $('<span>').html(html);
+
+            select2Options         : {
+                thank_you_page : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                participants : {
+                    data : function (params) {
+                        return {
+                            action: 'peerraiser_get_users',
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 10) < data.total_count
+                            }
+                        };
+                    },
+                    templateResult: function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">User ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        return data.text;
+                    },
+                    multiple: true,
+                },
             },
-            templateSelection: function(data) {
-                var text = data.text;
-                if ( typeof text === 'string' ) {
-                    text = text.replace(/^(- )*/g, '');
+        },
+
+        init = function(){
+            bindEvents();
+            renderSelect();
+            activateSubmenu();
+            renderTooltips();
+        },
+
+        bindEvents = function() {
+
+        },
+
+        renderSelect = function() {
+            for ( var key in $o.select2Fields ) {
+                if ( $o.select2Fields[key].length ){
+                    $o.select2Fields[key].renderSelect($o.select2Options[key]);
                 }
-                return text;
             }
         },
-        participants : {
-            data : function (params) {
-                return {
-                    action: 'peerraiser_get_users',
-                    q: params.term,
-                    page: params.page
-                };
-            },
-            processResults: function (data, params) {
-                params.page = params.page || 1;
-                return {
-                    results: data.items,
-                    pagination: {
-                        more: (params.page * 10) < data.total_count
-                    }
-                };
-            },
-            templateResult: function(data) {
-                var html = '<span class="display_name">' + data.text + '</span>';
-                if ( data.id ) {
-                    html += '<span class="user_id">User ID: ' + data.id + '</span>';
+
+        renderTooltips = function() {
+            $('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
+                var tooltip = $(this).data('tooltip');
+                if ( tooltip !== undefined ) {
+                    $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
                 }
-                return $('<span>').html(html);
-            },
-            templateSelection: function(data) {
-                return data.text;
-            },
-            multiple: true,
+            });
         },
-    };
 
-    $("#_thank_you_page").renderSelect(select2_options.thank_you_page);
-    $("#_campaign_participants").renderSelect(select2_options.participants);
+        // WordPress doesn't display submenus correctly if they're a post type. This is the workaround...
+        activateSubmenu= function() {
+            $o.dashboardTab.removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
+            $o.dasboardTabLink.addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
+            $o.fundraiserLink.addClass('current').parent().addClass('current');
+        };
 
-    // Tooltips
-    $('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
-        var tooltip = $(this).data('tooltip');
-        if ( tooltip !== undefined ) {
-            $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
-        }
-    });
+        init();
 
-    // The window has loaded
-    $( window ).load(function() {
+    }
 
-    });
+    // Kick it off
+    peerRaiserAdminCampaigns();
 
-})( jQuery );
+});})(jQuery);
