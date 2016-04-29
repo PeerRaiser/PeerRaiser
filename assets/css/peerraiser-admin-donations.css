@@ -1,0 +1,50 @@
+#submitpost .donation-info {
+    padding: 10px;
+}
+.pr-update-donation,
+.pr-add-donation {
+    float: right;
+}
+#submitpost .donation-info > div {
+    margin-bottom: 1em;
+}
+#submitpost .donation-info > div .label{
+    display: block;
+}
+#submitpost .donation-info > div .label:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+#submitpost .donation-info > div.donation-date .label:before {
+    content: "\f073";
+}
+#submitpost .donation-info > div.donation-method .label:before {
+    content: "\f09d";
+}
+#submitpost .donation-info > div.donation-key .label:before {
+    content: "\f084";
+}
+#submitpost .donation-info > div.donor-ip .label:before {
+    content: "\f0ac";
+}
+#submitpost .donation-info > div.is-test-mode .label:before {
+    content: "\f0c3";
+}
+#submitpost .donation-info > div strong,
+#submitpost .donation-info > div select,
+#submitpost .donation-info > div input {
+    margin-left: 27px;
+}
+#submitpost .donation-info .donation-key strong {
+    font: 700 95% monospace;
+}
