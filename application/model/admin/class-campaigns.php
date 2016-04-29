@@ -112,6 +112,42 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
                             ),
                         ),
+                        'anonymous_donations' => array(
+                            'name'              => 'Allow Anonymous Donations',
+                            'id'                => '_anonymous_donations',
+                            'type'              => 'select',
+                            'options'           => array(
+                                'true' => __('Yes', 'peerraiser'),
+                                'false' => __('No', 'peerraiser'),
+                            ),
+                            'attributes'        => array(
+                                'data-tooltip' => __( 'Should donors to this campaign have the option to remain anonymous?', 'peerraiser' ),
+                            ),
+                        ),
+                        'donation_comments' => array(
+                            'name'              => 'Allow Donation Comments',
+                            'id'                => '_donation_comments',
+                            'type'              => 'select',
+                            'options'           => array(
+                                'true' => __('Yes', 'peerraiser'),
+                                'false' => __('No', 'peerraiser'),
+                            ),
+                            'attributes'        => array(
+                                'data-tooltip' => __( 'Should donors to this campaign have the option to leave a comment with their donation?', 'peerraiser' ),
+                            ),
+                        ),
+                        'transaction_fee_option' => array(
+                            'name'              => 'Ask donors to cover transaction fees?',
+                            'id'                => '_transaction_fee_option',
+                            'type'              => 'select',
+                            'options'           => array(
+                                'true' => __('Yes', 'peerraiser'),
+                                'false' => __('No', 'peerraiser'),
+                            ),
+                            'attributes'        => array(
+                                'data-tooltip' => __( 'Should donors to this campaign have the option to pay the transaction fee?', 'peerraiser' ),
+                            ),
+                        ),
                         'campaign_participants' => array(
                             'name'              => 'Participants',
                             'id'                => '_campaign_participants',
