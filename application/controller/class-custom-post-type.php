@@ -34,9 +34,13 @@ class Custom_Post_Type extends Base {
         $fundraisers = new \PeerRaiser\Model\Custom_Post_Type( 'Fundraiser', $args );
 
         // Campaign post type for each campaign. Fundraisers are tied to specific campaigns
+        $campaign_slug = ( isset($plugin_options['campaign_slug']) ) ? $plugin_options['campaign_slug'] : 'campaign';
         $args = array(
             'show_in_menu' => false,
             'supports'     => array('title'),
+            'rewrite'      => array(
+                'slug' => $campaign_slug
+            )
         );
         $campaigns = new \PeerRaiser\Model\Custom_Post_Type( 'Campaign', $args );
         $campaigns->register_taxonomy( 'Campaign Type');
