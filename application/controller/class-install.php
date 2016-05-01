@@ -140,8 +140,11 @@ class Install extends Base {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         // Default options
-        $plugin_options['currency'] = $this->config->get( 'currency.default' );
-        $plugin_options['fundraiser_slug'] = 'give';
+        $plugin_options['currency']             = $this->config->get( 'currency.default' );
+        $plugin_options['fundraiser_slug']      = 'give';
+        $plugin_options['campaign_slug']        = 'campaign';
+        $plugin_options['disable_css_styles']   = 'false';
+        $plugin_options['test_mode']            = 'true';
         $plugin_options['show_welcome_message'] = true;
 
         // keep the plugin version up to date
