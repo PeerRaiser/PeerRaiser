@@ -187,19 +187,15 @@ class Admin extends Base {
      *
      * @return void
      */
-    public function run( $tab = '' ) {
+    public function run( $page = '' ) {
         $this->load_assets();
 
-        if ( isset( $_GET['tab'] ) ) {
-            $tab = sanitize_text_field( $_GET['tab'] );
-        }
-
         // return default tab, if no specific tab is requested
-        if ( empty( $tab ) ) {
-            $tab = 'dashboard';
+        if ( empty( $page ) ) {
+            $page = 'dashboard';
         }
 
-        switch ( $tab ) {
+        switch ( $page ) {
             default:
             // render dashboard tab
             case 'dashboard':
