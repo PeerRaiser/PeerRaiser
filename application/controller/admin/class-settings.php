@@ -38,6 +38,8 @@ class Settings extends Base {
                     'save_button' => __( 'Save Settings', 'peerraiser' ),
                 )
             ),
+            'active_tab' => isset( $_GET[ 'tab' ] ) ? sanitize_text_field( $_GET['tab'] ) : 'general',
+            'tabs' => $this->get_tabs(),
         );
 
         $this->assign( 'peerraiser', $view_args );
@@ -160,7 +162,7 @@ class Settings extends Base {
 
     /**
      * If the plugin settings have recently been updated, flush the rewrite rules.
-     * This is because one of the settings modifies a custom post type.
+     * This is because some of the settings modify custom post type rewrite rules.
      *
      * @since     1.0.0
      * @return    null
@@ -170,6 +172,20 @@ class Settings extends Base {
             flush_rewrite_rules();
             delete_transient('peerraiser_options_updated');
         }
+    }
+
+
+    public function get_tabs() {
+        $event = new \PeerRaiser\Core\Event();
+        $event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_settings_tab_data', $event );
+        $results = (array) $event->get_result();
+
+        $settings_model = new \PeerRaiser\Model\Admin\Settings();
+        $default_tabs = $settings_model->get_tabs();
+
+        return array_merge( $default_tabs, $results );
     }
 
 }
