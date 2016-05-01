@@ -5,6 +5,7 @@ namespace PeerRaiser\Model\Admin;
 class Settings extends \PeerRaiser\Model\Admin {
 
     private static $fields = array();
+    private static $tabs = array();
     private static $instance = null;
 
     public function __construct() {}
@@ -21,6 +22,16 @@ class Settings extends \PeerRaiser\Model\Admin {
                 array(
                     'id'     => 'peerraiser-settings',
                     'fields' => array(
+                        'test_mode' => array(
+                            'name'    => 'Enable Test Mode',
+                            'id'      => 'test_mode',
+                            'type'    => 'select',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'true'    => __( 'Yes', 'peerraiser' ),
+                                'false'   => __( 'No', 'peerraiser' ),
+                            ),
+                        ),
                         'currency' => array(
                             'name'    => 'Currency',
                             'id'      => 'currency',
@@ -34,6 +45,12 @@ class Settings extends \PeerRaiser\Model\Admin {
                             'type'    => 'text_small',
                             'default' => array(__CLASS__, 'get_field_value'),
                         ),
+                        'campaign_slug' => array(
+                            'name'    => 'Campaign Slug',
+                            'id'      => 'campaign_slug',
+                            'type'    => 'text_small',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                        ),
                         'show_welcome_message' => array(
                             'name'    => 'Show Welcome Message on Dashboard?',
                             'id'      => 'show_welcome_message',
@@ -44,8 +61,25 @@ class Settings extends \PeerRaiser\Model\Admin {
                                 'false'   => __( 'No', 'peerraiser' ),
                             ),
                         ),
+                        'disable_css_styles' => array(
+                            'name'    => 'Disable Default CSS Styles?',
+                            'id'      => 'disable_css_styles',
+                            'type'    => 'select',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'false'   => __( 'No', 'peerraiser' ),
+                                'true'    => __( 'Yes', 'peerraiser' ),
+                            ),
+                        ),
                     ),
                 ),
+            );
+            self::$tabs = array(
+                'general' => __('General', 'peerraiser'),
+                'gateways' => __('Payment Gateways', 'peerraiser'),
+                'emails' => __('Emails', 'peerraiser'),
+                'licenses' => __('Licenses', 'peerraiser'),
+                'advanced' => __('Advanced', 'peerraiser'),
             );
         }
 
@@ -104,6 +138,7 @@ class Settings extends \PeerRaiser\Model\Admin {
         return $label;
     }
 
+
     public static function get_select_options( $field ) {
 
         if ( $field->args['name'] === 'Currency' ) {
@@ -136,7 +171,13 @@ class Settings extends \PeerRaiser\Model\Admin {
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'give';
                 break;
 
+            case 'campaign_slug':
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaign';
+                break;
+
             case 'show_welcome_message':
+            case 'disable_css_styles':
+            case 'test_mode':
                 $field_value = ( filter_var($plugin_options[$field['id']], FILTER_VALIDATE_BOOLEAN) ) ? 'true' : 'false';
                 break;
 
@@ -150,12 +191,17 @@ class Settings extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_field_names(){
+    public static function get_field_names() {
         $field_names = array();
         foreach (self::$fields as $field_group) {
             $field_names = array_merge($field_names, array_keys($field_group['fields']) );
         }
         return $field_names;
+    }
+
+
+    public static function get_tabs() {
+        return self::$tabs;
     }
 
 }
