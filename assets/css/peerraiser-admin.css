@@ -81,3 +81,15 @@
     position: absolute;
     top: -10px;
 }
+/* Misc */
+.group:before,
+.group:after {
+    content: "";
+    display: table;
+}
+.group:after {
+    clear: both;
+}
+.group {
+    zoom: 1;
+}
