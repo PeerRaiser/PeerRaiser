@@ -1,0 +1,9 @@
+.cmb-th {
+    width: 20%;
+    box-sizing: border-box;
+    max-width: 200px;
+}
+.cmb-td {
+    width: 80%;
+    box-sizing: border-box;
+}
