@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             <?php if ( $peerraiser['show_welcome_message'] ) : ?>
                 <div class="welcome-message">
-                    <h2><?php printf( esc_html__( 'Welcome to your dashboard, $s', 'peerraiser' ), $peerraiser['display_name'] ); ?></h2>
+                    <h2><?php printf( esc_html__( 'Welcome to your dashboard, %s', 'peerraiser' ), $peerraiser['display_name'] ); ?></h2>
                     <p><?php _e('The dashboard provides an overview of your peer-to-peer campaigns, fundraising tips, and the latest news about this plugin.', 'peerraiser') ?></p>
 
                     <h3><?php _e("Let's get you started...", 'peerraiser') ?></h3>
@@ -37,7 +37,28 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
         <div class="column column-right">
             <h2><?php _e('Activity Feed', 'peerraiser') ?></h2>
-            <p>Something cool happened today</p>
+            <ul class="activity-feed">
+                <li class="donation">
+                    <a href="">John Smith</a> donated <a href="#">$50.00</a> to "<a href="#">My cool fundraiser</a>"
+                    <span class="date">1 Day ago</span>
+                </li>
+                <li class="fundraiser">
+                    <a href="">Jane Adams</a> created fundraiser "<a href="#">My cool fundraiser!</a>" for the "<a href="#">10k Fun Run!</a>" campaign
+                    <span class="date">2 Days ago</span>
+                </li>
+                <li class="campaign">
+                    <a href="">Admin</a> created campaign "<a href="#">10k Fun Run!</a>"
+                    <span class="date">2 Days ago</span>
+                </li>
+                <li class="settings">
+                    <a href="">Admin</a> updated the Email settings
+                    <span class="date">3 Days ago</span>
+                </li>
+                <li class="install">
+                    PeerRaiser was installed
+                    <span class="date">3 Days ago</span>
+                </li>
+            </div>
         </div>
 
     </div>
