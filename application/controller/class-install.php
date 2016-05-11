@@ -140,12 +140,36 @@ class Install extends Base {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         // Default options
-        $plugin_options['currency']             = $this->config->get( 'currency.default' );
-        $plugin_options['fundraiser_slug']      = 'give';
-        $plugin_options['campaign_slug']        = 'campaign';
-        $plugin_options['disable_css_styles']   = 'false';
-        $plugin_options['test_mode']            = 'true';
-        $plugin_options['show_welcome_message'] = true;
+        $plugin_options['currency']                          = $this->config->get( 'currency.default' );
+        $plugin_options['fundraiser_slug']                   = 'give';
+        $plugin_options['campaign_slug']                     = 'campaign';
+        $plugin_options['disable_css_styles']                = false;
+        $plugin_options['test_mode']                         = true;
+        $plugin_options['show_welcome_message']              = true;
+        $plugin_options['donation_receipt_enabled']          = true;
+        $plugin_options['new_donation_notification_enabled'] = true;
+        $plugin_options['welcome_email_enabled']             = true;
+        $plugin_options['from_name']                         = get_bloginfo( 'name' );
+        $plugin_options['from_email']                        = get_bloginfo( 'admin_email' );
+        $plugin_options['new_donation_notification_to']      = get_bloginfo( 'admin_email' );
+        $plugin_options['donation_receipt_subject']          = __('Thank you for your donation', 'peerraiser');
+        $plugin_options['donation_receipt_body']             = __('Dear [peerraiser_email show=donor_first_name],
+
+            Thank you so much for your generous donation.
+
+            Transaction Summary
+            [peerraiser_email show=donation_summary]
+
+            With thanks,
+            [peerraiser_email show=site_name]', 'peerraiser');
+        $plugin_options['new_donation_notification_subject'] = __('New donation received', 'peerraiser');
+        $plugin_options['new_donation_notification_body']    = __('[peerraiser_email show=donor] has just made a donation!
+
+            Summary
+            [peerraiser_email show=donation_summary]', 'peerraiser');
+        $plugin_options['welcome_email_subject']             = __('Welcome!', 'peerraiser');
+        $plugin_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
+
 
         // keep the plugin version up to date
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
