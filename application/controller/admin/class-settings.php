@@ -29,17 +29,15 @@ class Settings extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
+        $active_tab = isset( $_GET[ 'tab' ] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+        $active_section = isset( $_GET[ 'section' ] ) ? sanitize_text_field( $_GET['section'] ) : $active_tab;
+
         $view_args = array(
-            'fields' => cmb2_get_metabox_form(
-                'peerraiser-settings',
-                0,
-                array(
-                    'form_format' => '<form class="cmb-form" method="post" id="%1$s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%2$s">%3$s<button class="ladda-button" data-style="expand-right" data-color="blue" data-size="s"><span class="ladda-label">%4$s</span></button></form>',
-                    'save_button' => __( 'Save Settings', 'peerraiser' ),
-                )
-            ),
-            'active_tab' => isset( $_GET[ 'tab' ] ) ? sanitize_text_field( $_GET['tab'] ) : 'general',
-            'tabs' => $this->get_tabs(),
+            'active_tab' => $active_tab,
+            'active_section' => $active_section,
+            'tabs'       => $this->get_tabs(),
+            'sections'   => $this->get_sections(),
+            'content'    => $this->get_settings_content( $active_tab, $active_section ),
         );
 
         $this->assign( 'peerraiser', $view_args );
@@ -60,7 +58,15 @@ class Settings extends Base {
             array(),
             '4.0.2'
         );
+        wp_register_style(
+            'peerraiser-admin-settings',
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-settings.css',
+            array('peerraiser-ladda'),
+            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+        );
+        wp_enqueue_style( 'peerraiser-admin-fundraisers' );
         wp_enqueue_style( 'peerraiser-ladda' );
+        wp_enqueue_style( 'peerraiser-admin-settings' );
         wp_enqueue_style( 'peerraiser-font-awesome' );
 
 
@@ -122,7 +128,7 @@ class Settings extends Base {
 
 
     public function ajax_update_settings( \PeerRaiser\Core\Event $event ) {
-        check_ajax_referer('nonce_CMB2phppeerraiser-settings');
+        check_ajax_referer($_POST['none_name']);
 
         $model = \PeerRaiser\Model\Admin\Settings::get_instance();
         $default_fields = $model::get_field_names();
@@ -140,7 +146,7 @@ class Settings extends Base {
 
         foreach ($formData as $data) {
             if ( in_array($data['name'], $default_fields) ) {
-                $plugin_options[$data['name']] = sanitize_text_field( $data['value'] );
+                $plugin_options[$data['name']] = $data['value'];
                 $settings_updated++;
             }
         }
@@ -179,13 +185,41 @@ class Settings extends Base {
         $event = new \PeerRaiser\Core\Event();
         $event->set_echo( false );
         $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_settings_tab_data', $event );
+        $dispatcher->dispatch( 'peerraiser_settings_tabs', $event );
         $results = (array) $event->get_result();
 
         $settings_model = new \PeerRaiser\Model\Admin\Settings();
-        $default_tabs = $settings_model->get_tabs();
+        $default_tabs = $settings_model->get_settings_tabs();
 
         return array_merge( $default_tabs, $results );
+    }
+
+
+    public function get_sections() {
+        $event = new \PeerRaiser\Core\Event();
+        $event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_settings_sections', $event );
+        $results = (array) $event->get_result();
+
+        $settings_model = new \PeerRaiser\Model\Admin\Settings();
+        $default_sections = $settings_model->get_settings_sections();
+
+        return array_merge( $default_sections, $results );
+    }
+
+
+    public function get_settings_content( $active_tab, $active_section ) {
+        $event = new \PeerRaiser\Core\Event();
+        $event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_settings_content', $event );
+        $results = (array) $event->get_result();
+
+        $settings_model = new \PeerRaiser\Model\Admin\Settings();
+        $default_content = $settings_model->get_settings_content( $active_tab, $active_section );
+
+        return array_merge( $default_content, $results );
     }
 
 }
