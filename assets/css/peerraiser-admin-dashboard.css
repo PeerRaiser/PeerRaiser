@@ -64,3 +64,49 @@
 .peerraiser-wrap.dashboard-wrap .fa-square-o {
     color: #a94442;
 }
+.peerraiser-wrap.dashboard-wrap .activity-feed li {
+    margin-bottom: 1em;
+    padding-left: 25px;
+    position: relative;
+}
+.peerraiser-wrap.dashboard-wrap .activity-feed a {
+    text-decoration: none;
+    font-weight: bold;
+}
+.peerraiser-wrap.dashboard-wrap .activity-feed .date {
+    display: block;
+    color: #bbbbbb;
+    text-transform: lowercase;
+}
+.activity-feed li:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+    position: absolute;
+    left: 0;
+    top: 4px;
+}
+.activity-feed .donation:before {
+    content: "\f0d6";
+}
+.activity-feed .campaign:before {
+    content: "\f0a1";
+}
+.activity-feed .fundraiser:before {
+    content: "\f004";
+}
+.activity-feed .install:before {
+    content: "\f019";
+}
+.activity-feed .settings:before {
+    content: "\f013";
+}
