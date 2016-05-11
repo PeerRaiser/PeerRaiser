@@ -3,13 +3,13 @@
 
     function peerRaiserAdminSettings(){
         var $o = {
-            $form             : $('form#peerraiser-settings'),
+            $form             : $('form.cmb-form'),
             submitButton      : {
-                $element      : $('form#peerraiser-settings .ladda-button'),
+                $element      : $('form.cmb-form .ladda-button'),
                 laddaInstance : undefined,
                 timeout       : undefined,
             },
-            nonce             : $('#nonce_CMB2phppeerraiser-settings'),
+            nonce             : $('input[id^="nonce_CMB2php"]'),
             xhrRequests       : [],
         },
 
@@ -39,10 +39,22 @@
             }
             $o.submitButton.$element.removeClass('success');
 
+            // Hack to fix issue with Visual tab not saving.
+            // Need to switch to Text tab and back first
+            if ( $('.wp-editor-wrap').length ){
+                $('.wp-editor-wrap').each(function(){
+                    if ( $(this).hasClass('tmce-active') ){
+                        $(this).find('.switch-html').click();
+                        $(this).find('.switch-tmce').click();
+                    }
+                });
+            }
+
             var postData = {
                 'action'     : 'peerraiser_update_settings',
                 '_wpnonce'   : $o.nonce.val(),
-                'formData'   : $o.$form.serializeArray()
+                'none_name'  : $o.nonce.attr('id'),
+                'formData'   : $o.$form.serializeArray(),
             },
             jqxhr;
 
