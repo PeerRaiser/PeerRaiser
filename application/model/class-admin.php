@@ -33,6 +33,11 @@ class Admin {
                 'title' => __( 'Donations', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
             ),
+            'donors' => array(
+                'url'   => 'edit.php?post_type=pr_donor',
+                'title' => __( 'Donors', 'peerraiser' ),
+                'cap'   => 'activate_plugins',
+            ),
             'settings' => array(
                 'url'   => 'peerraiser-settings',
                 'title' => __( 'Settings', 'peerraiser' ),
