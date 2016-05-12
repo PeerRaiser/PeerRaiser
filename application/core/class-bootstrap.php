@@ -196,6 +196,10 @@ class Bootstrap {
         $donations_controller = self::get_controller( 'Admin\Donations' );
         $dispatcher->add_subscriber( $donations_controller );
 
+        // donors controller
+        $donors_controller = self::get_controller( 'Admin\Donors' );
+        $dispatcher->add_subscriber( $donors_controller );
+
     }
 
 
