@@ -88,6 +88,8 @@ class Dashboard  extends Base {
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),
+            'campaigns_total'      => $this->get_campaign_total(),
+            'fundraisers_total'    => $this->get_fundraiser_total(),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
@@ -110,6 +112,16 @@ class Dashboard  extends Base {
     private function get_campaign_status() {
         $campaigns_count = wp_count_posts( 'pr_campaign' );
         return ( $campaigns_count->publish > 0 ) ? 'fa-check-square-o' : 'fa-square-o';
+    }
+
+    private function get_campaign_total(){
+        $campaigns_count = wp_count_posts( 'pr_campaign' );
+        return $campaigns_count->publish;
+    }
+
+    private function get_fundraiser_total(){
+        $fundraisers_count = wp_count_posts( 'fundraiser' );
+        return $fundraisers_count->publish;
     }
 
 
