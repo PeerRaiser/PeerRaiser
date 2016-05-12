@@ -62,6 +62,16 @@ class Custom_Post_Type extends Base {
             'supports'            => false,
         );
         $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Donation', $args );
+
+        // Donor post type. Each post is a seperate donor record
+        $args = array(
+            'exclude_from_search' => true,
+            'has_archive'         => false,
+            'publicly_queryable'  => false,
+            'show_in_menu'        => false,
+            'supports'            => false,
+        );
+        $teams = new \PeerRaiser\Model\Custom_Post_Type( 'Donor', $args );
     }
 
 }
