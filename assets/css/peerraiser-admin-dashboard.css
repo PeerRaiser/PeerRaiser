@@ -64,6 +64,88 @@
 .peerraiser-wrap.dashboard-wrap .fa-square-o {
     color: #a94442;
 }
+/* Stats */
+.peerraiser-wrap.dashboard-wrap .stats-wrapper {
+    width: 100%;
+    margin: 1em 0;
+}
+.peerraiser-wrap.dashboard-wrap .stats {
+    width: 23%;
+    float: left;
+    margin: 0 1%;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.peerraiser-wrap.dashboard-wrap .stats.first {
+    width: 24%;
+    margin: 0 1% 0 0;
+}
+.peerraiser-wrap.dashboard-wrap .stats.last {
+    width: 24%;
+    margin: 0 0 0 1%;
+}
+.peerraiser-wrap.dashboard-wrap .stats .stat {
+    color: #323232;
+    font-size: 2.5em;
+    margin: 0;
+}
+.peerraiser-wrap.dashboard-wrap .stats .title {
+    color: #808080;
+    margin: 0;
+    text-transform: uppercase;
+    margin-left: -10px;
+}
+.peerraiser-wrap.dashboard-wrap .stats .title:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+    left: 0;
+    top: 4px;
+
+}
+.peerraiser-wrap.dashboard-wrap .stats.donors .title:before {
+    content: "\f007";
+}
+.peerraiser-wrap.dashboard-wrap .stats.total-raised .title:before {
+    content: "\f0d6";
+}
+.peerraiser-wrap.dashboard-wrap .stats.campaigns .title:before {
+    content: "\f0a1";
+}
+.peerraiser-wrap.dashboard-wrap .stats.fundraisers .title:before {
+    content: "\f004";
+}
+/* Top List */
+.top-donors,
+.top-fundraisers {
+    float: left;
+    box-sizing: border-box;
+    width: 49%;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 20px;
+}
+.top-donors {
+    margin-right: 1%;
+}
+.top-fundraisers {
+    margin-left: 1%;
+}
+/* Activity Feed */
 .peerraiser-wrap.dashboard-wrap .activity-feed li {
     margin-bottom: 1em;
     padding-left: 25px;
