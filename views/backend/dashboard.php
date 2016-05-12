@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="pr_page wp-core-ui">
 
-    <div id="pr_js_flashMessage" class="pr_flash-message" style="display:none;">
+    <div id="peerraiser-js-message" class="pr_flash-message" style="display:none;">
         <p></p>
     </div>
 
@@ -34,6 +34,53 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             <?php endif; ?>
 
+            <div class="stats-wrapper group">
+                <div class="stats first total-raised">
+                    <p class="stat"><strong>$388,198</strong></p>
+                    <p class="title">Total Raised</p>
+                </div>
+                <div class="stats campaigns">
+                    <p class="stat"><strong><?= $peerraiser['campaigns_total'] ?></strong></p>
+                    <p class="title"><?php _e('Campaigns', 'peerraiser') ?></p>
+                </div>
+                <div class="stats fundraisers">
+                    <p class="stat"><strong><?= $peerraiser['fundraisers_total'] ?></strong></p>
+                    <p class="title"><?php _e('Fundraisers', 'peerraiser') ?></p>
+                </div>
+                <div class="stats last donors">
+                    <p class="stat"><strong>4,853</strong></p>
+                    <p class="title">Donors</p>
+                </div>
+            </div>
+
+            <div class="top-lists group">
+                <div class="top-donors">
+                    <h2><?php _e('Top Donors', 'peerraiser') ?></h2>
+
+                    <ol>
+                        <li><a href="#">Stephanie Espinoza</a></li>
+                        <li><a href="#">Stephanie Elliott</a></li>
+                        <li><a href="#">Aleida Escoto</a></li>
+                        <li><a href="#">Gary Finlayson</a></li>
+                        <li><a href="#">Michael Miller</a></li>
+                        <li><a href="#">Mary Jarnigan</a></li>
+                        <li><a href="#">John Alicea</a></li>
+                        <li><a href="#">Stephen Johnson</a></li>
+                        <li><a href="#">Thomas Healey</a></li>
+                        <li><a href="#">Carleen Benavidez</a></li>
+                    </ol>
+                </div>
+                <div class="top-fundraisers">
+                    <h2><?php _e('Top Fundraisers', 'peerraiser') ?></h2>
+
+                    <ol>
+                        <li><a href="#">My cool fundraiser</a></li>
+                        <li><a href="#">Help me raise money</a></li>
+                    </ol>
+
+                </div>
+            </div>
+
         </div>
         <div class="column column-right">
             <h2><?php _e('Activity Feed', 'peerraiser') ?></h2>
@@ -58,7 +105,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     PeerRaiser was installed
                     <span class="date">3 Days ago</span>
                 </li>
-            </div>
+            </ul>
         </div>
 
     </div>
