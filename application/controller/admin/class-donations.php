@@ -11,18 +11,30 @@ class Donations extends \PeerRaiser\Controller\Base {
      */
     public static function get_subscribed_events() {
         return array(
+            'peerraiser_cmb2_admin_init' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'register_meta_boxes' ),
+            ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'load_assets' )
+                array( 'load_assets' ),
             ),
             'peerraiser_admin_enqueue_styles_post_edit' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'load_assets' )
+                array( 'load_assets' ),
+            ),
+            'peerraiser_admin_head' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'on_donations_view' ),
             ),
             'peerraiser_admin_menu' => array(
-                array( 'replace_submit_box' )
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'replace_submit_box' ),
             ),
         );
     }
@@ -79,6 +91,31 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 
+    public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
+
+        // Only display fields on a "new" donations, not existing ones
+        if ( $this->is_edit_page( 'edit' ) )
+            return;
+
+        $donations_model = \PeerRaiser\Model\Admin\Donations::get_instance();
+        $donation_field_groups = $donations_model->get_fields();
+
+        foreach ($donation_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'         => $field_group['title'],
+                'object_types'  => array( 'pr_donation' ),
+                'context'       => $field_group['context'],
+                'priority'      => $field_group['priority'],
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
+        }
+
+    }
+
+
     public function replace_submit_box() {
         remove_meta_box('submitdiv', 'pr_donation', 'core');
         add_meta_box('submitdiv', __('Donation'), array( $this, 'get_submit_box'), 'pr_donation', 'side', 'low');
@@ -113,6 +150,31 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $this->render( $view_file );
 
+    }
+
+
+    public function on_donations_view( \PeerRaiser\Core\Event $event ) {
+        global $typenow;
+
+        if ( $this->is_edit_page( 'new' ) && "pr_donation" == $typenow ) {
+            $message = __("A donor record is required. <a href=\"post-new.php?post_type=pr_donor\">Create one now</a> if it doesn't already exist");
+            \PeerRaiser\Controller\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
+        }
+
+    }
+
+
+    private function is_edit_page( $new_edit = null ){
+        global $pagenow;
+        if (!is_admin()) return false;
+
+        if ($new_edit == "edit") {
+            return in_array( $pagenow, array( 'post.php',  ) );
+        } elseif ($new_edit == "new") {
+            return in_array( $pagenow, array( 'post-new.php' ) );
+        } else {
+            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
+        }
     }
 
 }
