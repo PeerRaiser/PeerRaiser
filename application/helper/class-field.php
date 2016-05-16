@@ -34,6 +34,11 @@ class Field {
         $args['posts_per_page'] = 20;
         $args['paged'] = $options['page'];
 
+        if ( isset($options['connected_type']) && isset($options['connected_items']) ) {
+            $args['connected_type'] = $options['connected_type'];
+            $args['connected_items'] = $options['connected_items'];
+        }
+
         // update $args
         if( !empty($options['post_type']) ) {
             $args['post_type'] = self::force_type_array( $options['post_type'] );
