@@ -185,6 +185,19 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
+
+    public function get_fundraisers( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'fundraiser',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'fundraiser_to_team',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
     private static function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
