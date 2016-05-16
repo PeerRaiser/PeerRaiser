@@ -90,6 +90,7 @@ class Dashboard  extends Base {
             'admin_url'            => get_admin_url(),
             'campaigns_total'      => $this->get_campaign_total(),
             'fundraisers_total'    => $this->get_fundraiser_total(),
+            'donors_total'         => $this->get_donor_total(),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
@@ -114,14 +115,22 @@ class Dashboard  extends Base {
         return ( $campaigns_count->publish > 0 ) ? 'fa-check-square-o' : 'fa-square-o';
     }
 
+
     private function get_campaign_total(){
         $campaigns_count = wp_count_posts( 'pr_campaign' );
         return $campaigns_count->publish;
     }
 
+
     private function get_fundraiser_total(){
         $fundraisers_count = wp_count_posts( 'fundraiser' );
         return $fundraisers_count->publish;
+    }
+
+
+    private function get_donor_total(){
+        $donors_count = wp_count_posts( 'pr_donor' );
+        return $donors_count->publish;
     }
 
 
