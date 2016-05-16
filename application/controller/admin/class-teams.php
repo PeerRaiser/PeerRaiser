@@ -26,6 +26,22 @@ class Teams extends Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
+            'peerraiser_after_post_meta_added' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_connections' ),
+            ),
+            'peerraiser_before_post_meta_updated' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'update_connections' ),
+            ),
+            'peerraiser_before_post_meta_deleted' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'delete_connections' ),
+            ),
+            'peerraiser_meta_boxes' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_meta_boxes' ),
+            ),
         );
     }
 
@@ -116,6 +132,159 @@ class Teams extends Base {
             )
         );
 
+    }
+
+
+    /**
+     * After post meta is added, add the connections
+     *
+     * @since    1.0.0
+     * @param    \PeerRaiser\Core\Event    $event
+     * @return   null
+     */
+    public function add_connections( \PeerRaiser\Core\Event $event ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_team_campaign', '_team_leader' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        switch ( $meta_key ) {
+            case '_team_campaign':
+                p2p_type( 'campaigns_to_teams' )->connect( $_meta_value, $object_id, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_team_leader':
+                p2p_type( 'teams_to_captains' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before the post meta is updated, update the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_fundraiser_campaign', '_team_leader' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_team_campaign':
+                // Remove the value from connection
+                p2p_type( 'campaigns_to_teams' )->disconnect( $old_value, $object_id );
+                // Add the new connection
+                p2p_type( 'campaigns_to_teams' )->connect( $_meta_value, $object_id, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_team_leader':
+                // Remove the value from connection
+                p2p_type( 'teams_to_captains' )->disconnect( $old_value, $object_id );
+                // Add the new connection
+                p2p_type( 'teams_to_captains' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before post meta is deleted, delete the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function delete_connections( \PeerRaiser\Core\Event $event ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_team_campaign', '_team_leader', );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_team_campaign':
+                // Remove the value from connection
+                p2p_type( 'campaigns_to_teams' )->disconnect( $old_value, $object_id );
+                break;
+
+            case '_team_leader':
+                // Remove the value from connection
+                p2p_type( 'teams_to_captains' )->disconnect( $old_value, $object_id );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    public static function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+        add_meta_box(
+            'teams_fundraisers',
+            __('Fundraisers'),
+            array( self::get_instance(), 'display_fundraisers_list' ),
+            'pr_team'
+        );
+    }
+
+
+    public static function display_fundraisers_list() {
+        global $post;
+        $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
+
+        $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
+        $team_fundraisers = $teams_model->get_fundraisers( $post->ID, $paged );
+
+        if ( $team_fundraisers->found_posts < 1 ) {
+            _e('There are currently no fundraisers associated with this Team', 'peerraiser');
+        } else {
+            echo '<ul>';
+            $fundraisers = $team_fundraisers->get_posts();
+            foreach ( $fundraisers as $fundraiser ) {
+                echo "<li><a href=\"post.php?post={$fundraiser->ID}&action=edit\">{$fundraiser->post_title}</a></li>";
+            }
+            echo '</ul>';
+
+            $args = array(
+                'custom_query' => $team_fundraisers,
+                'paged' => isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1,
+                'paged_name' => 'fundraisers_page'
+            );
+            $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+            echo $pagination;
+        }
     }
 
  }
