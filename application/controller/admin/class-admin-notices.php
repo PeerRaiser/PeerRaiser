@@ -41,10 +41,11 @@ class Admin_Notices extends \PeerRaiser\Controller\Base {
     }
 
 
-    public static function add_notice( $message, $class = 'notice-info') {
+    public static function add_notice( $message, $class = 'notice-info', $dismissible = false) {
         $notice = array(
             'message' => $message,
-            'class' => $class
+            'class' => $class,
+            'is-dismissible' => $dismissible
         );
         array_push(self::$notices, $notice);
     }
@@ -52,8 +53,9 @@ class Admin_Notices extends \PeerRaiser\Controller\Base {
 
     public static function display_notices() {
         foreach (self::$notices as $notice) {
+            $class = ( $notice['is-dismissible'] ) ? $notice['class'] . ' is-dismissible' : $notice['class'];
             ?>
-                <div class="notice <?php echo $notice['class'] ?>">
+                <div class="notice <?= $class ?>">
                     <p><?php echo $notice['message'] ?></p>
                 </div>
             <?php
