@@ -231,4 +231,73 @@ class View {
         return $error_message;
     }
 
+
+    public static function get_admin_pagination( $args ){
+        $defaults = array(
+            'range'           => 4,
+            'custom_query'    => FALSE,
+            'before_output'   => '<div class="admin-nav"><ul class="pager">',
+            'after_output'    => '</ul></div>',
+            'paged'           => 1,
+            'paged_name'      => 'paged'
+        );
+
+        $args = wp_parse_args( $args, $defaults );
+
+        $args['range'] = (int) $args['range'] - 1;
+        if ( !$args['custom_query'] )
+            $args['custom_query'] = @$GLOBALS['wp_query'];
+        $count = (int) $args['custom_query']->max_num_pages;
+        $page  = intval( $args['paged'] );
+        $ceil  = ceil( $args['range'] / 2 );
+
+        if ( $count <= 1 )
+            return FALSE;
+
+        if ( !$page )
+            $page = 1;
+
+        if ( $count > $args['range'] ) {
+            if ( $page <= $args['range'] ) {
+                $min = 1;
+                $max = $args['range'] + 1;
+            } elseif ( $page >= ($count - $ceil) ) {
+                $min = $count - $args['range'];
+                $max = $count;
+            } elseif ( $page >= $args['range'] && $page < ($count - $ceil) ) {
+                $min = $page - $ceil;
+                $max = $page + $ceil;
+            }
+        } else {
+            $min = 1;
+            $max = $count;
+        }
+
+        $html = '';
+        $previous = intval($page) - 1;
+        $previous = esc_attr( add_query_arg( $args['paged_name'], $previous, $_SERVER['REQUEST_URI'] ) );
+
+        if ( $previous && (1 != $page) )
+            $html .= '<li><a href="' . $previous . '">&laquo;</a></li>';
+
+        if ( !empty($min) && !empty($max) ) {
+            for( $i = $min; $i <= $max; $i++ ) {
+                if ($page == $i) {
+                    $html .= '<li class="active"><span class="active">' . str_pad( (int)$i, 2, '0', STR_PAD_LEFT ) . '</span></li>';
+                } else {
+                    $pagenum_link = add_query_arg( $args['paged_name'], $i, $_SERVER['REQUEST_URI'] );
+                    $html .= sprintf( '<li><a href="%s">%002d</a></li>', esc_attr( $pagenum_link ), $i );
+                }
+            }
+        }
+
+        $next = intval($page) + 1;
+        $next = esc_attr( add_query_arg( $args['paged_name'], $next, $_SERVER['REQUEST_URI'] ) );
+        if ($next && ($count != $page) )
+            $html .= '<li><a href="' . $next . '">&raquo;</a></li>';
+
+        if ( isset($html) )
+            return $args['before_output'] . $html . $args['after_output'];
+    }
+
 }
