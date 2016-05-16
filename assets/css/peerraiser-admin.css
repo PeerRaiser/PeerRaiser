@@ -50,6 +50,9 @@
 .pr_tooltip {
     position: relative;
 }
+span.pr_tooltip+span.pr_tooltip {
+    display: none;
+}
 .pr_tooltip .pr_icon {
     margin-left: 5px;
     cursor: help;
@@ -80,6 +83,54 @@
     border-color: transparent transparent transparent rgba(0, 0, 0, .75);
     position: absolute;
     top: -10px;
+}
+/* Pagination */
+.admin-nav {
+    text-align: center;
+}
+.admin-nav .pager {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+.admin-nav .pager>li {
+    display: inline;
+}
+.admin-nav .pager>li:first-child>a,
+.admin-nav .pager>li:first-child>span {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+.admin-nav .pager>li:last-child>a,
+.admin-nav .pager>li:last-child>span {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.admin-nav .pager>li>a:focus,
+.admin-nav .pager>li>a:hover,
+.admin-nav .pager>li>span:focus,
+.admin-nav .pager>li>span:hover {
+    z-index: 2;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.admin-nav .pager .active {
+    color: #000;
+}
+.admin-nav .pager>li>a,
+.admin-nav .pager>li>span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
 }
 /* Misc */
 .group:before,
