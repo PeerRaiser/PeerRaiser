@@ -98,6 +98,9 @@ class Hooks {
         add_action( 'update_post_meta',                   array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_updated' ), 10, 4 );
         add_action( 'updated_post_meta',                  array( $this, self::$wp_action_prefix . 'peerraiser_after_post_meta_updated' ), 10, 4 );
         add_action( 'delete_post_meta',                   array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_deleted' ), 10, 4 );
+        add_action( 'cmb2_save_post_fields',              array( $this, self::$wp_action_prefix . 'peerraiser_cmb2_save_post_fields' ), 10, 4 );
+        add_action( 'save_post_pr_donation',              array( $this, self::$wp_action_prefix . 'peerraiser_donation_post_saved' ), 10, 3 );
+        add_action( 'add_meta_boxes',                     array( $this, self::$wp_action_prefix . 'peerraiser_meta_boxes' ) );
 
         // add_action( 'admin_footer',                       array( $this, self::$wp_action_prefix . 'peerraiser_admin_footer' ), 1000 );
         // add_action( 'admin_bar_menu',                     array( $this, self::$wp_action_prefix . 'peerraiser_admin_bar_menu' ), 1000 );
@@ -106,7 +109,6 @@ class Hooks {
         // add_action( 'load-post.php',                      array( $this, self::$wp_action_prefix . 'peerraiser_post_edit' ) );
         // add_action( 'load-post-new.php',                  array( $this, self::$wp_action_prefix . 'peerraiser_post_new' ) );
         // add_action( 'delete_term_taxonomy',               array( $this, self::$wp_action_prefix . 'peerraiser_delete_term_taxonomy' ) );
-        // add_action( 'add_meta_boxes',                     array( $this, self::$wp_action_prefix . 'peerraiser_meta_boxes' ) );
         // add_action( 'save_post',                          array( $this, self::$wp_action_prefix . 'peerraiser_post_save' ) );
         // add_action( 'edit_attachment',                    array( $this, self::$wp_action_prefix . 'peerraiser_attachment_edit' ) );
         // add_action( 'transition_post_status',             array( $this, self::$wp_action_prefix . 'peerraiser_transition_post_status' ), 10, 3 );
