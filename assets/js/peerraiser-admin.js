@@ -77,11 +77,7 @@
     // Extend jQuery
     $.fn.renderSelect = function ( options ) {
         this.each(function() {
-            // Make sure the element isn't already associated with the plugin
-            if ( !$.data( this, "plugin_renderSelect" ) ) {
-                // Save each instance of the plugin associated with the element
-                $.data( this, "plugin_renderSelect", new RenderSelect( this, options ) );
-            }
+            $.data( this, "plugin_renderSelect", new RenderSelect( this, options ) );
         });
         // Return "this" allows additional jQuery chaining
         return this;
