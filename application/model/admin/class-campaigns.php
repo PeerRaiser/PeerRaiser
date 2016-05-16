@@ -37,7 +37,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'id'   => '_peerraiser_campaign_end_date',
                             'type' => 'text_date_timestamp',
                             'attributes'        => array(
-                                'data-tooltip' => __('Leave blank if the campaign doesn\'t end.', 'peerraiser' ),
+                                'data-tooltip' => __('Leave blank if the campaign is ongoing.', 'peerraiser' ),
+                                'placeholder' => '&infin;',
                             ),
                         ),
                         'campaign_description' => array(
