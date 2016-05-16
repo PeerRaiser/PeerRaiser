@@ -18,13 +18,67 @@ class Donations extends \PeerRaiser\Model\Admin {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
             self::$fields = array(
-                // 'fundraiser_campaign' => array(
-                //     'name'             => 'Campaign',
-                //     'id'               => '_fundraiser_campaign',
-                //     'type'             => 'select',
-                //     'default'          => 'custom',
-                //     'options'          => array(self::get_instance(), 'get_selected_post'),
-                // ),
+                array(
+                    'title'    => __('Offline Donation', 'peerraiser'),
+                    'id'       => 'offline-donation',
+                    'context'  => 'normal',
+                    'priority' => 'default',
+                    'fields'   => array(
+                        'donor' => array(
+                            'name'    => __('Donor', 'peerraiser'),
+                            'desc'    => __('The donor record this donation is tied to (required)'),
+                            'id'      => '_donor',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
+                            'attributes'  => array(
+                                'required' => 'required'
+                            ),
+                        ),
+                        'donation_amount' => array(
+                            'name'         => __('Donation Amount', 'peerraiser'),
+                            'id'           => '_donation_amount',
+                            'type'         => 'text_money',
+                            'before_field' => self::get_currency_symbol(),
+                            'attributes'  => array(
+                                'required' => 'required'
+                            ),
+                        ),
+                        'campaign' => array(
+                            'name'    => __('Campaign', 'peerraiser'),
+                            'desc'    => __('The campaign should this donation be attributed to (required)'),
+                            'id'      => '_campaign',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
+                            'attributes'  => array(
+                                'required' => 'required'
+                            ),
+                        ),
+                        'fundraiser' => array(
+                            'name'    => __('Fundraiser', 'peerraiser'),
+                            'desc'    => __('The fundraiser this donation is attributed to (optional)'),
+                            'id'      => '_fundraiser',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
+                            'attributes'  => array(
+                                'disabled' => 'disabled'
+                            ),
+                        ),
+                        'team' => array(
+                            'name'    => __('Team', 'peerraiser'),
+                            'desc'    => __('The team this donation is attributed to (optional)'),
+                            'id'      => '_team',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
+                            'attributes'  => array(
+                                'disabled' => 'disabled'
+                            ),
+                        ),
+                    ),
+                ),
             );
         }
 
@@ -83,54 +137,6 @@ class Donations extends \PeerRaiser\Model\Admin {
         return $label;
     }
 
-    /**
-     * Get posts for CMB2 Select fields
-     *
-     * @since     1.0.0
-     * @param     CMB2_Field    $field    The CMB2 field object
-     * @return    array                   An array of posts
-     */
-    public static function get_posts_for_select_field( $field ) {
-
-        switch ( $field->args['name'] ) {
-            case 'Campaign':
-            case 'Campaigns':
-                $post_type = 'pr_campaign';
-                break;
-            case 'Team':
-            case 'Teams':
-                $post_type = 'pr_team';
-                break;
-            case 'Fundraiser':
-            case 'Fundraisers':
-                $post_type = 'fundraiser';
-                break;
-            default:
-                $post_type = 'post';
-                break;
-        }
-
-        // Empty array to fill with posts
-        $results = array();
-
-        // WP_Query arguments
-        $args = array (
-            'post_type'              => array( $post_type ),
-            'posts_per_page'         => '-1'
-        );
-
-        // The Query
-        $query = new \WP_Query( $args );
-        $posts = $query->get_posts();
-
-        foreach($posts as $post) {
-            $title = '(ID: ' . $post->ID .') '. $post->post_title;
-            $results[$post->ID] = $title;
-        }
-
-        return $results;
-    }
-
 
     public static function get_selected_post( $field ) {
         // Empty array to fill with posts
@@ -144,19 +150,11 @@ class Donations extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-
-    public static function get_participants_for_select_field( $field ) {
-        // Empty array to fill with posts
-        $results = array();
-
-        if ( isset($field->value) ) {
-            $user_info = get_userdata($field->value);
-            if ( $user_info ) {
-                $results[$field->value] = $user_info->display_name;
-            }
-        }
-
-        return $results;
+    private static function get_currency_symbol(){
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
+
 
 }
