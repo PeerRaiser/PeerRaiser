@@ -38,6 +38,10 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
+            'cmb2_save_post_fields' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'update_field_data' )
+            )
         );
     }
 
@@ -209,7 +213,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function delete_connections(  \PeerRaiser\Core\Event $event  ) {
+    public function delete_connections( \PeerRaiser\Core\Event $event ) {
         list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
         $fields = array( '_campaign_participants' );
 
@@ -232,6 +236,26 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 break;
         }
 
+    }
+
+
+    public function update_field_data( \PeerRaiser\Core\Event $event ) {
+        list( $object_id, $cmb_id, $updated, $cmb ) = $event->get_arguments();
+
+        $post_type = get_post_type($object_id);
+
+        if ( $post_type !== 'pr_campaign' )
+            return;
+
+        $start_date = get_post_meta( $object_id, '_peerraiser_campaign_start_date', true );
+        $post_status = get_post_status( $object_id );
+        $allowed_status = array( 'publish', 'future', 'private');
+
+        if ( empty( $start_date ) && in_array($post_status, $allowed_status) ) {
+            $date = current_time( 'timestamp' );
+            // $_POST['_peerraiser_campaign_start_date'] = $date;
+            $results = update_post_meta( (int) $object_id, '_peerraiser_campaign_start_date', (string) $date);
+        }
     }
 
 }
