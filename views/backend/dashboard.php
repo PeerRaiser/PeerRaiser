@@ -37,19 +37,19 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="stats-wrapper group">
                 <div class="stats first total-raised">
                     <p class="stat"><strong>$388,198</strong></p>
-                    <p class="title">Total Raised</p>
+                    <p class="title"><?php _e('Total Raised', 'peerraiser') ?></p>
                 </div>
                 <div class="stats campaigns">
                     <p class="stat"><strong><?= $peerraiser['campaigns_total'] ?></strong></p>
-                    <p class="title"><?php _e('Campaigns', 'peerraiser') ?></p>
+                    <p class="title"><?= _n( 'Campaign', 'Campaigns', $peerraiser['campaigns_total'], 'peerraiser' ) ?></p>
                 </div>
                 <div class="stats fundraisers">
                     <p class="stat"><strong><?= $peerraiser['fundraisers_total'] ?></strong></p>
-                    <p class="title"><?php _e('Fundraisers', 'peerraiser') ?></p>
+                    <p class="title"><?= _n( 'Fundraiser', 'Fundraisers', $peerraiser['fundraisers_total'], 'peerraiser' ) ?></p>
                 </div>
                 <div class="stats last donors">
-                    <p class="stat"><strong>4,853</strong></p>
-                    <p class="title">Donors</p>
+                    <p class="stat"><strong><?= $peerraiser['donors_total'] ?></strong></strong></p>
+                    <p class="title"><?= _n( 'Donor', 'Donors', $peerraiser['donors_total'], 'peerraiser' ) ?></p>
                 </div>
             </div>
 
