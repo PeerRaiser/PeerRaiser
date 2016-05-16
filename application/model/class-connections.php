@@ -79,6 +79,12 @@ class Connections {
             'to' => 'pr_campaign',
             'cardinality' => 'many-to-one',
         ),
+        array(
+            'name' => 'donation_to_donor',
+            'from' => 'pr_donation',
+            'to' => 'pr_donor',
+            'cardinality' => 'many-to-one',
+        ),
     );
 
 
