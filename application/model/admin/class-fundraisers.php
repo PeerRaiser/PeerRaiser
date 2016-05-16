@@ -19,27 +19,27 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
             self::$instance = new self();
             self::$fields = array(
                 array(
-                    'title'    => 'Fundraiser Info',
+                    'title'    => __('Fundraiser Info', 'peerraiser'),
                     'id'       => 'peerraiser-fundraiser',
                     'context'  => 'normal',
                     'priority' => 'default',
                     'fields'   => array(
                         'fundraiser_campaign' => array(
-                            'name'             => 'Campaign',
+                            'name'             => __('Campaign', 'peerraiser'),
                             'id'               => '_fundraiser_campaign',
                             'type'             => 'select',
                             'default'          => 'custom',
                             'options'          => array(self::get_instance(), 'get_selected_post'),
                         ),
                         'fundraiser_participant' => array(
-                            'name'             => 'Participant',
+                            'name'             => __('Participant', 'peerraiser'),
                             'id'               => '_fundraiser_participant',
                             'type'             => 'select',
                             'default'          => 'custom',
                             'options'          => array(self::get_instance(), 'get_participants_for_select_field'),
                         ),
                         'fundraiser_team' => array(
-                            'name'             => 'Team',
+                            'name'             => __('Team', 'peerraiser'),
                             'id'               => '_fundraiser_team',
                             'type'             => 'select',
                             'default'          => 'custom',
