@@ -1,17 +1,195 @@
-(function( $ ) {
+(function( $ ) {$(function() {
     'use strict';
 
-    // The page is ready
-    $(function() {
-        $('#toplevel_page_peerraiser-dashboard').removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard > a').addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
-        $('#toplevel_page_peerraiser-dashboard a[href$="pr_donation"]').addClass('current').parent().addClass('current');
-    });
+    function peerRaiserAdminCampaigns(){
+        var $o = {
+            dashboardTab    : $('#toplevel_page_peerraiser-dashboard'),
+            dasboardTabLink : $('#toplevel_page_peerraiser-dashboard > a'),
+            donationLink    : $('#toplevel_page_peerraiser-dashboard a[href$="pr_donation"]'),
 
+            select2Fields : {
+                donor      : $("#_donor"),
+                campaign   : $("#_campaign"),
+                fundraiser : $("#_fundraiser"),
+                team       : $("#_team"),
+            },
 
-    // The window has loaded
-    $( window ).load(function() {
+            select2Options : {
+                donor : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['pr_donor']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">Donor ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                campaign : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['pr_campaign']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">Campaign ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                fundraiser : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['fundraiser']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">Fundraiser ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                team : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['pr_team']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="display_name">' + data.text + '</span>';
+                        if ( data.id ) {
+                            html += '<span class="user_id">Fundraiser ID: ' + data.id + '</span>';
+                        }
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+            },
 
-    });
+        },
 
-})( jQuery );
+        init = function(){
+            bindEvents();
+            renderSelect();
+            activateSubmenu();
+            renderTooltips();
+        },
+
+        bindEvents = function() {
+            $o.select2Fields.campaign.on('change', function(){
+                var id = $(this).val();
+                if ( id !== null ) {
+                    $o.select2Fields.fundraiser.prop('disabled', false);
+                    $o.select2Fields.fundraiser.val('');
+                    $o.select2Fields.team.prop('disabled', false);
+                    $o.select2Fields.team.val('');
+
+                    $o.select2Options.fundraiser.data = function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['fundraiser'],
+                            connected_type : 'campaign_to_fundraiser',
+                            connected_items : id
+                        };
+                    };
+                    $o.select2Options.team.data = function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['pr_team'],
+                            connected_type : 'campaigns_to_teams',
+                            connected_items : id
+                        };
+                    };
+
+                    $o.select2Fields.fundraiser.renderSelect($o.select2Options.fundraiser);
+                    $o.select2Fields.team.renderSelect($o.select2Options.team);
+                } else {
+                    $o.select2Fields.fundraiser.prop('disabled', 'disabled');
+                    $o.select2Fields.team.prop('disabled', 'disabled');
+                }
+            });
+        },
+
+        renderSelect = function() {
+            for ( var key in $o.select2Fields ) {
+                if ( $o.select2Fields[key].length ){
+                    $o.select2Fields[key].renderSelect($o.select2Options[key]);
+                }
+            }
+        },
+
+        renderTooltips = function() {
+            $('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
+                var tooltip = $(this).data('tooltip');
+                if ( tooltip !== undefined ) {
+                    $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
+                }
+            });
+        },
+
+        // WordPress doesn't display submenus correctly if they're a post type. This is the workaround...
+        activateSubmenu= function() {
+            $o.dashboardTab.removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
+            $o.dasboardTabLink.addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
+            $o.donationLink.addClass('current').parent().addClass('current');
+        };
+
+        init();
+
+    }
+
+    // Kick it off
+    peerRaiserAdminCampaigns();
+
+});})(jQuery);
