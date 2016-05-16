@@ -8,7 +8,7 @@
             <div class="donation-method">
                 <span class="label">Payment Method</span>
                 <select name="_payment_method">
-                    <?php $option_values = array('Offline', 'Check', 'Cash', 'Credit Card'); ?>
+                    <?php $option_values = array('Offline', 'Check', 'Cash', 'Other'); ?>
                         <?php foreach ($option_values as $key => $value) : ?>
                             <option><?php echo $value; ?></option>
                         <?php endforeach; ?>
