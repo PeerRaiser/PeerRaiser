@@ -70,33 +70,12 @@ class Custom_Post_Type {
      protected $existing_taxonomies;
 
      /**
-      * Filters for the admin edit screen. Used with add_taxonomy_filters()
-      * @var    array
-      */
-     protected $filters;
-
-     /**
       * Columns that should appear on the admin edit screen. Used with add_admin_columns()
       * @var    array
       */
      protected $columns;
 
-     /**
-      * User-defined functions to populate admin columns
-      * @var    array
-      */
-     protected $custom_populated_columns;
-
-     /**
-      * Define which columns are sortable on the admin edit screen
-      * @var    array
-      */
-     protected $sortable;
-
      public function __construct( $post_type_names, $options = array() ) {
-
-         $this->peerraiser_post_types = array( 'Campaign', 'Team', 'Donation', 'Donor' );
-         $this->peerraiser_taxonomies = array( 'Campaign Type' );
 
          // If post type name is an array
          if ( is_array( $post_type_names ) ) {
@@ -165,12 +144,6 @@ class Custom_Post_Type {
 
          // Add taxonomy to admin edit columns
          $this->add_filter( 'manage_edit-' . $this->post_type_name . '_columns', array( &$this, 'add_admin_columns' ) );
-
-         // Populate the taxonomy columns with the post terms
-         $this->add_action( 'manage_' . $this->post_type_name . '_posts_custom_column', array( &$this, 'populate_admin_columns' ), 10, 2 );
-
-         // Add filter select option to admin edit
-         $this->add_action( 'restrict_manage_posts', array( &$this, 'add_taxonomy_filters' ) );
 
          // Rewrite post update messages
          $this->add_filter( 'post_updated_messages', array( &$this, 'updated_messages' ) );
@@ -537,159 +510,13 @@ class Custom_Post_Type {
      }
 
      /**
-      * Populate the custom columns on the admin edit screen
-      *
-      * @since     1.0.0
-      * @param     string     $column     Column name
-      * @param     integer    $post_id    Post ID
-      */
-     function populate_admin_columns( $column, $post_id ) {
-         // Get wordpress $post object.
-         global $post;
-         // determine the column
-         switch( $column ) {
-             // If column is a taxonomy associated with the post type.
-             case ( taxonomy_exists( $column ) ) :
-                 // Get the taxonomy for the post
-                 $terms = get_the_terms( $post_id, $column );
-                 // If we have terms.
-                 if ( ! empty( $terms ) ) {
-                     $output = array();
-                     // Loop through each term, linking to the 'edit posts' page for the specific term.
-                     foreach( $terms as $term ) {
-                         // Output is an array of terms associated with the post.
-                         $output[] = sprintf(
-                             // Define link.
-                             '<a href="%s">%s</a>',
-                             // Create filter url.
-                             esc_url( add_query_arg( array( 'post_type' => $post->post_type, $column => $term->slug ), 'edit.php' ) ),
-                             // Create friendly term name.
-                             esc_html( sanitize_term_field( 'name', $term->name, $term->term_id, $column, 'display' ) )
-                         );
-                     }
-                     // Join the terms, separating them with a comma.
-                     echo join( ', ', $output );
-                 // If no terms found.
-                 } else {
-                     // Get the taxonomy object for labels
-                     $taxonomy_object = get_taxonomy( $column );
-                     // Echo no terms.
-                     printf( __( 'No %s', 'peerraiser' ), $taxonomy_object->labels->name );
-                 }
-             break;
-             // If column is for the post ID.
-             case 'post_id' :
-                 echo $post->ID;
-             break;
-             // if the column is prepended with 'meta_', this will automagically retrieve the meta values and display them.
-             case ( preg_match( '/^meta_/', $column ) ? true : false ) :
-                 // meta_book_author (meta key = book_author)
-                 $x = substr( $column, 5 );
-                 $meta = get_post_meta( $post->ID, $x );
-                 echo join( ", ", $meta );
-             break;
-             // If the column is post thumbnail.
-             case 'icon' :
-                 // Create the edit link.
-                 $link = esc_url( add_query_arg( array( 'post' => $post->ID, 'action' => 'edit' ), 'post.php' ) );
-                 // If it post has a featured image.
-                 if ( has_post_thumbnail() ) {
-                     // Display post featured image with edit link.
-                     echo '<a href="' . $link . '">';
-                         the_post_thumbnail( array(60, 60) );
-                     echo '</a>';
-                 } else {
-                     // Display default media image with link.
-                     echo '<a href="' . $link . '"><img src="'. site_url( '/wp-includes/images/crystal/default.png' ) .'" alt="' . $post->post_title . '" /></a>';
-                 }
-             break;
-             // Default case checks if the column has a user function, this is most commonly used for custom fields.
-             default :
-                 // If there are user custom columns to populate.
-                 if ( isset( $this->custom_populate_columns ) && is_array( $this->custom_populate_columns ) ) {
-                     // If this column has a user submitted function to run.
-                     if ( isset( $this->custom_populate_columns[ $column ] ) && is_callable( $this->custom_populate_columns[ $column ] ) ) {
-                         // Run the function.
-                         call_user_func_array(  $this->custom_populate_columns[ $column ], array( $column, $post ) );
-                     }
-                 }
-             break;
-         } // end switch( $column )
-     }
-
-     /**
-      * User function to define which filters to display on the admin page
-      *
-      * @since     1.0.0
-      * @param     array     $filters    An array of taxonomy filters to display
-      */
-     function filters( $filters = array() ) {
-         $this->filters = array_filter( $filters, array( $this, 'sanitize_taxonomy_name' ) );
-     }
-
-    /**
-     * Creates <select> fields for filtering posts by taxonomies on the admin edit screen
-     *
-     * @since    1.0.0
-     */
-     function add_taxonomy_filters() {
-         global $typenow;
-         global $wp_query;
-         // Must set this to the post type you want the filter(s) displayed on.
-         if ( $typenow == $this->post_type_name ) {
-             // if custom filters are defined use those
-             if ( is_array( $this->filters ) ) {
-                 $filters = $this->filters;
-             // else default to use all taxonomies associated with the post
-             } else {
-                 $filters = $this->taxonomies;
-             }
-             if ( ! empty( $filters ) ) {
-                 // Foreach of the taxonomies we want to create filters for...
-                 foreach ( $filters as $tax_slug ) {
-                     // ...object for taxonomy, doesn't contain the terms.
-                     $tax = get_taxonomy( $tax_slug );
-                     // Get taxonomy terms and order by name.
-                     $args = array(
-                         'orderby' => 'name',
-                         'hide_empty' => false
-                     );
-                     // Get taxonomy terms.
-                     $terms = get_terms( $tax_slug, $args );
-                     // If we have terms.
-                     if ( $terms ) {
-                         // Set up select box.
-                         printf( ' &nbsp;<select name="%s" class="postform">', $tax_slug );
-                         // Default show all.
-                         printf( '<option value="0">%s</option>', sprintf( __( 'All %s', 'peerraiser' ), $tax->label ) );
-                         // Foreach term create an option field...
-                         foreach ( $terms as $term ) {
-                             // ...if filtered by this term make it selected.
-                             if ( isset( $_GET[ $tax_slug ] ) && $_GET[ $tax_slug ] === $term->slug ) {
-                                 printf( '<option value="%s" selected="selected">%s (%s)</option>', $term->slug, $term->name, $term->count );
-                             // ...create option for taxonomy.
-                             } else {
-                                 printf( '<option value="%s">%s (%s)</option>', $term->slug, $term->name, $term->count );
-                             }
-                         }
-                         // End the select field.
-                         print( '</select>&nbsp;' );
-                     }
-                 }
-             }
-         }
-     }
-
-     /**
       * Choose columns to be displayed on the admin edit screen
       *
       * @since     1.0.0
       * @param     string    $columns    Column name
       */
      function columns( $columns ) {
-         if( isset( $columns ) ) {
-             $this->columns = $columns;
-         }
+       $this->columns = $columns;
      }
 
      /**
@@ -725,94 +552,6 @@ class Custom_Post_Type {
          $this->add_filter( 'manage_edit-' . $this->post_type_name . '_sortable_columns', array( &$this, 'make_columns_sortable' ) );
          // Run action that sorts columns on request.
          $this->add_action( 'load-edit.php', array( &$this, 'load_edit' ) );
-     }
-
-     /**
-      * Internal function that adds user defined sortable columns to WordPress default columns.
-      *
-      * @since     1.0.0
-      * @param     array    $columns    Columns to be made sortable
-      * @return    array                Sortable columns
-      */
-     function make_columns_sortable( $columns ) {
-         // For each sortable column.
-         foreach ( $this->sortable as $column => $values ) {
-             // Make an array to merge into wordpress sortable columns.
-             $sortable_columns[ $column ] = $values[0];
-         }
-         // Merge sortable columns array into wordpress sortable columns.
-         $columns = array_merge( $sortable_columns, $columns );
-         return $columns;
-     }
-
-     /**
-      * Sort columns only on the edit.php page when requested
-      *
-      * @since     1.0.0
-      */
-     function load_edit() {
-         $this->add_filter( 'request', array( &$this, 'sort_columns' ) );
-     }
-
-     /**
-      * Internal function that sorts columns on request
-      *
-      * @since     1.0.0
-      * @param     array    $vars    The query vars submitted by the user
-      * @return    array             The sorted array
-      */
-     function sort_columns( $vars ) {
-         // Cycle through all sortable columns submitted by the user
-         foreach ( $this->sortable as $column => $values ) {
-             // Retrieve the meta key from the user submitted array of sortable columns
-             $meta_key = $values[0];
-             // If the meta_key is a taxonomy
-             if( taxonomy_exists( $meta_key ) ) {
-                 // Sort by taxonomy.
-                 $key = "taxonomy";
-             } else {
-                 // else by meta key.
-                 $key = "meta_key";
-             }
-             // If the optional parameter is set and is set to true
-             if ( isset( $values[1] ) && true === $values[1] ) {
-                 // Vaules needed to be ordered by integer value
-                 $orderby = 'meta_value_num';
-             } else {
-                 // Values are to be order by string value
-                 $orderby = 'meta_value';
-             }
-             // Check if we're viewing this post type
-             if ( isset( $vars['post_type'] ) && $this->post_type_name == $vars['post_type'] ) {
-                 // find the meta key we want to order posts by
-                 if ( isset( $vars['orderby'] ) && $meta_key == $vars['orderby'] ) {
-                     // Merge the query vars with our custom variables
-                     $vars = array_merge(
-                         $vars,
-                         array(
-                             'meta_key' => $meta_key,
-                             'orderby' => $orderby
-                         )
-                     );
-                 }
-             }
-         }
-         return $vars;
-     }
-
-     /**
-      * Set the menu icon in the admin dashboard
-      *
-      * @since     1.0.0
-      * @param     string    $icon    The dashicon to be used
-      */
-     function menu_icon( $icon = "dashicons-admin-page" ) {
-         if ( is_string( $icon ) && stripos( $icon, "dashicons" ) !== false ) {
-             $this->options["menu_icon"] = $icon;
-         } else {
-             // Set a default menu icon
-             $this->options["menu_icon"] = "dashicons-admin-page";
-         }
      }
 
      /**
@@ -893,10 +632,6 @@ class Custom_Post_Type {
          $name = strtolower( $name );
          $name = preg_replace( array('/\s+/', '/[^a-z0-9\-_]/'), array('_'), $name );
 
-         // prepend 'pr_' to our own post types
-         if ( in_array( $raw_key, $this->peerraiser_post_types ) )
-             $name = 'pr_' . $name;
-
          $name = substr( $name, 0, 20 );
 
          return apply_filters( 'peerraiser_sanitize_post_type_name', $name, $raw_key );
@@ -907,10 +642,6 @@ class Custom_Post_Type {
          $raw_key = $name;
          $name = strtolower( $name );
          $name = preg_replace( array('/\s+/', '/[^a-z0-9\-_]/'), array('_'), $name );
-
-         // prepend 'pr_' to our own taxonomies
-         if ( in_array( $raw_key, $this->peerraiser_taxonomies ) )
-             $name = 'pr_' . $name;
 
          $name = substr( $name, 0, 32 );
 
