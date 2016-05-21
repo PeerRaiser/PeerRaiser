@@ -19,7 +19,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
             self::$instance = new self();
             self::$fields = array(
                 array(
-                    'title'    => 'Campaign Options',
+                    'title'    => __('Campaign Options', 'peerraiser'),
                     'id'       => 'peerraiser-campaign',
                     'context'  => 'normal',
                     'priority' => 'default',
@@ -104,17 +104,16 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'data-tooltip' => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
                             ),
                         ),
-                        'thank_you_page' =>   array(
-                            'name'              => 'Thank You Page',
-                            'id'                => '_thank_you_page',
-                            'type'              => 'select',
-                            'options'           => array(self::get_instance(), 'get_selected_post'),
-                            'attributes'        => array(
-                                'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
-                            ),
-                        ),
+                    ),
+                ),
+                array(
+                    'title'    => __('Donation Form', 'peerraiser'),
+                    'id'       => 'peerraiser-campaign-donation-form',
+                    'context'  => 'normal',
+                    'priority' => 'default',
+                    'fields'   => array(
                         'anonymous_donations' => array(
-                            'name'              => 'Allow Anonymous Donations',
+                            'name'              => __( 'Allow Anonymous Donations', 'peerraiser' ),
                             'id'                => '_anonymous_donations',
                             'type'              => 'select',
                             'options'           => array(
@@ -122,11 +121,11 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'false' => __('No', 'peerraiser'),
                             ),
                             'attributes'        => array(
-                                'data-tooltip' => __( 'Should donors to this campaign have the option to remain anonymous?', 'peerraiser' ),
+                                'data-tooltip' => __( 'Should donors to this campaign have the option to remain anonymous? You will still receive their info, but it will not be displayed publicly', 'peerraiser' ),
                             ),
                         ),
                         'donation_comments' => array(
-                            'name'              => 'Allow Donation Comments',
+                            'name'              => __( 'Allow Donation Comments', 'peerraiser' ),
                             'id'                => '_donation_comments',
                             'type'              => 'select',
                             'options'           => array(
@@ -138,7 +137,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             ),
                         ),
                         'transaction_fee_option' => array(
-                            'name'              => 'Ask donors to cover transaction fees?',
+                            'name'              => __( 'Ask donors to cover transaction fees?', 'peerraiser' ),
                             'id'                => '_transaction_fee_option',
                             'type'              => 'select',
                             'options'           => array(
@@ -149,13 +148,13 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                                 'data-tooltip' => __( 'Should donors to this campaign have the option to pay the transaction fee?', 'peerraiser' ),
                             ),
                         ),
-                        'campaign_participants' => array(
-                            'name'              => 'Participants',
-                            'id'                => '_campaign_participants',
-                            'type'              => 'pr_multiselect',
-                            'options'           => array(__CLASS__, 'get_participants_for_select_field'),
+                        'thank_you_page' =>   array(
+                            'name'              => __('Thank You Page', 'peerraiser'),
+                            'id'                => '_thank_you_page',
+                            'type'              => 'select',
+                            'options'           => array(self::get_instance(), 'get_selected_post'),
                             'attributes'        => array(
-                                'data-tooltip' => __( 'The participants involved in this campaign', 'peerraiser' ),
+                                'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
                             ),
                         ),
                     ),
