@@ -35,13 +35,8 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'id'           => '_team_campaign',
                             'type'         => 'select',
                             'default'      => 'custom',
+                            'desc'         => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
                             'options'      => array(self::get_instance(), 'get_selected_post'),
-                        ),
-                        'team_fundraisers' => array(
-                            'name'         => __('Fundraisers', 'peerraiser'),
-                            'id'           => '_team_fundraisers',
-                            'type'         => 'pr_multiselect',
-                            'options'      => array(self::get_instance(), 'get_participants_for_select_field'),
                         ),
                         'goal_amount' => array(
                             'name'         => __('Goal Amount', 'peerraiser'),
