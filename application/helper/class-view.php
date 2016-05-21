@@ -169,19 +169,24 @@ class View {
      *
      * @return string $formatted
      */
-    public static function format_number( $number, $is_monetary = true ) {
+    public static function format_number( $number, $is_monetary = true, $with_html = false ) {
         if ( $is_monetary ) {
+            $plugin_options = get_option( 'peerraiser_options', array() );
+            $currency = $plugin_options['currency'];
+            $currency_model = new \PeerRaiser\Model\Currency();
+            $currency_symbol = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
             // format monetary values 99.99
+            $formatted = ( $with_html ) ? '<span class="currency-symbol">' . $currency_symbol . '</span>' : $currency_symbol;
             if ( $number < 100 ) {
-                // format values up to 200 with two digits
-                // 200 is used to make sure the maximum Single Sale price of 149.99 is still formatted with two digits
-                $formatted = number_format_i18n( $number, 2 );
+                // format values up to 100 with two digits
+                $formatted .= number_format_i18n( $number, 2 );
             } elseif ( $number >= 100 && $number < 1000 ) {
                 // format values between 100 and 1,000 without digits
-                $formatted = number_format_i18n( $number, 0 );
+                $formatted .= number_format_i18n( $number, 0 );
             } else {
                 // reduce values above 1,000 to thousands and format them with one digit
-                $formatted = number_format_i18n( $number / 1000, 1 ) . __( 'k', 'peerraiser' ); // 1,100 -> 1.1k
+                $formatted .= number_format_i18n( $number / 1000, 1 ); // 1,100 -> 1.1k
+                $formatted .= ( $with_html ) ? '<span class="thousand-symbol">' . __( 'k', 'peerraiser' ) . '</span>' : __( 'k', 'peerraiser' );
             }
         } else {
             // format count values
@@ -189,7 +194,8 @@ class View {
                 $formatted = number_format( $number );
             } else {
                 // reduce values above 10,000 to thousands and format them with one digit
-                $formatted = number_format( $number / 1000, 1 ) . __( 'k', 'peerraiser' ); // 1,100 -> 1.1k
+                $formatted = number_format( $number / 1000, 1 );
+                $formatted .= ( $with_html ) ? '<span class="thousand-symbol">' . __( 'k', 'peerraiser' ) . '</span>' : __( 'k', 'peerraiser' );
             }
         }
 
@@ -239,7 +245,7 @@ class View {
             'before_output'   => '<div class="admin-nav"><ul class="pager">',
             'after_output'    => '</ul></div>',
             'paged'           => 1,
-            'paged_name'      => 'paged'
+            'paged_name'      => 'paged',
         );
 
         $args = wp_parse_args( $args, $defaults );
