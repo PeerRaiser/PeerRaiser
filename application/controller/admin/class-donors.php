@@ -11,6 +11,11 @@ class Donors extends \PeerRaiser\Controller\Base {
      */
     public static function get_subscribed_events() {
         return array(
+            'peerraiser_cmb2_admin_init' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'register_meta_boxes' )
+            ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
@@ -22,6 +27,27 @@ class Donors extends \PeerRaiser\Controller\Base {
                 array( 'load_assets' )
             ),
         );
+    }
+
+
+    public function register_meta_boxes() {
+
+        $donors_model = \PeerRaiser\Model\Admin\Donors::get_instance();
+        $donor_field_groups = $donors_model->get_fields();
+
+        foreach ($donor_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'         => $field_group['title'],
+                'object_types'  => array( 'pr_donor' ),
+                'context'       => $field_group['context'],
+                'priority'      => $field_group['priority'],
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
+        }
+
     }
 
 
