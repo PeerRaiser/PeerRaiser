@@ -90,24 +90,20 @@ class Bootstrap {
 
 
     /**
-     * Internal function to register global actions for frontend and backend.
+     * Internal function to register global actions for frontend.
      *
      * @return    void
      */
     private function register_frontend_actions() {
-        // $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
 
-        // $post_controller = self::get_controller( 'Frontend_Post' );
-        // $dispatcher->add_subscriber( $post_controller );
-
-        // set up unique visitors tracking
-        // $statistics_controller = self::get_controller( 'Frontend_Statistic' );
-        // $dispatcher->add_subscriber( $statistics_controller );
+        $listener_controller = self::get_controller( 'Frontend\Listener' );
+        $dispatcher->add_subscriber( $listener_controller );
     }
 
 
     /**
-     * Internal function to register global actions for frontend and backend.
+     * Internal function to register global actions for backend.
      *
      * @return    void
      */
