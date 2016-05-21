@@ -68,6 +68,7 @@ class Teams extends Base {
         $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
         $team_field_groups = $teams_model->get_fields();
 
+
         foreach ($team_field_groups as $field_group) {
             $cmb = new_cmb2_box( array(
                 'id'           => $field_group['id'],
@@ -77,6 +78,12 @@ class Teams extends Base {
                 'priority'      => $field_group['priority'],
             ) );
             foreach ($field_group['fields'] as $key => $value) {
+                if ( $key === 'team_campaign' && $this->is_edit_page( 'edit' ) ){
+                    $value['type'] = 'text';
+                    $value['attributes'] = array(
+                        'readonly' => 'readonly',
+                    );
+                }
                 $cmb->add_field($value);
             }
         }
@@ -260,22 +267,44 @@ class Teams extends Base {
     }
 
 
-    public static function display_fundraisers_list() {
+    public function display_fundraisers_list() {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
 
         $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
         $team_fundraisers = $teams_model->get_fundraisers( $post->ID, $paged );
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         if ( $team_fundraisers->found_posts < 1 ) {
             _e('There are currently no fundraisers associated with this Team', 'peerraiser');
         } else {
-            echo '<ul>';
+            echo '<table class="table table-striped">';
+            echo '  <thead>';
+            echo '    <tr>';
+            echo '      <th>'.__('ID', 'peerraiser').'</th>';
+            echo '      <th>'.__('Fundraiser', 'peerraiser').'</th>';
+            echo '      <th>'.__('Participant', 'peerraiser').'</th>';
+            echo '      <th>'.__('Goal', 'peerraiser').'</th>';
+            echo '      <th>'.__('Raised', 'peerraiser').'</th>';
+            echo '    </tr>';
+            echo '  </thead>';
+            echo '  <tbody>';
             $fundraisers = $team_fundraisers->get_posts();
             foreach ( $fundraisers as $fundraiser ) {
-                echo "<li><a href=\"post.php?post={$fundraiser->ID}&action=edit\">{$fundraiser->post_title}</a></li>";
+                $participant_id = get_post_meta( $fundraiser->ID, '_fundraiser_participant', true );
+                $participant   = get_userdata( $participant_id );
+                echo '    <tr>';
+                echo "      <td>{$fundraiser->ID}</a></td>";
+                echo "      <td><a href=\"post.php?post={$fundraiser->ID}&action=edit\">{$fundraiser->post_title}</a></td>";
+                echo "      <td><a href=\"user-edit.php?user_id={$participant_id}\">" . $participant->display_name . "</a></td>";
+                echo "      <td>" . $currency_symbol . get_post_meta( $fundraiser->ID, '_fundraiser_goal', true ) . "</td>";
+                echo "      <td>?</td>";
+                echo '    </tr>';
             }
-            echo '</ul>';
+            echo '  </tbody>';
+            echo '</table>';
 
             $args = array(
                 'custom_query' => $team_fundraisers,
@@ -284,6 +313,20 @@ class Teams extends Base {
             );
             $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
             echo $pagination;
+        }
+    }
+
+
+    private function is_edit_page( $new_edit = null ){
+        global $pagenow;
+        if (!is_admin()) return false;
+
+        if ($new_edit == "edit") {
+            return in_array( $pagenow, array( 'post.php',  ) );
+        } elseif ($new_edit == "new") {
+            return in_array( $pagenow, array( 'post-new.php' ) );
+        } else {
+            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
         }
     }
 
