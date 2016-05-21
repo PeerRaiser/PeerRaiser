@@ -88,9 +88,10 @@ class Dashboard  extends Base {
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),
-            'campaigns_total'      => $this->get_campaign_total(),
-            'fundraisers_total'    => $this->get_fundraiser_total(),
-            'donors_total'         => $this->get_donor_total(),
+            'donations_total'      => \PeerRaiser\Helper\View::format_number( 388198, true, true ),
+            'campaigns_total'      => \PeerRaiser\Helper\View::format_number( $this->get_campaign_total(), false, true ),
+            'fundraisers_total'    => \PeerRaiser\Helper\View::format_number( $this->get_fundraiser_total(), false, true ),
+            'donors_total'         => \PeerRaiser\Helper\View::format_number( $this->get_donor_total(), false, true ),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
