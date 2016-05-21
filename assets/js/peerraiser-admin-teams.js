@@ -92,7 +92,7 @@
 
         renderSelect = function() {
             for ( var key in $o.select2Fields ) {
-                if ( $o.select2Fields[key].length ){
+                if ( $o.select2Fields[key].length && $o.select2Fields[key].is( 'select' ) ){
                     $o.select2Fields[key].renderSelect($o.select2Options[key]);
                 }
             }
