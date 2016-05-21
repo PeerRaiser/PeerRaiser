@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             <div class="stats-wrapper group">
                 <div class="stats first total-raised">
-                    <p class="stat"><strong>$388,198</strong></p>
+                    <p class="stat"><strong><?= $peerraiser['donations_total'] ?></strong></p>
                     <p class="title"><?php _e('Total Raised', 'peerraiser') ?></p>
                 </div>
                 <div class="stats campaigns">
