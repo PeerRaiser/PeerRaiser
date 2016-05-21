@@ -202,7 +202,7 @@ class Fundraisers extends Base {
 
             case '_fundraiser_participant':
                 // Remove the value from connection
-                $removed = p2p_type( 'fundraiser_to_participant' )->disconnect( $old_value, $object_id );
+                p2p_type( 'fundraiser_to_participant' )->disconnect( $old_value, $object_id );
                 // Add the new connection
                 p2p_type( 'fundraiser_to_participant' )->connect( $object_id, $_meta_value, array(
                     'date' => current_time('mysql')
