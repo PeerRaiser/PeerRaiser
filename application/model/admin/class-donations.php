@@ -66,17 +66,6 @@ class Donations extends \PeerRaiser\Model\Admin {
                                 'disabled' => 'disabled'
                             ),
                         ),
-                        'team' => array(
-                            'name'    => __('Team', 'peerraiser'),
-                            'desc'    => __('The team this donation is attributed to (optional)'),
-                            'id'      => '_team',
-                            'type'    => 'select',
-                            'default' => 'custom',
-                            'options' => array(self::get_instance(), 'get_selected_post'),
-                            'attributes'  => array(
-                                'disabled' => 'disabled'
-                            ),
-                        ),
                     ),
                 ),
             );
