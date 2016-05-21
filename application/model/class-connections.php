@@ -29,7 +29,7 @@ class Connections {
             'name' => 'campaigns_to_teams',
             'from' => 'pr_campaign',
             'to' => 'pr_team',
-            'cardinality' => 'many-to-many',
+            'cardinality' => 'many-to-one',
         ),
         array(
             'name' => 'fundraiser_to_participant',
