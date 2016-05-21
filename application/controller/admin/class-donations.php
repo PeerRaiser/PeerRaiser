@@ -16,6 +16,11 @@ class Donations extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'register_meta_boxes' ),
             ),
+            'peerraiser_do_meta_boxes' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'maybe_remove_metabox' ),
+            ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
@@ -35,6 +40,22 @@ class Donations extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'replace_submit_box' ),
+            ),
+            'peerraiser_after_post_meta_added' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_connections' ),
+            ),
+            'peerraiser_before_post_meta_updated' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'update_connections' ),
+            ),
+            'peerraiser_before_post_meta_deleted' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'delete_connections' ),
+            ),
+            'peerraiser_new_donation' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_donation' ),
             ),
         );
     }
@@ -93,10 +114,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
 
-        // Only display fields on a "new" donations, not existing ones
-        if ( $this->is_edit_page( 'edit' ) )
-            return;
-
         $donations_model = \PeerRaiser\Model\Admin\Donations::get_instance();
         $donation_field_groups = $donations_model->get_fields();
 
@@ -113,6 +130,13 @@ class Donations extends \PeerRaiser\Controller\Base {
             }
         }
 
+    }
+
+
+    public function maybe_remove_metabox( \PeerRaiser\Core\Event $event ) {
+        // Only display fields on a "new" donations, not existing ones
+        if ( $this->is_edit_page( 'edit' ) )
+            remove_meta_box( 'offline-donation', 'pr_donation', 'normal' );
     }
 
 
@@ -164,6 +188,192 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 
+    /**
+     * After post meta is added, add the connections
+     *
+     * @since    1.0.0
+     * @param    \PeerRaiser\Core\Event    $event
+     * @return   null
+     */
+    public function add_connections( \PeerRaiser\Core\Event $event ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_donor', '_campaign', '_fundraiser' );
+
+        error_log($meta_key);
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        switch ( $meta_key ) {
+            case '_donor':
+                p2p_type( 'donation_to_donor' )->connect( $_meta_value, $object_id, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_campaign':
+                p2p_type( 'donation_to_campaign' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_fundraiser':
+                p2p_type( 'donation_to_fundraiser' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before the post meta is updated, update the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_donor', '_campaign', '_fundraiser' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_donor':
+                // Remove the value from connection
+                p2p_type( 'donation_to_donor' )->disconnect( $old_value, $object_id );
+                // Add the new connection
+                p2p_type( 'donation_to_donor' )->connect( $_meta_value, $object_id, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_campaign':
+                // Remove the value from connection
+                p2p_type( 'donation_to_campaign' )->disconnect( $old_value, $object_id );
+                // Add the new connection
+                p2p_type( 'donation_to_campaign' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            case '_fundraiser':
+                // Remove the value from connection
+                p2p_type( 'donation_to_fundraiser' )->disconnect( $old_value, $object_id );
+                // Add the new connection
+                p2p_type( 'donation_to_fundraiser' )->connect( $object_id, $_meta_value, array(
+                    'date' => current_time('mysql')
+                ) );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * Before post meta is deleted, delete the connections
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     * @return    null
+     */
+    public function delete_connections(  \PeerRaiser\Core\Event $event  ) {
+        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+        $fields = array( '_donor', '_campaign', '_fundraiser' );
+
+        // If the field updated isn't the type that needs to be connected, exit early
+        if ( !in_array($meta_key, $fields) )
+            return;
+
+        // Get the old value
+        $old_value = get_metadata('post', $object_id, $meta_key, true);
+
+        switch ( $meta_key ) {
+            case '_donor':
+                // Remove the value from connection
+                p2p_type( 'donation_to_donor' )->disconnect( $old_value, $object_id );
+                break;
+
+            case '_campaign':
+                // Remove the value from connection
+                p2p_type( 'donation_to_campaign' )->disconnect( $old_value, $object_id );
+                break;
+
+            case '_fundraiser':
+                // Remove the value from connection
+                p2p_type( 'donation_to_fundraiser' )->disconnect( $old_value, $object_id );
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    public function add_donation( \PeerRaiser\Core\Event $event ){
+        $data = $event->get_arguments();
+
+        if ( $this->is_existing_donation( $data['transaction_key'] ) ){
+            exit;
+        }
+
+        $donor = $this->get_donor_by_email( $data['email'] );
+
+        if ( !$donor ) {
+            $donor_id = $this->add_donor( $data );
+            update_post_meta( $donor_id, '_donor_first_name', $data['_donor_first_name'] );
+            update_post_meta( $donor_id, '_donor_last_name', $data['_donor_last_name'] );
+            update_post_meta( $donor_id, '_donor_email', $data['email'] );
+        }
+
+        $donation_args = array(
+            'post_type'    => 'pr_donation',
+            'post_title'   => $this->make_donation_title(),
+            'post_content' => '',
+            'post_status'  => 'publish',
+            'post_author'  => 1,
+            'post_date'    => date('Y-m-d H:i:s', $data['date'] )
+        );
+
+        $donation_id = wp_insert_post( $donation_args );
+
+        update_post_meta( $donation_id, '_payment_method', $data['payment_method'] );
+        update_post_meta( $donation_id, '_transaction_key', $data['transaction_key'] );
+        update_post_meta( $donation_id, '_ip_address', $data['ip_address'] );
+        update_post_meta( $donation_id, '_test_mode', $data['test_mode'] );
+        update_post_meta( $donation_id, '_amount', $data['amount'] );
+
+        // Setup connections
+        p2p_type( 'donation_to_donor' )->connect( $donation_id, $donor_id, array(
+            'date' => current_time('mysql')
+        ) );
+        p2p_type( 'donation_to_campaign' )->connect( $donation_id, $data['campaign_id'], array(
+            'date' => current_time('mysql')
+        ) );
+        if ( isset($data['fundraiser_id']) ) {
+            p2p_type( 'donation_to_fundraiser' )->connect( $donation_id, $data['fundraiser_id'], array(
+                'date' => current_time('mysql')
+            ) );
+        }
+
+    }
+
+
     private function is_edit_page( $new_edit = null ){
         global $pagenow;
         if (!is_admin()) return false;
@@ -175,6 +385,74 @@ class Donations extends \PeerRaiser\Controller\Base {
         } else {
             return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
         }
+    }
+
+
+    private function make_donation_title( $data ) {
+        return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
+    }
+
+
+    private function is_existing_donation( $key ) {
+        $query_args = array(
+            'post_type'  => 'pr_donation',
+            'meta_query' => array(
+                array(
+                    'key' => '_transaction_key',
+                    'value' => $key,
+                ),
+            )
+        );
+        $donation_query = new \WP_Query( $query_args );
+        return ( $donation_query->found_posts > 0 );
+    }
+
+
+    private function get_donor_by_email( $email ) {
+        $query_args = array(
+            'post_type'  => 'pr_donor',
+            'meta_query' => array(
+                array(
+                    'key' => '_donor_email',
+                    'value' => $email,
+                ),
+            )
+        );
+        $donor_query = new \WP_Query( $query_args );
+
+        if ( $donor_query->found_posts == 0 ) {
+            return false;
+        }
+
+        $donors = $donor_query->get_posts();
+        return $donors[0];
+
+    }
+
+
+    private function add_donor( $data ) {
+        $name = ( isset($data['name']) ) ? $data['name'] : 'Anonymous';
+        $donor_args = array(
+            'post_type'    => 'pr_donor',
+            'post_title'   => $data['donor_name'],
+            'post_content' => '',
+            'post_status'  => 'publish',
+            'post_author'  => 1,
+        );
+
+        return wp_insert_post( $donor_args );
+    }
+
+
+    private function is_valid_donation( $fields ) {
+        $required_fields = array( 'date', 'payment_method', 'transaction_key', 'ip_address', 'test_mode', 'amount', 'campaign_id', 'email' );
+
+        foreach ($fields as $key => $value) {
+            if ( !in_array($key, $required_fields) )
+                return false;
+        }
+
+        return true;
     }
 
 }
