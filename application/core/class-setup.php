@@ -22,6 +22,14 @@ class Setup {
         $config->set( 'plugin_url', plugins_url( '/', PEERRAISER_FILE ) );
         $config->set( 'view_dir', plugin_dir_path( PEERRAISER_FILE ) . 'views/' );
 
+        $config->set( 'peerraiser_live_url', 'https://peerraiser.com/api/live' );
+
+        $peerraiser_urls = array(
+            'peerraiser_url.live'    => 'https://peerraiser.com/api/live',
+            'peerraiser_url.sandbox' => 'https://peerraiser.com/api/sandbox'
+        );
+        $config->import( $peerraiser_urls );
+
         $upload_directory = wp_upload_dir();
         $config->set( 'log_directory', $upload_directory['basedir'] . '/peerraiser_logs/' );
         $config->set( 'log_url', $upload_directory['baseurl'] . '/peerraiser_logs/');
@@ -32,7 +40,7 @@ class Setup {
         $config->set( 'images_url', $plugin_url . 'assets/images/' );
 
         $plugin_options = get_option( 'peerraiser_options', array() );
-        $config->set( 'in_live_mode', isset( $plugin_options['in_live_mode'] ) ? $plugin_options['in_live_mode'] : false );
+        $config->set( 'in_live_mode', isset( $plugin_options['test_mode'] ) ? $plugin_options['test_mode'] : false );
 
         $client_address = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
         $debug_mode_enabled = isset( $plugin_options['debugger_enabled'] ) ? $plugin_options['debugger_enabled'] : false;
