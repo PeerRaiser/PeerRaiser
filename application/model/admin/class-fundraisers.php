@@ -25,25 +25,31 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                     'priority' => 'default',
                     'fields'   => array(
                         'fundraiser_campaign' => array(
-                            'name'             => __('Campaign', 'peerraiser'),
-                            'id'               => '_fundraiser_campaign',
-                            'type'             => 'select',
-                            'default'          => 'custom',
-                            'options'          => array(self::get_instance(), 'get_selected_post'),
+                            'name'    => __('Campaign', 'peerraiser'),
+                            'id'      => '_fundraiser_campaign',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
                         ),
                         'fundraiser_participant' => array(
-                            'name'             => __('Participant', 'peerraiser'),
-                            'id'               => '_fundraiser_participant',
-                            'type'             => 'select',
-                            'default'          => 'custom',
-                            'options'          => array(self::get_instance(), 'get_participants_for_select_field'),
+                            'name'    => __('Participant', 'peerraiser'),
+                            'id'      => '_fundraiser_participant',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_participants_for_select_field'),
                         ),
                         'fundraiser_team' => array(
-                            'name'             => __('Team', 'peerraiser'),
-                            'id'               => '_fundraiser_team',
-                            'type'             => 'select',
-                            'default'          => 'custom',
-                            'options'          => array(self::get_instance(), 'get_selected_post'),
+                            'name'    => __('Team', 'peerraiser'),
+                            'id'      => '_fundraiser_team',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'options' => array(self::get_instance(), 'get_selected_post'),
+                        ),
+                        'fundraiser_goal' => array(
+                            'name'         => __( 'Fundraising Goal', 'peerraiser'),
+                            'id'           => '_fundraiser_goal',
+                            'type'         => 'text_money',
+                            'before_field' => self::get_currency_symbol(),
                         ),
                     ),
                 ),
@@ -179,6 +185,13 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         }
 
         return $results;
+    }
+
+
+    private static function get_currency_symbol(){
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
 }
