@@ -41,6 +41,22 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'cmb2_save_post_fields' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'update_field_data' )
+            ),
+            'peerraiser_manage_campaign_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'manage_columns' )
+            ),
+            'peerraiser_sortable_campaign_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'sort_columns' )
+            ),
+            'peerraiser_pre_get_posts' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_sort_type' )
+            ),
+            'peerraiser_admin_head' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'remove_date_filter' )
             )
         );
     }
@@ -256,6 +272,87 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             // $_POST['_peerraiser_campaign_start_date'] = $date;
             $results = update_post_meta( (int) $object_id, '_peerraiser_campaign_start_date', (string) $date);
         }
+    }
+
+
+    public function manage_columns( \PeerRaiser\Core\Event $event ) {
+        list( $column_name, $post_id ) = $event->get_arguments();
+
+        switch ( $column_name ) {
+            case 'start_date':
+                $start_date = get_post_meta( $post_id, '_peerraiser_campaign_start_date', true );
+                echo ( !empty($start_date) ) ? date_i18n( get_option( 'date_format' ), $start_date ) : __('N/A', 'peerraiser');
+                break;
+
+            case 'end_date':
+                $end_date = get_post_meta( $post_id, '_peerraiser_campaign_end_date', true );
+                echo ( !empty($end_date) ) ? date_i18n( get_option( 'date_format' ), $end_date ) : '&infin;';
+                break;
+        }
+
+    }
+
+
+    public function sort_columns( \PeerRaiser\Core\Event $event ){
+        list( $sortable_columns ) = $event->get_arguments();
+
+        $sortable_columns['start_date'] = 'campaign_start_date';
+        $sortable_columns['end_date'] = 'campaign_end_date';
+
+        $event->set_result( $sortable_columns );
+    }
+
+
+    public function add_sort_type( \PeerRaiser\Core\Event $event ){
+        list( $query ) = $event->get_arguments();
+
+        if ( ! is_admin() )
+                return;
+
+        $orderby = $query->get( 'orderby');
+
+        switch ( $orderby ) {
+            case 'campaign_start_date':
+                $query->set('meta_query', array(
+                    'relation' => 'OR',
+                    array(
+                        'key'=>'_peerraiser_campaign_start_date',
+                        'compare' => 'EXISTS'
+                    ),
+                    array(
+                        'key'=>'_peerraiser_campaign_start_date',
+                        'compare' => 'NOT EXISTS'
+                    )
+                ));
+                $query->set('orderby','meta_value_num');
+                break;
+
+            case 'campaign_end_date':
+                $query->set('meta_query', array(
+                    'relation' => 'OR',
+                    array(
+                        'key'=>'_peerraiser_campaign_end_date',
+                        'compare' => 'EXISTS'
+                    ),
+                    array(
+                        'key'=>'_peerraiser_campaign_end_date',
+                        'compare' => 'NOT EXISTS'
+                    )
+                ));
+                $query->set('orderby','meta_value_num');
+                break;
+        }
+
+    }
+
+
+    public function remove_date_filter( \PeerRaiser\Core\Event $event ){
+        $screen = get_current_screen();
+
+        if ( $screen->post_type === 'pr_campaign' ) {
+            add_filter('months_dropdown_results', '__return_empty_array');
+        }
+
     }
 
 }
