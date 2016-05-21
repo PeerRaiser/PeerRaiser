@@ -1,7 +1,7 @@
 (function( $ ) {$(function() {
     'use strict';
 
-    function peerRaiserAdminCampaigns(){
+    function peerRaiserAdminDonations(){
         var $o = {
             dashboardTab    : $('#toplevel_page_peerraiser-dashboard'),
             dasboardTabLink : $('#toplevel_page_peerraiser-dashboard > a'),
@@ -11,7 +11,6 @@
                 donor      : $("#_donor"),
                 campaign   : $("#_campaign"),
                 fundraiser : $("#_fundraiser"),
-                team       : $("#_team"),
             },
 
             select2Options : {
@@ -87,30 +86,6 @@
                         return text;
                     }
                 },
-                team : {
-                    data : function ( params ) {
-                        return {
-                            action: 'peerraiser_get_posts',
-                            s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_team']
-                        };
-                    },
-                    templateResult : function(data) {
-                        var html = '<span class="display_name">' + data.text + '</span>';
-                        if ( data.id ) {
-                            html += '<span class="user_id">Fundraiser ID: ' + data.id + '</span>';
-                        }
-                        return $('<span>').html(html);
-                    },
-                    templateSelection: function(data) {
-                        var text = data.text;
-                        if ( typeof text === 'string' ) {
-                            text = text.replace(/^(- )*/g, '');
-                        }
-                        return text;
-                    }
-                },
             },
 
         },
@@ -128,8 +103,6 @@
                 if ( id !== null ) {
                     $o.select2Fields.fundraiser.prop('disabled', false);
                     $o.select2Fields.fundraiser.val('');
-                    $o.select2Fields.team.prop('disabled', false);
-                    $o.select2Fields.team.val('');
 
                     $o.select2Options.fundraiser.data = function ( params ) {
                         return {
@@ -141,22 +114,9 @@
                             connected_items : id
                         };
                     };
-                    $o.select2Options.team.data = function ( params ) {
-                        return {
-                            action: 'peerraiser_get_posts',
-                            s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_team'],
-                            connected_type : 'campaigns_to_teams',
-                            connected_items : id
-                        };
-                    };
-
                     $o.select2Fields.fundraiser.renderSelect($o.select2Options.fundraiser);
-                    $o.select2Fields.team.renderSelect($o.select2Options.team);
                 } else {
                     $o.select2Fields.fundraiser.prop('disabled', 'disabled');
-                    $o.select2Fields.team.prop('disabled', 'disabled');
                 }
             });
         },
@@ -190,6 +150,6 @@
     }
 
     // Kick it off
-    peerRaiserAdminCampaigns();
+    peerRaiserAdminDonations();
 
 });})(jQuery);
