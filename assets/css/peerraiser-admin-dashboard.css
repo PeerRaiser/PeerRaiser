@@ -93,6 +93,14 @@
     font-size: 2.5em;
     margin: 0;
 }
+.peerraiser-wrap.dashboard-wrap .stats span.thousand-symbol,
+.peerraiser-wrap.dashboard-wrap .stats span.currency-symbol {
+    font-size: .85em;
+}
+.peerraiser-wrap.dashboard-wrap .stats span.currency-symbol {
+    position: relative;
+    top: -5px;
+}
 .peerraiser-wrap.dashboard-wrap .stats .title {
     color: #808080;
     margin: 0;
