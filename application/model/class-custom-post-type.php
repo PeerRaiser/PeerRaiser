@@ -52,6 +52,18 @@ class Custom_Post_Type {
      protected $options;
 
      /**
+      * An array of user-specific options for the post type labels
+      * @var    array
+      */
+     protected $post_labels;
+
+     /**
+      * An array of user-specific options for the taxonomy labels
+      * @var    array
+      */
+     protected $taxonomy_labels;
+
+     /**
       * Taxonomies associated with this custom post type
       * @var    array
       */
@@ -75,7 +87,7 @@ class Custom_Post_Type {
       */
      protected $columns;
 
-     public function __construct( $post_type_names, $options = array() ) {
+     public function __construct( $post_type_names, $options = array(), $post_labels = array(), $taxonomy_labels = array() ) {
 
          // If post type name is an array
          if ( is_array( $post_type_names ) ) {
@@ -132,6 +144,10 @@ class Custom_Post_Type {
 
          // Set the user submitted options to the object
          $this->options = $options;
+
+         $this->post_labels  = $post_labels;
+
+         $this->taxonomy_labels = $taxonomy_labels;
 
          // Register taxonomies
          $this->add_action( 'init', array( &$this, 'register_taxonomies' ) );
@@ -326,6 +342,7 @@ class Custom_Post_Type {
              'not_found_in_trash' => sprintf( __( 'No %s found in Trash', 'peerraiser' ), $plural ),
              'parent_item_colon'  => sprintf( __( 'Parent %s:', 'peerraiser' ), $singular )
          );
+         $labels = array_merge( $labels, $this->post_labels );
          // Default options.
          $defaults = array(
              'labels' => $labels,
