@@ -99,7 +99,10 @@ class Custom_Post_Type extends Base {
             'plural' => 'Donors',
             'slug' => 'donor'
         );
-        $donor = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args );
+        $labels = array(
+            'edit_item' => __( 'Donor Info', 'peerraiser' ),
+        );
+        $donor = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args, $labels );
     }
 
 }
