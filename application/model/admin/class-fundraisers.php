@@ -48,7 +48,11 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                         'fundraiser_goal' => array(
                             'name'         => __( 'Fundraising Goal', 'peerraiser'),
                             'id'           => '_fundraiser_goal',
-                            'type'         => 'text_money',
+                            'type'         => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
+                            ),
                             'before_field' => self::get_currency_symbol(),
                         ),
                     ),
