@@ -53,6 +53,10 @@ class Donations extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
+            'peerraiser_before_delete_post' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'handle_post_deleted' ),
+            ),
             'peerraiser_new_donation' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_donation' ),
@@ -199,8 +203,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
         $fields = array( '_donor', '_campaign', '_fundraiser' );
 
-        error_log($meta_key);
-
         // If the field updated isn't the type that needs to be connected, exit early
         if ( !in_array($meta_key, $fields) )
             return;
@@ -325,6 +327,23 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 
+    public function handle_post_deleted( \PeerRaiser\Core\Event $event ) {
+        list( $post_id ) = $event->get_arguments();
+        global $post_type;
+
+        if ( 'pr_donation' != $post_type )
+            return;
+
+        $donor = get_post_meta( $post_id, '_donor', true );
+        $campaign = get_post_meta( $post_id, '_campaign', true);
+        $fundraiser = get_post_meta( $post_id, '_fundraiser', true);
+
+        p2p_type( 'donation_to_donor' )->disconnect( $donor, $post_id );
+        p2p_type( 'donation_to_campaign' )->disconnect( $campaign, $post_id );
+        p2p_type( 'donation_to_fundraiser' )->disconnect( $fundraiser, $post_id );
+    }
+
+
     public function add_donation( \PeerRaiser\Core\Event $event ){
         $data = $event->get_arguments();
 
@@ -336,9 +355,11 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         if ( !$donor ) {
             $donor_id = $this->add_donor( $data );
-            update_post_meta( $donor_id, '_donor_first_name', $data['_donor_first_name'] );
-            update_post_meta( $donor_id, '_donor_last_name', $data['_donor_last_name'] );
+            update_post_meta( $donor_id, '_donor_first_name', $data['first_name'] );
+            update_post_meta( $donor_id, '_donor_last_name', $data['last_name'] );
             update_post_meta( $donor_id, '_donor_email', $data['email'] );
+        } else {
+            $donor_id = $donor->ID;
         }
 
         $donation_args = array(
@@ -356,10 +377,10 @@ class Donations extends \PeerRaiser\Controller\Base {
         update_post_meta( $donation_id, '_transaction_key', $data['transaction_key'] );
         update_post_meta( $donation_id, '_ip_address', $data['ip_address'] );
         update_post_meta( $donation_id, '_test_mode', $data['test_mode'] );
-        update_post_meta( $donation_id, '_amount', $data['amount'] );
+        update_post_meta( $donation_id, '_donation_amount', $data['amount'] );
 
         // Setup connections
-        p2p_type( 'donation_to_donor' )->connect( $donation_id, $donor_id, array(
+        p2p_type( 'donation_to_donor' )->connect( $donor_id, $donation_id, array(
             'date' => current_time('mysql')
         ) );
         p2p_type( 'donation_to_campaign' )->connect( $donation_id, $data['campaign_id'], array(
@@ -431,10 +452,10 @@ class Donations extends \PeerRaiser\Controller\Base {
 
 
     private function add_donor( $data ) {
-        $name = ( isset($data['name']) ) ? $data['name'] : 'Anonymous';
+        $name = ( isset($data['first_name']) && isset($data['last_name']) ) ? $data['first_name'] . ' ' . $data['last_name'] : 'Anonymous';
         $donor_args = array(
             'post_type'    => 'pr_donor',
-            'post_title'   => $data['donor_name'],
+            'post_title'   => $name,
             'post_content' => '',
             'post_status'  => 'publish',
             'post_author'  => 1,
