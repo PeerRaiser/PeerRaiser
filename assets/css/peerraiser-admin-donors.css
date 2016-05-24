@@ -9,3 +9,159 @@
     display: block;
     opacity: 0.5;
 }
+/* Hide meta box title*/
+.postbox-container #donor_info > h2,
+.postbox-container #donor_info button.handlediv {
+    display: none;
+}
+.postbox-container #donor_info .inside {
+    margin: 0;
+    padding-top: 12px;
+}
+/* Donor Card */
+#donor-card img.profile-image {
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+#donor-card img.profile-image.guest {
+    background-color: #9d9b9b;
+}
+#donor-card {
+    display: -webkit-flex; /* Safari */
+    -webkit-align-items: center; /* Safari 7.0+ */
+    display: flex;
+}
+#donor-card h1 {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+#donor-card h1 span {
+    font-size: 50%;
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
+#donor-card .donor-meta p {
+    margin: 0;
+}
+#donor-card .donor-meta p:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+#donor-card .donor-meta .email:before {
+    content: "\f003";
+}
+#donor-card .donor-meta .since:before {
+    content: "\f017";
+}
+#donor-card .donor-meta .user-account:before {
+    content: "\f007";
+}
+/* Submit Box */
+#submitpost .donor-info {
+    padding: 0 10px;
+}
+#submitpost .donor-info li {
+    border-bottom: 1px solid #dddddd;
+    padding: 10px 0;
+    margin: 0;
+}
+#submitpost .donor-info li:last-child {
+    border-bottom: 0;
+}
+#submitpost .donor-info li strong {
+    font-size: 14px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+#submitpost .donor-info li span {
+    display: inline-block;
+    padding: 3px 7px;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: #fff;
+    background-color: #91be4c;
+    border-radius: 10px;
+}
+.pr-update-donor,
+.pr-add-donor {
+    float: right;
+}
+#submitpost .donor-info > div {
+    margin-bottom: 1em;
+}
+#submitpost .donor-info > div .label{
+    display: block;
+}
+#submitpost .donor-info > div .label:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+#submitpost .donor-info > div strong,
+#submitpost .donor-info > div select,
+#submitpost .donor-info > div input {
+    margin-left: 27px;
+}
+#submitpost .donor-info .donor-key strong {
+    font: 700 95% monospace;
+}
+/* Donations List */
+table.donations-list .check:before,
+table.donations-list .times:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+table.donations-list .check:before {
+    content: "\f00c";
+    color: #3c763d;
+}
+table.donations-list .times:before {
+    content: "\f00d";
+    color: #a94442;
+}
+/* Misc */
+.text-center {
+    text-align: center;
+}
