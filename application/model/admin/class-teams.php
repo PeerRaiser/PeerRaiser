@@ -25,23 +25,27 @@ class Teams extends \PeerRaiser\Model\Admin {
                     'priority' => 'default',
                     'fields'   => array(
                         'team_leader' => array(
-                            'name'              => __('Team Leader', 'peerraiser'),
-                            'id'                => '_team_leader',
-                            'type'              => 'select',
-                            'options'           => array(__CLASS__, 'get_participants_for_select_field'),
+                            'name'    => __('Team Leader', 'peerraiser'),
+                            'id'      => '_team_leader',
+                            'type'    => 'select',
+                            'options' => array(__CLASS__, 'get_participants_for_select_field'),
                         ),
                         'team_campaign' => array(
-                            'name'         => __('Campaign', 'peerraiser'),
-                            'id'           => '_team_campaign',
-                            'type'         => 'select',
-                            'default'      => 'custom',
-                            'desc'         => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
-                            'options'      => array(self::get_instance(), 'get_selected_post'),
+                            'name'    => __('Campaign', 'peerraiser'),
+                            'id'      => '_team_campaign',
+                            'type'    => 'select',
+                            'default' => 'custom',
+                            'desc'    => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
+                            'options' => array(self::get_instance(), 'get_selected_post'),
                         ),
                         'goal_amount' => array(
                             'name'         => __('Goal Amount', 'peerraiser'),
                             'id'           => '_goal_amount',
-                            'type'         => 'text_money',
+                            'type'         => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
+                            ),
                             'before_field' => self::get_currency_symbol(),
                         ),
                     ),
