@@ -82,13 +82,17 @@ class Dashboard  extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
         $view_args = array(
+            'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
             'show_welcome_message' => filter_var($plugin_options['show_welcome_message'], FILTER_VALIDATE_BOOLEAN),
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),
-            'donations_total'      => \PeerRaiser\Helper\View::format_number( 388198, true, true ),
+            'donations_total'      => \PeerRaiser\Helper\View::format_number( \PeerRaiser\Helper\Stats::get_total_donations(), true, true ),
             'campaigns_total'      => \PeerRaiser\Helper\View::format_number( $this->get_campaign_total(), false, true ),
             'fundraisers_total'    => \PeerRaiser\Helper\View::format_number( $this->get_fundraiser_total(), false, true ),
             'donors_total'         => \PeerRaiser\Helper\View::format_number( $this->get_donor_total(), false, true ),
@@ -96,7 +100,9 @@ class Dashboard  extends Base {
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
                 'step_3'           => $this->get_campaign_status()
-            )
+            ),
+            'top_donors'           => \PeerRaiser\Helper\Stats::get_top_donors(),
+            'top_fundraisers'      => \PeerRaiser\Helper\Stats::get_top_fundraisers(),
         );
 
         $this->assign( 'peerraiser', $view_args );
