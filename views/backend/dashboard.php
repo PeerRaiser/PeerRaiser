@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <?php if ( $peerraiser['show_welcome_message'] ) : ?>
                 <div class="welcome-message">
                     <h2><?php printf( esc_html__( 'Welcome to your dashboard, %s', 'peerraiser' ), $peerraiser['display_name'] ); ?></h2>
-                    <p><?php _e('The dashboard provides an overview of your peer-to-peer campaigns, fundraising tips, and the latest news about this plugin.', 'peerraiser') ?></p>
+                    <p><?php //_e('The dashboard provides an overview of your peer-to-peer campaigns, fundraising tips, and the latest news about this plugin.', 'peerraiser') ?></p>
 
                     <h3><?php _e("Let's get you started...", 'peerraiser') ?></h3>
 
@@ -58,24 +58,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <h2><?php _e('Top Donors', 'peerraiser') ?></h2>
 
                     <ol>
-                        <li><a href="#">Stephanie Espinoza</a></li>
-                        <li><a href="#">Stephanie Elliott</a></li>
-                        <li><a href="#">Aleida Escoto</a></li>
-                        <li><a href="#">Gary Finlayson</a></li>
-                        <li><a href="#">Michael Miller</a></li>
-                        <li><a href="#">Mary Jarnigan</a></li>
-                        <li><a href="#">John Alicea</a></li>
-                        <li><a href="#">Stephen Johnson</a></li>
-                        <li><a href="#">Thomas Healey</a></li>
-                        <li><a href="#">Carleen Benavidez</a></li>
+                        <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
+                            <li><a href="post.php?action=edit&post=<?= $donor->ID ?>"><?= get_post_meta( $donor->ID, '_donor_first_name', true ) ?> <?= get_post_meta( $donor->ID, '_donor_last_name', true ) ?></a> - <?= $peerraiser['currency_symbol'] . number_format_i18n($donor->total, 2) ?></li>
+                        <?php endforeach; ?>
                     </ol>
                 </div>
                 <div class="top-fundraisers">
                     <h2><?php _e('Top Fundraisers', 'peerraiser') ?></h2>
 
                     <ol>
-                        <li><a href="#">My cool fundraiser</a></li>
-                        <li><a href="#">Help me raise money</a></li>
+                        <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
+                            <li><a href="post.php?action=edit&post=<?= $fundraiser->ID ?>"><?= get_the_title( $fundraiser->ID ) ?></a> - <?= $peerraiser['currency_symbol'] . number_format_i18n($fundraiser->total, 2) ?></li>
+                        <?php endforeach; ?>
                     </ol>
 
                 </div>
