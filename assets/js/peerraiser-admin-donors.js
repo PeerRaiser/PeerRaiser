@@ -6,9 +6,10 @@
             dashboardTab    : $('#toplevel_page_peerraiser-dashboard'),
             dasboardTabLink : $('#toplevel_page_peerraiser-dashboard > a'),
             donationLink    : $('#toplevel_page_peerraiser-dashboard a[href$="pr_donor"]'),
+            profileImage    : $('#donor-card img'),
 
             select2Fields : {
-                donor_user_acount      : $("#_donor_user_acount"),
+                donor_user_acount      : $("#_donor_user_account"),
             },
 
             select2Options : {
