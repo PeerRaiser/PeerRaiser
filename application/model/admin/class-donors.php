@@ -366,7 +366,7 @@ class Donors extends \PeerRaiser\Model\Admin {
                         ),
                         'donor_user_account' => array(
                             'name'    => __('User Account', 'peerraiser'),
-                            'id'      => '_donor_user_acount',
+                            'id'      => '_donor_user_account',
                             'type'    => 'select',
                             'options' => array(self::get_instance(), 'get_participants_for_select_field'),
                         ),
@@ -559,6 +559,26 @@ class Donors extends \PeerRaiser\Model\Admin {
                 break;
         }
 
+    }
+
+
+    public function get_donations( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'pr_donation',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'donation_to_donor',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
+
+    private static function get_currency_symbol(){
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
 }
