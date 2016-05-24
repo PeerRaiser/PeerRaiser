@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Teams extends Base {
+class Teams extends \PeerRaiser\Controller\Base {
 
     private static $instance = null;
 
@@ -27,18 +27,22 @@ class Teams extends Base {
                 array( 'load_assets' )
             ),
             'peerraiser_after_post_meta_added' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_connections' ),
             ),
             'peerraiser_before_post_meta_updated' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'update_connections' ),
             ),
             'peerraiser_before_post_meta_deleted' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
             'peerraiser_meta_boxes' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_meta_boxes' ),
             ),
@@ -58,9 +62,6 @@ class Teams extends Base {
 
         return self::$instance;
     }
-
-
-    public function __construct(){}
 
 
     public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
@@ -273,47 +274,28 @@ class Teams extends Base {
 
         $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
         $team_fundraisers = $teams_model->get_fundraisers( $post->ID, $paged );
+
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
-        if ( $team_fundraisers->found_posts < 1 ) {
-            _e('There are currently no fundraisers associated with this Team', 'peerraiser');
-        } else {
-            echo '<table class="table table-striped">';
-            echo '  <thead>';
-            echo '    <tr>';
-            echo '      <th>'.__('ID', 'peerraiser').'</th>';
-            echo '      <th>'.__('Fundraiser', 'peerraiser').'</th>';
-            echo '      <th>'.__('Participant', 'peerraiser').'</th>';
-            echo '      <th>'.__('Goal', 'peerraiser').'</th>';
-            echo '      <th>'.__('Raised', 'peerraiser').'</th>';
-            echo '    </tr>';
-            echo '  </thead>';
-            echo '  <tbody>';
-            $fundraisers = $team_fundraisers->get_posts();
-            foreach ( $fundraisers as $fundraiser ) {
-                $participant_id = get_post_meta( $fundraiser->ID, '_fundraiser_participant', true );
-                $participant   = get_userdata( $participant_id );
-                echo '    <tr>';
-                echo "      <td>{$fundraiser->ID}</a></td>";
-                echo "      <td><a href=\"post.php?post={$fundraiser->ID}&action=edit\">{$fundraiser->post_title}</a></td>";
-                echo "      <td><a href=\"user-edit.php?user_id={$participant_id}\">" . $participant->display_name . "</a></td>";
-                echo "      <td>" . $currency_symbol . get_post_meta( $fundraiser->ID, '_fundraiser_goal', true ) . "</td>";
-                echo "      <td>?</td>";
-                echo '    </tr>';
-            }
-            echo '  </tbody>';
-            echo '</table>';
+        $args = array(
+            'custom_query' => $team_fundraisers,
+            'paged' => isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1,
+            'paged_name' => 'fundraisers_page'
+        );
+        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
 
-            $args = array(
-                'custom_query' => $team_fundraisers,
-                'paged' => isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1,
-                'paged_name' => 'fundraisers_page'
-            );
-            $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
-            echo $pagination;
-        }
+        $view_args = array(
+            'number_of_fundraisers' => $team_fundraisers->found_posts,
+            'pagination'            => $pagination,
+            'currency_symbol'       => $currency_symbol,
+            'fundraisers'           => $team_fundraisers->get_posts(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/team-fundraisers' );
     }
 
 
