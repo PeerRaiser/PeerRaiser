@@ -25,7 +25,7 @@
         <?php if ( $peerraiser['can_publish'] ) : ?>
             <div id="major-publishing-actions">
                 <div id="delete-action">
-                    <a href="<?= get_delete_post_link( $peerraiser['object']->ID ) ?>" class="pr-delete-donation pr-delete">Delete Donation</a>
+                    <a href="<?= get_delete_post_link( $peerraiser['object']->ID ) ?>" class="submitdelete pr-delete-donation pr-delete">Delete Donation</a>
                 </div>
                 <input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Update Donation'); ?>" />
                 <?php submit_button( __( 'Update Donation' ), 'pr-update-donation primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
