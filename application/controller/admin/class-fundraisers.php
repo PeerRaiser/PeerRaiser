@@ -38,6 +38,10 @@ class Fundraisers extends Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
+            'peerraiser_manage_fundraiser_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'manage_columns' ),
+            ),
         );
     }
 
@@ -261,6 +265,45 @@ class Fundraisers extends Base {
 
             default:
                 break;
+        }
+
+    }
+
+
+    public function manage_columns( \PeerRaiser\Core\Event $event ) {
+        list( $column_name, $post_id ) = $event->get_arguments();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        switch ( $column_name ) {
+
+            case 'campaign':
+                $campaign_id = get_post_meta( $post_id, '_fundraiser_campaign', true );
+                echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
+                break;
+
+            case 'participant':
+                $participant_id = get_post_meta( $post_id, '_fundraiser_participant', true );
+                $user_info = get_userdata( $participant_id );
+                echo '<a href="user-edit.php?user_id='.$participant_id.'">' . $user_info->user_login  . '</a>';
+                break;
+
+            case 'team':
+                $team_id = get_post_meta( $post_id, '_fundraiser_team', true );
+                echo '<a href="post.php?action=edit&post='.$team_id.'">' . get_the_title( $team_id ) . '</a>';
+                break;
+
+            case 'goal_amount':
+                $goal_amount = get_post_meta( $post_id, '_fundraiser_goal', true);
+                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
+                break;
+
+            case 'amount_raised':
+                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_fundraiser( $post_id );
+                break;
+
         }
 
     }
