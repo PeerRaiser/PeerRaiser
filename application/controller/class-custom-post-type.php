@@ -24,6 +24,12 @@ class Custom_Post_Type extends Base {
 
         // Fundraiser post type for each individual fundraiser page. Users create fundraisers
         $fundraiser_slug = ( isset($plugin_options['fundraiser_slug']) ) ? $plugin_options['fundraiser_slug'] : 'give';
+        $post_type_name = array(
+            'post_type_name' => 'fundraiser',
+            'singular' => 'Fundraiser',
+            'plural' => 'Fundraisers',
+            'slug' => $fundraiser_slug
+        );
         $args = array(
             'show_in_menu' => false,
             'supports'     => array('title'),
@@ -31,7 +37,16 @@ class Custom_Post_Type extends Base {
                 'slug' => $fundraiser_slug
             )
         );
-        $fundraisers = new \PeerRaiser\Model\Custom_Post_Type( 'Fundraiser', $args );
+        $fundraisers = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args );
+        $fundraisers->columns(array(
+            'cb' => '<input type="checkbox" />',
+            'title' => __('Title'),
+            'campaign' => __('Campaign'),
+            'participant' => __('Participant'),
+            'team' => __('Team'),
+            'goal_amount' => __('Goal'),
+            'amount_raised' => __('Raised'),
+        ));
 
         // Campaign post type for each campaign. Fundraisers are tied to specific campaigns
         $campaign_slug = ( isset($plugin_options['campaign_slug']) ) ? $plugin_options['campaign_slug'] : 'campaign';
@@ -52,6 +67,11 @@ class Custom_Post_Type extends Base {
         $campaigns->columns(array(
             'cb' => '<input type="checkbox" />',
             'title' => __('Title'),
+            'amount_raised' => __('Raised'),
+            'goal_amount' => __('Goal'),
+            'fundraisers' => __('Fundraisers'),
+            'teams' => __('Teams'),
+            'donations' => __('Donations'),
             'start_date' => __('Start Date'),
             'end_date' => __('End Date'),
         ));
@@ -68,6 +88,15 @@ class Custom_Post_Type extends Base {
             'slug' => 'team'
         );
         $teams = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args );
+        $teams->columns(array(
+            'cb' => '<input type="checkbox" />',
+            'title' => __('Team Name'),
+            'leader' => __('Team Leader'),
+            'campaign' => __('Campaign'),
+            'goal_amount' => __('Goal'),
+            'amount_raised' => __('Raised'),
+            'fundraisers' => __('Fundraisers'),
+        ));
 
         // Donation post type. Each post is a seperate donation/transaction
         $args = array(
@@ -84,6 +113,18 @@ class Custom_Post_Type extends Base {
             'slug' => 'donation'
         );
         $donation = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args );
+        $donation->columns(array(
+            'cb' => '<input type="checkbox" />',
+            'id' => __('ID'),
+            'link' => __('Details'),
+            'donor' => __('Donor'),
+            'donation_amount' => __('Amount'),
+            'method' => __('Method'),
+            'campaign' => __('Campaign'),
+            'fundraiser' => __('Fundraiser'),
+            'test_mode' => __('Live Mode?'),
+            'date' => __('Date'),
+        ));
 
         // Donor post type. Each post is a seperate donor record
         $args = array(
@@ -103,6 +144,17 @@ class Custom_Post_Type extends Base {
             'edit_item' => __( 'Donor Info', 'peerraiser' ),
         );
         $donor = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, $args, $labels );
+        $donor->columns(array(
+            'cb' => '<input type="checkbox" />',
+            'id' => __('ID'),
+            'link' => __('Details'),
+            'first_name' => __('First Name'),
+            'last_name' => __('Last Name'),
+            'email_address' => __('Email'),
+            'username' => __('Username'),
+            'total_donated' => __('Total Donated'),
+            'date' => __('Date'),
+        ));
     }
 
 }
