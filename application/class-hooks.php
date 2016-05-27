@@ -104,6 +104,10 @@ class Hooks {
         add_action( 'add_meta_boxes',                           array( $this, self::$wp_action_prefix . 'peerraiser_meta_boxes' ) );
         add_action( 'do_meta_boxes',                            array( $this, self::$wp_action_prefix . 'peerraiser_do_meta_boxes' ) );
         add_action( 'manage_pr_campaign_posts_custom_column',   array( $this, self::$wp_action_prefix . 'peerraiser_manage_campaign_columns' ), 10, 2 );
+        add_action( 'manage_fundraiser_posts_custom_column',    array( $this, self::$wp_action_prefix . 'peerraiser_manage_fundraiser_columns' ), 10, 2 );
+        add_action( 'manage_pr_team_posts_custom_column',       array( $this, self::$wp_action_prefix . 'peerraiser_manage_team_columns' ), 10, 2 );
+        add_action( 'manage_pr_donation_posts_custom_column',   array( $this, self::$wp_action_prefix . 'peerraiser_manage_donation_columns' ), 10, 2 );
+        add_action( 'manage_pr_donor_posts_custom_column',      array( $this, self::$wp_action_prefix . 'peerraiser_manage_donor_columns' ), 10, 2 );
         add_action( 'template_redirect',                        array( $this, self::$wp_action_prefix . 'peerraiser_template_redirect' ), 10, 2 );
         add_action( 'user_register',                            array( $this, self::$wp_action_prefix . 'peerraiser_user_registered' ), 10, 1 );
 
