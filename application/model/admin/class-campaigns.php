@@ -58,27 +58,34 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         ),
                         'campaign_goal' => array(
                             'name' => __('Campaign Goal', 'peerraiser'),
-                            'id' => '_peerraiser_campaign_goal',
-                            'type' => 'text_money',
+                            'id'   => '_peerraiser_campaign_goal',
+                            'type' => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
+                            ),
                             'before_field' => self::get_currency_symbol(),
                         ),
                         'individual_goal' => array(
                             'name' => __('Suggested Individual Goal', 'peerraiser'),
-                            'id' => '_peerraiser_suggested_individual_goal',
-                            'type' => 'text_money',
-                            'before_field' => self::get_currency_symbol(),
-                            'attributes'        => array(
+                            'id'   => '_peerraiser_suggested_individual_goal',
+                            'type' => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser'),
                                 'data-tooltip' => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
                             ),
                         ),
                         'team_goal' => array(
                             'name' => __('Suggested Team Goal', 'peerraiser'),
-                            'id' => '_peerraiser_suggested_team_goal',
-                            'type' => 'text_money',
-                            'before_field' => self::get_currency_symbol(),
-                            'attributes'        => array(
+                            'id'   => '_peerraiser_suggested_team_goal',
+                            'type' => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser'),
                                 'data-tooltip' => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
                             ),
+                            'before_field' => self::get_currency_symbol(),
                         ),
                         'campaign_limit' => array(
                             'name' => __( 'Registration Limit', 'peerraiser' ),
