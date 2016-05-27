@@ -278,16 +278,42 @@ class Campaigns extends \PeerRaiser\Controller\Base {
     public function manage_columns( \PeerRaiser\Core\Event $event ) {
         list( $column_name, $post_id ) = $event->get_arguments();
 
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
         switch ( $column_name ) {
+            case 'amount_raised':
+                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_campaign( $post_id );
+                break;
+
+            case 'goal_amount':
+                $goal_amount = get_post_meta( $post_id, '_peerraiser_campaign_goal', true);
+                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
+                break;
+
+            case 'fundraisers':
+                echo $this->get_total_fundraisers( $post_id );
+                break;
+
+            case 'teams':
+                echo $this->get_total_teams( $post_id );
+                break;
+
+            case 'donations':
+                echo $this->get_total_donations( $post_id );
+                break;
+
             case 'start_date':
                 $start_date = get_post_meta( $post_id, '_peerraiser_campaign_start_date', true );
-                echo ( !empty($start_date) ) ? date_i18n( get_option( 'date_format' ), $start_date ) : __('N/A', 'peerraiser');
+                echo ( !empty($start_date) ) ? date_i18n( get_option( 'date_format' ), $start_date ) : '&ndash;';
                 break;
 
             case 'end_date':
                 $end_date = get_post_meta( $post_id, '_peerraiser_campaign_end_date', true );
                 echo ( !empty($end_date) ) ? date_i18n( get_option( 'date_format' ), $end_date ) : '&infin;';
                 break;
+
         }
 
     }
@@ -312,6 +338,9 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $orderby = $query->get( 'orderby');
 
         switch ( $orderby ) {
+
+            case 'amount_raised':
+
             case 'campaign_start_date':
                 $query->set('meta_query', array(
                     'relation' => 'OR',
@@ -353,6 +382,42 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             add_filter('months_dropdown_results', '__return_empty_array');
         }
 
+    }
+
+
+    public function get_total_fundraisers( $campaign_id ) {
+        $args = array(
+            'post_type' => 'fundraiser',
+            'connected_type' => 'campaign_to_fundraiser',
+            'connected_items' => $campaign_id,
+            'posts_per_page' => -1
+        );
+        $fundraisers = new \WP_Query( $args );
+        return $fundraisers->found_posts;
+    }
+
+
+    public function get_total_teams( $campaign_id ) {
+        $args = array(
+            'post_type' => 'fundraiser',
+            'connected_type' => 'campaigns_to_teams',
+            'connected_items' => $campaign_id,
+            'posts_per_page' => -1
+        );
+        $teams = new \WP_Query( $args );
+        return $teams->found_posts;
+    }
+
+
+    public function get_total_donations( $campaign_id ) {
+        $args = array(
+            'post_type' => 'fundraiser',
+            'connected_type' => 'donation_to_campaign',
+            'connected_items' => $campaign_id,
+            'posts_per_page' => -1
+        );
+        $donations = new \WP_Query( $args );
+        return $donations->found_posts;
     }
 
 }
