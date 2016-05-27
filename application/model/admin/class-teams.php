@@ -39,9 +39,9 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'options' => array(self::get_instance(), 'get_selected_post'),
                         ),
                         'goal_amount' => array(
-                            'name'         => __('Goal Amount', 'peerraiser'),
-                            'id'           => '_goal_amount',
-                            'type'         => 'text',
+                            'name' => __('Goal Amount', 'peerraiser'),
+                            'id'   => '_goal_amount',
+                            'type' => 'text',
                             'attributes' => array(
                                 'pattern' => '^\d*(\.\d{2}$)?',
                                 'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
