@@ -38,11 +38,13 @@ class Donations extends \PeerRaiser\Model\Admin {
                         'donation_amount' => array(
                             'name'         => __('Donation Amount', 'peerraiser'),
                             'id'           => '_donation_amount',
-                            'type'         => 'text_money',
-                            'before_field' => self::get_currency_symbol(),
-                            'attributes'  => array(
+                            'type'         => 'text',
+                            'attributes' => array(
+                                'pattern' => '^\d*(\.\d{2}$)?',
+                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser'),
                                 'required' => 'required'
                             ),
+                            'before_field' => self::get_currency_symbol(),
                         ),
                         'campaign' => array(
                             'name'    => __('Campaign', 'peerraiser'),
