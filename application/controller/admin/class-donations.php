@@ -61,6 +61,10 @@ class Donations extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_donation' ),
             ),
+            'peerraiser_manage_donation_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'manage_columns' ),
+            )
         );
     }
 
@@ -411,6 +415,56 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     private function make_donation_title( $data ) {
         return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
+    }
+
+
+    public function manage_columns( \PeerRaiser\Core\Event $event ) {
+        list( $column_name, $post_id ) = $event->get_arguments();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        switch ( $column_name ) {
+
+            case 'id':
+                echo $post_id;
+                break;
+
+            case 'link':
+                echo '<a href="post.php?action=edit&post=' . $post_id . '">' . __( 'View Details', 'peerraiser' ) . '</a>';
+                break;
+
+            case 'donor':
+                $donor_id = get_post_meta( $post_id, '_donor', true );
+                echo get_post_meta( $donor_id, '_donor_first_name', true) . ' ' . get_post_meta( $donor_id, '_donor_last_name', true);
+                break;
+
+            case 'donation_amount':
+                echo $currency_symbol . get_post_meta( $post_id, '_donation_amount', true );
+                break;
+
+            case 'method':
+                echo get_post_meta( $post_id, '_payment_method', true );
+                break;
+
+            case 'campaign':
+                $campaign_id = get_post_meta( $post_id, '_campaign', true);
+                echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
+                break;
+
+            case 'fundraiser':
+                $fundraiser_id = get_post_meta( $post_id, '_fundraiser', true);
+                echo ( $fundraiser_id ) ? '<a href="post.php?action=edit&post='.$fundraiser_id.'">' . get_the_title( $fundraiser_id ) . '</a>' : '&mdash;';
+                break;
+
+            case 'test_mode':
+                $test_mode = get_post_meta( $post_id, '_test_mode', true );
+                echo ( $test_mode ) ? __( 'No', 'peerraiser' ) : __( 'Yes', 'peerraiser');
+                break;
+
+        }
+
     }
 
 
