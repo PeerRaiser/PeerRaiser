@@ -67,6 +67,67 @@ class Stats {
 
     }
 
+    public static function get_total_donations_by_campaign( $campaign_id ) {
+        global $wpdb;
+
+        $total = (float) 0;
+
+        $args = array(
+            'post_type'       => 'pr_donation',
+            'posts_per_page'  => -1,
+            'post_status'     => 'publish',
+            'connected_type'  => 'donation_to_campaign',
+            'connected_items' => $campaign_id
+        );
+        $donations = new \WP_Query( $args );
+
+        $post_ids = wp_list_pluck( $donations->posts, 'ID' );
+
+        if ( $post_ids ) {
+            $post_ids = implode( ',', $post_ids );
+            $total += $wpdb->get_var( "SELECT SUM(meta_value) FROM $wpdb->postmeta WHERE meta_key = '_donation_amount' AND post_id IN({$post_ids})" );
+        }
+
+        return number_format_i18n( $total, 2);
+
+    }
+
+    public static function get_total_donations_by_team( $team_id ) {
+        global $wpdb;
+
+        $total = (float) 0;
+
+        $args = array(
+            'post_type'       => 'fundraiser',
+            'posts_per_page'  => -1,
+            'post_status'     => 'publish',
+            'connected_type'  => 'fundraiser_to_team',
+            'connected_items' => $team_id
+        );
+        $fundraisers = new \WP_Query( $args );
+
+        $post_ids = wp_list_pluck( $fundraisers->posts, 'ID' );
+
+        $args = array(
+            'post_type'       => 'pr_donation',
+            'posts_per_page'  => -1,
+            'post_status'     => 'publish',
+            'connected_type'  => 'donation_to_fundraiser',
+            'connected_items' => $post_ids
+        );
+        $donations = new \WP_Query( $args );
+
+        $post_ids = wp_list_pluck( $donations->posts, 'ID' );
+
+        if ( $post_ids ) {
+            $post_ids = implode( ',', $post_ids );
+            $total += $wpdb->get_var( "SELECT SUM(meta_value) FROM $wpdb->postmeta WHERE meta_key = '_donation_amount' AND post_id IN({$post_ids})" );
+        }
+
+        return number_format_i18n( $total, 2);
+
+    }
+
     public static function get_top_donors( $limit = 10 ){
         global $wpdb;
 
