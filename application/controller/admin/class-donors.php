@@ -41,6 +41,10 @@ class Donors extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'maybe_connect_user_to_donor' ),
             ),
+            'peerraiser_manage_donor_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'manage_columns' ),
+            )
         );
     }
 
@@ -400,6 +404,51 @@ class Donors extends \PeerRaiser\Controller\Base {
         }
 
         return $amount;
+    }
+
+
+    public function manage_columns( \PeerRaiser\Core\Event $event ) {
+        list( $column_name, $post_id ) = $event->get_arguments();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        switch ( $column_name ) {
+
+
+            case 'id':
+                echo $post_id;
+                break;
+
+            case 'link':
+                echo '<a href="post.php?action=edit&post=' . $post_id . '">' . __( 'View Details', 'peerraiser' ) . '</a>';
+                break;
+
+            case 'first_name':
+                echo get_post_meta( $post_id, '_donor_first_name', true );
+                break;
+
+            case 'last_name':
+                echo get_post_meta( $post_id, '_donor_last_name', true );
+                break;
+
+            case 'email_address':
+                echo get_post_meta( $post_id, '_donor_email', true );
+                break;
+
+            case 'username':
+                $user_id = get_post_meta( $post_id, '_donor_user_account', true );
+                $user_info = get_userdata( $user_id );
+                echo ( $user_id ) ? '<a href="user-edit.php?user_id='.$user_id.'">' . $user_info->user_login  . '</a>' : '&mdash;';
+                break;
+
+            case 'total_donated':
+                echo $this->get_lifetime_donation_amount( $post_id );
+                break;
+
+        }
+
     }
 
 }
