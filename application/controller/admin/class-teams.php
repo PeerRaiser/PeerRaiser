@@ -46,6 +46,10 @@ class Teams extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_meta_boxes' ),
             ),
+            'peerraiser_manage_team_columns' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'manage_columns' ),
+            )
         );
     }
 
@@ -299,6 +303,44 @@ class Teams extends \PeerRaiser\Controller\Base {
     }
 
 
+    public function manage_columns( \PeerRaiser\Core\Event $event ) {
+        list( $column_name, $post_id ) = $event->get_arguments();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        switch ( $column_name ) {
+
+            case 'leader':
+                $leader_id = get_post_meta( $post_id, '_team_leader', true );
+                $user_info = get_userdata( $leader_id );
+                echo '<a href="user-edit.php?user_id='.$leader_id.'">' . $user_info->user_login  . '</a>';
+                break;
+
+            case 'campaign':
+                $campaign_id = get_post_meta( $post_id, '_team_campaign', true );
+                echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
+                break;
+
+            case 'goal_amount':
+                $goal_amount = get_post_meta( $post_id, '_goal_amount', true);
+                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
+                break;
+
+            case 'amount_raised':
+                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id );
+                break;
+
+            case 'fundraisers':
+                echo $this->get_total_fundraisers( $post_id );
+                break;
+
+        }
+
+    }
+
+
     private function is_edit_page( $new_edit = null ){
         global $pagenow;
         if (!is_admin()) return false;
@@ -310,6 +352,19 @@ class Teams extends \PeerRaiser\Controller\Base {
         } else {
             return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
         }
+    }
+
+
+    private function get_total_fundraisers( $team_id ) {
+        $args = array(
+            'post_type'       => 'fundraiser',
+            'posts_per_page'  => -1,
+            'post_status'     => 'publish',
+            'connected_type'  => 'fundraiser_to_team',
+            'connected_items' => $team_id
+        );
+        $fundraisers = new \WP_Query( $args );
+        return $fundraisers->found_posts;
     }
 
  }
