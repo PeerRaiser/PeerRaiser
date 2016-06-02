@@ -139,7 +139,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         add_meta_box(
             'donor_info',
-            __('Donor Info'),
+            __('Donor Info', 'peerraiser'),
             array( $this, 'display_donor_box' ),
             'pr_donor',
             'normal',
@@ -148,7 +148,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         add_meta_box(
             'donor_donations',
-            __('Donations'),
+            __('Donations', 'peerraiser'),
             array( $this, 'display_donation_list' ),
             'pr_donor'
         );
@@ -211,7 +211,7 @@ class Donors extends \PeerRaiser\Controller\Base {
             'last_name' => get_post_meta( $object->ID, '_donor_last_name', true ),
             'donor_email' => get_post_meta( $object->ID, '_donor_email', true ),
             'donor_id' => $object->ID,
-            'donor_user_account' => ( !empty($donor_user_account) ) ? '<a href="user-edit.php?user_id='.$donor_user_account.'">'.$donor_user_info->user_login.'</a>' : 'None',
+            'donor_user_account' => ( !empty($donor_user_account) ) ? '<a href="user-edit.php?user_id='.$donor_user_account.'">'.$donor_user_info->user_login.'</a>' : __('None', 'peerraiser'),
             'donor_since' => get_the_date(),
             'donor_class' => ( !empty($donor_user_account) ) ? 'user' : 'guest',
         );
@@ -260,20 +260,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         $donor = $this->get_donor_by_email( $email_address );
         update_post_meta( $donor->ID, '_donor_user_account', $user_id );
-    }
-
-
-    private function is_edit_page( $new_edit = null ){
-        global $pagenow;
-        if (!is_admin()) return false;
-
-        if ($new_edit == "edit") {
-            return in_array( $pagenow, array( 'post.php',  ) );
-        } elseif ($new_edit == "new") {
-            return in_array( $pagenow, array( 'post-new.php' ) );
-        } else {
-            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
-        }
     }
 
 
