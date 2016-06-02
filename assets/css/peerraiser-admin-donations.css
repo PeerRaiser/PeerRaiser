@@ -61,3 +61,113 @@
 #submitpost .donation-info .donation-key strong {
     font: 700 95% monospace;
 }
+/* Donor Card */
+#donor-card img.profile-image {
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+}
+#donor-card img.profile-image.guest {
+    background-color: #9d9b9b;
+}
+#donor-card {
+    display: -webkit-flex; /* Safari */
+    -webkit-align-items: center; /* Safari 7.0+ */
+    display: flex;
+    position: relative;
+}
+#donor-card h1 {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+#donor-card h1 span {
+    font-size: 50%;
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
+#donor-card .donor-meta p {
+    margin: 0;
+}
+#donor-card .donor-meta p:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+#donor-card .donor-meta .email:before {
+    content: "\f003";
+}
+#donor-card .donor-meta .since:before {
+    content: "\f017";
+}
+#donor-card .donor-meta .user-account:before {
+    content: "\f007";
+}
+#donor-card .donor-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    text-decoration: none;
+    font-size: 13px;
+}
+#donor-card .donor-link:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+/* Donation Summary */
+#donation-summary {
+    position: relative;
+}
+#donation-summary .transaction-info {
+    max-width: 500px;
+}
+#donation-summary .transaction-info td {
+    border: 1px solid #dddddd;
+}
+/* Misc */
+.text-center {
+    text-align: center;
+}
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
