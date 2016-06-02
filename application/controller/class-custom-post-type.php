@@ -93,8 +93,8 @@ class Custom_Post_Type extends Base {
             'title' => __('Team Name'),
             'leader' => __('Team Leader'),
             'campaign' => __('Campaign'),
-            'goal_amount' => __('Goal'),
             'amount_raised' => __('Raised'),
+            'goal_amount' => __('Goal'),
             'fundraisers' => __('Fundraisers'),
         ));
 
