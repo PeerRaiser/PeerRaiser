@@ -63,7 +63,7 @@ class Stats {
             $total += $wpdb->get_var( "SELECT SUM(meta_value) FROM $wpdb->postmeta WHERE meta_key = '_donation_amount' AND post_id IN({$post_ids})" );
         }
 
-        return number_format_i18n( $total, 2);
+        return $total;
 
     }
 
@@ -88,7 +88,7 @@ class Stats {
             $total += $wpdb->get_var( "SELECT SUM(meta_value) FROM $wpdb->postmeta WHERE meta_key = '_donation_amount' AND post_id IN({$post_ids})" );
         }
 
-        return number_format_i18n( $total, 2);
+        return $total;
 
     }
 
