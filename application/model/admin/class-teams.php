@@ -197,6 +197,17 @@ class Teams extends \PeerRaiser\Model\Admin {
         return new \WP_Query( $args );
     }
 
+
+    public function get_participants( $post_id, $paged = 1 ){
+        $args = array(
+            'number'  => 20,
+            // 'connected_type'  => 'team_to_participants',
+            // 'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_User_Query( $args );
+    }
+
     private static function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
