@@ -16,3 +16,35 @@
     height: 90px;
     box-sizing: border-box;
 }
+/* Misc */
+.text-center {
+    text-align: center;
+}
+/* Campaign Stats */
+#campaign_stats .campaign-info {
+    padding: 0 10px;
+}
+#campaign_stats .campaign-info li {
+    border-bottom: 1px solid #dddddd;
+    padding: 10px 0;
+    margin: 0;
+}
+#campaign_stats .campaign-info li:last-child {
+    border-bottom: 0;
+}
+#campaign_stats .campaign-info li strong {
+    font-size: 14px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+#campaign_stats .campaign-info li span {
+    display: inline-block;
+    padding: 3px 7px;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    color: #fff;
+    background-color: #91be4c;
+    border-radius: 10px;
+}
