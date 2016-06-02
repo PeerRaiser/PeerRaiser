@@ -64,7 +64,12 @@ class Donations extends \PeerRaiser\Controller\Base {
             'peerraiser_manage_donation_columns' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'manage_columns' ),
-            )
+            ),
+            'peerraiser_meta_boxes' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_meta_boxes' ),
+            ),
         );
     }
 
@@ -399,20 +404,6 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 
-    private function is_edit_page( $new_edit = null ){
-        global $pagenow;
-        if (!is_admin()) return false;
-
-        if ($new_edit == "edit") {
-            return in_array( $pagenow, array( 'post.php',  ) );
-        } elseif ($new_edit == "new") {
-            return in_array( $pagenow, array( 'post-new.php' ) );
-        } else {
-            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
-        }
-    }
-
-
     private function make_donation_title( $data ) {
         return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
     }
@@ -465,6 +456,79 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         }
 
+    }
+
+
+    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+        if ( !$this->is_edit_page( 'edit' ) )
+            return;
+
+        add_meta_box(
+            'donor_info',
+            __('Donor Info', 'peerraiser'),
+            array( $this, 'display_donor_box' ),
+            'pr_donation',
+            'normal',
+            'high'
+        );
+
+        add_meta_box(
+            'transaction_summary',
+            __('Transaction Summary', 'peerraiser'),
+            array( $this, 'display_transaction_summary' ),
+            'pr_donation'
+        );
+
+    }
+
+
+    public function display_donor_box( $object ) {
+        $donor_id = get_post_meta( $object->ID, '_donor', true );
+        $donor_user_account = get_post_meta( $donor_id, '_donor_user_account', true);
+        $donor_user_info = get_userdata($donor_user_account);
+
+        $view_args = array(
+            'profile_image_url' => ( !empty($donor_user_account) ) ? get_avatar_url( $donor_user_account ) : \PeerRaiser\Core\Setup::get_plugin_config()->get('images_url') . 'profile-mask.png',
+            'first_name' => get_post_meta( $donor_id, '_donor_first_name', true ),
+            'last_name' => get_post_meta( $donor_id, '_donor_last_name', true ),
+            'donor_email' => get_post_meta( $donor_id, '_donor_email', true ),
+            'donor_id' => $donor_id,
+            'donor_user_account' => ( !empty($donor_user_account) ) ? '<a href="user-edit.php?user_id='.$donor_user_account.'">'.$donor_user_info->user_login.'</a>' : __('None', 'peerraiser'),
+            'donor_since' => get_the_date(),
+            'donor_class' => ( !empty($donor_user_account) ) ? 'user' : 'guest',
+        );
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/donation-card' );
+    }
+
+
+    public function display_transaction_summary( $object ) {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $donor_id = get_post_meta( $object->ID, '_donor', true );
+        $campaign_id = get_post_meta( $object->ID, '_campaign', true);
+        $fundraiser_id = get_post_meta( $object->ID, '_fundraiser', true);
+        $team_id = get_post_meta( $fundraiser_id, '_fundraiser_team', true);
+
+        $view_args = array(
+            'currency_symbol' => $currency_symbol,
+            'first_name' => get_post_meta( $donor_id, '_donor_first_name', true ),
+            'last_name' => get_post_meta( $donor_id, '_donor_last_name', true ),
+            'donation_amount' => number_format_i18n( get_post_meta( $object->ID, '_donation_amount', true ), 2),
+            'donation_date' => date_i18n( get_option( 'date_format' ), get_the_date( $object->ID) ),
+            'campaign_id' => $campaign_id,
+            'campaign_title' => get_the_title( $campaign_id ),
+            'fundraiser_id' => ( $fundraiser_id ) ? $fundraiser_id : false,
+            'fundraiser_title' => ( $fundraiser_id ) ? get_the_title( $fundraiser_id ) : __( 'N/A', 'peerraiser' ),
+            'team_id' => ( $team_id ) ? $team_id : false,
+            'team_title' => ( $team_id ) ? get_the_title( $team_id ) : __( 'N/A', 'peerraiser' )
+        );
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/donation-summary' );
     }
 
 
