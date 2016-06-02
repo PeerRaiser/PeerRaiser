@@ -136,5 +136,18 @@ class View {
         $this->assign( 'config', $this->config );
     }
 
+    protected function is_edit_page( $new_edit = null ){
+        global $pagenow;
+        if (!is_admin()) return false;
+
+        if ($new_edit == "edit") {
+            return in_array( $pagenow, array( 'post.php',  ) );
+        } elseif ($new_edit == "new") {
+            return in_array( $pagenow, array( 'post-new.php' ) );
+        } else {
+            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
+        }
+    }
+
 }
 
