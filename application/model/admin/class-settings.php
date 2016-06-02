@@ -183,8 +183,8 @@ class Settings extends \PeerRaiser\Model\Admin {
                     'id'     => 'advanced-settings',
                     'fields' => array(
                         'test_mode' => array(
-                            'name'    => 'Enable Test Mode',
-                            'id'      => 'test_mode',
+                            'name'    => 'Delete all data when uninstalling plugin?',
+                            'id'      => 'uninstall_deletes_data',
                             'type'    => 'select',
                             'default' => array(__CLASS__, 'get_field_value'),
                             'options' => array(
