@@ -57,7 +57,12 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'peerraiser_admin_head' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'remove_date_filter' )
-            )
+            ),
+            'peerraiser_meta_boxes' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_meta_boxes' ),
+            ),
         );
     }
 
@@ -74,9 +79,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         return self::$instance;
     }
-
-
-    public function __construct(){}
 
 
     public function register_meta_boxes() {
@@ -418,6 +420,170 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         );
         $donations = new \WP_Query( $args );
         return $donations->found_posts;
+    }
+
+
+    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+        if ( $this->is_edit_page( 'new' ) )
+            return;
+
+        add_meta_box(
+            'campaign_donations',
+            __('Donations', 'peerraiser'),
+            array( $this, 'display_donations_list' ),
+            'pr_campaign'
+        );
+
+        add_meta_box(
+            'campaign_fundraisers',
+            __('Fundraisers', 'peerraiser'),
+            array( $this, 'display_fundraisers_list' ),
+            'pr_campaign'
+        );
+
+        add_meta_box(
+            'campaign_teams',
+            __('Teams', 'peerraiser'),
+            array( $this, 'display_teams_list' ),
+            'pr_campaign'
+        );
+
+        add_meta_box(
+            "campaign_stats",
+            __( 'Campaign Stats', 'peerraiser'),
+            array( $this, 'display_campaign_stats' ),
+            'pr_campaign',
+            'side'
+        );
+
+    }
+
+
+    public function display_fundraisers_list() {
+        global $post;
+        $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
+
+        $campaigns    = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaign_fundraisers = $campaigns->get_fundraisers( $post->ID, $paged );
+
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $args = array(
+            'custom_query' => $campaign_fundraisers,
+            'paged'        => isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1,
+            'paged_name'   => 'fundraisers_page'
+        );
+        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+
+        $view_args = array(
+            'number_of_fundraisers' => $campaign_fundraisers->found_posts,
+            'pagination'            => $pagination,
+            'currency_symbol'       => $currency_symbol,
+            'fundraisers'           => $campaign_fundraisers->get_posts(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/campaign-fundraisers' );
+    }
+
+
+    public function display_donations_list() {
+        global $post;
+        $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
+
+        $campaigns    = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaign_donations = $campaigns->get_donations( $post->ID, $paged );
+
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $args = array(
+            'custom_query' => $campaign_donations,
+            'paged'        => isset($_GET['donations_page']) ? $_GET['donations_page'] : 1,
+            'paged_name'   => 'donations_page'
+        );
+        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+
+        $view_args = array(
+            'number_of_donations' => $campaign_donations->found_posts,
+            'pagination'          => $pagination,
+            'currency_symbol'     => $currency_symbol,
+            'donations'           => $campaign_donations->get_posts(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/campaign-donations' );
+    }
+
+
+    public function display_teams_list() {
+        global $post;
+        $paged = isset($_GET['teams_page']) ? $_GET['teams_page'] : 1;
+
+        $campaigns      = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaign_teams = $campaigns->get_teams( $post->ID, $paged );
+
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $args = array(
+            'custom_query' => $campaign_teams,
+            'paged'        => isset($_GET['teams_page']) ? $_GET['teams_page'] : 1,
+            'paged_name'   => 'teams_page'
+        );
+        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+
+        $view_args = array(
+            'number_of_teams' => $campaign_teams->found_posts,
+            'pagination'      => $pagination,
+            'currency_symbol' => $currency_symbol,
+            'teams'           => $campaign_teams->get_posts(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/campaign-teams' );
+    }
+
+
+    public function display_campaign_stats( $post ) {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $end_date = get_post_meta( $post->ID, '_peerraiser_campaign_end_date', true );
+        $goal = get_post_meta( $post->ID, '_peerraiser_campaign_goal', true );
+        $days_left = 0;
+
+        if ( !empty( $end_date ) ) {
+            $today = time();
+            $difference = $end_date - $today;
+            if ($difference < 0) {
+                $days_until = 0;
+            }
+            $days_left = floor($difference/60/60/24);
+        }
+
+        $total_donations = \PeerRaiser\Helper\Stats::get_total_donations_by_campaign( $post->ID );
+
+        $view_args = array(
+            'currency_symbol' => $currency_symbol,
+            'has_goal' => ( $goal !== '0.00' ),
+            'has_end_date' => !empty( $end_date ),
+            'total_donations' => number_format_i18n( $total_donations, 2),
+            'goal_percent' => ( $goal !== '0.00' ) ? number_format( ( $total_donations / $goal ) * 100, 2) : 0,
+            'days_left' => $days_left,
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/campaign-stats' );
     }
 
 }
