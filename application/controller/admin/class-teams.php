@@ -262,11 +262,14 @@ class Teams extends \PeerRaiser\Controller\Base {
     }
 
 
-    public static function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+        if ( $this->is_edit_page( 'new' ) )
+            return;
+
         add_meta_box(
             'teams_fundraisers',
-            __('Fundraisers'),
-            array( self::get_instance(), 'display_fundraisers_list' ),
+            __('Fundraisers', 'peerraiser'),
+            array( $this, 'display_fundraisers_list' ),
             'pr_team'
         );
     }
@@ -323,13 +326,13 @@ class Teams extends \PeerRaiser\Controller\Base {
                 echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
                 break;
 
+            case 'amount_raised':
+                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id );
+                break;
+
             case 'goal_amount':
                 $goal_amount = get_post_meta( $post_id, '_goal_amount', true);
                 echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
-                break;
-
-            case 'amount_raised':
-                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id );
                 break;
 
             case 'fundraisers':
@@ -339,21 +342,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         }
 
     }
-
-
-    private function is_edit_page( $new_edit = null ){
-        global $pagenow;
-        if (!is_admin()) return false;
-
-        if ($new_edit == "edit") {
-            return in_array( $pagenow, array( 'post.php',  ) );
-        } elseif ($new_edit == "new") {
-            return in_array( $pagenow, array( 'post-new.php' ) );
-        } else {
-            return in_array( $pagenow, array( 'post.php', 'post-new.php' ) );
-        }
-    }
-
 
     private function get_total_fundraisers( $team_id ) {
         $args = array(
