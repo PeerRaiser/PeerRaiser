@@ -42,6 +42,11 @@ class Fundraisers extends Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'manage_columns' ),
             ),
+            'peerraiser_meta_boxes' => array(
+                array( 'peerraiser_on_admin_view', 200 ),
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'add_meta_boxes' ),
+            ),
         );
     }
 
@@ -58,9 +63,6 @@ class Fundraisers extends Base {
 
         return self::$instance;
     }
-
-
-    public function __construct(){}
 
 
     public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
@@ -306,6 +308,50 @@ class Fundraisers extends Base {
 
         }
 
+    }
+
+
+    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+        if ( $this->is_edit_page( 'new' ) )
+            return;
+
+        add_meta_box(
+            'fundraiser_donations',
+            __('Donations', 'peerraiser'),
+            array( $this, 'display_donations_list' ),
+            'fundraiser'
+        );
+    }
+
+
+    public function display_donations_list() {
+        global $post;
+        $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
+
+        $fundraisers_model    = \PeerRaiser\Model\Admin\Fundraisers::get_instance();
+        $fundraiser_donations = $fundraisers_model->get_donations( $post->ID, $paged );
+
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $args = array(
+            'custom_query' => $fundraiser_donations,
+            'paged'        => isset($_GET['donations_page']) ? $_GET['donations_page'] : 1,
+            'paged_name'   => 'donations_page'
+        );
+        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+
+        $view_args = array(
+            'number_of_donations' => $fundraiser_donations->found_posts,
+            'pagination'          => $pagination,
+            'currency_symbol'     => $currency_symbol,
+            'donations'           => $fundraiser_donations->get_posts(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/partials/fundraiser-donations' );
     }
 
  }
