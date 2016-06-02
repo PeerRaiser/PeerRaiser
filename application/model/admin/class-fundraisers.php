@@ -192,6 +192,19 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
     }
 
 
+    public function get_donations( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'pr_donation',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'donation_to_fundraiser',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
+
     private static function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
