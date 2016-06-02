@@ -247,6 +247,42 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
+    public function get_fundraisers( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'fundraiser',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'campaign_to_fundraiser',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
+    public function get_donations( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'pr_donation',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'donation_to_campaign',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
+    public function get_teams( $post_id, $paged = 1 ){
+        $args = array(
+            'post_type'       => 'pr_team',
+            'posts_per_page'  => 20,
+            'post_status'     => 'publish',
+            'connected_type'  => 'campaigns_to_teams',
+            'connected_items' => $post_id,
+            'paged' => $paged
+        );
+        return new \WP_Query( $args );
+    }
+
     private static function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
