@@ -327,7 +327,7 @@ class Teams extends \PeerRaiser\Controller\Base {
                 break;
 
             case 'amount_raised':
-                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id );
+                echo $currency_symbol . number_format_i18n( \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id ), 2);
                 break;
 
             case 'goal_amount':
