@@ -24,7 +24,7 @@
                 ?>
                 <td><a href="user-edit.php?user_id=<?= $leader_id ?>"><?= $user_info->user_login ?></a></td>
 
-                <td><?= $peerraiser['currency_symbol'] . \PeerRaiser\Helper\Stats::get_total_donations_by_team( $team->ID ); ?></td>
+                <td><?= $peerraiser['currency_symbol'] . number_format_i18n( \PeerRaiser\Helper\Stats::get_total_donations_by_team( $team->ID ), 2); ?></td>
 
                 <?php $goal_amount = get_post_meta( $team->ID, '_goal_amount', true ) ?>
                 <td><?= ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $peerraiser['currency_symbol'] . number_format_i18n( $goal_amount, 2) : '&mdash;' ?></td>

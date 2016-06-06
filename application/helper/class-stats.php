@@ -39,7 +39,7 @@ class Stats {
             $total = 0;
         }
 
-        return number_format_i18n( $total, 2 );
+        return $total;
     }
 
     public static function get_total_donations_by_fundraiser( $fundraiser_id ) {
@@ -124,7 +124,7 @@ class Stats {
             $total += $wpdb->get_var( "SELECT SUM(meta_value) FROM $wpdb->postmeta WHERE meta_key = '_donation_amount' AND post_id IN({$post_ids})" );
         }
 
-        return number_format_i18n( $total, 2);
+        $total;
 
     }
 
