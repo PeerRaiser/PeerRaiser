@@ -33,11 +33,11 @@ class Settings extends Base {
         $active_section = isset( $_GET[ 'section' ] ) ? sanitize_text_field( $_GET['section'] ) : $active_tab;
 
         $view_args = array(
-            'active_tab' => $active_tab,
+            'active_tab'     => $active_tab,
             'active_section' => $active_section,
-            'tabs'       => $this->get_tabs(),
-            'sections'   => $this->get_sections(),
-            'content'    => $this->get_settings_content( $active_tab, $active_section ),
+            'tabs'           => $this->get_tabs(),
+            'sections'       => $this->get_sections(),
+            'content'        => $this->get_settings_content( $active_tab, $active_section ),
         );
 
         $this->assign( 'peerraiser', $view_args );
