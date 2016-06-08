@@ -139,6 +139,9 @@ class Install extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
+        if ( !empty($plugin_options) )
+            return;
+
         // Default options
         $plugin_options['currency']                          = $this->config->get( 'currency.default' );
         $plugin_options['fundraiser_slug']                   = 'give';
