@@ -252,8 +252,6 @@ class Bootstrap {
 
         // register the 'refresh dashboard' cron job
         // wp_schedule_event( time(), 'hourly', 'peerraiser_refresh_dashboard_data' );
-        // register the 'delete old post views' cron job
-        // wp_schedule_event( time(), 'daily', 'peerraiser_delete_old_post_views', array( '3 month' ) );
     }
 
 
