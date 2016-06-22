@@ -14,17 +14,17 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'peerraiser_cmb2_admin_init' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'register_meta_boxes' )
+                array( 'register_meta_boxes' ),
             ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'load_assets' )
+                array( 'load_assets' ),
             ),
             'peerraiser_admin_enqueue_styles_post_edit' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'load_assets' )
+                array( 'load_assets' ),
             ),
             'peerraiser_after_post_meta_added' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
@@ -38,25 +38,25 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
-            'cmb2_save_post_fields' => array(
+            'peerraiser_cmb2_save_post_fields' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'update_field_data' )
+                array( 'update_field_data' ),
             ),
             'peerraiser_manage_campaign_columns' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'manage_columns' )
+                array( 'manage_columns' ),
             ),
             'peerraiser_sortable_campaign_columns' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'sort_columns' )
+                array( 'sort_columns' ),
             ),
             'peerraiser_pre_get_posts' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'add_sort_type' )
+                array( 'add_sort_type' ),
             ),
             'peerraiser_admin_head' => array(
                 array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'remove_date_filter' )
+                array( 'remove_date_filter' ),
             ),
             'peerraiser_meta_boxes' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
