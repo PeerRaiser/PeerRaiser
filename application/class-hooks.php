@@ -101,6 +101,7 @@ class Hooks {
         add_action( 'before_delete_post',                       array( $this, self::$wp_action_prefix . 'peerraiser_before_delete_post' ), 10, 1 );
         add_action( 'cmb2_save_post_fields',                    array( $this, self::$wp_action_prefix . 'peerraiser_cmb2_save_post_fields' ), 10, 4 );
         add_action( 'save_post',                                array( $this, self::$wp_action_prefix . 'peerraiser_post_saved' ), 10, 3 );
+        add_action( 'publish_pr_donation',                      array( $this, self::$wp_action_prefix . 'peerraiser_donation_published' ), 10, 2 );
         add_action( 'save_post_pr_donation',                    array( $this, self::$wp_action_prefix . 'peerraiser_donation_post_saved' ), 10, 3 );
         add_action( 'delete_post',                              array( $this, self::$wp_action_prefix . 'peerraiser_post_deleted' ), 10, 1 );
         add_action( 'add_meta_boxes',                           array( $this, self::$wp_action_prefix . 'peerraiser_meta_boxes' ) );
