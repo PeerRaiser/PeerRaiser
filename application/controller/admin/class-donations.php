@@ -70,6 +70,10 @@ class Donations extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_meta_boxes' ),
             ),
+            'peerraiser_donation_published' => array(
+                array( 'peerraiser_on_plugin_is_active', 200 ),
+                array( 'delete_transient' ),
+            )
         );
     }
 
@@ -401,11 +405,9 @@ class Donations extends \PeerRaiser\Controller\Base {
             ) );
         }
 
-    }
+        // Clear transient
+        delete_transient( 'peerraiser_donations_total' );
 
-
-    private function make_donation_title( $data ) {
-        return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
     }
 
 
@@ -530,6 +532,16 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->assign( 'peerraiser', $view_args );
 
         $this->render( 'backend/partials/donation-summary' );
+    }
+
+
+    public function delete_transient( \PeerRaiser\Core\Event $event ) {
+        delete_transient( 'peerraiser_donations_total' );
+    }
+
+
+    private function make_donation_title( $data ) {
+        return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
     }
 
 
