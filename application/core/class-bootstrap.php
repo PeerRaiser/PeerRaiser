@@ -81,6 +81,7 @@ class Bootstrap {
         $this->register_frontend_actions();
         $this->register_shortcodes();
         $this->register_connections();
+        $this->register_activity_log();
 
         // PeerRaiser loaded finished. Triggering event for other plugins
         \PeerRaiser\Hooks::get_instance()->peerraiser_ready();
@@ -210,6 +211,12 @@ class Bootstrap {
 
         $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
         $dispatcher->add_listener( 'peerraiser_option_update', array( $cache_helper, 'purge_cache' ) );
+    }
+
+
+    private function register_activity_log() {
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->add_subscriber( self::get_controller( 'Activity_Feed' ) );
     }
 
 
