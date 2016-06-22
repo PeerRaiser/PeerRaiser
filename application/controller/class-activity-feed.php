@@ -11,37 +11,44 @@ class Activity_Feed extends Base {
      * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
      */
     public static function get_subscribed_events() {
-        // return array(
-        //     'peerraiser_donation_post_saved' => array(
-        //         array( 'add_post_to_feed' )
-        //     ),
-        // );
+        return array(
+            'peerraiser_post_saved' => array(
+                array( 'maybe_add_post_to_feed' )
+            ),
+            'peerraiser_post_deleted' => array(
+                array( 'maybe_remove_post_from_feed' )
+            ),
+        );
     }
 
 
-    public static function add_activity ( $args = array() ) {
-        $current_feed = get_option( 'peerraiser_activity_feed', array() );
-
-        // If there are already 100 items, remove the oldest item
-        if ( count( $current_feed == 100 ) ) {
-            array_pop( $current_feed );
-        }
-
-        array_unshift( $current_feed, $args );
-        update_option( 'peerraiser_activity_feed', $current_feed );
-    }
-
-
-    public function add_post_to_feed( \PeerRaiser\Core\Event $event ) {
+    /**
+     * Determines if the saved post should be added to the feed, depending on the post
+     * type and status.
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     */
+    public function maybe_add_post_to_feed( \PeerRaiser\Core\Event $event ) {
         list( $post_id, $post, $update ) = $event->get_arguments();
 
-        // If this is an update instead of a new post, return
-        if ( $update )
+        // If this is an autosave, exit early
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
             return;
+
+        // If the status isn't "publish", exit early
+        if ( isset($post->post_status) && 'publish' != $post->post_status )
+            return;
+
+        // If this isn't a new post, exit early
+        if ( $post->post_modified_gmt != $post->post_date_gmt )
+            return;
+
+        $model = new \PeerRaiser\Model\Activity_Feed();
 
         switch ( $post->post_type ) {
             case 'pr_donation':
-                $this->add_donation_to_feed( $post );
+                $model->add_donation_to_feed( $post );
                 break;
 
             default:
@@ -51,17 +58,27 @@ class Activity_Feed extends Base {
     }
 
 
-    public function add_donation_to_feed( $post ) {
-        $donor_name      = get_post_meta( $post->ID, '_donor_name', true );
-        $donation_amount = get_post_meta( $post->ID, '_donation_amount', true );
-        $fundraiser_name = get_post_meta( $post->ID, '_fundraiser', true );
+    /**
+     * Determines if the deleted post should be removed from the activity feed
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     */
+    public function maybe_remove_post_from_feed( \PeerRaiser\Core\Event $event ) {
+        list( $post_id ) = $event->get_arguments();
 
-        $this->add_activity(
-            array(
-                'type' => 'new_donation',
-                'message' => "$donor_name donated $donation_amount to \"$fundraiser_name\""
-            )
-        );
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $post_type = get_post_type( $post_id );
+
+        switch ( $post_type ) {
+            case 'pr_donation':
+                $model->remove_activity( $post_id );
+                break;
+
+            default:
+                break;
+        }
+
     }
 
 }
