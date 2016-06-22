@@ -79,7 +79,15 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="column column-right">
             <h2><?php _e('Activity Feed', 'peerraiser') ?></h2>
             <ul class="activity-feed">
-                <li class="donation">
+                <?php foreach ($peerraiser['activity_feed'] as $activity) : ?>
+                    <li class="donation">
+                        <?= $activity['message']; ?>
+                        <span class="date">
+                            <?= human_time_diff( $activity['time'], current_time( 'timestamp' ) ); ?> ago
+                        </span>
+                    </li>
+                <?php endforeach; ?>
+                <!-- <li class="donation">
                     <a href="">John Smith</a> donated <a href="#">$50.00</a> to "<a href="#">My cool fundraiser</a>"
                     <span class="date">1 Day ago</span>
                 </li>
@@ -98,7 +106,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <li class="install">
                     PeerRaiser was installed
                     <span class="date">3 Days ago</span>
-                </li>
+                </li> -->
             </ul>
         </div>
 
