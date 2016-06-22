@@ -494,7 +494,7 @@ class Donations extends \PeerRaiser\Controller\Base {
             'donor_email' => get_post_meta( $donor_id, '_donor_email', true ),
             'donor_id' => $donor_id,
             'donor_user_account' => ( !empty($donor_user_account) ) ? '<a href="user-edit.php?user_id='.$donor_user_account.'">'.$donor_user_info->user_login.'</a>' : __('None', 'peerraiser'),
-            'donor_since' => get_the_date(),
+            'donor_since' => get_the_date( get_option( 'date_format' ), $donor_id),
             'donor_class' => ( !empty($donor_user_account) ) ? 'user' : 'guest',
         );
         $this->assign( 'peerraiser', $view_args );
@@ -519,6 +519,7 @@ class Donations extends \PeerRaiser\Controller\Base {
             'last_name' => get_post_meta( $donor_id, '_donor_last_name', true ),
             'donation_amount' => number_format_i18n( get_post_meta( $object->ID, '_donation_amount', true ), 2),
             'donation_date' => date_i18n( get_option( 'date_format' ), get_the_date( $object->ID) ),
+            'donation_date' => get_the_date( get_option( 'date_format' ), $object->ID),
             'campaign_id' => $campaign_id,
             'campaign_title' => get_the_title( $campaign_id ),
             'fundraiser_id' => ( $fundraiser_id ) ? $fundraiser_id : false,
