@@ -82,10 +82,13 @@ class Dashboard  extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        $currency = new \PeerRaiser\Model\Currency();
+        $currency        = new \PeerRaiser\Model\Currency();
+        $activity_feed   = new \PeerRaiser\Model\Activity_Feed();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
+
         $view_args = array(
+            'activity_feed'        => $activity_feed->get_activity_feed(),
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
             'show_welcome_message' => filter_var($plugin_options['show_welcome_message'], FILTER_VALIDATE_BOOLEAN),
