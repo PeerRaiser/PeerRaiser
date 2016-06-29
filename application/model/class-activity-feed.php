@@ -45,6 +45,41 @@ class Activity_Feed {
         );
     }
 
+    public function add_campaign_to_feed( $post ) {
+        $author_id      = get_post_field( 'post_author', $post->ID );
+        $author_details = get_user_by( 'id', $author_id );
+        $author_name    = $author_details->first_name . ' ' . $author_details->last_name;
+
+        $message = "<a href=\"user-edit.php?user_id=" . $author_id . "\">" . $author_name . "</a> created campaign \"<a href=\"post.php?action=edit&post=" . $post->ID . "\">" . get_the_title( $post->ID ) . "</a>\"";
+
+        $this->add_activity(
+            array(
+                'id'      => $post->ID,
+                'type'    => 'campaign',
+                'message' => $message,
+                'time'    => time()
+            )
+        );
+    }
+    public function add_fundraiser_to_feed( $post ) {
+        $participant_id        = $_POST[ '_fundraiser_participant' ];
+        $participant_details   = get_user_by( 'id', $participant_id );
+        $participant_full_name = $participant_details->first_name . ' ' . $participant_details->last_name;
+        $user_info             = get_userdata( $participant_id );
+        $participant_name      = ( trim( $participant_full_name ) == false ) ? $user_info->user_login : $participant_full_name;
+        $campaign_id           = $_POST[ '_fundraiser_campaign' ];
+
+        $message = "<a href=\"user-edit.php?user_id=" . $participant_id . "\">" . $participant_name . "</a> created fundraiser \"<a href=\"post.php?action=edit&post=" . $post->ID . "\">" . get_the_title( $post->ID ) . "</a>\" for the \"<a href=\"user-edit.php?user_id=" . $campaign_id . "\">" . get_the_title( $campaign_id ) . "</a>\" campaign";
+
+        $this->add_activity(
+            array(
+                'id'      => $post->ID,
+                'type'    => 'fundraiser',
+                'message' => $message,
+                'time'    => time()
+            )
+        );
+    }
 
     public function get_activity_feed() {
         return get_option( 'peerraiser_activity_feed', array() );
