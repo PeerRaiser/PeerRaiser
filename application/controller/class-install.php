@@ -185,6 +185,10 @@ class Install extends Base {
         // update capabilities
         $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
         $peerraiser_capabilities->populate_roles();
+
+        // Add to activity feed
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->add_install_notice_to_feed();
     }
 
 
