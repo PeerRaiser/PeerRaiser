@@ -88,14 +88,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </li>
                 <?php endforeach; ?>
                 <!--
-                <li class="fundraiser">
-                    <a href="">Jane Adams</a> created fundraiser "<a href="#">My cool fundraiser!</a>" for the "<a href="#">10k Fun Run!</a>" campaign
-                    <span class="date">2 Days ago</span>
-                </li>
-                <li class="campaign">
-                    <a href="">Admin</a> created campaign "<a href="#">10k Fun Run!</a>"
-                    <span class="date">2 Days ago</span>
-                </li>
                 <li class="settings">
                     <a href="">Admin</a> updated the Email settings
                     <span class="date">3 Days ago</span>
