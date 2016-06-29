@@ -80,17 +80,14 @@ if ( ! defined( 'ABSPATH' ) ) {
             <h2><?php _e('Activity Feed', 'peerraiser') ?></h2>
             <ul class="activity-feed">
                 <?php foreach ($peerraiser['activity_feed'] as $activity) : ?>
-                    <li class="donation">
+                    <li class="<?= $activity['type']; ?>">
                         <?= $activity['message']; ?>
                         <span class="date">
                             <?= human_time_diff( $activity['time'], current_time( 'timestamp' ) ); ?> ago
                         </span>
                     </li>
                 <?php endforeach; ?>
-                <!-- <li class="donation">
-                    <a href="">John Smith</a> donated <a href="#">$50.00</a> to "<a href="#">My cool fundraiser</a>"
-                    <span class="date">1 Day ago</span>
-                </li>
+                <!--
                 <li class="fundraiser">
                     <a href="">Jane Adams</a> created fundraiser "<a href="#">My cool fundraiser!</a>" for the "<a href="#">10k Fun Run!</a>" campaign
                     <span class="date">2 Days ago</span>
@@ -103,9 +100,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <a href="">Admin</a> updated the Email settings
                     <span class="date">3 Days ago</span>
                 </li>
-                <li class="install">
-                    PeerRaiser was installed
-                    <span class="date">3 Days ago</span>
                 </li> -->
             </ul>
         </div>
