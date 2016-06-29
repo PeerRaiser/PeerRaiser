@@ -51,6 +51,14 @@ class Activity_Feed extends Base {
                 $model->add_donation_to_feed( $post );
                 break;
 
+            case 'pr_campaign':
+                $model->add_campaign_to_feed( $post );
+                break;
+
+            case 'fundraiser':
+                $model->add_fundraiser_to_feed( $post );
+                break;
+
             default:
                 break;
         }
@@ -72,6 +80,8 @@ class Activity_Feed extends Base {
 
         switch ( $post_type ) {
             case 'pr_donation':
+            case 'pr_campaign':
+            case 'fundraiser':
                 $model->remove_activity( $post_id );
                 break;
 
