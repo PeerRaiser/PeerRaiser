@@ -5,13 +5,24 @@ namespace PeerRaiser\Model;
 class Activity_Feed {
 
     public function add_activity ( $args = array() ) {
-        $current_feed = get_option( 'peerraiser_activity_feed' );
+        $current_feed = get_option( 'peerraiser_activity_feed', array() );
         // If there are already 100 items, remove the oldest item
         if ( count( $current_feed ) == 100 ) {
             array_pop( $current_feed );
         }
         array_unshift( $current_feed, $args );
         update_option( 'peerraiser_activity_feed', $current_feed );
+    }
+
+    public function add_install_notice_to_feed(){
+        $this->add_activity(
+            array(
+                'id'      => 'peerraiser_installed',
+                'type'    => 'install',
+                'message' => __( 'PeerRaiser was installed', 'peerraiser'),
+                'time'    => time()
+            )
+        );
     }
 
     public function add_donation_to_feed( $post ) {
@@ -27,7 +38,7 @@ class Activity_Feed {
         $this->add_activity(
             array(
                 'id'      => $post->ID,
-                'type'    => 'new_donation',
+                'type'    => 'donation',
                 'message' => $message,
                 'time'    => time()
             )
