@@ -31,44 +31,77 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </ul>
 
                     <a href="#" class="close" data-message-type="welcome_message" data-nonce="<?= wp_create_nonce("dismiss_welcome_message") ?>"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
+
                 </div>
             <?php endif; ?>
 
             <div class="stats-wrapper group">
-                <div class="stats first total-raised">
-                    <p class="stat"><strong><?= $peerraiser['donations_total'] ?></strong></p>
-                    <p class="title"><?php _e('Total Raised', 'peerraiser') ?></p>
+                <div class="stats-container group first">
+                    <div class="stats total-raised">
+                        <p class="title"><?php _e('Donations', 'peerraiser') ?></p>
+                        <p class="stat"><strong><?= $peerraiser['donations_total'] ?></strong></p>
+                    </div>
+                    <div class="stats-bottom view">
+                        <a href="edit.php?post_type=pr_donation" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                    </div>
+                    <div class="stats-bottom add">
+                        <a href="post-new.php?post_type=pr_donation" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                    </div>
                 </div>
-                <div class="stats campaigns">
-                    <p class="stat"><strong><?= $peerraiser['campaigns_total'] ?></strong></p>
-                    <p class="title"><?= _n( 'Campaign', 'Campaigns', $peerraiser['campaigns_total'], 'peerraiser' ) ?></p>
+                <div class="stats-container group">
+                    <div class="stats campaigns">
+                        <p class="title"><?= _n( 'Campaign', 'Campaigns', $peerraiser['campaigns_total'], 'peerraiser' ) ?></p>
+                        <p class="stat"><strong><?= $peerraiser['campaigns_total'] ?></strong></p>
+                    </div>
+                    <div class="stats-bottom view">
+                        <a href="edit.php?post_type=pr_campaign" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                    </div>
+                    <div class="stats-bottom add">
+                        <a href="post-new.php?post_type=pr_campaign" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                    </div>
                 </div>
-                <div class="stats fundraisers">
-                    <p class="stat"><strong><?= $peerraiser['fundraisers_total'] ?></strong></p>
-                    <p class="title"><?= _n( 'Fundraiser', 'Fundraisers', $peerraiser['fundraisers_total'], 'peerraiser' ) ?></p>
+                <div class="stats-container group">
+                    <div class="stats fundraisers">
+                        <p class="title"><?= _n( 'Fundraiser', 'Fundraisers', $peerraiser['fundraisers_total'], 'peerraiser' ) ?></p>
+                        <p class="stat"><strong><?= $peerraiser['fundraisers_total'] ?></strong></p>
+                    </div>
+                    <div class="stats-bottom view">
+                        <a href="edit.php?post_type=fundraiser" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                    </div>
+                    <div class="stats-bottom add">
+                        <a href="post-new.php?post_type=fundraiser" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                    </div>
                 </div>
-                <div class="stats last donors">
-                    <p class="stat"><strong><?= $peerraiser['donors_total'] ?></strong></strong></p>
-                    <p class="title"><?= _n( 'Donor', 'Donors', $peerraiser['donors_total'], 'peerraiser' ) ?></p>
+                <div class="stats-container last">
+                    <div class="stats donors">
+                        <p class="title"><?= _n( 'Donor', 'Donors', $peerraiser['donors_total'], 'peerraiser' ) ?></p>
+                        <p class="stat"><strong><?= $peerraiser['donors_total'] ?></strong></strong></p>
+                    </div>
+                    <div class="stats-bottom view">
+                        <a href="edit.php?post_type=pr_donor" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                    </div>
+                    <div class="stats-bottom add">
+                        <a href="post-new.php?post_type=pr_donor" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                    </div>
                 </div>
             </div>
 
             <div class="top-lists group">
                 <div class="top-donors">
-                    <h2><?php _e('Top Donors', 'peerraiser') ?></h2>
+                    <p class="title"><?php _e('Top Donors', 'peerraiser') ?></p>
 
                     <ol>
                         <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
-                            <li><a href="post.php?action=edit&post=<?= $donor->ID ?>"><?= get_post_meta( $donor->ID, '_donor_first_name', true ) ?> <?= get_post_meta( $donor->ID, '_donor_last_name', true ) ?></a> - <?= $peerraiser['currency_symbol'] . number_format_i18n($donor->total, 2) ?></li>
+                            <li><a href="post.php?action=edit&post=<?= $donor->ID ?>"><?= get_post_meta( $donor->ID, '_donor_first_name', true ) ?> <?= get_post_meta( $donor->ID, '_donor_last_name', true ) ?></a><span class="amount"><?= $peerraiser['currency_symbol'] . number_format_i18n($donor->total, 2) ?></li></span>
                         <?php endforeach; ?>
                     </ol>
                 </div>
                 <div class="top-fundraisers">
-                    <h2><?php _e('Top Fundraisers', 'peerraiser') ?></h2>
+                    <p class="title"><?php _e('Top Fundraisers', 'peerraiser') ?></p>
 
                     <ol>
                         <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
-                            <li><a href="post.php?action=edit&post=<?= $fundraiser->ID ?>"><?= get_the_title( $fundraiser->ID ) ?></a> - <?= $peerraiser['currency_symbol'] . number_format_i18n($fundraiser->total, 2) ?></li>
+                            <li><a href="post.php?action=edit&post=<?= $fundraiser->ID ?>"><?= get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?= $peerraiser['currency_symbol'] . number_format_i18n($fundraiser->total, 2) ?></li></span>
                         <?php endforeach; ?>
                     </ol>
 
