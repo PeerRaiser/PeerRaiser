@@ -226,6 +226,10 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         if ( isset($field->value) && $field->value !== '' ) {
             $post = get_post($field->value);
             $results[$field->value] = get_the_title( $post );
+        } else {
+            $plugin_options = get_option( 'peerraiser_options', array() );
+            $post = get_post( $plugin_options[ 'thank_you_page' ] );
+            $results[ $plugin_options[ 'thank_you_page' ] ] = get_the_title( $post );
         }
 
         return $results;
