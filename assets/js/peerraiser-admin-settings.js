@@ -11,11 +11,106 @@
             },
             nonce             : $('input[id^="nonce_CMB2php"]'),
             xhrRequests       : [],
+
+            select2Fields : {
+                thank_you_page        : $("#thank_you_page"),
+                login_page            : $("#login_page"),
+                signup_page           : $("#signup_page"),
+                participant_dashboard : $("#participant_dashboard"),
+            },
+
+            select2Options : {
+                thank_you_page : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page'],
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                login_page : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                signup_page : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+                participant_dashboard : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    }
+                },
+            }
         },
 
         init = function(){
             bindEvents();
             createLaddaInstance();
+            renderSelect();
         },
 
         bindEvents = function() {
@@ -27,6 +122,14 @@
 
         createLaddaInstance = function(){
             $o.submitButton.laddaInstance = Ladda.create( $o.submitButton.$element[0] );
+        },
+
+        renderSelect = function() {
+            for ( var key in $o.select2Fields ) {
+                if ( $o.select2Fields[key].length ){
+                    $o.select2Fields[key].renderSelect($o.select2Options[key]);
+                }
+            }
         },
 
         handle_submit = function( l ){
