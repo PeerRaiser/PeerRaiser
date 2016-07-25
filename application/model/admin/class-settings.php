@@ -72,6 +72,31 @@ class Settings extends \PeerRaiser\Model\Admin {
                                 'true'    => __( 'Yes', 'peerraiser' ),
                             ),
                         ),
+                        'thank_you_page' =>   array(
+                            'name'              => __('Thank You Page', 'peerraiser'),
+                            'id'                => 'thank_you_page',
+                            'type'              => 'select',
+                            'options'           => array(__CLASS__, 'get_selected_post'),
+                        ),
+                        'login_page' =>   array(
+                            'name'              => __('Login Page', 'peerraiser'),
+                            'id'                => 'login_page',
+                            'type'              => 'select',
+                            'options'           => array(__CLASS__, 'get_selected_post'),
+                        ),
+                        'signup_page' =>   array(
+                            'name'              => __('Signup Page', 'peerraiser'),
+                            'id'                => 'signup_page',
+                            'type'              => 'select',
+                            'options'           => array(__CLASS__, 'get_selected_post'),
+                        ),
+                        'participant_dashboard' =>   array(
+                            'name'              => __('Participant Dashboard', 'peerraiser'),
+                            'id'                => 'participant_dashboard',
+                            'type'              => 'select',
+                            'options'           => array(__CLASS__, 'get_selected_post'),
+                        ),
+
                     ),
                 ),
                 array(
@@ -182,7 +207,7 @@ class Settings extends \PeerRaiser\Model\Admin {
                 array(
                     'id'     => 'advanced-settings',
                     'fields' => array(
-                        'test_mode' => array(
+                        'uninstall_deletes_data' => array(
                             'name'    => 'Delete all data when uninstalling plugin?',
                             'id'      => 'uninstall_deletes_data',
                             'type'    => 'select',
@@ -326,12 +351,14 @@ class Settings extends \PeerRaiser\Model\Admin {
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaign';
                 break;
 
+            // True or False questions
             case 'show_welcome_message':
             case 'disable_css_styles':
             case 'donation_receipt_enabled':
             case 'new_donation_notification_enabled':
             case 'welcome_email_enabled':
             case 'test_mode':
+            case 'uninstall_deletes_data':
                 $field_value = ( filter_var($plugin_options[$field['id']], FILTER_VALIDATE_BOOLEAN) ) ? 'true' : 'false';
                 break;
 
@@ -391,6 +418,18 @@ class Settings extends \PeerRaiser\Model\Admin {
 
     }
 
+
+    public static function get_selected_post( $field ) {
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $results = array();
+
+        $page_id = $plugin_options[ $field->args['id'] ];
+        $page    = get_post($page_id);
+
+        $results[$page_id] = get_the_title( $page );
+
+        return $results;
+    }
 
     public static function get_field_names() {
         $field_names = array();
