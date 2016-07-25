@@ -294,7 +294,7 @@ class Fundraisers extends Base {
 
             case 'team':
                 $team_id = get_post_meta( $post_id, '_fundraiser_team', true );
-                echo '<a href="post.php?action=edit&post='.$team_id.'">' . get_the_title( $team_id ) . '</a>';
+                echo ( !empty($team_id) ) ? '<a href="post.php?action=edit&post='.$team_id.'">' . get_the_title( $team_id ) . '</a>' : '&mdash;';
                 break;
 
             case 'goal_amount':
