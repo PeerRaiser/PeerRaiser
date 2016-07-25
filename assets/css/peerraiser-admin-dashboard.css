@@ -69,29 +69,38 @@
     width: 100%;
     margin: 1em 0;
 }
-.peerraiser-wrap.dashboard-wrap .stats {
+.peerraiser-wrap.dashboard-wrap .stats-container {
     width: 23%;
     float: left;
     margin: 0 1%;
-    text-align: center;
-    border: 1px solid rgba(0,0,0,.1);
-    border-radius: 3px;
-    background-color: #fff;
-    padding: 20px;
-    box-sizing: border-box;
 }
-.peerraiser-wrap.dashboard-wrap .stats.first {
+.peerraiser-wrap.dashboard-wrap .stats-container.first {
     width: 24%;
     margin: 0 1% 0 0;
 }
-.peerraiser-wrap.dashboard-wrap .stats.last {
+.peerraiser-wrap.dashboard-wrap .stats-container.last {
     width: 24%;
     margin: 0 0 0 1%;
+}
+.peerraiser-wrap.dashboard-wrap .stats {
+    border: 1px solid rgba(0,0,0,.1);
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    background-color: #fff;
+    padding: 11px 20px 11px 11px;
+    box-sizing: border-box;
+    width: 100%;
 }
 .peerraiser-wrap.dashboard-wrap .stats .stat {
     color: #323232;
     font-size: 2.5em;
     margin: 0;
+}
+.peerraiser-wrap.dashboard-wrap .stats .stat strong {
+    display: block;
+    text-align: right;
+    position: relative;
+    color: #4d4d4d;
 }
 .peerraiser-wrap.dashboard-wrap .stats span.thousand-symbol,
 .peerraiser-wrap.dashboard-wrap .stats span.currency-symbol {
@@ -102,39 +111,65 @@
     top: -5px;
 }
 .peerraiser-wrap.dashboard-wrap .stats .title {
-    color: #808080;
-    margin: 0;
+    color: #666;
+    margin: 0 0 17px;
     text-transform: uppercase;
-    margin-left: -10px;
+    font-weight: bold;
+    letter-spacing: -0.05em;
 }
-.peerraiser-wrap.dashboard-wrap .stats .title:before {
+.peerraiser-wrap.dashboard-wrap .stats .stat strong:before {
     width: 1.28571429em;
     text-align: center;
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 25px/1 FontAwesome;
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding: 0 5px 0 0;
-    font-size: 16px;
     vertical-align: bottom;
-    color: #82878c;
+    color: #3498db;
+    position: absolute;
     left: 0;
-    top: 4px;
-
+    top: 8px;
 }
-.peerraiser-wrap.dashboard-wrap .stats.donors .title:before {
+.peerraiser-wrap.dashboard-wrap .stats.donors .stat strong:before {
     content: "\f007";
 }
-.peerraiser-wrap.dashboard-wrap .stats.total-raised .title:before {
+.peerraiser-wrap.dashboard-wrap .stats.total-raised .stat strong:before {
     content: "\f0d6";
 }
-.peerraiser-wrap.dashboard-wrap .stats.campaigns .title:before {
+.peerraiser-wrap.dashboard-wrap .stats.campaigns .stat strong:before {
     content: "\f0a1";
 }
-.peerraiser-wrap.dashboard-wrap .stats.fundraisers .title:before {
+.peerraiser-wrap.dashboard-wrap .stats.fundraisers .stat strong:before {
     content: "\f004";
+}
+.peerraiser-wrap.dashboard-wrap .stats-bottom {
+    background-color: #f7f7f7;
+    padding: 5px 15px;
+    border: 1px solid rgba(0,0,0,.1);
+    border-top: 0;
+    box-sizing: border-box;
+}
+.peerraiser-wrap.dashboard-wrap .stats-bottom.view {
+    border-right: 0;
+    width: 75%;
+    float: left;
+    border-bottom-left-radius: 3px;
+}
+.peerraiser-wrap.dashboard-wrap .stats-bottom.add {
+    padding: 5px;
+    width: 25%;
+    float: left;
+    text-align: center;
+    border-bottom-right-radius: 3px;
+}
+.peerraiser-wrap.dashboard-wrap .stats-bottom a {
+    color: #8f8f8f;
+    text-decoration: none;
+    font-size: 12px;
+    display: block;
 }
 /* Top List */
 .top-donors,
@@ -145,13 +180,43 @@
     border: 1px solid rgba(0,0,0,.1);
     border-radius: 3px;
     background-color: #fff;
-    padding: 20px;
+    padding: 11px;
 }
 .top-donors {
     margin-right: 1%;
 }
 .top-fundraisers {
     margin-left: 1%;
+}
+.top-donors .title,
+.top-fundraisers .title {
+    color: #666;
+    margin: 0 0 17px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+}
+.top-donors ol,
+.top-fundraisers ol {
+    margin: 10px 0 0 0;
+    list-style-position: inside;
+}
+.top-donors li,
+.top-fundraisers li {
+    border-bottom: 1px solid #ececec;
+    padding-bottom: 11px;
+    margin-bottom: 11px;
+}
+.top-donors li:last-child,
+.top-fundraisers li:last-child {
+    border: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.top-donors .amount,
+.top-fundraisers .amount {
+    float: right;
+    color: #666;
 }
 /* Activity Feed */
 .peerraiser-wrap.dashboard-wrap .activity-feed li {
