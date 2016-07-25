@@ -48,3 +48,6 @@
     background-color: #91be4c;
     border-radius: 10px;
 }
+#campaign_stats .campaign-info li span.negative {
+    background-color: #d9534f;
+}
