@@ -6,7 +6,7 @@
                 <li><strong><?php _e('Goal Percent', 'peerraiser') ?></strong> <br><span class="badge"><?= $peerraiser['goal_percent'] ?>%</span></li>
             <?php endif; ?>
             <?php if ( $peerraiser['has_end_date'] ) : ?>
-                <li><strong><?php _e('Days Left', 'peerraiser') ?></strong> <br><span class="badge"><?= $peerraiser['days_left'] ?></span></li>
+                <li><strong><?php _e('Days Left', 'peerraiser') ?></strong> <br><span class="badge <?= $peerraiser['days_left_class'] ?>"><?= $peerraiser['days_left'] ?></span></li>
             <?php endif; ?>
         </ul>
     </div>
