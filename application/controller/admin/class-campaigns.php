@@ -146,7 +146,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'peerraiser_object',
             array(
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
-                'template_directory' => get_template_directory_uri()
+                'template_directory' => get_template_directory_uri(),
             )
         );
 
@@ -564,9 +564,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         if ( !empty( $end_date ) ) {
             $today = time();
             $difference = $end_date - $today;
-            if ($difference < 0) {
-                $days_until = 0;
-            }
             $days_left = floor($difference/60/60/24);
         }
 
@@ -577,8 +574,9 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'has_goal' => ( $goal !== '0.00' ),
             'has_end_date' => !empty( $end_date ),
             'total_donations' => number_format_i18n( $total_donations, 2),
-            'goal_percent' => ( $goal !== '0.00' ) ? number_format( ( $total_donations / $goal ) * 100, 2) : 0,
-            'days_left' => $days_left,
+            'goal_percent' => ( !empty( $goal ) && $goal !== '0.00' ) ? number_format( ( $total_donations / $goal ) * 100, 2) : 0,
+            'days_left' => ( $days_left < 0 ) ? __( 'Campaign Ended', 'peerraiser' ) : $days_left,
+            'days_left_class' => ( $days_left < 0 ) ? 'negative' : 'positive',
         );
 
         $this->assign( 'peerraiser', $view_args );
