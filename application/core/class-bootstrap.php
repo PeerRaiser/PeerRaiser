@@ -100,6 +100,9 @@ class Bootstrap {
 
         $listener_controller = self::get_controller( 'Frontend\Listener' );
         $dispatcher->add_subscriber( $listener_controller );
+
+        $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
+        $dispatcher->add_subscriber( $shortcode_controller );
     }
 
 
@@ -129,13 +132,15 @@ class Bootstrap {
      * @return    void
      */
     private function register_shortcodes() {
-        // $shortcode_controller = self::get_controller( 'Frontend_Shortcode' );
+        $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
 
-        // \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_premium_download', 'peerraiser_shortcode_premium_download' );
-        // \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_box_wrapper', 'peerraiser_shortcode_box_wrapper' );
+        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_receipt', 'peerraiser_shortcode_receipt' );
+        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_login', 'peerraiser_shortcode_login' );
+        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_signup', 'peerraiser_shortcode_signup' );
+        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_participant_dashboard', 'peerraiser_shortcode_dashboard' );
 
-        // $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        // $dispatcher->add_subscriber( $shortcode_controller );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->add_subscriber( $shortcode_controller );
     }
 
 
