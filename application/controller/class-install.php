@@ -6,6 +6,31 @@ namespace PeerRaiser\Controller;
  * PeerRaiser installation controller.
  */
 class Install extends Base {
+
+    private $default_pages = array();
+
+    public function __construct() {
+        $this->default_pages = array(
+            'thank_you' => array(
+                'post_title'     => __( 'Thank You', 'peerraiser' ),
+                'post_content'   => __( 'Thank you for your donation! [peerraiser_receipt]', 'peerraiser' )
+            ),
+            'login' => array(
+                'post_title'     => __( 'Login', 'peerraiser' ),
+                'post_content'   => __( '[peerraiser_login]', 'peerraiser' )
+            ),
+            'signup' => array(
+                'post_title'     => __( 'Signup', 'peerraiser' ),
+                'post_content'   => __( '[peerraiser_signup]', 'peerraiser' )
+            ),
+            'participant_dashboard' => array(
+                'post_title'     => __( 'Participant Dashboard', 'peerraiser' ),
+                'post_content'   => __( '[peerraiser_participant_dashboard]', 'peerraiser' )
+            ),
+        );
+        parent::__construct();
+    }
+
     /**
      * @see PeerRaiser\Core\Event\Subscriber_Interface::get_subscribed_events()
      */
@@ -155,6 +180,7 @@ class Install extends Base {
         $plugin_options['from_name']                         = get_bloginfo( 'name' );
         $plugin_options['from_email']                        = get_bloginfo( 'admin_email' );
         $plugin_options['new_donation_notification_to']      = get_bloginfo( 'admin_email' );
+        $plugin_options['uninstall_deletes_data']            = false;
         $plugin_options['donation_receipt_subject']          = __('Thank you for your donation', 'peerraiser');
         $plugin_options['donation_receipt_body']             = __('Dear [peerraiser_email show=donor_first_name],
 
@@ -174,8 +200,21 @@ class Install extends Base {
         $plugin_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
 
 
+
         // keep the plugin version up to date
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
+
+        // Create default pages
+        $thank_you_page        = $this->create_page( 'thank_you' );
+        $login_page            = $this->create_page( 'login' );
+        $signup_page           = $this->create_page( 'signup' );
+        $participant_dashboard = $this->create_page( 'participant_dashboard' );
+
+        // Store the page IDs
+        $plugin_options[ 'thank_you_page' ]        = $thank_you_page;
+        $plugin_options[ 'login_page' ]            = $login_page;
+        $plugin_options[ 'signup_page' ]           = $signup_page;
+        $plugin_options[ 'participant_dashboard' ] = $participant_dashboard;
 
         update_option( 'peerraiser_options', $plugin_options );
 
@@ -216,5 +255,24 @@ class Install extends Base {
         $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
         $peerraiser_capabilities->update_roles( (array) $roles );
     }
+
+    private function create_page( $page ) {
+
+        $page_options = $this->default_pages[$page];
+
+        $page_id = wp_insert_post(
+            array(
+                'post_title'     => $page_options['post_title'],
+                'post_content'   => $page_options['post_content'],
+                'post_status'    => 'publish',
+                'post_author'    => 1,
+                'post_type'      => 'page',
+                'comment_status' => 'closed'
+            )
+        );
+
+        return $page_id;
+    }
+
 
 }
