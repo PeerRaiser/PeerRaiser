@@ -1,0 +1,211 @@
+.signup-form-wrapper,
+.login-form-wrapper {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    border-color: #bce8f1;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-sizing: border-box;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
+}
+.login-form-wrapper > .login-form-heading,
+.signup-form-wrapper > .signup-form-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.login-form-wrapper a,
+.signup-form-wrapper a {
+    color: #428bca;
+}
+.login-form-wrapper a:hover,
+.login-form-wrapper a:focus,
+.signup-form-wrapper a:hover,
+.signup-form-wrapper a:focus {
+    color: #2a6496;
+    text-decoration: underline;
+}
+.login-form-heading,
+.signup-form-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+.login-form-wrapper h3.login-title,
+.signup-form-wrapper h3.signup-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+    font-weight: normal;
+}
+.login-form-wrapper .forgot-password,
+.signup-form-wrapper .forgot-password {
+    float: right;
+    font-size: 80%;
+    position: relative;
+    top: -10px;
+}
+.login-form-wrapper .forgot-password a,
+.signup-form-wrapper .forgot-password a {
+    text-decoration: none;
+    background: 0 0;
+    $font-size: 11.2px;
+    line-height: 16px;
+    display: block;
+    border: 0;
+}
+.signup-form-wrapper .terms-of-use a {
+    border: 0;
+}
+.login-form-wrapper .forgot-password a:hover,
+.signup-form-wrapper .forgot-password a:hover {
+    text-decoration: underline;
+}
+.login-form-body,
+.signup-form-body {
+    padding: 30px 15px 15px;
+}
+.login-form-wrapper .input-wrapper,
+.signup-form-wrapper .input-wrapper {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    width: 100%;
+}
+.signup-form-wrapper p {
+    margin-bottom: 15px;
+}
+.login-form-wrapper .input-wrapper.email,
+.login-form-wrapper .input-wrapper.password,
+.signup-form-wrapper .input-wrapper.name,
+.signup-form-wrapper .input-wrapper.email,
+.signup-form-wrapper .input-wrapper.username,
+.signup-form-wrapper .input-wrapper.password {
+    margin-bottom: 25px;
+    width: 100%;
+}
+.login-form-wrapper .form-input,
+.signup-form-wrapper .form-input {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.signup-form-wrapper #signup-firstname,
+.signup-form-wrapper #signup-lastname {
+    width: 49%;
+    float: left;
+}
+.signup-form-wrapper #signup-firstname {
+    margin-right: 2%;
+}
+.login-form-wrapper .checkbox {
+    display: block;
+    min-height: 27px;
+    margin: 0;
+    padding-left: 20px;
+    padding-top: 7px;
+}
+.login-form-wrapper label,
+.signup-form-wrapper label {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: 700;
+    width: 100%;
+}
+.signup-form-wrapper label span {
+    display: block;
+}
+.login-form-wrapper .checkbox label {
+    display: inline;
+    font-weight: 400;
+    cursor: pointer;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+}
+.login-form-wrapper .checkbox input[type=checkbox] {
+    float: left;
+    margin: 4px 0 0 -20px;
+    line-height: normal;
+    box-sizing: border-box;
+    padding: 0;
+}
+.login-form-wrapper .login-submit,
+.signup-form-wrapper .signup-submit {
+    margin-top: 10px;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    text-transform: none;
+}
+.signup-form-wrapper .signup-submit {
+    margin-bottom: 15px;
+}
+.login-form-wrapper .login-submit:hover,
+.signup-form-wrapper .signup-submit:hover {
+    background-color: #47a447;
+    border-color: #398439;
+}
+.login-form-wrapper .login-submit:active,
+.signup-form-wrapper .signup-submit:active {
+    outline: 0;
+    background-image: none;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+.login-form-wrapper .login-form-bottom,
+.signup-form-wrapper .signup-form-bottom {
+    border-top: 1px solid #888;
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size:85%
+}
+.login-form-wrapper .login-form-bottom a,
+.signup-form-wrapper .signup-form-bottom a {
+    border-bottom: 0;
+}
+.login-form-wrapper .error-message,
+.signup-form-wrapper .error-message {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
