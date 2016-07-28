@@ -80,7 +80,7 @@ class Hooks {
 
         // add_action( 'template_redirect',                  array( $this, self::$wp_action_prefix . 'peerraiser_loaded' ) );
         // add_action( 'wp_footer',                          array( $this, self::$wp_action_prefix . 'peerraiser_post_footer' ) );
-        // add_action( 'wp_enqueue_scripts',                 array( $this, self::$wp_action_prefix . 'peerraiser_enqueue_scripts' ) );
+        add_action( 'wp_enqueue_scripts',                       array( $this, self::$wp_action_prefix . 'peerraiser_enqueue_scripts' ) );
         add_action( 'init',                                     array( $this, self::$wp_action_prefix . 'peerraiser_wordpress_init' ) );
         add_action( 'admin_init',                               array( $this, self::$wp_action_prefix . 'peerraiser_admin_init' ) );
         add_action( 'admin_head',                               array( $this, self::$wp_action_prefix . 'peerraiser_admin_head' ) );
@@ -113,6 +113,10 @@ class Hooks {
         add_action( 'manage_pr_donor_posts_custom_column',      array( $this, self::$wp_action_prefix . 'peerraiser_manage_donor_columns' ), 10, 2 );
         add_action( 'template_redirect',                        array( $this, self::$wp_action_prefix . 'peerraiser_template_redirect' ), 10, 2 );
         add_action( 'user_register',                            array( $this, self::$wp_action_prefix . 'peerraiser_user_registered' ), 10, 1 );
+        add_action( 'admin_post_nopriv_peerraiser_login',       array( $this, self::$wp_action_prefix . 'peerraiser_login_form' ) );
+        add_action( 'admin_post_peerraiser_login',              array( $this, self::$wp_action_prefix . 'peerraiser_login_form' ) );
+        add_action( 'admin_post_nopriv_peerraiser_signup',      array( $this, self::$wp_action_prefix . 'peerraiser_signup_form' ) );
+        add_action( 'admin_post_peerraiser_signup',             array( $this, self::$wp_action_prefix . 'peerraiser_signup_form' ) );
 
         add_filter( 'enter_title_here',                         array( $this, self::$wp_filter_prefix . 'peerraiser_enter_title_here' ), 1 );
         add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, self::$wp_filter_prefix . 'peerraiser_sortable_campaign_columns' ), 1 );
