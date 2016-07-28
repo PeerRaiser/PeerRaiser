@@ -98,11 +98,17 @@ class Bootstrap {
     private function register_frontend_actions() {
         $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
 
+        $post_controller = self::get_controller( 'Frontend\Post' );
+        $dispatcher->add_subscriber( $post_controller );
+
         $listener_controller = self::get_controller( 'Frontend\Listener' );
         $dispatcher->add_subscriber( $listener_controller );
 
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $dispatcher->add_subscriber( $shortcode_controller );
+
+        $account_controller = self::get_controller( 'Frontend\Account' );
+        $dispatcher->add_subscriber( $account_controller );
     }
 
 
