@@ -106,6 +106,36 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             wp_safe_redirect( add_query_arg( $args, $login_page ) );
             exit;
         }
+
+        // Create event so navigation can be added externally
+        $new_event = new \PeerRaiser\Core\Event();
+        $new_event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_dashboard_navigation', $new_event );
+        $navigation = (array) $new_event->get_result();
+
+        // Get default navigation
+        $model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
+        $default_navigation = $model->get_navigation();
+
+        // Merge default navigation with any new navigation
+        $navigation_links = array_merge( $default_navigation, $navigation );
+
+        $view_args = array(
+            'navigation'                 => $navigation_links,
+            'donations'                  => $model->get_donations(),
+            'fundraisers'                => $model->get_fundraisers(),
+            'teams'                      => $model->get_teams(),
+            'user_id'                    => get_current_user_id(),
+            'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
+            'default_team_thumbnail'     => $plugin_options['team_thumbnail_image']
+        );
+        $this->assign( 'peerraiser', $view_args );
+
+        $page = ( isset( $_GET['page'] ) ) ? $_GET['page'] : 'profile';
+
+        $event->set_result( $this->get_text_view( 'frontend/participant-dashboard-' . $page ) );
+
     }
 
 }
