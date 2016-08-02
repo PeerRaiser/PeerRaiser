@@ -15,6 +15,7 @@ class Settings extends Base {
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),
             'peerraiser_wordpress_init' => array(
+                array( 'add_thumbnail_sizes' ),
                 array( 'maybe_flush_rewrite_rules' )
             ),
         );
@@ -220,6 +221,11 @@ class Settings extends Base {
         $default_content = $settings_model->get_settings_content( $active_tab, $active_section );
 
         return array_merge( $default_content, $results );
+    }
+
+
+    public function add_thumbnail_sizes( \PeerRaiser\Core\Event $event ) {
+        add_image_size( 'peerraiser_campaign_thumbnail', 150, 150, true );
     }
 
 }
