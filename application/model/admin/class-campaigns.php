@@ -48,12 +48,24 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'options' => array(),
                         ),
                         'campaign_image' => array(
-                            'name'    => __('Campaign Image', 'peerraiser'),
+                            'name'    => __('Campaign Banner Image', 'peerraiser'),
                             'id'      => '_peerraiser_campaign_image',
                             'type'    => 'file',
                             'options' => array(
                                 'url' => false,
-                                'add_upload_file_text' => 'Add Image'
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                        ),
+                        'campaign_thumbnail' => array(
+                            'name'    => __('Campaign Thumbnail Image', 'peerraiser'),
+                            'id'      => '_peerraiser_campaign_thumbnail',
+                            'type'    => 'file',
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
                             ),
                         ),
                         'campaign_goal' => array(
