@@ -237,6 +237,10 @@ class Donations extends \PeerRaiser\Controller\Base {
                 p2p_type( 'donation_to_fundraiser' )->connect( $object_id, $_meta_value, array(
                     'date' => current_time('mysql')
                 ) );
+                $participant = get_post_meta( $_meta_value, '_fundraiser_participant', true);
+                p2p_type( 'donation_to_participant' )->connect( $object_id, $participant, array(
+                    'date' => current_time('mysql')
+                ) );
                 break;
 
             default:
