@@ -306,4 +306,38 @@ class View {
             return $args['before_output'] . $html . $args['after_output'];
     }
 
+
+    public static function add_file_to_media_library( $filename ) {
+        // Locate the file /assets/images plugin folder
+        $file = plugin_dir_path( PEERRAISER_FILE ) . 'assets/images/' . $filename;
+
+        // If the file doesn't exist, then write to the error log and return false
+        if ( ! file_exists( $file ) || 0 === strlen( trim( $filename ) ) ) {
+            error_log( 'PeerRaiser: The file you are attempting to upload, ' . $file . ', does not exist.' );
+            return false;
+        }
+
+        // Upload directory info
+        $uploads     = wp_upload_dir();
+        $uploads_dir = $uploads['path'];
+        $uploads_url = $uploads['url'];
+
+        // Copy the file from the /assets/images directory to the uploads directory
+        copy( $file, trailingslashit( $uploads_dir ) . $filename );
+
+        /* Get the URL to the file and grab the file and load
+         * it into WordPress (and the Media Library)
+         */
+        $url = trailingslashit( $uploads_url ) . $filename;
+        $result = media_sideload_image( $url, 0, $filename, 'src' );
+
+        // If there's an error, then we'll write it to the error log.
+        if ( is_wp_error( $result ) ) {
+            error_log( print_r( $result, true ) );
+            return false;
+        }
+
+        return $result;
+    }
+
 }
