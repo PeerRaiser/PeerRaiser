@@ -39,7 +39,8 @@
                             text = text.replace(/^(- )*/g, '');
                         }
                         return text;
-                    }
+                    },
+                    allowClear: false
                 },
                 login_page : {
                     data : function ( params ) {
@@ -60,7 +61,8 @@
                             text = text.replace(/^(- )*/g, '');
                         }
                         return text;
-                    }
+                    },
+                    allowClear: false
                 },
                 signup_page : {
                     data : function ( params ) {
@@ -81,7 +83,8 @@
                             text = text.replace(/^(- )*/g, '');
                         }
                         return text;
-                    }
+                    },
+                    allowClear: false
                 },
                 participant_dashboard : {
                     data : function ( params ) {
@@ -102,7 +105,8 @@
                             text = text.replace(/^(- )*/g, '');
                         }
                         return text;
-                    }
+                    },
+                    allowClear: false
                 },
             }
         },
