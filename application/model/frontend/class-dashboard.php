@@ -32,14 +32,13 @@ class Dashboard extends \PeerRaiser\Model\Admin {
     }
 
 
-    public function get_donations( $post_id = null, $paged = 1 ) {
+    public function get_donations() {
         $args = array(
             'post_type'       => 'pr_donation',
-            'posts_per_page'  => 20,
+            'posts_per_page'  => -1,
             'post_status'     => 'publish',
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $post_id,
-            'paged' => $paged
+            'connected_type'  => 'donation_to_participant',
+            'connected_items' => get_current_user_id()
         );
         return new \WP_Query( $args );
     }
