@@ -216,6 +216,14 @@ class Install extends Base {
         $plugin_options[ 'signup_page' ]           = $signup_page;
         $plugin_options[ 'participant_dashboard' ] = $participant_dashboard;
 
+        // Upload default thumbnail images to the media library
+        $campaign_image_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-campaign-thumbnail.png' );
+        $user_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-user-thumbnail.png' );
+        $team_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-team-thumbnail.png' );
+        $plugin_options[ 'campaign_thumbnail_image' ] = $campaign_image_id;
+        $plugin_options[ 'user_thumbnail_image' ]     = $user_images_id;
+        $plugin_options[ 'team_thumbnail_image' ]     = $team_images_id;
+
         update_option( 'peerraiser_options', $plugin_options );
 
         // clear opcode cache
