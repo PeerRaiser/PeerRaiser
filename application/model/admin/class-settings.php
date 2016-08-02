@@ -72,25 +72,55 @@ class Settings extends \PeerRaiser\Model\Admin {
                                 'true'    => __( 'Yes', 'peerraiser' ),
                             ),
                         ),
-                        'thank_you_page' =>   array(
+                        'campaign_thumbnail_image' => array(
+                            'name'    => __('Default Campaign Thumbnail', 'peerraiser'),
+                            'id'      => 'campaign_thumbnail_image',
+                            'type'    => 'file',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                        ),
+                        'user_thumbnail_image' => array(
+                            'name'    => __('Default User Thumbnail', 'peerraiser'),
+                            'id'      => 'user_thumbnail_image',
+                            'type'    => 'file',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                        ),
+                        'team_thumbnail_image' => array(
+                            'name'    => __('Default Team Thumbnail', 'peerraiser'),
+                            'id'      => 'team_thumbnail_image',
+                            'type'    => 'file',
+                            'default' => array(__CLASS__, 'get_field_value'),
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                        ),
+                        'thank_you_page' => array(
                             'name'              => __('Thank You Page', 'peerraiser'),
                             'id'                => 'thank_you_page',
                             'type'              => 'select',
                             'options'           => array(__CLASS__, 'get_selected_post'),
                         ),
-                        'login_page' =>   array(
+                        'login_page' => array(
                             'name'              => __('Login Page', 'peerraiser'),
                             'id'                => 'login_page',
                             'type'              => 'select',
                             'options'           => array(__CLASS__, 'get_selected_post'),
                         ),
-                        'signup_page' =>   array(
+                        'signup_page' => array(
                             'name'              => __('Signup Page', 'peerraiser'),
                             'id'                => 'signup_page',
                             'type'              => 'select',
                             'options'           => array(__CLASS__, 'get_selected_post'),
                         ),
-                        'participant_dashboard' =>   array(
+                        'participant_dashboard' => array(
                             'name'              => __('Participant Dashboard', 'peerraiser'),
                             'id'                => 'participant_dashboard',
                             'type'              => 'select',
@@ -408,6 +438,12 @@ class Settings extends \PeerRaiser\Model\Admin {
                 $default_body = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : $default_body;
                 break;
+
+            // case 'campaign_thumbnail_image' :
+            //     $attachment_id = $plugin_options['campaign_thumbnail_image'];
+            //     $image = wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail' );
+            //     $field_value = ( $image ) ? $image[0] : '';
+            //     break;
 
             default:
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : '';
