@@ -48,6 +48,18 @@ class Teams extends \PeerRaiser\Model\Admin {
                             ),
                             'before_field' => self::get_currency_symbol(),
                         ),
+                        'team_thumbnail' => array(
+                            'name'    => __('Team Thumbnail Image', 'peerraiser'),
+                            'id'      => '_peerraiser_team_thumbnail',
+                            'type'    => 'file',
+                            'options' => array(
+                                'url' => false,
+                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                            ),
+                            'attributes'        => array(
+                                'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
+                            ),
+                        ),
                     ),
                 ),
             );
