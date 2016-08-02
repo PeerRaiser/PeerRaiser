@@ -12,7 +12,7 @@
     <tbody>
     <?php if ( $peerraiser['number_of_fundraisers'] < 1 ) : ?>
         <tr>
-            <td colspan="5" class="text-center"><?php _e('There are currently no Fundraisers associated with this Campaign', 'peerraiser');  ?></td>
+            <td colspan="6" class="text-center"><?php _e('There are currently no Fundraisers associated with this Campaign', 'peerraiser');  ?></td>
         </tr>
     <?php else : ?>
         <?php foreach ( $peerraiser['fundraisers'] as $fundraiser ) : ?>
