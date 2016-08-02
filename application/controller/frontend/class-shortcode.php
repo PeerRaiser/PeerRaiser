@@ -121,6 +121,10 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         // Merge default navigation with any new navigation
         $navigation_links = array_merge( $default_navigation, $navigation );
 
+        // Get the currency symbol
+        $currency = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] );
+
         $view_args = array(
             'navigation'                 => $navigation_links,
             'donations'                  => $model->get_donations(),
@@ -128,7 +132,8 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'teams'                      => $model->get_teams(),
             'user_id'                    => get_current_user_id(),
             'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
-            'default_team_thumbnail'     => $plugin_options['team_thumbnail_image']
+            'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
+            'currency_symbol'            => $currency_symbol
         );
         $this->assign( 'peerraiser', $view_args );
 
