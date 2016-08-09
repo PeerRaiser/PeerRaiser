@@ -30,7 +30,7 @@ class Settings extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        $active_tab = isset( $_GET[ 'tab' ] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+        $active_tab     = isset( $_GET[ 'tab' ] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
         $active_section = isset( $_GET[ 'section' ] ) ? sanitize_text_field( $_GET['section'] ) : $active_tab;
 
         $view_args = array(
@@ -111,7 +111,7 @@ class Settings extends Base {
 
     public function register_meta_boxes() {
 
-        $settings_model = \PeerRaiser\Model\Admin\Settings::get_instance();
+        $settings_model        = \PeerRaiser\Model\Admin\Settings::get_instance();
         $settings_field_groups = $settings_model->get_fields();
 
         foreach ($settings_field_groups as $field_group) {
