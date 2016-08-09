@@ -340,4 +340,37 @@ class View {
         return $result;
     }
 
+
+    /**
+     * Returns avatar URL
+     *
+     * @since     1.0.0
+     * @return    string    Custom avatar, Gravatar, or default avatar image URL.
+     */
+    public static function get_avatar() {
+
+        // Get the current user's email address
+        $current_user  = wp_get_current_user();
+        $email_address = $current_user->user_email;
+
+        // User's Custom Avatar ID
+        $avatar_id = get_user_meta( $current_user->ID, '_peerraiser_custom_avatar', true );
+
+        if ( $avatar_id ==! "" ) {
+            return wp_get_attachment_image_url( $avatar_id, 'peerraiser_campaign_thumbnail' );
+        }
+
+        // User doesn't have a custom avatar, return gravatar or default avatar
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $default_avatar = $plugin_options['user_thumbnail_image'];
+
+        $args = array(
+            'size' => 125,
+            'default' => $default_avatar,
+        );
+
+        return get_avatar_url( $email_address, $args );
+
+    }
+
 }
