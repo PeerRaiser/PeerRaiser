@@ -6,6 +6,7 @@ class Dashboard extends \PeerRaiser\Model\Admin {
 
     private static $instance   = null;
     private static $navigation = array();
+    private static $fields     = array();
 
     public function __construct() {}
 
@@ -22,6 +23,18 @@ class Dashboard extends \PeerRaiser\Model\Admin {
                 "donations" => __( "Donations", 'peerraiser' ),
                 "settings"  => __( "Settings", 'peerraiser' ),
             );
+            self::$fields = array(
+                array(
+                    'name' => __( 'First Name', 'peerraiser' ),
+                    'id'   => 'first_name',
+                    'type' => 'text',
+                ),
+                array(
+                    'name' => __( 'Last Name', 'peerraiser' ),
+                    'id'   => 'last_name',
+                    'type' => 'text',
+                ),
+            );
         }
         return self::$instance;
     }
@@ -29,6 +42,11 @@ class Dashboard extends \PeerRaiser\Model\Admin {
 
     public function get_navigation() {
         return self::$navigation;
+    }
+
+
+    public function get_fields() {
+        return self::$fields;
     }
 
 
