@@ -7,6 +7,8 @@
         </ul>
     </nav>
 
+    <h2><?php _e( 'Donations Received', 'peerraiser' ); ?></h2>
+
     <table class="donations-list table table-striped">
         <thead>
             <tr>
