@@ -25,6 +25,10 @@ class Shortcode extends \PeerRaiser\Controller\Base {
                 array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'render_participant_dashboard' ),
             ),
+            'peerraiser_cmb2_init' => array(
+                array( 'peerraiser_on_plugin_is_working', 200 ),
+                array( 'register_settings_fields' )
+            )
         );
     }
 
@@ -86,6 +90,13 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public function render_participant_dashboard( \PeerRaiser\Core\Event $event ) {
         list( $atts ) = $event->get_arguments() + array( array() );
 
+        // Create event so navigation can be added externally
+        $new_event = new \PeerRaiser\Core\Event();
+        $new_event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_render_participant_dashboard', $new_event );
+        $results = (array) $new_event->get_result();
+
         // provide default values for empty shortcode attributes
         $a = shortcode_atts( array(
             'heading_text'     => '',
@@ -107,33 +118,26 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             exit;
         }
 
-        // Create event so navigation can be added externally
-        $new_event = new \PeerRaiser\Core\Event();
-        $new_event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_dashboard_navigation', $new_event );
-        $navigation = (array) $new_event->get_result();
+        // Models
+        $dashboard_model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
+        $currency_model  = new \PeerRaiser\Model\Currency();
 
-        // Get default navigation
-        $model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
-        $default_navigation = $model->get_navigation();
-
-        // Merge default navigation with any new navigation
-        $navigation_links = array_merge( $default_navigation, $navigation );
-
-        // Get the currency symbol
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] );
+        // Merge default navigation with any additional navigation
+        $default_navigation    = $dashboard_model->get_navigation();
+        $additional_navigation = ( isset( $results['navigation'] ) ) ? $results[ 'navigation' ] : array();
+        $navigation_links      = array_merge( $default_navigation, $additional_navigation );
 
         $view_args = array(
             'navigation'                 => $navigation_links,
-            'donations'                  => $model->get_donations(),
-            'fundraisers'                => $model->get_fundraisers(),
-            'teams'                      => $model->get_teams(),
+            'donations'                  => $dashboard_model->get_donations(),
+            'fundraisers'                => $dashboard_model->get_fundraisers(),
+            'teams'                      => $dashboard_model->get_teams(),
             'user_id'                    => get_current_user_id(),
             'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
             'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
-            'currency_symbol'            => $currency_symbol
+            'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
+            'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', get_current_user_id() ),
+            'profile_photo'              => \PeerRaiser\Helper\View::get_avatar()
         );
         $this->assign( 'peerraiser', $view_args );
 
@@ -141,6 +145,42 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
         $event->set_result( $this->get_text_view( 'frontend/participant-dashboard-' . $page ) );
 
+    }
+
+
+    public function register_settings_fields( \PeerRaiser\Core\Event $event ) {
+
+        $dashboard_model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
+
+        $default_fields    = $dashboard_model->get_fields();
+        $additional_fields = $this->get_additional_fields();
+        $fields            = array_merge( $default_fields, $additional_fields );
+
+        // Fields that come with WordPress by default
+        $wordpress_fields = array( 'user_pass', 'user_login', 'user_nicename', 'user_url', 'user_email', 'display_name', 'nickname', 'first_name', 'last_name', 'description', 'rich_editing', 'user_registered', 'role', 'jabber', 'aim', 'yim', 'show_admin_bar_front' );
+
+        $cmb = new_cmb2_box( array(
+            'id'               => 'dashboard_settings',
+            'object_types'     => array( 'user' ),
+            'new_user_section' => 'add-existing-user'
+        ) );
+
+        foreach ( $fields as $field ) {
+            if ( is_admin() && in_array($field['id'], $wordpress_fields) )
+                continue;
+
+            $cmb->add_field( $field );
+        }
+
+    }
+
+
+    private function get_additional_fields() {
+        $event = new \PeerRaiser\Core\Event();
+        $event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_participant_dashboard_fields', $event );
+        return (array) $event->get_result();
     }
 
 }
