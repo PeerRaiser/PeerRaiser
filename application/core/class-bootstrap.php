@@ -109,6 +109,9 @@ class Bootstrap {
 
         $account_controller = self::get_controller( 'Frontend\Account' );
         $dispatcher->add_subscriber( $account_controller );
+
+        $dashboard_controller = self::get_controller( 'Frontend\Participant_Dashboard' );
+        $dispatcher->add_subscriber( $dashboard_controller );
     }
 
 
