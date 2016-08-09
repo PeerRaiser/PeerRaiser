@@ -4,9 +4,9 @@ namespace PeerRaiser\Model\Admin;
 
 class Settings extends \PeerRaiser\Model\Admin {
 
-    private static $fields = array();
-    private static $tabs = array();
-    private static $content = array();
+    private static $fields   = array();
+    private static $tabs     = array();
+    private static $content  = array();
     private static $instance = null;
 
     public function __construct() {}
@@ -495,7 +495,7 @@ class Settings extends \PeerRaiser\Model\Admin {
         $html = '';
         $data['title'] = $section['name'];
 
-        if (  isset($section['before_fields']) ) {
+        if ( isset($section['before_fields']) ) {
             $html .= $section['before_fields'];
         }
 
