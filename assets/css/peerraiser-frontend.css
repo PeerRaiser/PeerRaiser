@@ -719,6 +719,7 @@ table th[class*="col-"] {
 }
 .peerraiser-dashboard .cmb-th {
     display: block;
+    clear: both;
 }
 .peerraiser-dashboard .cmb2-wrap {
     overflow: hidden;
@@ -728,7 +729,7 @@ table th[class*="col-"] {
 }
 .peerraiser-dashboard .cmb2-wrap .cmb-row.cmb2-id-first-name,
 .peerraiser-dashboard .cmb2-wrap .cmb-row.cmb2-id-last-name {
-    width: 48%;
+    width: 49%;
     float: left;
 }
 .peerraiser-dashboard .cmb2-wrap .cmb-row.cmb2-id-first-name {
@@ -755,4 +756,7 @@ table th[class*="col-"] {
     color: #a94442;
     background: url('../images/icon-error.png') no-repeat 15px center #f2dede;
     border-color: #ebccd1;
+}
+form#dashboard_settings {
+    margin-bottom: 2em;
 }
