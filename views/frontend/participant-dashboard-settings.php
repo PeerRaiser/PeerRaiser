@@ -30,4 +30,9 @@
     </form>
 
     <?= $peerraiser['settings_form']; ?>
+
+    <h2><?php _e( 'Change Password', 'peerraiser' ); ?></h2>
+
+    <?= $peerraiser['password_form']; ?>
+
 </div>
