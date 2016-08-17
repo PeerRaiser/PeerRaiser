@@ -247,7 +247,7 @@ class Config {
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return LaterPay_Model_Config
+     * @return PeerRaiser\Model\Config
      */
     public function __set( $name, $value ) {
         return $this->set( $name,  $value );
