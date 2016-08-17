@@ -48,7 +48,7 @@ class Settings extends Base {
     }
 
     /**
-     * @see LaterPay_Core_View::load_assets()
+     * @see PeerRaiser\Core\View::load_assets()
      */
     public function load_assets() {
         parent::load_assets();
