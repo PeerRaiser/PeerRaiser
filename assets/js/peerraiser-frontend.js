@@ -95,8 +95,10 @@
                 return;
             }
 
-            // Disable the submit button while upload is in progress
-            $o.dashboard.find('input[type="submit"]').prop('disabled', true);
+            // Disable the submit buttons while upload is in progress
+            $o.dashboard.find('input[type="submit"]').each(function(){
+               $(this).prop('disabled', true);
+            });
 
             // Display the loading image
             $o.dashboard.find('.peerraiser-image-upload .loading').show();
@@ -122,7 +124,9 @@
                     }
 
                     // Enable the submit button
-                    $o.dashboard.find('input[type="submit"]').prop('disabled', false);
+                    $o.dashboard.find('input[type="submit"]').each(function(){
+                       $(this).prop('disabled', false);
+                    });
 
                     // Hide the loading image
                     $o.dashboard.find('.peerraiser-image-upload .loading').hide();
