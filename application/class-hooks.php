@@ -78,7 +78,6 @@ class Hooks {
         // add_filter( 'wp_get_attachment_url',              array( $this, self::$wp_filter_prefix . 'peerraiser_attachment_get_url' ), 10, 2 );
         // add_filter( 'prepend_attachment',                 array( $this, self::$wp_filter_prefix . 'peerraiser_attachment_prepend' ) );
 
-        // add_action( 'template_redirect',                  array( $this, self::$wp_action_prefix . 'peerraiser_loaded' ) );
         // add_action( 'wp_footer',                          array( $this, self::$wp_action_prefix . 'peerraiser_post_footer' ) );
         add_action( 'wp_enqueue_scripts',                       array( $this, self::$wp_action_prefix . 'peerraiser_enqueue_scripts' ) );
         add_action( 'init',                                     array( $this, self::$wp_action_prefix . 'peerraiser_wordpress_init' ) );
@@ -101,6 +100,7 @@ class Hooks {
         add_action( 'delete_post_meta',                         array( $this, self::$wp_action_prefix . 'peerraiser_before_post_meta_deleted' ), 10, 4 );
         add_action( 'before_delete_post',                       array( $this, self::$wp_action_prefix . 'peerraiser_before_delete_post' ), 10, 1 );
         add_action( 'cmb2_save_post_fields',                    array( $this, self::$wp_action_prefix . 'peerraiser_cmb2_save_post_fields' ), 10, 4 );
+        add_action( 'cmb2_save_user_fields',                    array( $this, self::$wp_action_prefix . 'peerraiser_cmb2_save_user_fields' ), 10, 4 );
         add_action( 'save_post',                                array( $this, self::$wp_action_prefix . 'peerraiser_post_saved' ), 10, 3 );
         add_action( 'publish_pr_donation',                      array( $this, self::$wp_action_prefix . 'peerraiser_donation_published' ), 10, 2 );
         add_action( 'save_post_pr_donation',                    array( $this, self::$wp_action_prefix . 'peerraiser_donation_post_saved' ), 10, 3 );
@@ -119,6 +119,7 @@ class Hooks {
         add_action( 'admin_post_nopriv_peerraiser_signup',      array( $this, self::$wp_action_prefix . 'peerraiser_signup_form' ) );
         add_action( 'admin_post_peerraiser_signup',             array( $this, self::$wp_action_prefix . 'peerraiser_signup_form' ) );
         add_action( 'admin_post_peerraiser_user_settings',      array( $this, self::$wp_action_prefix . 'peerraiser_user_settings' ) );
+        add_action( 'admin_post_peerraiser_change_password',    array( $this, self::$wp_action_prefix . 'peerraiser_change_password' ) );
 
         add_filter( 'enter_title_here',                         array( $this, self::$wp_filter_prefix . 'peerraiser_enter_title_here' ), 1 );
         add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, self::$wp_filter_prefix . 'peerraiser_sortable_campaign_columns' ), 1 );
