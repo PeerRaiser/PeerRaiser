@@ -34,6 +34,16 @@ class Dashboard extends \PeerRaiser\Model\Admin {
                     'id'   => 'last_name',
                     'type' => 'text',
                 ),
+                array(
+                    'name' => __( 'Email', 'peerraiser' ),
+                    'id'   => 'user_email',
+                    'type' => 'text',
+                ),
+                array(
+                    'name' => __( 'Bio', 'peerraiser' ),
+                    'id'   => 'description',
+                    'type' => 'textarea',
+                ),
             );
         }
         return self::$instance;
