@@ -3,7 +3,7 @@
 namespace PeerRaiser\Controller\Admin;
 
 /**
- * LaterPay menu controller.
+ * PeerRaiser menu controller.
   */
 class Base extends \PeerRaiser\Controller\Base {
 
