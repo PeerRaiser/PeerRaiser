@@ -90,6 +90,9 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public function render_participant_dashboard( \PeerRaiser\Core\Event $event ) {
         list( $atts ) = $event->get_arguments() + array( array() );
 
+        // Plugin options
+        $plugin_options = get_option( 'peerraiser_options', array() );
+
         // Create event so navigation can be added externally
         $new_event = new \PeerRaiser\Core\Event();
         $new_event->set_echo( false );
@@ -102,21 +105,6 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'heading_text'     => '',
             'description_text' => '',
         ), $atts );
-
-        // Get the default dashboard and login page urls
-        $plugin_options        = get_option( 'peerraiser_options', array() );
-        $participant_dashboard = get_permalink( $plugin_options[ 'participant_dashboard' ] );
-        $login_page            = get_permalink( $plugin_options[ 'login_page' ] );
-
-        // If the user isn't logged in, redirect to the login page
-        if ( !is_user_logged_in() ) {
-            $args = array(
-                'next_url' => $participant_dashboard
-            );
-
-            wp_safe_redirect( add_query_arg( $args, $login_page ) );
-            exit;
-        }
 
         // Models
         $dashboard_model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
@@ -137,7 +125,8 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
             'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
             'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', get_current_user_id() ),
-            'profile_photo'              => \PeerRaiser\Helper\View::get_avatar()
+            'profile_photo'              => \PeerRaiser\Helper\View::get_avatar(),
+            'password_form'              => $this->get_password_form(),
         );
         $this->assign( 'peerraiser', $view_args );
 
@@ -181,6 +170,11 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
         $dispatcher->dispatch( 'peerraiser_participant_dashboard_fields', $event );
         return (array) $event->get_result();
+    }
+
+
+    private function get_password_form() {
+        return $this->get_text_view( 'frontend\partials\change-password-form' );
     }
 
 }
