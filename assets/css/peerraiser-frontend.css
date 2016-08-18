@@ -226,6 +226,7 @@
     border-radius: 6px;
     border: 1px solid #1b8dbb;
     list-style: none;
+    padding: 0;
 }
 .peerraiser-nav ul li:first-child {
     border-left: 0 none;
