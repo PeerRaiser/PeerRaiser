@@ -158,7 +158,6 @@ class Install extends Base {
         // cancel the installation process, if the requirements check returns errors
         $notices = (array) $this->check_requirements();
         if ( count( $notices ) ) {
-            $this->logger->warning( __METHOD__, $notices );
             return;
         }
 
