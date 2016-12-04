@@ -168,17 +168,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         $can_publish = current_user_can($post_type_object->cap->publish_posts);
         $is_published = ( in_array( $object->post_status, array('publish', 'future', 'private') ) );
 
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_admin_menu_data', $event );
-        $results = (array) $event->get_result();
-
-        // $donation_model = new \PeerRaiser\Model\Admin\Donations();
-        // $default_menu = $model->get_menu_items();
-
-        // $menu = array_merge( $default_menu, $results );
-
         $view_args = array(
             'object' => $object,
             'can_publish' => $can_publish,
