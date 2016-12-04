@@ -22,11 +22,6 @@ class Admin extends Base {
                 array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_to_admin_panel' ),
             ),
-            'peerraiser_admin_menu_data' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
-                array( 'get_admin_menu' ),
-            ),
             'peerraiser_admin_footer_scripts' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
                 array( 'peerraiser_on_plugin_is_active', 200 ),
@@ -81,7 +76,10 @@ class Admin extends Base {
             81
         );
 
-        $menu = \PeerRaiser\Helper\View::get_admin_menu();
+        $model = new \PeerRaiser\Model\Admin();
+        $default_menu = $model->get_menu_items();
+
+        $menu = apply_filters( 'peerraiser_admin_menu_data', $default_menu );
         foreach ( $menu as $name => $page ) {
             $slug = $page['url'];
 
@@ -759,23 +757,6 @@ class Admin extends Base {
             array(),
             '4.5.0'
         );
-    }
-
-
-    /**
-     * Get links to be rendered in the plugin backend navigation.
-     *
-     * @param PeerRaiser_Core_Event $event
-     */
-    public function get_admin_menu( \PeerRaiser\Core\Event $event ) {
-        $menu = (array) $event->get_result();
-
-        $model = new \PeerRaiser\Model\Admin();
-        $default_menu = $model->get_menu_items();
-
-        $menu = array_merge( $default_menu, $menu );
-
-        $event->set_result( $menu );
     }
 
 
