@@ -95,7 +95,6 @@ class Dispatcher implements Dispatcher_Interface {
             echo $event->get_formatted_result();
         }
 
-        $this->set_debug_data( $event_name, $event->get_debug() );
         if ( $event->is_ajax() ) {
             wp_die();
         }
@@ -344,55 +343,6 @@ class Dispatcher implements Dispatcher_Interface {
             }
         }
         return $result;
-    }
-
-
-    /**
-     * Enables collecting of the debug information about raised events.
-     *
-     * @param     boolean    $debug_enabled
-     *
-     * @return    \PeerRaiser\Core\Event\Dispatcher
-     */
-    public function set_debug_enabled( $debug_enabled ) {
-        $this->debug_enabled = $debug_enabled;
-        return $this;
-    }
-
-
-    /**
-     * Returns event's debug information
-     *
-     * @return    array
-     */
-    public function get_debug_data() {
-        return $this->debug_data;
-    }
-
-
-    /**
-     * Formats and adds event debug information into collection.
-     *
-     * @param    string    $event_name    The name of the event.
-     * @param    array     $context       Debug information.
-     *
-     * @return    \PeerRaiser\Core\Event\Dispatcher
-     */
-    public function set_debug_data( $event_name, $context ) {
-        if ( in_array( $event_name, array( 'peerraiser_post_metadata' ) ) ) {
-            return $this;
-        }
-        if ( $this->debug_enabled ) {
-            $listeners = $this->get_listeners( $event_name );
-            $record = array(
-                'message'       => (string) $event_name,
-                'context'       => $context,
-                'extra'         => (array) $listeners,
-                'level'         => count( $listeners ) > 0 ? \PeerRaiser\Core\Logger::DEBUG : \PeerRaiser\Core\Logger::WARNING,
-            );
-            $this->debug_data[] = $record;
-        }
-        return $this;
     }
 
 }
