@@ -21,19 +21,11 @@ class Base extends \PeerRaiser\Core\View implements \PeerRaiser\Core\Event\Subsc
     }
 
     /**
-     * Contains the logger instance.
-     *
-     * @var    \PeerRaiser_Core_Logger
-     */
-    protected $logger;
-
-    /**
      * @param    \PeerRaiser\Model\Config    $config
      *
      * @return    \PeerRaiser\Core\View
      */
     public function __construct( $config = null ) {
-        $this->logger = \PeerRaiser\Core\Logger::get_logger();
         parent::__construct( $config );
     }
 
