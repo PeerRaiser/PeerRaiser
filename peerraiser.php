@@ -72,12 +72,7 @@ function peerraiser_init() {
     try {
         $peerraiser->run();
     } catch ( Exception $e ) {
-        $context = array(
-            'message' => $e->getMessage(),
-            'trace'   => $e->getTrace(),
-        );
-        $logger = \PeerRaiser\Core\Logger::get_logger();
-        $logger->critical( __( 'Unexpected error during plugin init', 'peerraiser' ), $context );
+        wp_die( print_r( $e, true ) );
     }
 
 }
@@ -86,7 +81,6 @@ function peerraiser_init() {
  * Callback for activating the plugin.
  */
 function peerraiser_activate() {
-    // Autoloader and logger stuff
     peerraiser_before_start();
 
     $config = \PeerRaiser\Core\Setup::get_plugin_config();
@@ -101,7 +95,7 @@ function peerraiser_activate() {
 
 /**
  * Run before plugins_loaded, activate_peerraiser, and deactivate_peerraiser, to register
- * our autoload paths and boot-up the logger
+ * our autoload paths
  *
  * @since     1.0.0
  * @return    null
@@ -111,7 +105,4 @@ function peerraiser_before_start() {
     require( plugin_dir_path( __FILE__ ) . 'class-autoloader.php');
     $peerraiser_autoloader = new PeerRaiser\Autoloader();
     spl_autoload_register( array($peerraiser_autoloader, 'register_class_autoloader') );
-
-    // Boot up logger
-    $logger = \PeerRaiser\Core\Logger::get_logger();
 }
