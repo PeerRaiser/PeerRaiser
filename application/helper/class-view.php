@@ -39,21 +39,6 @@ class View {
 
 
     /**
-     * Get links to be rendered in the plugin backend navigation.
-     *
-     * @return array
-     */
-    public static function get_admin_menu() {
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_admin_menu_data', $event );
-        $menu = (array) $event->get_result();
-        return $menu;
-    }
-
-
-    /**
      * Get date of next day.
      *
      * @param string $date
