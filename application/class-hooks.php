@@ -55,8 +55,7 @@ class Hooks {
                     throw new \RuntimeException( sprintf( 'Method "%s" is not found within PeerRaiser\Core\Event\Dispatcher class.', $name ) );
             }
         } catch ( \Exception $e ) {
-            $logger = \PeerRaiser\Core\Logger::get_logger();
-            $logger->error( $e->getMessage(), array( 'trace' => $e->getTraceAsString() ) );
+            wp_die( print_r( $e, true ) );
         }
 
         return $result;
@@ -242,9 +241,7 @@ class Hooks {
             $dispatcher->dispatch( $action, $event );
             $result = $event->get_result();
         } catch ( \Exception $e ) {
-            $logger = \PeerRaiser\Core\Logger::get_logger();
-            $logger->error( $e->getMessage(), array( 'trace' => $e->getTraceAsString() ) );
-            $result = $default;
+            wp_die( print_r( $e, true ) );
         }
         return $result;
     }
@@ -269,9 +266,7 @@ class Hooks {
 
             $result = $event->get_result();
         } catch ( \Exception $e ) {
-            $logger = \PeerRaiser\Core\Logger::get_logger();
-            $logger->error( $e->getMessage(), array( 'trace' => $e->getTraceAsString() ) );
-            $result = $default;
+            wp_die( print_r( $e, true ) );
         }
         return $result;
     }
