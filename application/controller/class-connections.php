@@ -29,19 +29,12 @@ class Connections extends Base {
             return;
         }
 
-        // Create event so connections can be added externally
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_connections_data', $event );
-        $connections = (array) $event->get_result();
-
         // Get default connections
         $model = new \PeerRaiser\Model\Connections();
         $default_connections = $model->get_connections();
 
         // Merge default connections with any new connections
-        $connections = array_merge( $default_connections, $connections );
+        $connections = apply_filters( 'peerraiser_connections', $default_connections );
 
         foreach ($connections as $connection) {
             p2p_register_connection_type( $connection );
