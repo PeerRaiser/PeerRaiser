@@ -183,44 +183,26 @@ class Settings extends Base {
 
 
     public function get_tabs() {
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_settings_tabs', $event );
-        $results = (array) $event->get_result();
-
         $settings_model = new \PeerRaiser\Model\Admin\Settings();
         $default_tabs = $settings_model->get_settings_tabs();
 
-        return array_merge( $default_tabs, $results );
+        return apply_filters( 'peerraiser_settings_tabs', $default_tabs );
     }
 
 
     public function get_sections() {
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_settings_sections', $event );
-        $results = (array) $event->get_result();
-
         $settings_model = new \PeerRaiser\Model\Admin\Settings();
         $default_sections = $settings_model->get_settings_sections();
 
-        return array_merge( $default_sections, $results );
+        return apply_filters( 'peerraiser_settings_sections', $default_sections );
     }
 
 
     public function get_settings_content( $active_tab, $active_section ) {
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_settings_content', $event );
-        $results = (array) $event->get_result();
-
         $settings_model = new \PeerRaiser\Model\Admin\Settings();
         $default_content = $settings_model->get_settings_content( $active_tab, $active_section );
 
-        return array_merge( $default_content, $results );
+        return apply_filters( 'peerraiser_settings_content', $default_content );
     }
 
 
