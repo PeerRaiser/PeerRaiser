@@ -6,6 +6,10 @@
     margin: 0 0 1em;
     font-size: 32px;
 }
+.login-form-wrapper {
+    width: 400px;
+    margin: 0 auto;
+}
 .signup-form-wrapper,
 .login-form-wrapper {
     margin-bottom: 20px;
@@ -619,6 +623,10 @@ table th[class*="col-"] {
 .text-center {
     text-align: center;
 }
+/* Dashboard */
+.peerraiser-dashboard * {
+    box-sizing: border-box;
+}
 /* File upload */
 .peerraiser-image-upload {
     background-color: rgba(0,0,0,0.03);
@@ -640,6 +648,8 @@ table th[class*="col-"] {
 .peerraiser-image-upload .profile-image-preview img.avatar {
     width: 125px;
     height: 125px;
+    border-radius: 50%;
+    display: block;
 }
 .peerraiser-image-upload .profile-image-preview img.loading {
     position: absolute;
