@@ -1,2 +1,0 @@
-$dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-$config   = \PeerRaiser\Core\Setup::get_plugin_config();
