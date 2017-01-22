@@ -39,7 +39,8 @@
                 templateSelection: this.options.templateSelection,
                 multiple: this.options.multiple,
             };
-            $(this.element).select2( select2_args );
+
+            $(this.element).pr_select2( select2_args );
         },
         decode_data: function( data ){
             // Return if no data
