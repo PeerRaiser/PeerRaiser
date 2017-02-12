@@ -4,7 +4,7 @@
  * Plugin Name:       PeerRaiser
  * Plugin URI:        http://PeerRaiser.com
  * Description:       Peer-to-peer fundraising for WordPress
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Nate Allen
  * Author URI:        http://peerraiser.com/
  * License:           GPL-3.0+
