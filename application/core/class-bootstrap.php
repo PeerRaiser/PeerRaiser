@@ -271,8 +271,7 @@ class Bootstrap {
         $install_controller = self::get_controller( 'Install' );
         $install_controller->install();
 
-        // register the 'refresh dashboard' cron job
-        // wp_schedule_event( time(), 'hourly', 'peerraiser_refresh_dashboard_data' );
+        // register any cron jobs here
     }
 
 
