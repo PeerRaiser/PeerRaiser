@@ -133,6 +133,8 @@ class Install extends Base {
     public function check_for_updates() {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $current_version = $plugin_options['peerraiser_version'];
+        error_log( 'current_version: ' . $current_version );
+        error_log( 'this_config_version: ' . $this->config->version );
         if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
             $this->install();
         }
@@ -153,26 +155,24 @@ class Install extends Base {
         }
 
         $plugin_options = get_option( 'peerraiser_options', array() );
-
-        if ( !empty($plugin_options) )
-            return;
+        $default_options = array();
 
         // Default options
-        $plugin_options['currency']                          = $this->config->get( 'currency.default' );
-        $plugin_options['fundraiser_slug']                   = 'give';
-        $plugin_options['campaign_slug']                     = 'campaign';
-        $plugin_options['disable_css_styles']                = false;
-        $plugin_options['test_mode']                         = true;
-        $plugin_options['show_welcome_message']              = true;
-        $plugin_options['donation_receipt_enabled']          = true;
-        $plugin_options['new_donation_notification_enabled'] = true;
-        $plugin_options['welcome_email_enabled']             = true;
-        $plugin_options['from_name']                         = get_bloginfo( 'name' );
-        $plugin_options['from_email']                        = get_bloginfo( 'admin_email' );
-        $plugin_options['new_donation_notification_to']      = get_bloginfo( 'admin_email' );
-        $plugin_options['uninstall_deletes_data']            = false;
-        $plugin_options['donation_receipt_subject']          = __('Thank you for your donation', 'peerraiser');
-        $plugin_options['donation_receipt_body']             = __('Dear [peerraiser_email show=donor_first_name],
+        $default_options['currency']                          = $this->config->get( 'currency.default' );
+        $default_options['fundraiser_slug']                   = 'give';
+        $default_options['campaign_slug']                     = 'campaign';
+        $default_options['disable_css_styles']                = false;
+        $default_options['test_mode']                         = true;
+        $default_options['show_welcome_message']              = true;
+        $default_options['donation_receipt_enabled']          = true;
+        $default_options['new_donation_notification_enabled'] = true;
+        $default_options['welcome_email_enabled']             = true;
+        $default_options['from_name']                         = get_bloginfo( 'name' );
+        $default_options['from_email']                        = get_bloginfo( 'admin_email' );
+        $default_options['new_donation_notification_to']      = get_bloginfo( 'admin_email' );
+        $default_options['uninstall_deletes_data']            = false;
+        $default_options['donation_receipt_subject']          = __('Thank you for your donation', 'peerraiser');
+        $default_options['donation_receipt_body']             = __('Dear [peerraiser_email show=donor_first_name],
 
             Thank you so much for your generous donation.
 
@@ -181,40 +181,61 @@ class Install extends Base {
 
             With thanks,
             [peerraiser_email show=site_name]', 'peerraiser');
-        $plugin_options['new_donation_notification_subject'] = __('New donation received', 'peerraiser');
-        $plugin_options['new_donation_notification_body']    = __('[peerraiser_email show=donor] has just made a donation!
+        $default_options['new_donation_notification_subject'] = __('New donation received', 'peerraiser');
+        $default_options['new_donation_notification_body']    = __('[peerraiser_email show=donor] has just made a donation!
 
             Summary
             [peerraiser_email show=donation_summary]', 'peerraiser');
-        $plugin_options['welcome_email_subject']             = __('Welcome!', 'peerraiser');
-        $plugin_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
+        $default_options['welcome_email_subject']             = __('Welcome!', 'peerraiser');
+        $default_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
 
+        // Create default pages
+        if ( ! isset( $plugin_options['thank_you_page'] ) ) {
+            $thank_you_page = $this->create_page( 'thank_you' );
+            $default_options[ 'thank_you_page' ] = $thank_you_page;
+        }
 
+        if ( ! isset( $plugin_options['login_page'] ) ) {
+            $login_page = $this->create_page( 'login' );
+            $default_options[ 'login_page' ] = $login_page;
+        }
+
+        if ( ! isset( $plugin_options['signup_page'] ) ) {
+            $signup_page = $this->create_page( 'signup' );
+            $default_options[ 'signup_page' ] = $signup_page;
+        }
+
+        if ( ! isset( $plugin_options['participant_dashboard'] ) ) {
+            $participant_dashboard = $this->create_page( 'participant_dashboard' );
+            $default_options[ 'participant_dashboard' ] = $participant_dashboard;
+        }
+
+        // Upload default thumbnail images to the media library
+        if ( ! isset( $plugin_options['campaign_thumbnail_image'] ) ) {
+            $campaign_image_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-campaign-thumbnail.png' );
+            $default_options[ 'campaign_thumbnail_image' ] = $campaign_image_id;
+        }
+
+        if ( ! isset( $plugin_options['user_thumbnail_image'] ) ) {
+            $user_images_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-user-thumbnail.png' );
+            $default_options[ 'user_thumbnail_image' ] = $user_images_id;
+        }
+
+        if ( ! isset( $plugin_options['team_thumbnail_image'] ) ) {
+            $team_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-team-thumbnail.png' );
+            $default_options[ 'team_thumbnail_image' ] = $team_images_id;
+        }
 
         // keep the plugin version up to date
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
 
-        // Create default pages
-        $thank_you_page        = $this->create_page( 'thank_you' );
-        $login_page            = $this->create_page( 'login' );
-        $signup_page           = $this->create_page( 'signup' );
-        $participant_dashboard = $this->create_page( 'participant_dashboard' );
+        update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
 
-        // Store the page IDs
-        $plugin_options[ 'thank_you_page' ]        = $thank_you_page;
-        $plugin_options[ 'login_page' ]            = $login_page;
-        $plugin_options[ 'signup_page' ]           = $signup_page;
-        $plugin_options[ 'participant_dashboard' ] = $participant_dashboard;
-
-        // Upload default thumbnail images to the media library
-        $campaign_image_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-campaign-thumbnail.png' );
-        $user_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-user-thumbnail.png' );
-        $team_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-team-thumbnail.png' );
-        $plugin_options[ 'campaign_thumbnail_image' ] = $campaign_image_id;
-        $plugin_options[ 'user_thumbnail_image' ]     = $user_images_id;
-        $plugin_options[ 'team_thumbnail_image' ]     = $team_images_id;
-
-        update_option( 'peerraiser_options', $plugin_options );
+        // Create Databases
+        $donation_database = new \PeerRaiser\Model\Donation();
+        if ( ! $donation_database->table_exists() ) {
+            $donation_database->create_table();
+        }
 
         // clear opcode cache
         \PeerRaiser\Helper\Cache::reset_opcode_cache();
@@ -225,7 +246,7 @@ class Install extends Base {
 
         // Add to activity feed
         $model = new \PeerRaiser\Model\Activity_Feed();
-        $model->add_install_notice_to_feed();
+        $model->add_install_notice_to_feed( $plugin_options['peerraiser_version'] );
     }
 
 
@@ -270,6 +291,5 @@ class Install extends Base {
 
         return $page_id;
     }
-
 
 }
