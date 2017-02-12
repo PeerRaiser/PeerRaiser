@@ -14,15 +14,20 @@ class Activity_Feed {
         update_option( 'peerraiser_activity_feed', $current_feed );
     }
 
-    public function add_install_notice_to_feed(){
-        $this->add_activity(
-            array(
-                'id'      => 'peerraiser_installed',
-                'type'    => 'install',
-                'message' => __( 'PeerRaiser was installed', 'peerraiser'),
-                'time'    => time()
-            )
+    public function add_install_notice_to_feed( $version ){
+        $notice = array(
+            'id'      => 'peerraiser_installed',
+            'type'    => 'install',
+            'message' => sprintf( __( 'PeerRaiser %s was installed', 'peerraiser' ), $version ),
+            'time'    => time()
         );
+
+        // If the activity feed already exists, say updated instead of installed
+        if ( $this->get_activity_feed() ) {
+            $notice['message'] = sprintf( __( 'PeerRaiser was updated to version %s', 'peerraiser' ), $version );
+        }
+
+        $this->add_activity($notice);
     }
 
     public function add_donation_to_feed( $post ) {
