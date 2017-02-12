@@ -12,42 +12,27 @@ class Teams extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_cmb2_admin_init' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'register_meta_boxes' )
             ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
             'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
             'peerraiser_after_post_meta_added' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_connections' ),
             ),
             'peerraiser_before_post_meta_updated' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'update_connections' ),
             ),
             'peerraiser_before_post_meta_deleted' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'delete_connections' ),
             ),
             'peerraiser_meta_boxes' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_meta_boxes' ),
             ),
             'peerraiser_manage_team_columns' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'manage_columns' ),
             )
         );

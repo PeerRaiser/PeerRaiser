@@ -10,23 +10,18 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_shortcode_receipt' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'render_donation_receipt' ),
             ),
             'peerraiser_shortcode_login' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'render_login_form' ),
             ),
             'peerraiser_shortcode_signup' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'render_signup_form' ),
             ),
             'peerraiser_shortcode_dashboard' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'render_participant_dashboard' ),
             ),
             'peerraiser_cmb2_init' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'register_settings_fields' )
             )
         );

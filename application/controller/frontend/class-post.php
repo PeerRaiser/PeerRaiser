@@ -10,7 +10,6 @@ class Post extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_enqueue_scripts' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'add_frontend_stylesheets' ),
                 array( 'add_frontend_scripts' ),
             ),

@@ -66,18 +66,6 @@ class Hooks {
      * Registers WordPress hooks to trigger internal plugin events.
      */
     public function init() {
-        // add_filter( 'the_content',                        array( $this, self::$wp_filter_prefix . 'peerraiser_post_content' ), 1 );
-        // add_filter( 'get_post_metadata',                  array( $this, self::$wp_filter_prefix . 'peerraiser_post_metadata' ), 10, 4 );
-        // add_filter( 'the_posts',                          array( $this, self::$wp_filter_prefix . 'peerraiser_posts' ) );
-
-        // add_filter( 'terms_clauses',                      array( $this, self::$wp_filter_prefix . 'peerraiser_terms_clauses' ) );
-        // add_filter( 'date_query_valid_columns',           array( $this, self::$wp_filter_prefix . 'peerraiser_date_query_valid_columns' ) );
-
-        // add_filter( 'wp_get_attachment_image_attributes', array( $this, self::$wp_filter_prefix . 'peerraiser_attachment_image_attributes' ), 10, 3 );
-        // add_filter( 'wp_get_attachment_url',              array( $this, self::$wp_filter_prefix . 'peerraiser_attachment_get_url' ), 10, 2 );
-        // add_filter( 'prepend_attachment',                 array( $this, self::$wp_filter_prefix . 'peerraiser_attachment_prepend' ) );
-
-        // add_action( 'wp_footer',                          array( $this, self::$wp_action_prefix . 'peerraiser_post_footer' ) );
         add_action( 'wp_enqueue_scripts',                       array( $this, self::$wp_action_prefix . 'peerraiser_enqueue_scripts' ) );
         add_action( 'init',                                     array( $this, self::$wp_action_prefix . 'peerraiser_wordpress_init' ) );
         add_action( 'admin_init',                               array( $this, self::$wp_action_prefix . 'peerraiser_admin_init' ) );

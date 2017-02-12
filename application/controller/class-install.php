@@ -36,26 +36,17 @@ class Install extends Base {
      */
     public static function get_subscribed_events() {
         return array(
-            'peerraiser_post_metadata' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 )
-            ),
             'peerraiser_admin_init' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'trigger_requirements_check' ),
                 array( 'trigger_update_capabilities' ),
             ),
             'peerraiser_update_capabilities' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
                 array( 'update_capabilities' ),
             ),
             'peerraiser_check_requirements' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugins_page_view', 200 ),
                 array( 'check_requirements' ),
             ),
             'peerraiser_admin_notices' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugins_page_view', 200 ),
                 array( 'render_requirements_notices' ),
                 array( 'check_for_updates' ),
             ),
@@ -264,7 +255,6 @@ class Install extends Base {
     }
 
     private function create_page( $page ) {
-
         $page_options = $this->default_pages[$page];
 
         $page_id = wp_insert_post(
