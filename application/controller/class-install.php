@@ -255,10 +255,6 @@ class Install extends Base {
     }
 
     private function create_page( $page ) {
-<<<<<<< HEAD
-=======
-
->>>>>>> b6abc734fbaf442428c7a763a7c82099f6173634
         $page_options = $this->default_pages[$page];
 
         $page_id = wp_insert_post(

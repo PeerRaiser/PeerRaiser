@@ -77,13 +77,8 @@ class Account extends \PeerRaiser\Controller\Base {
 
     public function handle_signup( \PeerRaiser\Core\Event $event ) {
         // Get the default dashboard and login page urls
-<<<<<<< HEAD
         $plugin_options         = get_option( 'peerraiser_options', array() );
         $participant_dashboard  = get_permalink( $plugin_options[ 'participant_dashboard' ] );
-=======
-        $plugin_options        = get_option( 'peerraiser_options', array() );
-        $participant_dashboard = get_permalink( $plugin_options[ 'participant_dashboard' ] );
->>>>>>> b6abc734fbaf442428c7a763a7c82099f6173634
         $signup_page            = get_permalink( $plugin_options[ 'signup_page' ] );
 
         $required = array( 'username', 'password', 'firstname', 'lastname', 'email' );
