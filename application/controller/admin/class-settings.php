@@ -11,7 +11,6 @@ class Settings extends Base {
         return array(
             'wp_ajax_peerraiser_update_settings' => array(
                 array( 'ajax_update_settings', 100 ),
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),
             'peerraiser_wordpress_init' => array(

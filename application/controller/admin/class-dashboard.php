@@ -11,7 +11,6 @@ class Dashboard  extends Base {
         return array(
             'wp_ajax_peerraiser_dismiss_message' => array(
                 array( 'process_dismiss_message_request', 100 ),
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),
         );

@@ -7,20 +7,16 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_template_redirect' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'dashboard_redirect' ),
             ),
             'wp_ajax_peerraiser_update_avatar' => array(
                 array( 'ajax_update_avatar', 100 ),
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),
             'peerraiser_cmb2_save_user_fields' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'update_user_email' ),
             ),
             'peerraiser_change_password' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'change_user_password' ),
             ),
         );

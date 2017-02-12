@@ -13,7 +13,6 @@ class Admin_Notices extends \PeerRaiser\Controller\Base {
         return array(
             'peerraiser_admin_notices' => array(
                 array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'display_notices' )
             ),
         );

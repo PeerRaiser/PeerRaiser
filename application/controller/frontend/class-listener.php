@@ -16,11 +16,9 @@ class Listener extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_query_vars' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_peerraiser_listener' ),
             ),
             'peerraiser_template_redirect' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'listen_for_notification' ),
             ),
         );

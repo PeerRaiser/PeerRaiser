@@ -13,45 +13,31 @@ class Admin extends Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_admin_head' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_html5shiv_to_admin_head' ),
             ),
             'peerraiser_admin_menu' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_to_admin_panel' ),
             ),
             'peerraiser_admin_footer_scripts' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'modify_footer' ),
             ),
             'peerraiser_admin_enqueue_scripts' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_plugin_admin_assets' ),
                 array( 'add_admin_pointers_script' ),
                 array( 'register_admin_scripts' ),
                 array( 'register_admin_styles' ),
             ),
             'peerraiser_admin_head' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'on_campaigns_view' ),
             ),
             'peerraiser_enter_title_here' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'customize_title' ),
             ),
             'wp_ajax_peerraiser_get_posts' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'ajax_get_posts' ),
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),
             'wp_ajax_peerraiser_get_users' => array(
-                array( 'peerraiser_on_plugin_is_working', 200 ),
                 array( 'ajax_get_users' ),
                 array( 'peerraiser_on_ajax_send_json', 300 ),
             ),

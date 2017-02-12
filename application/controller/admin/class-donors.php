@@ -12,37 +12,24 @@ class Donors extends \PeerRaiser\Controller\Base {
     public static function get_subscribed_events() {
         return array(
             'peerraiser_cmb2_admin_init' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'register_meta_boxes' )
             ),
             'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
             'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'load_assets' )
             ),
             'peerraiser_meta_boxes' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'add_meta_boxes' ),
             ),
             'peerraiser_admin_menu' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'maybe_replace_submit_box' ),
             ),
             'peerraiser_user_registered' => array(
-                array( 'peerraiser_on_admin_view', 200 ),
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'maybe_connect_user_to_donor' ),
             ),
             'peerraiser_manage_donor_columns' => array(
-                array( 'peerraiser_on_plugin_is_active', 200 ),
                 array( 'manage_columns' ),
             )
         );
