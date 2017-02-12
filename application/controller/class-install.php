@@ -133,8 +133,6 @@ class Install extends Base {
     public function check_for_updates() {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $current_version = $plugin_options['peerraiser_version'];
-        error_log( 'current_version: ' . $current_version );
-        error_log( 'this_config_version: ' . $this->config->version );
         if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
             $this->install();
         }
@@ -226,6 +224,13 @@ class Install extends Base {
             $default_options[ 'team_thumbnail_image' ] = $team_images_id;
         }
 
+        // Add to activity feed
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : 0;
+        if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
+            $model = new \PeerRaiser\Model\Activity_Feed();
+            $model->add_install_notice_to_feed( $this->config->version );
+        }
+
         // keep the plugin version up to date
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
 
@@ -243,10 +248,6 @@ class Install extends Base {
         // update capabilities
         $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
         $peerraiser_capabilities->populate_roles();
-
-        // Add to activity feed
-        $model = new \PeerRaiser\Model\Activity_Feed();
-        $model->add_install_notice_to_feed( $plugin_options['peerraiser_version'] );
     }
 
 
