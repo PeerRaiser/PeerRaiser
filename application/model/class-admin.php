@@ -29,7 +29,7 @@ class Admin {
                 'cap'   => 'activate_plugins'
             ),
             'donations' => array(
-                'url'   => 'edit.php?post_type=pr_donation',
+                'url'   => 'peerraiser-donations',
                 'title' => __( 'Donations', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
             ),
@@ -47,7 +47,7 @@ class Admin {
     }
 
     public function get_menu_items() {
-        return $this->menu_items;
+        return apply_filters( 'peerraiser_menu_items', $this->menu_items );
     }
 
 }
