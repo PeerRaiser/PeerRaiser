@@ -107,6 +107,29 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
+    /**
+     * @see \PeerRaiser\Core\View::render_page
+     */
+    public function render_page() {
+        $this->load_assets();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+
+        $currency        = new \PeerRaiser\Model\Currency();
+        $activity_feed   = new \PeerRaiser\Model\Activity_Feed();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $view_args = array(
+            'currency_symbol'      => $currency_symbol,
+            'standard_currency'    => $plugin_options['currency'],
+            'admin_url'            => get_admin_url(),
+            'list_table'           => new \PeerRaiser\Model\Admin\Donation_List_Table(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/donation-list' );
+    }
 
     public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
 
@@ -128,19 +151,16 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function maybe_remove_metabox( \PeerRaiser\Core\Event $event ) {
         // Only display fields on a "new" donations, not existing ones
         if ( $this->is_edit_page( 'edit' ) )
             remove_meta_box( 'offline-donation', 'pr_donation', 'normal' );
     }
 
-
     public function replace_submit_box() {
         remove_meta_box('submitdiv', 'pr_donation', 'core');
         add_meta_box('submitdiv', __('Donation'), array( $this, 'get_submit_box'), 'pr_donation', 'side', 'low');
     }
-
 
     public function get_submit_box( $object ) {
         $post_type_object = get_post_type_object($object->post_type);
@@ -161,7 +181,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function on_donations_view( \PeerRaiser\Core\Event $event ) {
         global $typenow;
 
@@ -169,9 +188,7 @@ class Donations extends \PeerRaiser\Controller\Base {
             $message = __("A donor record is required. <a href=\"post-new.php?post_type=pr_donor\">Create one now</a> if it doesn't already exist");
             \PeerRaiser\Controller\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
-
     }
-
 
     /**
      * After post meta is added, add the connections
@@ -216,7 +233,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     /**
      * Before the post meta is updated, update the connections
@@ -267,9 +283,7 @@ class Donations extends \PeerRaiser\Controller\Base {
             default:
                 break;
         }
-
     }
-
 
     /**
      * Before post meta is deleted, delete the connections
@@ -308,9 +322,7 @@ class Donations extends \PeerRaiser\Controller\Base {
             default:
                 break;
         }
-
     }
-
 
     public function handle_post_deleted( \PeerRaiser\Core\Event $event ) {
         list( $post_id ) = $event->get_arguments();
@@ -327,7 +339,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         p2p_type( 'donation_to_campaign' )->disconnect( $campaign, $post_id );
         p2p_type( 'donation_to_fundraiser' )->disconnect( $fundraiser, $post_id );
     }
-
 
     public function add_donation( \PeerRaiser\Core\Event $event ){
         $data = $event->get_arguments();
@@ -379,7 +390,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         // Clear transient
         delete_transient( 'peerraiser_donations_total' );
-
     }
 
 
@@ -427,11 +437,8 @@ class Donations extends \PeerRaiser\Controller\Base {
                 $test_mode = get_post_meta( $post_id, '_test_mode', true );
                 echo ( $test_mode ) ? __( 'No', 'peerraiser' ) : __( 'Yes', 'peerraiser');
                 break;
-
         }
-
     }
-
 
     public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
         if ( !$this->is_edit_page( 'edit' ) )
@@ -455,7 +462,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function display_donor_box( $object ) {
         $donor_id = get_post_meta( $object->ID, '_donor', true );
         $donor_user_account = get_post_meta( $donor_id, '_donor_user_account', true);
@@ -475,7 +481,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/donation-card' );
     }
-
 
     public function display_transaction_summary( $object ) {
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -506,16 +511,13 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donation-summary' );
     }
 
-
     public function delete_transient( \PeerRaiser\Core\Event $event ) {
         delete_transient( 'peerraiser_donations_total' );
     }
 
-
     private function make_donation_title( $data ) {
         return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
     }
-
 
     private function is_existing_donation( $key ) {
         $query_args = array(
@@ -530,7 +532,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation_query = new \WP_Query( $query_args );
         return ( $donation_query->found_posts > 0 );
     }
-
 
     private function get_donor_by_email( $email ) {
         $query_args = array(
@@ -553,7 +554,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-
     private function add_donor( $data ) {
         $name = ( isset($data['first_name']) && isset($data['last_name']) ) ? $data['first_name'] . ' ' . $data['last_name'] : 'Anonymous';
         $donor_args = array(
@@ -567,7 +567,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         return wp_insert_post( $donor_args );
     }
 
-
     private function is_valid_donation( $fields ) {
         $required_fields = array( 'date', 'payment_method', 'transaction_key', 'ip_address', 'test_mode', 'amount', 'campaign_id', 'email' );
 
@@ -578,5 +577,4 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         return true;
     }
-
 }
