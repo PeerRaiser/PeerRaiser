@@ -63,10 +63,9 @@ class Admin extends Base {
         );
 
         $model = new \PeerRaiser\Model\Admin();
-        $default_menu = $model->get_menu_items();
+        $menu_items = $model->get_menu_items();
 
-        $menu = apply_filters( 'peerraiser_admin_menu_data', $default_menu );
-        foreach ( $menu as $name => $page ) {
+        foreach ( $menu_items as $name => $page ) {
             $slug = $page['url'];
 
             if ( strpos($slug, 'post_type') === false ) {
@@ -185,6 +184,10 @@ class Admin extends Base {
             case 'dashboard':
                 $dashboard_controller = new \PeerRaiser\Controller\Admin\Dashboard( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $dashboard_controller->render_page();
+                break;
+            case 'donations':
+                $donations_controller = new \PeerRaiser\Controller\Admin\Donations( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $donations_controller->render_page();
                 break;
             case 'settings':
                 $settings_controller = new \PeerRaiser\Controller\Admin\Settings( \PeerRaiser\Core\Setup::get_plugin_config() );
