@@ -300,19 +300,6 @@ class Donation extends Database {
 
         dbDelta( $sql );
 
-        // Also create the meta table
-        $sql = "CREATE TABLE" . $this->table_name . "meta (
-        `meta_id` bigint(20) NOT NULL AUTO_INCREMENT,
-        `donation_id` bigint(20) NOT NULL DEFAULT '0',
-        `meta_key` varchar(255) DEFAULT NULL,
-        `meta_value` longtext,
-        PRIMARY KEY (`meta_id`),
-        KEY `affiliate_id` (`affiliate_id`),
-        KEY `meta_key` (`meta_key`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-        dbDelta( $sql );
-
         update_option( $this->table_name . '_db_version', $this->version );
     }
 }
