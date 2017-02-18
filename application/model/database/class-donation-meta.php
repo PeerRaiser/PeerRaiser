@@ -1,5 +1,5 @@
 <?php
-namespace PeerRaiser\Model;
+namespace PeerRaiser\Model\Database;
 
 use PeerRaiser\Core\Database;
 
@@ -150,6 +150,16 @@ class Donation_Meta extends Database {
         dbDelta( $sql );
 
         update_option( $this->table_name . '_db_version', $this->version );
+    }
+
+    /**
+     * Check if table exists
+     *
+     * @since     1.0.4
+     * @return    bool    True if table exists, false if it doesn't
+     */
+    public function table_exists( $table_name = '' ) {
+        return parent::table_exists( $this->table_name );
     }
 
     /**
