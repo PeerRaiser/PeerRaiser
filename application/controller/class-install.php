@@ -75,9 +75,7 @@ class Install extends Base {
      * @param PeerRaiser_Core_Event $event
      */
     public function trigger_requirements_check( \PeerRaiser\Core\Event $event ) {
-        $new_event = new \PeerRaiser\Core\Event( $event->get_arguments() );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_check_requirements', $new_event );
+        do_action( 'peerraiser_check_requirements' );
     }
 
 
@@ -131,8 +129,8 @@ class Install extends Base {
      * @return     void
      */
     public function check_for_updates() {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $current_version = $plugin_options['peerraiser_version'];
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
         if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
             $this->install();
         }
@@ -140,6 +138,8 @@ class Install extends Base {
 
     /**
      * Create custom tables and set the required options.
+     *
+     * This function is called if this plugin version is ever different than the installed plugin version
      *
      * @return void
      */
@@ -152,10 +152,69 @@ class Install extends Base {
             return;
         }
 
+        // Set the default options
+        $this->set_default_options();
+
+        // Create default pages if needed
+        $this->maybe_create_default_pages();
+
+        // Upload default thumbnail images if needed
+        $this->maybe_upload_default_images();
+
+        // Created databases if needed
+        $this->maybe_create_databases();
+
+        // Populate default roles
+        $this->populate_roles();
+
+        // keep the plugin version up to date
         $plugin_options = get_option( 'peerraiser_options', array() );
+        $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
+        update_option( 'peerraiser_options', $plugin_options );
+
+        // Add install/update notice to activity feed
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->add_install_notice_to_feed( $this->config->version );
+
+        // clear opcode cache
+        \PeerRaiser\Helper\Cache::reset_opcode_cache();
+    }
+
+
+    /**
+     * Trigger requirements check.
+     *
+     * @param    \PeerRaiser\Core\Event    $event
+     */
+    public function trigger_update_capabilities( \PeerRaiser\Core\Event $event ) {
+        $new_event = new \PeerRaiser\Core\Event();
+        $new_event->set_echo( false );
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
+        $dispatcher->dispatch( 'peerraiser_update_capabilities', $new_event );
+    }
+
+
+    /**
+     * Update user roles capabilities.
+     *
+     * @param    \PeerRaiser\Core\Event    $event
+     */
+    public function update_capabilities( \PeerRaiser\Core\Event $event ) {
+        list( $roles ) = $event->get_arguments() + array( array() );
+        // update capabilities
+        $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
+        $peerraiser_capabilities->update_roles( (array) $roles );
+    }
+
+    /**
+     * Merge default options with whatever options are currently set by the user
+     *
+     * @since    1.0.0
+     */
+    private function set_default_options() {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
         $default_options = array();
 
-        // Default options
         $default_options['currency']                          = $this->config->get( 'currency.default' );
         $default_options['fundraiser_slug']                   = 'give';
         $default_options['campaign_slug']                     = 'campaign';
@@ -187,95 +246,118 @@ class Install extends Base {
         $default_options['welcome_email_subject']             = __('Welcome!', 'peerraiser');
         $default_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
 
+        update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
+    }
+
+    /**
+     * Create default pages if current version if not 1.0.0 or better
+     *
+     * PeerRaiser needs a few default pages setup to work out of the box. The user can change these later.
+     *
+     * @since     1.0.0
+     * @return    void
+     */
+    private function maybe_create_default_pages() {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+        // If current version is 1.0.0+, we know pages were already created
+        if ( version_compare( $current_version, '1.0.0', '>=' ) )
+            return;
+
         // Create default pages
-        if ( ! isset( $plugin_options['thank_you_page'] ) ) {
-            $thank_you_page = $this->create_page( 'thank_you' );
-            $default_options[ 'thank_you_page' ] = $thank_you_page;
-        }
+        $thank_you_page        = $this->create_page( 'thank_you' );
+        $login_page            = $this->create_page( 'login' );
+        $signup_page           = $this->create_page( 'signup' );
+        $participant_dashboard = $this->create_page( 'participant_dashboard' );
 
-        if ( ! isset( $plugin_options['login_page'] ) ) {
-            $login_page = $this->create_page( 'login' );
-            $default_options[ 'login_page' ] = $login_page;
-        }
-
-        if ( ! isset( $plugin_options['signup_page'] ) ) {
-            $signup_page = $this->create_page( 'signup' );
-            $default_options[ 'signup_page' ] = $signup_page;
-        }
-
-        if ( ! isset( $plugin_options['participant_dashboard'] ) ) {
-            $participant_dashboard = $this->create_page( 'participant_dashboard' );
-            $default_options[ 'participant_dashboard' ] = $participant_dashboard;
-        }
-
-        // Upload default thumbnail images to the media library
-        if ( ! isset( $plugin_options['campaign_thumbnail_image'] ) ) {
-            $campaign_image_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-campaign-thumbnail.png' );
-            $default_options[ 'campaign_thumbnail_image' ] = $campaign_image_id;
-        }
-
-        if ( ! isset( $plugin_options['user_thumbnail_image'] ) ) {
-            $user_images_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-user-thumbnail.png' );
-            $default_options[ 'user_thumbnail_image' ] = $user_images_id;
-        }
-
-        if ( ! isset( $plugin_options['team_thumbnail_image'] ) ) {
-            $team_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-team-thumbnail.png' );
-            $default_options[ 'team_thumbnail_image' ] = $team_images_id;
-        }
-
-        // Add to activity feed
-        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : 0;
-        if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
-            $model = new \PeerRaiser\Model\Activity_Feed();
-            $model->add_install_notice_to_feed( $this->config->version );
-        }
-
-        // keep the plugin version up to date
-        $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
+        $default_options = array(
+            'thank_you_page'        => $thank_you_page,
+            'login_page'            => $login_page,
+            'signup_page'           => $signup_page,
+            'participant_dashboard' => $participant_dashboard,
+        );
 
         update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
+    }
 
-        // Create Databases
-        $donation_database = new \PeerRaiser\Model\Donation();
+    /**
+     * Create default images if current version is not 1.0.0 or better
+     *
+     * @since     1.0.0
+     * @return    void
+     */
+    private function maybe_upload_default_images() {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+        // If current version is 1.0.0+, we know images were already created
+        if ( version_compare( $current_version, '1.0.0', '>=' ) )
+            return;
+
+        $campaign_image_id = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-campaign-thumbnail.png' );
+        $team_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-team-thumbnail.png' );
+        $user_images_id    = \PeerRaiser\Helper\View::add_file_to_media_library( 'default-user-thumbnail.png' );
+
+        $default_options = array(
+            'campaign_thumbnail_image' => $campaign_image_id,
+            'user_thumbnail_image'     => $user_images_id,
+            'team_thumbnail_image'     => $team_images_id,
+        );
+
+        update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
+    }
+
+    /**
+     * Create database tables, if they don't exist
+     *
+     * @since     1.0.0
+     * @return    void
+     */
+    private function maybe_create_databases() {
+        // Donation
+        $donation_database = new \PeerRaiser\Model\Database\Donation();
         if ( ! $donation_database->table_exists() ) {
             $donation_database->create_table();
         }
 
-        // clear opcode cache
-        \PeerRaiser\Helper\Cache::reset_opcode_cache();
+        // Donation Meta
+        $donation_meta_database = new \PeerRaiser\Model\Database\Donation_Meta();
+        if ( ! $donation_meta_database->table_exists() ) {
+            $donation_meta_database->create_table();
+        }
 
-        // update capabilities
+        // Donor
+        $donor_database = new \PeerRaiser\Model\Database\Donor();
+        if ( ! $donor_database->table_exists() ) {
+            $donor_database->create_table();
+        }
+
+        // Donor Meta
+        $donor_meta_database = new \PeerRaiser\Model\Database\Donor_Meta();
+        if ( ! $donor_meta_database->table_exists() ) {
+            $donor_meta_database->create_table();
+        }
+    }
+
+    /**
+     * Populate roles
+     *
+     * @since     1.0.0
+     * @return    void
+     */
+    private function populate_roles() {
         $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
         $peerraiser_capabilities->populate_roles();
     }
 
-
     /**
-     * Trigger requirements check.
+     * Create pages
      *
-     * @param    \PeerRaiser\Core\Event    $event
+     * @since     1.0.0
+     * @param     string    $page    The page slug to create
+     * @return    int                ID of the page that was created
      */
-    public function trigger_update_capabilities( \PeerRaiser\Core\Event $event ) {
-        $new_event = new \PeerRaiser\Core\Event();
-        $new_event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_update_capabilities', $new_event );
-    }
-
-
-    /**
-     * Update user roles capabilities.
-     *
-     * @param    \PeerRaiser\Core\Event    $event
-     */
-    public function update_capabilities( \PeerRaiser\Core\Event $event ) {
-        list( $roles ) = $event->get_arguments() + array( array() );
-        // update capabilities
-        $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
-        $peerraiser_capabilities->update_roles( (array) $roles );
-    }
-
     private function create_page( $page ) {
         $page_options = $this->default_pages[$page];
 
