@@ -14,17 +14,17 @@ class Admin {
                 'cap'   => 'activate_plugins',
             ),
             'campaigns' => array(
-                'url'   => 'edit.php?post_type=pr_campaign',
+                'url'   => 'peerraiser-campaigns',
                 'title' => __( 'Campaigns', 'peerraiser' ),
                 'cap'   => 'activate_plugins'
             ),
             'fundraisers' => array(
-                'url'   => 'edit.php?post_type=fundraiser',
+                'url'   => 'peerraiser-fundraisers',
                 'title' => __( 'Fundraisers', 'peerraiser' ),
                 'cap'   => 'activate_plugins'
             ),
             'teams' => array(
-                'url'   => 'edit.php?post_type=pr_team',
+                'url'   => 'peerraiser-teams',
                 'title' => __( 'Teams', 'peerraiser' ),
                 'cap'   => 'activate_plugins'
             ),
@@ -34,7 +34,7 @@ class Admin {
                 'cap'   => 'activate_plugins',
             ),
             'donors' => array(
-                'url'   => 'edit.php?post_type=pr_donor',
+                'url'   => 'peerraiser-donors',
                 'title' => __( 'Donors', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
             ),
