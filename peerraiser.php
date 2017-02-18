@@ -94,6 +94,13 @@ function peerraiser_activate() {
 }
 
 /**
+ * Callback for deactivating the plugin.
+ */
+function peerraiser_deactivate() {
+    // TODO: Remove peerraiser data if "uninstall_deletes_data" is "true"
+}
+
+/**
  * Run before plugins_loaded, activate_peerraiser, and deactivate_peerraiser, to register
  * our autoload paths
  *
