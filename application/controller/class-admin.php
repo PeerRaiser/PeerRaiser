@@ -164,32 +164,47 @@ class Admin extends Base {
     }
 
     /**
-     * Constructor for class PeerRaiserController, processes the tabs in the plugin backend.
+     * Constructor for class PeerRaiserController, processes the pages in the plugin backend.
      *
-     * @param string $tab
+     * @param string $page
      *
      * @return void
      */
     public function run( $page = '' ) {
         $this->load_assets();
 
-        // return default tab, if no specific tab is requested
+        // return default page, if no specific page is requested
         if ( empty( $page ) ) {
             $page = 'dashboard';
         }
 
         switch ( $page ) {
             default:
-            // render dashboard tab
-            case 'dashboard':
+            case 'dashboard' :
                 $dashboard_controller = new \PeerRaiser\Controller\Admin\Dashboard( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $dashboard_controller->render_page();
                 break;
-            case 'donations':
+            case 'campaigns' :
+                $campaigns_controller = new \PeerRaiser\Controller\Admin\Campaigns( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $campaigns_controller->render_page();
+                break;
+            case 'fundraisers' :
+                $fundraisers_controller = new \PeerRaiser\Controller\Admin\Fundraisers( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $fundraisers_controller->render_page();
+                break;
+            case 'teams' :
+                $teams_controller = new \PeerRaiser\Controller\Admin\Teams( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $teams_controller->render_page();
+                break;
+            case 'donations' :
                 $donations_controller = new \PeerRaiser\Controller\Admin\Donations( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $donations_controller->render_page();
                 break;
-            case 'settings':
+            case 'donors' :
+                $donors_controller = new \PeerRaiser\Controller\Admin\Donors( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $donors_controller->render_page();
+                break;
+            case 'settings' :
                 $settings_controller = new \PeerRaiser\Controller\Admin\Settings( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $settings_controller->render_page();
                 break;
