@@ -226,4 +226,20 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
+    public function get_teams_by_campaign( $campaign_slug ) {
+        $fundraiser_ids = get_posts( array(
+            "fields"    => "ids",
+            "post_type' => 'fundraiser",
+            "tax_query" => array(
+                array(
+                    "taxonomy" => "peerraiser_campaign",
+                    "field"    => "slug",
+                    "terms"    => $campaign_slug,
+                )
+            )
+        ) );
+
+        return wp_get_object_terms( $fundraiser_ids, "peerraiser_team" );
+    }
+
 }
