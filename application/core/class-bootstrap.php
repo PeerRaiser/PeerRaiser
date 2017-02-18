@@ -77,11 +77,13 @@ class Bootstrap {
         $this->register_upgrade_checks();
 
         $this->register_custom_post_types();
+        $this->register_taxonomies();
         $this->register_admin_actions();
         $this->register_frontend_actions();
         $this->register_shortcodes();
         $this->register_connections();
         $this->register_activity_log();
+        $this->register_tables();
 
         // PeerRaiser loaded finished. Triggering event for other plugins
         \PeerRaiser\Hooks::get_instance()->peerraiser_ready();
@@ -116,22 +118,27 @@ class Bootstrap {
 
 
     /**
-     * Internal function to register global actions for backend.
+     * Internal function to register custom post types.
      *
      * @return    void
      */
     private function register_custom_post_types() {
         $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
 
-        $cpt_controller = self::get_controller( 'Custom_Post_Type' );
-        $dispatcher->add_subscriber( $cpt_controller );
+        $custom_post_type_controller = self::get_controller( 'Custom_Post_Type' );
+        $dispatcher->add_subscriber( $custom_post_type_controller );
+    }
 
-        // $post_controller = self::get_controller( 'Frontend_Post' );
-        // $dispatcher->add_subscriber( $post_controller );
+    /**
+     * Internal function to register taxonomies.
+     *
+     * @return    void
+     */
+    private function register_taxonomies() {
+        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
 
-        // set up unique visitors tracking
-        // $statistics_controller = self::get_controller( 'Frontend_Statistic' );
-        // $dispatcher->add_subscriber( $statistics_controller );
+        $taxonomy_controller = self::get_controller( 'Taxonomy' );
+        $dispatcher->add_subscriber( $taxonomy_controller );
     }
 
 
@@ -300,6 +307,11 @@ class Bootstrap {
         $dispatcher->add_subscriber( new \PeerRaiser\Module\Appearance() );
     }
 
+    private function register_tables() {
+        global $wpdb;
+        $wpdb->donormeta    = $wpdb->prefix . 'pr_donormeta';
+        $wpdb->donationmeta = $wpdb->prefix . 'pr_donationmeta';
+    }
 
     /**
      * Internal function to register event subscribers.
