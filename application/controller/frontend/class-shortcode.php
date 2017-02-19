@@ -102,13 +102,10 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         ), $atts );
 
         // Models
-        $dashboard_model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
+        $dashboard_model = new \PeerRaiser\Model\Frontend\Dashboard();
         $currency_model  = new \PeerRaiser\Model\Currency();
 
-        // Merge default navigation with any additional navigation
-        $default_navigation    = $dashboard_model->get_navigation();
-        $additional_navigation = ( isset( $results['navigation'] ) ) ? $results[ 'navigation' ] : array();
-        $navigation_links      = array_merge( $default_navigation, $additional_navigation );
+        $navigation_links = apply_filters( 'peerraiser_participant_dashboard_navigation', $dashboard_model->get_navigation() );
 
         $view_args = array(
             'navigation'                 => $navigation_links,
@@ -134,7 +131,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
     public function register_settings_fields( \PeerRaiser\Core\Event $event ) {
 
-        $dashboard_model = \PeerRaiser\Model\Frontend\Dashboard::get_instance();
+        $dashboard_model = new \PeerRaiser\Model\Frontend\Dashboard();
 
         $default_fields    = $dashboard_model->get_fields();
         $additional_fields = $this->get_additional_fields();

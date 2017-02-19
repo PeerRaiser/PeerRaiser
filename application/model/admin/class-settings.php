@@ -4,292 +4,279 @@ namespace PeerRaiser\Model\Admin;
 
 class Settings extends \PeerRaiser\Model\Admin {
 
-    private static $fields   = array();
-    private static $tabs     = array();
-    private static $content  = array();
-    private static $instance = null;
+    private $fields   = array();
+    private $tabs     = array();
+    private $content  = array();
 
-    public function __construct() {}
+    public function __construct() {
+        $this->fields = array(
+            array(
+                'id'     => 'general-settings',
+                'fields' => array(
+                    'test_mode' => array(
+                        'name'    => 'Enable Test Mode',
+                        'id'      => 'test_mode',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
+                        ),
+                    ),
+                    'currency' => array(
+                        'name'    => 'Currency',
+                        'id'      => 'currency',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array( $this, 'get_select_options'),
+                    ),
+                    'fundraiser_slug' => array(
+                        'name'    => 'Fundraiser Slug',
+                        'id'      => 'fundraiser_slug',
+                        'type'    => 'text_small',
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'campaign_slug' => array(
+                        'name'    => 'Campaign Slug',
+                        'id'      => 'campaign_slug',
+                        'type'    => 'text_small',
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'show_welcome_message' => array(
+                        'name'    => 'Show Welcome Message on Dashboard?',
+                        'id'      => 'show_welcome_message',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
+                        ),
+                    ),
+                    'disable_css_styles' => array(
+                        'name'    => 'Disable Default CSS Styles?',
+                        'id'      => 'disable_css_styles',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'false'   => __( 'No', 'peerraiser' ),
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                        ),
+                    ),
+                    'campaign_thumbnail_image' => array(
+                        'name'    => __('Default Campaign Thumbnail', 'peerraiser'),
+                        'id'      => 'campaign_thumbnail_image',
+                        'type'    => 'file',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'url' => false,
+                            'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                        ),
+                    ),
+                    'user_thumbnail_image' => array(
+                        'name'    => __('Default User Thumbnail', 'peerraiser'),
+                        'id'      => 'user_thumbnail_image',
+                        'type'    => 'file',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'url' => false,
+                            'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                        ),
+                    ),
+                    'team_thumbnail_image' => array(
+                        'name'    => __('Default Team Thumbnail', 'peerraiser'),
+                        'id'      => 'team_thumbnail_image',
+                        'type'    => 'file',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'url' => false,
+                            'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                        ),
+                    ),
+                    'thank_you_page' => array(
+                        'name'              => __('Thank You Page', 'peerraiser'),
+                        'id'                => 'thank_you_page',
+                        'type'              => 'select',
+                        'options'           => array( $this, 'get_selected_post'),
+                    ),
+                    'login_page' => array(
+                        'name'              => __('Login Page', 'peerraiser'),
+                        'id'                => 'login_page',
+                        'type'              => 'select',
+                        'options'           => array( $this, 'get_selected_post'),
+                    ),
+                    'signup_page' => array(
+                        'name'              => __('Signup Page', 'peerraiser'),
+                        'id'                => 'signup_page',
+                        'type'              => 'select',
+                        'options'           => array( $this, 'get_selected_post'),
+                    ),
+                    'participant_dashboard' => array(
+                        'name'              => __('Participant Dashboard', 'peerraiser'),
+                        'id'                => 'participant_dashboard',
+                        'type'              => 'select',
+                        'options'           => array( $this, 'get_selected_post'),
+                    ),
 
-    /**
-     * Singleton to get only one Fundraisers model
-     *
-     * @return    \PeerRaiser\Model\Admin\Fundraisers
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-            self::$fields = array(
-                array(
-                    'id'     => 'general-settings',
-                    'fields' => array(
-                        'test_mode' => array(
-                            'name'    => 'Enable Test Mode',
-                            'id'      => 'test_mode',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
-                        ),
-                        'currency' => array(
-                            'name'    => 'Currency',
-                            'id'      => 'currency',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(__CLASS__, 'get_select_options'),
-                        ),
-                        'fundraiser_slug' => array(
-                            'name'    => 'Fundraiser Slug',
-                            'id'      => 'fundraiser_slug',
-                            'type'    => 'text_small',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'campaign_slug' => array(
-                            'name'    => 'Campaign Slug',
-                            'id'      => 'campaign_slug',
-                            'type'    => 'text_small',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'show_welcome_message' => array(
-                            'name'    => 'Show Welcome Message on Dashboard?',
-                            'id'      => 'show_welcome_message',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
-                        ),
-                        'disable_css_styles' => array(
-                            'name'    => 'Disable Default CSS Styles?',
-                            'id'      => 'disable_css_styles',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'false'   => __( 'No', 'peerraiser' ),
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                            ),
-                        ),
-                        'campaign_thumbnail_image' => array(
-                            'name'    => __('Default Campaign Thumbnail', 'peerraiser'),
-                            'id'      => 'campaign_thumbnail_image',
-                            'type'    => 'file',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'url' => false,
-                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
-                            ),
-                        ),
-                        'user_thumbnail_image' => array(
-                            'name'    => __('Default User Thumbnail', 'peerraiser'),
-                            'id'      => 'user_thumbnail_image',
-                            'type'    => 'file',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'url' => false,
-                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
-                            ),
-                        ),
-                        'team_thumbnail_image' => array(
-                            'name'    => __('Default Team Thumbnail', 'peerraiser'),
-                            'id'      => 'team_thumbnail_image',
-                            'type'    => 'file',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'url' => false,
-                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
-                            ),
-                        ),
-                        'thank_you_page' => array(
-                            'name'              => __('Thank You Page', 'peerraiser'),
-                            'id'                => 'thank_you_page',
-                            'type'              => 'select',
-                            'options'           => array(__CLASS__, 'get_selected_post'),
-                        ),
-                        'login_page' => array(
-                            'name'              => __('Login Page', 'peerraiser'),
-                            'id'                => 'login_page',
-                            'type'              => 'select',
-                            'options'           => array(__CLASS__, 'get_selected_post'),
-                        ),
-                        'signup_page' => array(
-                            'name'              => __('Signup Page', 'peerraiser'),
-                            'id'                => 'signup_page',
-                            'type'              => 'select',
-                            'options'           => array(__CLASS__, 'get_selected_post'),
-                        ),
-                        'participant_dashboard' => array(
-                            'name'              => __('Participant Dashboard', 'peerraiser'),
-                            'id'                => 'participant_dashboard',
-                            'type'              => 'select',
-                            'options'           => array(__CLASS__, 'get_selected_post'),
-                        ),
-
+                ),
+            ),
+            array(
+                'id'     => 'email-settings',
+                'fields' => array(
+                    'from_name' => array(
+                        'name'    => __('From Name', 'peerraiser'),
+                        'id'      => 'from_name',
+                        'type'    => 'text',
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'from_email' => array(
+                        'name'    => __('From Email', 'peerraiser'),
+                        'id'      => 'from_email',
+                        'type'    => 'text',
+                        'default' => array( $this, 'get_field_value'),
                     ),
                 ),
-                array(
-                    'id'     => 'email-settings',
-                    'fields' => array(
-                        'from_name' => array(
-                            'name'    => __('From Name', 'peerraiser'),
-                            'id'      => 'from_name',
-                            'type'    => 'text',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'from_email' => array(
-                            'name'    => __('From Email', 'peerraiser'),
-                            'id'      => 'from_email',
-                            'type'    => 'text',
-                            'default' => array(__CLASS__, 'get_field_value'),
+            ),
+            array(
+                'id'     => 'donation-receipt',
+                'fields' => array(
+                    'donation_receipt_enabled' => array(
+                        'name'    => __('Enabled', 'peerraiser'),
+                        'id'      => 'donation_receipt_enabled',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
                         ),
                     ),
-                ),
-                array(
-                    'id'     => 'donation-receipt',
-                    'fields' => array(
-                        'donation_receipt_enabled' => array(
-                            'name'    => __('Enabled', 'peerraiser'),
-                            'id'      => 'donation_receipt_enabled',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
-                        ),
-                        'donation_receipt_subject' => array(
-                            'name'    => __('Email Subject', 'peerraiser'),
-                            'id'      => 'donation_receipt_subject',
-                            'type'    => 'text',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'donation_receipt_body' => array(
-                            'name'    => __('Email Body', 'peerraiser'),
-                            'id'      => 'donation_receipt_body',
-                            'type'    => 'wysiwyg',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
+                    'donation_receipt_subject' => array(
+                        'name'    => __('Email Subject', 'peerraiser'),
+                        'id'      => 'donation_receipt_subject',
+                        'type'    => 'text',
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'donation_receipt_body' => array(
+                        'name'    => __('Email Body', 'peerraiser'),
+                        'id'      => 'donation_receipt_body',
+                        'type'    => 'wysiwyg',
+                        'default' => array( $this, 'get_field_value'),
                     ),
                 ),
-                array(
-                    'id'     => 'new-donation-notification',
-                    'fields' => array(
-                        'new_donation_notification_enabled' => array(
-                            'name'    => __('Enabled', 'peerraiser'),
-                            'id'      => 'new_donation_notification_enabled',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
-                        ),
-                        'new_donation_notification_to' => array(
-                            'name'    => __('Notification Recipients', 'peerraiser'),
-                            'id'      => 'new_donation_notification_to',
-                            'type'    => 'text',
-                            'desc'    => __('A comma-separated list of email addresses that should receive this email.', 'peerraiser'),
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'new_donation_notification_subject' => array(
-                            'name'    => __('Email Subject', 'peerraiser'),
-                            'id'      => 'new_donation_notification_subject',
-                            'type'    => 'text',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'new_donation_notification_body' => array(
-                            'name'    => __('Email Body', 'peerraiser'),
-                            'id'      => 'new_donation_notification_body',
-                            'type'    => 'wysiwyg',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        )
-                    ),
-                ),
-                array(
-                    'id'     => 'welcome-email',
-                    'fields' => array(
-                        'welcome_email_enabled' => array(
-                            'name'    => __('Enabled', 'peerraiser'),
-                            'id'      => 'welcome_email_enabled',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
-                        ),
-                        'welcome_email_subject' => array(
-                            'name'    => __('Email Subject', 'peerraiser'),
-                            'id'      => 'welcome_email_subject',
-                            'type'    => 'text',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        ),
-                        'welcome_email_body' => array(
-                            'name'    => __('Email Body', 'peerraiser'),
-                            'id'      => 'welcome_email_body',
-                            'type'    => 'wysiwyg',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                        )
-                    ),
-                ),
-                array(
-                    'id'     => 'advanced-settings',
-                    'fields' => array(
-                        'uninstall_deletes_data' => array(
-                            'name'    => 'Delete all data when uninstalling plugin?',
-                            'id'      => 'uninstall_deletes_data',
-                            'type'    => 'select',
-                            'default' => array(__CLASS__, 'get_field_value'),
-                            'options' => array(
-                                'true'    => __( 'Yes', 'peerraiser' ),
-                                'false'   => __( 'No', 'peerraiser' ),
-                            ),
+            ),
+            array(
+                'id'     => 'new-donation-notification',
+                'fields' => array(
+                    'new_donation_notification_enabled' => array(
+                        'name'    => __('Enabled', 'peerraiser'),
+                        'id'      => 'new_donation_notification_enabled',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
                         ),
                     ),
-                ),
-            );
-            self::$tabs = array(
-                'general'  => __('General', 'peerraiser'),
-                'emails'   => __('Emails', 'peerraiser'),
-                'advanced' => __('Advanced', 'peerraiser')
-            );
-            self::$content = array(
-                'general' => array (
-                    'general' => array(
-                        'name'   => __('General Settings', 'peerraiser'),
-                        'fields' => 'general-settings'
+                    'new_donation_notification_to' => array(
+                        'name'    => __('Notification Recipients', 'peerraiser'),
+                        'id'      => 'new_donation_notification_to',
+                        'type'    => 'text',
+                        'desc'    => __('A comma-separated list of email addresses that should receive this email.', 'peerraiser'),
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'new_donation_notification_subject' => array(
+                        'name'    => __('Email Subject', 'peerraiser'),
+                        'id'      => 'new_donation_notification_subject',
+                        'type'    => 'text',
+                        'default' => array( $this, 'get_field_value'),
+                    ),
+                    'new_donation_notification_body' => array(
+                        'name'    => __('Email Body', 'peerraiser'),
+                        'id'      => 'new_donation_notification_body',
+                        'type'    => 'wysiwyg',
+                        'default' => array( $this, 'get_field_value'),
                     )
                 ),
-                'emails' => array (
-                    'emails' => array(
-                        'name'   => __('Email Settings', 'peerraiser'),
-                        'fields' => 'email-settings'
+            ),
+            array(
+                'id'     => 'welcome-email',
+                'fields' => array(
+                    'welcome_email_enabled' => array(
+                        'name'    => __('Enabled', 'peerraiser'),
+                        'id'      => 'welcome_email_enabled',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
+                        ),
                     ),
-                    'donation_receipt' => array(
-                        'name'   => __('Donation Receipt', 'peerraiser'),
-                        'fields' => 'donation-receipt'
+                    'welcome_email_subject' => array(
+                        'name'    => __('Email Subject', 'peerraiser'),
+                        'id'      => 'welcome_email_subject',
+                        'type'    => 'text',
+                        'default' => array( $this, 'get_field_value'),
                     ),
-                    'new_donation_notification' => array(
-                        'name'   => __('New Donation Notification', 'peerraiser'),
-                        'fields' => 'new-donation-notification'
-                    ),
-                    'welcome_email' => array(
-                        'name'   => __('Welcome Email', 'peerraiser'),
-                        'fields' => 'welcome-email'
+                    'welcome_email_body' => array(
+                        'name'    => __('Email Body', 'peerraiser'),
+                        'id'      => 'welcome_email_body',
+                        'type'    => 'wysiwyg',
+                        'default' => array( $this, 'get_field_value'),
+                    )
+                ),
+            ),
+            array(
+                'id'     => 'advanced-settings',
+                'fields' => array(
+                    'uninstall_deletes_data' => array(
+                        'name'    => 'Delete all data when uninstalling plugin?',
+                        'id'      => 'uninstall_deletes_data',
+                        'type'    => 'select',
+                        'default' => array( $this, 'get_field_value'),
+                        'options' => array(
+                            'true'    => __( 'Yes', 'peerraiser' ),
+                            'false'   => __( 'No', 'peerraiser' ),
+                        ),
                     ),
                 ),
-                'advanced' => array (
-                    'advanced' => array(
-                        'name'   => __('Advanced Settings', 'peerraiser'),
-                        'fields' => 'advanced-settings'
-                    ),
+            ),
+        );
+        $this->tabs = array(
+            'general'  => __('General', 'peerraiser'),
+            'emails'   => __('Emails', 'peerraiser'),
+            'advanced' => __('Advanced', 'peerraiser')
+        );
+        $this->content = array(
+            'general' => array (
+                'general' => array(
+                    'name'   => __('General Settings', 'peerraiser'),
+                    'fields' => 'general-settings'
+                )
+            ),
+            'emails' => array (
+                'emails' => array(
+                    'name'   => __('Email Settings', 'peerraiser'),
+                    'fields' => 'email-settings'
                 ),
-            );
-        }
-
-        return self::$instance;
+                'donation_receipt' => array(
+                    'name'   => __('Donation Receipt', 'peerraiser'),
+                    'fields' => 'donation-receipt'
+                ),
+                'new_donation_notification' => array(
+                    'name'   => __('New Donation Notification', 'peerraiser'),
+                    'fields' => 'new-donation-notification'
+                ),
+                'welcome_email' => array(
+                    'name'   => __('Welcome Email', 'peerraiser'),
+                    'fields' => 'welcome-email'
+                ),
+            ),
+            'advanced' => array (
+                'advanced' => array(
+                    'name'   => __('Advanced Settings', 'peerraiser'),
+                    'fields' => 'advanced-settings'
+                ),
+            ),
+        );
     }
 
     /**
@@ -298,8 +285,8 @@ class Settings extends \PeerRaiser\Model\Admin {
      * @since     1.0.0
      * @return    array    Field data
      */
-    public static function get_fields() {
-        return self::$fields;
+    public function get_fields() {
+        return $this->fields;
     }
 
     /**
@@ -310,9 +297,9 @@ class Settings extends \PeerRaiser\Model\Admin {
      *
      * @return    array|false    The field data if available, or false if not
      */
-    public static function get_field( $id ) {
-        if ( isset( self::$fields[$id] ) ) {
-            return self::$fields[$id];
+    public function get_field( $id ) {
+        if ( isset( $this->fields[$id] ) ) {
+            return $this->fields[$id];
         } else {
             return false;
         }
@@ -327,13 +314,13 @@ class Settings extends \PeerRaiser\Model\Admin {
      *
      * @return    array    All of the current fields
      */
-    public static function add_fields( array $fields ) {
-        array_push(self::$fields, $fields);
+    public function add_fields( array $fields ) {
+        array_push($this->fields, $fields);
 
-        return self::$fields;
+        return $this->fields;
     }
 
-    public static function custom_label( $field_args, $field ) {
+    public function custom_label( $field_args, $field ) {
 
         $label = $field_args['name'];
 
@@ -345,7 +332,7 @@ class Settings extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_select_options( $field ) {
+    public function get_select_options( $field ) {
 
         if ( $field->args['name'] === 'Currency' ) {
 
@@ -364,7 +351,7 @@ class Settings extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_field_value( $field ) {
+    public function get_field_value( $field ) {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -455,7 +442,7 @@ class Settings extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_selected_post( $field ) {
+    public function get_selected_post( $field ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $results = array();
 
@@ -467,27 +454,27 @@ class Settings extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-    public static function get_field_names() {
+    public function get_field_names() {
         $field_names = array();
-        foreach (self::$fields as $field_group) {
+        foreach ($this->fields as $field_group) {
             $field_names = array_merge($field_names, array_keys($field_group['fields']) );
         }
         return $field_names;
     }
 
 
-    public static function get_settings_tabs() {
-        return self::$tabs;
+    public function get_settings_tabs() {
+        return $this->tabs;
     }
 
 
-    public static function get_settings_sections() {
-        return self::$content;
+    public function get_settings_sections() {
+        return $this->content;
     }
 
 
-    public static function get_settings_content( $tab, $section ) {
-        $content = self::$content;
+    public function get_settings_content( $tab, $section ) {
+        $content = $this->content;
         $data = array();
 
         $section = $content[$tab][$section];

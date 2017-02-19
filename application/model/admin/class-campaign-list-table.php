@@ -80,12 +80,15 @@ class Campaign_List_Table extends WP_List_Table {
      */
     function get_columns() {
         $columns = array(
-            'cb'    => '<input type="checkbox" />',
-            'name'  => __( 'Name', 'peerraiser' ),
-            'count' => __( 'Members', 'peerraiser' ),
+            'cb'          => '<input type="checkbox" />',
+            'name'        => __( 'Name', 'peerraiser' ),
+            'count'       => __( 'Fundraiers', 'peerraiser' ),
+            'donors'      => __( 'Donors', 'peerraiser' ),
+            'teams'       => __( 'Teams', 'peerraiser' ),
+            'raised'      => __( 'Raised', 'peerraiser' ),
         );
 
-      return $columns;
+      return apply_filters( 'peerraiser_campaign_columns', $columns );
     }
 
     /**
@@ -97,10 +100,9 @@ class Campaign_List_Table extends WP_List_Table {
         $sortable_columns = array(
             'name'  => array( 'name', true ),
             'count' => array( 'count', false ),
-            // 'date'   => array( 'date', false ),
         );
 
-        return $sortable_columns;
+        return apply_filters( 'peerraiser_campaign_sortable_columns', $sortable_columns);
     }
 
     /**
@@ -113,7 +115,7 @@ class Campaign_List_Table extends WP_List_Table {
             'bulk-delete' => 'Delete'
         );
 
-        return $actions;
+        return apply_filters( 'peerraiser_campaign_bulk_actions', $actions );
     }
 
     /**
@@ -208,11 +210,18 @@ class Campaign_List_Table extends WP_List_Table {
         $term_query = new WP_Term_Query( $args );
 
         $results = array();
+
+        $donors = new \PeerRaiser\Model\Database\Donor();
+        $teams  = new \PeerRaiser\Model\Admin\Teams();
+
         foreach ( $term_query->terms as $term ) {
             $results[] = array(
-                'id'    => $term->term_id,
-                'name'  => $term->name,
-                'count' => $term->count,
+                'id'          => $term->term_id,
+                'name'        => $term->name,
+                'count'       => $term->count,
+                'donors'      => $donors->get_donors( array( 'campaign_id' => $term->term_id ), true ),
+                'teams'       => $teams->get_teams_by_campaign( (int) $term->term_id ),
+                'raised'      => __( 'Raised', 'peerraiser' ),
             );
         }
 
