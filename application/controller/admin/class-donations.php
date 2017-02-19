@@ -116,7 +116,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         $currency        = new \PeerRaiser\Model\Currency();
-        $activity_feed   = new \PeerRaiser\Model\Activity_Feed();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $view_args = array(
