@@ -19,7 +19,7 @@ class Admin {
                 'cap'   => 'activate_plugins'
             ),
             'fundraisers' => array(
-                'url'   => 'peerraiser-fundraisers',
+                'url'   => 'edit.php?post_type=fundraiser',
                 'title' => __( 'Fundraisers', 'peerraiser' ),
                 'cap'   => 'activate_plugins'
             ),
