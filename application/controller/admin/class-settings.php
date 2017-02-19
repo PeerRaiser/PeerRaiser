@@ -110,7 +110,7 @@ class Settings extends Base {
 
     public function register_meta_boxes() {
 
-        $settings_model        = \PeerRaiser\Model\Admin\Settings::get_instance();
+        $settings_model        = new \PeerRaiser\Model\Admin\Settings();
         $settings_field_groups = $settings_model->get_fields();
 
         foreach ($settings_field_groups as $field_group) {
@@ -130,8 +130,8 @@ class Settings extends Base {
     public function ajax_update_settings( \PeerRaiser\Core\Event $event ) {
         check_ajax_referer($_POST['none_name']);
 
-        $model = \PeerRaiser\Model\Admin\Settings::get_instance();
-        $default_fields = $model::get_field_names();
+        $model = new \PeerRaiser\Model\Admin\Settings();
+        $default_fields = $model->get_field_names();
 
         $event->set_result(
             array(

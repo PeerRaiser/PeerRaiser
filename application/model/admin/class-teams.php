@@ -4,68 +4,55 @@ namespace PeerRaiser\Model\Admin;
 
 class Teams extends \PeerRaiser\Model\Admin {
 
-    private static $fields = array();
-    private static $instance = null;
+    private $fields = array();
 
-    public function __construct() {}
-
-    /**
-     * Singleton to get only one Teams model
-     *
-     * @return    \PeerRaiser\Model\Admin\Teams
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-            self::$fields = array(
-                array(
-                    'title'    => 'Team Info',
-                    'id'       => 'peerraiser-team',
-                    'context'  => 'normal',
-                    'priority' => 'default',
-                    'fields'   => array(
-                        'team_leader' => array(
-                            'name'    => __('Team Leader', 'peerraiser'),
-                            'id'      => '_team_leader',
-                            'type'    => 'select',
-                            'options' => array(__CLASS__, 'get_participants_for_select_field'),
+    public function __construct() {
+        $this->fields = array(
+            array(
+                'title'    => 'Team Info',
+                'id'       => 'peerraiser-team',
+                'context'  => 'normal',
+                'priority' => 'default',
+                'fields'   => array(
+                    'team_leader' => array(
+                        'name'    => __('Team Leader', 'peerraiser'),
+                        'id'      => '_team_leader',
+                        'type'    => 'select',
+                        'options' => array( $this, 'get_participants_for_select_field'),
+                    ),
+                    'team_campaign' => array(
+                        'name'    => __('Campaign', 'peerraiser'),
+                        'id'      => '_team_campaign',
+                        'type'    => 'select',
+                        'default' => 'custom',
+                        'desc'    => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
+                        'options' => array( $this, 'get_selected_post'),
+                    ),
+                    'goal_amount' => array(
+                        'name' => __('Goal Amount', 'peerraiser'),
+                        'id'   => '_goal_amount',
+                        'type' => 'text',
+                        'attributes' => array(
+                            'pattern' => '^\d*(\.\d{2}$)?',
+                            'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
                         ),
-                        'team_campaign' => array(
-                            'name'    => __('Campaign', 'peerraiser'),
-                            'id'      => '_team_campaign',
-                            'type'    => 'select',
-                            'default' => 'custom',
-                            'desc'    => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
-                            'options' => array(self::get_instance(), 'get_selected_post'),
+                        'before_field' => $this->get_currency_symbol(),
+                    ),
+                    'team_thumbnail' => array(
+                        'name'    => __('Team Thumbnail Image', 'peerraiser'),
+                        'id'      => '_peerraiser_team_thumbnail',
+                        'type'    => 'file',
+                        'options' => array(
+                            'url' => false,
+                            'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
                         ),
-                        'goal_amount' => array(
-                            'name' => __('Goal Amount', 'peerraiser'),
-                            'id'   => '_goal_amount',
-                            'type' => 'text',
-                            'attributes' => array(
-                                'pattern' => '^\d*(\.\d{2}$)?',
-                                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
-                            ),
-                            'before_field' => self::get_currency_symbol(),
-                        ),
-                        'team_thumbnail' => array(
-                            'name'    => __('Team Thumbnail Image', 'peerraiser'),
-                            'id'      => '_peerraiser_team_thumbnail',
-                            'type'    => 'file',
-                            'options' => array(
-                                'url' => false,
-                                'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
-                            ),
-                            'attributes'        => array(
-                                'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
-                            ),
+                        'attributes'        => array(
+                            'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
                         ),
                     ),
                 ),
-            );
-        }
-
-        return self::$instance;
+            ),
+        );
     }
 
     /**
@@ -74,8 +61,8 @@ class Teams extends \PeerRaiser\Model\Admin {
      * @since     1.0.0
      * @return    array    Field data
      */
-    public static function get_fields() {
-        return self::$fields;
+    public function get_fields() {
+        return $this->fields;
     }
 
     /**
@@ -86,9 +73,9 @@ class Teams extends \PeerRaiser\Model\Admin {
      *
      * @return    array|false    The field data if available, or false if not
      */
-    public static function get_field( $id ) {
-        if ( isset( self::$fields[$id] ) ) {
-            return self::$fields[$id];
+    public function get_field( $id ) {
+        if ( isset( $this->fields[$id] ) ) {
+            return $this->fields[$id];
         } else {
             return false;
         }
@@ -103,13 +90,13 @@ class Teams extends \PeerRaiser\Model\Admin {
      *
      * @return    array    All of the current fields
      */
-    public static function add_fields( array $fields ) {
-        array_push(self::$fields, $fields);
+    public function add_fields( array $fields ) {
+        array_push($this->fields, $fields);
 
-        return self::$fields;
+        return $this->fields;
     }
 
-    public static function custom_label( $field_args, $field ) {
+    public function custom_label( $field_args, $field ) {
 
         $label = $field_args['name'];
 
@@ -127,7 +114,7 @@ class Teams extends \PeerRaiser\Model\Admin {
      * @param     CMB2_Field    $field    The CMB2 field object
      * @return    array                   An array of posts
      */
-    public static function get_posts_for_select_field( $field ) {
+    public function get_posts_for_select_field( $field ) {
 
         switch ( $field->args['name'] ) {
             case 'Campaign':
@@ -169,7 +156,7 @@ class Teams extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_selected_post( $field ) {
+    public function get_selected_post( $field ) {
         // Empty array to fill with posts
         $results = array();
 
@@ -182,7 +169,7 @@ class Teams extends \PeerRaiser\Model\Admin {
     }
 
 
-    public static function get_participants_for_select_field( $field ) {
+    public function get_participants_for_select_field( $field ) {
         // Empty array to fill with posts
         $results = array();
 
@@ -220,24 +207,24 @@ class Teams extends \PeerRaiser\Model\Admin {
         return new \WP_User_Query( $args );
     }
 
-    private static function get_currency_symbol(){
+    private function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
-    public function get_teams_by_campaign( $campaign_slug ) {
-        $fundraiser_ids = get_posts( array(
+    public function get_teams_by_campaign( $campaign, $count = false ) {
+        $args = array(
             "fields"    => "ids",
             "post_type' => 'fundraiser",
             "tax_query" => array(
-                array(
-                    "taxonomy" => "peerraiser_campaign",
-                    "field"    => "slug",
-                    "terms"    => $campaign_slug,
-                )
+                "taxonomy" => "peerraiser_campaign",
+                "field"    => is_int( $campaign ) ? 'id' : 'slug',
+                "terms"    => $campaign
             )
-        ) );
+        );
+
+        $fundraiser_ids = get_posts( $args );
 
         return wp_get_object_terms( $fundraiser_ids, "peerraiser_team" );
     }

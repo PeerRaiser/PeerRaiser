@@ -78,9 +78,8 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
 
-        $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
+        $teams_model = new \PeerRaiser\Model\Admin\Teams();
         $team_field_groups = $teams_model->get_fields();
-
 
         foreach ($team_field_groups as $field_group) {
             $cmb = new_cmb2_box( array(
@@ -287,7 +286,7 @@ class Teams extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
 
-        $teams_model = \PeerRaiser\Model\Admin\Teams::get_instance();
+        $teams_model = new \PeerRaiser\Model\Admin\Teams();
         $team_fundraisers = $teams_model->get_fundraisers( $post->ID, $paged );
 
         $plugin_options = get_option( 'peerraiser_options', array() );

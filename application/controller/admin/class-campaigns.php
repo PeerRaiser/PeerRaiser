@@ -90,7 +90,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes() {
 
-        $campaigns_model = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
         $campaign_field_groups = $campaigns_model->get_fields();
 
         foreach ($campaign_field_groups as $field_group) {
@@ -470,7 +470,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
 
-        $campaigns    = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaigns    = new \PeerRaiser\Model\Admin\Campaigns();
         $campaign_fundraisers = $campaigns->get_fundraisers( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -501,7 +501,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
 
-        $campaigns    = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaigns          = new \PeerRaiser\Model\Admin\Campaigns();
         $campaign_donations = $campaigns->get_donations( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -532,7 +532,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['teams_page']) ? $_GET['teams_page'] : 1;
 
-        $campaigns      = \PeerRaiser\Model\Admin\Campaigns::get_instance();
+        $campaigns      = new \PeerRaiser\Model\Admin\Campaigns();
         $campaign_teams = $campaigns->get_teams( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
