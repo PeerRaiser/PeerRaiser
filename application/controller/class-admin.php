@@ -188,10 +188,6 @@ class Admin extends Base {
                 $campaigns_controller = new \PeerRaiser\Controller\Admin\Campaigns( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $campaigns_controller->render_page();
                 break;
-            case 'fundraisers' :
-                $fundraisers_controller = new \PeerRaiser\Controller\Admin\Fundraisers( \PeerRaiser\Core\Setup::get_plugin_config() );
-                $fundraisers_controller->render_page();
-                break;
             case 'teams' :
                 $teams_controller = new \PeerRaiser\Controller\Admin\Teams( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $teams_controller->render_page();
@@ -785,18 +781,11 @@ class Admin extends Base {
         $current_screen = get_current_screen();
 
         switch ($current_screen->post_type) {
-            case 'pr_campaign':
-                if ( $event->has_argument( 'campaign' ) ) {
-                    $title = $event->get_argument( 'campaign' );
-                } else {
-                    $title = __('Enter the campaign name here', 'peerraiser');
-                }
-                break;
             case 'fundraiser':
                 if ( $event->has_argument( 'fundraiser' ) ) {
                     $title = $event->get_argument( 'fundraiser' );
                 } else {
-                    $title = __('Enter the fundraiser name here', 'peerraiser');
+                    $title = __( 'Enter the fundraiser name here', 'peerraiser' );
                 }
                 break;
 
