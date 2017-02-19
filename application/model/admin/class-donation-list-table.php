@@ -9,7 +9,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 use \WP_List_Table;
 
 /**
- * Class for displaying the list of donors
+ * Class for displaying the list of donations
  *
  * @since 1.0.1
  */
@@ -216,8 +216,6 @@ class Donation_List_Table extends WP_List_Table {
         $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
 
         $results = $wpdb->get_results( $sql, 'ARRAY_A' );
-
-        error_log( '$results: '.print_r( $result, 1) );
 
         return $results;
 
