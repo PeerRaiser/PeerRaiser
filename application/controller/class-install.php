@@ -144,6 +144,12 @@ class Install extends Base {
      * @return void
      */
     public function install() {
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+        if ( version_compare( $current_version, $this->config->version, '==' ) )
+            return;
+
         global $wpdb;
 
         // cancel the installation process, if the requirements check returns errors
@@ -168,7 +174,6 @@ class Install extends Base {
         $this->populate_roles();
 
         // keep the plugin version up to date
-        $plugin_options = get_option( 'peerraiser_options', array() );
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
         update_option( 'peerraiser_options', $plugin_options );
 
