@@ -64,6 +64,29 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return self::$instance;
     }
 
+    /**
+     * @see \PeerRaiser\Core\View::render_page
+     */
+    public function render_page() {
+        $this->load_assets();
+
+        $plugin_options = get_option( 'peerraiser_options', array() );
+
+        $currency        = new \PeerRaiser\Model\Currency();
+        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+
+        $view_args = array(
+            'currency_symbol'      => $currency_symbol,
+            'standard_currency'    => $plugin_options['currency'],
+            'admin_url'            => get_admin_url(),
+            'list_table'           => new \PeerRaiser\Model\Admin\Campaign_List_Table(),
+        );
+
+        $this->assign( 'peerraiser', $view_args );
+
+        $this->render( 'backend/campaign-list' );
+    }
+
 
     public function register_meta_boxes() {
 
