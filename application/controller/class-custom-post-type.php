@@ -7,19 +7,11 @@ namespace PeerRaiser\Controller;
  */
 class Custom_Post_Type extends Base {
 
-    /**
-     * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_ready' => array(
-                array( 'register_custom_post_types' )
-            ),
-         );
+    public function register_actions() {
+        add_action( 'peerraiser_ready', array( $this, 'register_custom_post_types' ) );
     }
 
-
-    public function register_custom_post_types( \PeerRaiser\Core\Event $event ){
+    public function register_custom_post_types(){
         $this->register_fundraiser_cpt();
     }
 

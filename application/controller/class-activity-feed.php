@@ -7,20 +7,10 @@ namespace PeerRaiser\Controller;
  */
 class Activity_Feed extends Base {
 
-    /**
-     * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_post_saved' => array(
-                array( 'maybe_add_post_to_feed' )
-            ),
-            'peerraiser_post_deleted' => array(
-                array( 'maybe_remove_post_from_feed' )
-            ),
-        );
+    public function register_actions() {
+        add_action( 'save_post',   array( $this, 'maybe_add_post_to_feed' ) );
+        add_action( 'delete_post', array( $this, 'maybe_remove_post_from_feed' ) );
     }
-
 
     /**
      * Determines if the saved post should be added to the feed, depending on the post
@@ -29,9 +19,7 @@ class Activity_Feed extends Base {
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
      */
-    public function maybe_add_post_to_feed( \PeerRaiser\Core\Event $event ) {
-        list( $post_id, $post, $update ) = $event->get_arguments();
-
+    public function maybe_add_post_to_feed( $post_id, $post, $update ) {
         // If this is an autosave, exit early
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
             return;
@@ -65,16 +53,13 @@ class Activity_Feed extends Base {
 
     }
 
-
     /**
      * Determines if the deleted post should be removed from the activity feed
      *
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
      */
-    public function maybe_remove_post_from_feed( \PeerRaiser\Core\Event $event ) {
-        list( $post_id ) = $event->get_arguments();
-
+    public function maybe_remove_post_from_feed( $post_id ) {
         $model = new \PeerRaiser\Model\Activity_Feed();
         $post_type = get_post_type( $post_id );
 

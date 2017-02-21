@@ -4,25 +4,15 @@ namespace PeerRaiser\Controller\Frontend;
 
 class Participant_Dashboard extends \PeerRaiser\Controller\Base {
 
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_template_redirect' => array(
-                array( 'dashboard_redirect' ),
-            ),
-            'wp_ajax_peerraiser_update_avatar' => array(
-                array( 'ajax_update_avatar', 100 ),
-                array( 'peerraiser_on_ajax_send_json', 300 ),
-            ),
-            'peerraiser_cmb2_save_user_fields' => array(
-                array( 'update_user_email' ),
-            ),
-            'peerraiser_change_password' => array(
-                array( 'change_user_password' ),
-            ),
-        );
+    public function register_actions() {
+        add_action( 'template_redirect',                     array( $this, 'dashboard_redirect' ) );
+        add_action( 'cmb2_save_user_fields',                 array( $this, 'update_user_email' ) );
+        add_action( 'admin_post_peerraiser_change_password', array( $this, 'change_user_password' ) );
+        add_action( 'wp_ajax_peerraiser_update_avatar',      array( $this, 'ajax_update_avatar' ) );
+        add_action( 'wp_ajax_peerraiser_update_avatar',      array( $this, 'peerraiser_on_ajax_send_json' ) );
     }
 
-    public function dashboard_redirect( \PeerRaiser\Core\Event $event ) {
+    public function dashboard_redirect() {
         global $wp_query;
         $post_id = $wp_query->get_queried_object_id();
 
@@ -42,7 +32,7 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
         }
     }
 
-    public function ajax_update_avatar( \PeerRaiser\Core\Event $event ) {
+    public function ajax_update_avatar() {
         $user_id = get_current_user_id();
 
         $avatar_id = get_user_meta( $user_id, '_peerraiser_custom_avatar', true );
@@ -66,7 +56,6 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
         );
     }
 
-
     /**
      * Updates the user's email address
      *
@@ -74,11 +63,8 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
      * wp_update_user function.
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event    Event object
      */
-    public function update_user_email( \PeerRaiser\Core\Event $event ) {
-        list( $object_id, $cmb_id, $updated, $cmb ) = $event->get_arguments();
-
+    public function update_user_email( $object_id, $cmb_id, $updated, $cmb ) {
         if ( $cmb_id == 'dashboard_settings' && isset( $_POST['user_email'] ) ) {
             $args = array(
                 'ID'         => get_current_user_id(),
@@ -89,8 +75,7 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
 
     }
 
-
-    public function change_user_password( \PeerRaiser\Core\Event $event ) {
+    public function change_user_password() {
         $user                  = wp_get_current_user();
         $plugin_options        = get_option( 'peerraiser_options', array() );
         $participant_dashboard = $plugin_options[ 'participant_dashboard' ];

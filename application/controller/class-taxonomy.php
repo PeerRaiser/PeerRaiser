@@ -7,19 +7,11 @@ namespace PeerRaiser\Controller;
  */
 class Taxonomy extends Base {
 
-    /**
-     * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_wordpress_init' => array(
-                array( 'register_taxonomies' )
-            ),
-         );
+    public function register_actions() {
+        add_action( 'init', array( $this, 'register_taxonomies' ) );
     }
 
-
-    public function register_taxonomies( \PeerRaiser\Core\Event $event ){
+    public function register_taxonomies(){
         $this->register_campaign_taxonomy();
         $this->register_team_taxonomy();
     }

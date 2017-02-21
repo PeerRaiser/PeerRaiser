@@ -4,35 +4,14 @@ namespace PeerRaiser\Controller\Admin;
 
 class Donors extends \PeerRaiser\Controller\Base {
 
-    private static $instance = null;
-
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_cmb2_admin_init' => array(
-                array( 'register_meta_boxes' )
-            ),
-            'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'load_assets' )
-            ),
-            'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'load_assets' )
-            ),
-            'peerraiser_meta_boxes' => array(
-                array( 'add_meta_boxes' ),
-            ),
-            'peerraiser_admin_menu' => array(
-                array( 'maybe_replace_submit_box' ),
-            ),
-            'peerraiser_user_registered' => array(
-                array( 'maybe_connect_user_to_donor' ),
-            ),
-            'peerraiser_manage_donor_columns' => array(
-                array( 'manage_columns' ),
-            )
-        );
+    public function register_actions() {
+        add_action( 'cmb2_admin_init',                     array( $this, 'register_meta_boxes' ) );
+        add_action( 'admin_print_styles-post-new.php',     array( $this, 'load_assets' ) );
+        add_action( 'admin_print_styles-post.php',         array( $this, 'load_assets' ) );
+        add_action( 'add_meta_boxes',                      array( $this, 'add_meta_boxes' ) );
+        add_action( 'admin_menu',                          array( $this, 'maybe_replace_submit_box' ) );
+        add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
+        add_action( 'manage_pr_donor_posts_custom_column', array( $this, 'manage_columns' ) );
     }
 
     /**
@@ -91,7 +70,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function load_assets() {
         parent::load_assets();
 
@@ -143,7 +121,7 @@ class Donors extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function add_meta_boxes() {
         if ( !$this->is_edit_page( 'edit' ) )
             return;
 
@@ -165,7 +143,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function maybe_replace_submit_box() {
 
         if ( !$this->is_edit_page( 'edit' ) )
@@ -174,7 +151,6 @@ class Donors extends \PeerRaiser\Controller\Base {
         remove_meta_box('submitdiv', 'pr_donor', 'core');
         add_meta_box('submitdiv', __('Donor'), array( $this, 'get_submit_box'), 'pr_donor', 'side', 'low');
     }
-
 
     public function get_submit_box( $object ) {
         $post_type_object = get_post_type_object($object->post_type);
@@ -199,7 +175,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function display_donor_box( $object ) {
         $donor_user_account = get_post_meta( $object->ID, '_donor_user_account', true);
         $donor_user_info = get_userdata($donor_user_account);
@@ -218,7 +193,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/donor-card' );
     }
-
 
     public function display_donation_list() {
         global $post;
@@ -250,17 +224,13 @@ class Donors extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donor-donations' );
     }
 
-
-    public function maybe_connect_user_to_donor( \PeerRaiser\Core\Event $event ){
-        list( $user_id ) = $event->get_arguments();
-
+    public function maybe_connect_user_to_donor( $user_id ){
         $user_info = get_userdata( $user_id );
         $email_address = $user_info->user_email;
 
         $donor = $this->get_donor_by_email( $email_address );
         update_post_meta( $donor->ID, '_donor_user_account', $user_id );
     }
-
 
     private function get_donor_by_email( $email ) {
         $query_args = array(
@@ -282,7 +252,6 @@ class Donors extends \PeerRaiser\Controller\Base {
         return $donors[0];
 
     }
-
 
     public static function get_lifetime_donation_amount( $donor_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
@@ -312,7 +281,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public static function get_latest_donation_amount( $donor_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
@@ -338,7 +306,6 @@ class Donors extends \PeerRaiser\Controller\Base {
         return $amount;
     }
 
-
     public static function get_first_donation_amount( $donor_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
@@ -363,7 +330,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         return $amount;
     }
-
 
     public static function get_largest_donation_amount( $donor_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
@@ -391,16 +357,12 @@ class Donors extends \PeerRaiser\Controller\Base {
         return $amount;
     }
 
-
-    public function manage_columns( \PeerRaiser\Core\Event $event ) {
-        list( $column_name, $post_id ) = $event->get_arguments();
-
+    public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         switch ( $column_name ) {
-
 
             case 'id':
                 echo $post_id;

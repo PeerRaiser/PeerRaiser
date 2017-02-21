@@ -4,21 +4,14 @@ namespace PeerRaiser\Controller\Frontend;
 
 class Account extends \PeerRaiser\Controller\Base {
 
-    /**
-     * @see PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_login_form' => array(
-                array( 'handle_login' ),
-            ),
-            'peerraiser_signup_form' => array(
-                array( 'handle_signup' ),
-            ),
-        );
+    public function register_actions() {
+        add_action( 'admin_post_nopriv_peerraiser_login',  array( $this, 'handle_login' ) );
+        add_action( 'admin_post_peerraiser_login',         array( $this, 'handle_login' ) );
+        add_action( 'admin_post_nopriv_peerraiser_signup', array( $this, 'handle_signup' ) );
+        add_action( 'admin_post_peerraiser_signup',        array( $this, 'handle_signup' ) );
     }
 
-    public function handle_login( \PeerRaiser\Core\Event $event ) {
+    public function handle_login() {
         // Get the default dashboard and login page urls
         $plugin_options        = get_option( 'peerraiser_options', array() );
         $participant_dashboard = get_permalink( $plugin_options[ 'participant_dashboard' ] );
@@ -75,7 +68,7 @@ class Account extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function handle_signup( \PeerRaiser\Core\Event $event ) {
+    public function handle_signup() {
         // Get the default dashboard and login page urls
         $plugin_options         = get_option( 'peerraiser_options', array() );
         $participant_dashboard  = get_permalink( $plugin_options[ 'participant_dashboard' ] );

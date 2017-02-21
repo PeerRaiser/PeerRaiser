@@ -4,64 +4,19 @@ namespace PeerRaiser\Controller\Admin;
 
 class Campaigns extends \PeerRaiser\Controller\Base {
 
-    private static $instance = null;
-
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_cmb2_admin_init' => array(
-                array( 'register_meta_boxes' ),
-            ),
-            'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'load_assets' ),
-            ),
-            'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'load_assets' ),
-            ),
-            'peerraiser_after_post_meta_added' => array(
-                array( 'add_connections' ),
-            ),
-            'peerraiser_before_post_meta_updated' => array(
-                array( 'update_connections' ),
-            ),
-            'peerraiser_before_post_meta_deleted' => array(
-                array( 'delete_connections' ),
-            ),
-            'peerraiser_cmb2_save_post_fields' => array(
-                array( 'update_field_data' ),
-            ),
-            'peerraiser_manage_campaign_columns' => array(
-                array( 'manage_columns' ),
-            ),
-            'peerraiser_sortable_campaign_columns' => array(
-                array( 'sort_columns' ),
-            ),
-            'peerraiser_pre_get_posts' => array(
-                array( 'add_sort_type' ),
-            ),
-            'peerraiser_admin_head' => array(
-                array( 'remove_date_filter' ),
-            ),
-            'peerraiser_meta_boxes' => array(
-                array( 'add_meta_boxes' ),
-            ),
-        );
-    }
-
-
-    /**
-     * Singleton to get only one Campaigns controller
-     *
-     * @return    \PeerRaiser\Admin\Campaigns
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+    public function register_actions() {
+        add_action( 'cmb2_admin_init',                          array( $this, 'register_meta_boxes' ) );
+        add_action( 'admin_print_styles-post-new.php',          array( $this, 'load_assets' ) );
+        add_action( 'admin_print_styles-post.php',              array( $this, 'load_assets' ) );
+        add_action( 'added_post_meta',                          array( $this, 'add_connections' ) );
+        add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
+        add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
+        add_action( 'cmb2_save_post_fields',                    array( $this, 'update_field_data' ) );
+        add_action( 'manage_pr_campaign_posts_custom_column',   array( $this, 'manage_columns' ) );
+        add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, 'sort_columns' ) );
+        add_action( 'pre_get_posts',                            array( $this, 'add_sort_type' ) );
+        add_action( 'admin_head',                               array( $this, 'remove_date_filter' ) );
+        add_action( 'add_meta_boxes',                           array( $this, 'add_meta_boxes' ) );
     }
 
     /**
@@ -87,7 +42,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/campaign-list' );
     }
 
-
     public function register_meta_boxes() {
 
         $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
@@ -107,7 +61,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     public function load_assets() {
         parent::load_assets();
@@ -166,8 +119,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @param    \PeerRaiser\Core\Event    $event
      * @return   null
      */
-    public function add_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -189,7 +141,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-
     /**
      * Before the post meta is updated, update the connections
      *
@@ -197,8 +148,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -230,7 +180,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-
     /**
      * Before post meta is deleted, delete the connections
      *
@@ -238,8 +187,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function delete_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -263,10 +211,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-
-    public function update_field_data( \PeerRaiser\Core\Event $event ) {
-        list( $object_id, $cmb_id, $updated, $cmb ) = $event->get_arguments();
-
+    public function update_field_data( $object_id, $cmb_id, $updated, $cmb ) {
         $post_type = get_post_type($object_id);
 
         if ( $post_type !== 'pr_campaign' )
@@ -283,10 +228,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         }
     }
 
-
-    public function manage_columns( \PeerRaiser\Core\Event $event ) {
-        list( $column_name, $post_id ) = $event->get_arguments();
-
+    public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
@@ -322,14 +264,10 @@ class Campaigns extends \PeerRaiser\Controller\Base {
                 $end_date = get_post_meta( $post_id, '_peerraiser_campaign_end_date', true );
                 echo ( !empty($end_date) ) ? date_i18n( get_option( 'date_format' ), $end_date ) : '&infin;';
                 break;
-
         }
-
     }
 
-
-    public function sort_columns( \PeerRaiser\Core\Event $event ){
-        list( $sortable_columns ) = $event->get_arguments();
+    public function sort_columns( $sortable_columns ){
 
         $sortable_columns['start_date'] = 'campaign_start_date';
         $sortable_columns['end_date'] = 'campaign_end_date';
@@ -337,9 +275,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $event->set_result( $sortable_columns );
     }
 
-
-    public function add_sort_type( \PeerRaiser\Core\Event $event ){
-        list( $query ) = $event->get_arguments();
+    public function add_sort_type( $query ){
 
         if ( ! is_admin() )
                 return;
@@ -383,8 +319,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-
-    public function remove_date_filter( \PeerRaiser\Core\Event $event ){
+    public function remove_date_filter(){
         $screen = get_current_screen();
 
         if ( $screen->post_type === 'pr_campaign' ) {
@@ -392,7 +327,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     public function get_total_fundraisers( $campaign_id ) {
         $args = array(
@@ -405,7 +339,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return $fundraisers->found_posts;
     }
 
-
     public function get_total_teams( $campaign_id ) {
         $args = array(
             'post_type' => 'fundraiser',
@@ -416,7 +349,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $teams = new \WP_Query( $args );
         return $teams->found_posts;
     }
-
 
     public function get_total_donations( $campaign_id ) {
         $args = array(
@@ -429,8 +361,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return $donations->found_posts;
     }
 
-
-    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
             return;
 
@@ -465,7 +396,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function display_fundraisers_list() {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
@@ -495,7 +425,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/campaign-fundraisers' );
     }
-
 
     public function display_donations_list() {
         global $post;
@@ -527,7 +456,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/campaign-donations' );
     }
 
-
     public function display_teams_list() {
         global $post;
         $paged = isset($_GET['teams_page']) ? $_GET['teams_page'] : 1;
@@ -557,7 +485,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/campaign-teams' );
     }
-
 
     public function display_campaign_stats( $post ) {
         $plugin_options  = get_option( 'peerraiser_options', array() );

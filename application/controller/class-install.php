@@ -31,26 +31,13 @@ class Install extends Base {
         parent::__construct();
     }
 
-    /**
-     * @see PeerRaiser\Core\Event\Subscriber_Interface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_admin_init' => array(
-                array( 'trigger_requirements_check' ),
-                array( 'trigger_update_capabilities' ),
-            ),
-            'peerraiser_update_capabilities' => array(
-                array( 'update_capabilities' ),
-            ),
-            'peerraiser_check_requirements' => array(
-                array( 'check_requirements' ),
-            ),
-            'peerraiser_admin_notices' => array(
-                array( 'render_requirements_notices' ),
-                array( 'check_for_updates' ),
-            ),
-        );
+     public function register_actions() {
+        add_action( 'admin_init',                     array( $this, 'trigger_requirements_check' ) );
+        add_action( 'admin_init',                     array( $this, 'trigger_update_capabilities' ) );
+        add_action( 'peerraiser_update_capabilities', array( $this, 'update_capabilities' ) );
+        add_action( 'peerraiser_check_requirements',  array( $this, 'check_requirements' ) );
+        add_action( 'admin_notices',                  array( $this, 'render_requirements_notices' ) );
+        add_action( 'admin_notices',                  array( $this, 'check_for_updates' ) );
     }
 
     /**
@@ -71,10 +58,8 @@ class Install extends Base {
 
     /**
      * Trigger requirements check
-     *
-     * @param PeerRaiser_Core_Event $event
      */
-    public function trigger_requirements_check( \PeerRaiser\Core\Event $event ) {
+    public function trigger_requirements_check() {
         do_action( 'peerraiser_check_requirements' );
     }
 
@@ -188,24 +173,16 @@ class Install extends Base {
 
     /**
      * Trigger requirements check.
-     *
-     * @param    \PeerRaiser\Core\Event    $event
      */
-    public function trigger_update_capabilities( \PeerRaiser\Core\Event $event ) {
-        $new_event = new \PeerRaiser\Core\Event();
-        $new_event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_update_capabilities', $new_event );
+    public function trigger_update_capabilities() {
+        do_action( 'peerraiser_update_capabilities' );
     }
 
 
     /**
      * Update user roles capabilities.
-     *
-     * @param    \PeerRaiser\Core\Event    $event
      */
-    public function update_capabilities( \PeerRaiser\Core\Event $event ) {
-        list( $roles ) = $event->get_arguments() + array( array() );
+    public function update_capabilities( $roles ) {
         // update capabilities
         $peerraiser_capabilities = new \PeerRaiser\Core\Capability();
         $peerraiser_capabilities->update_roles( (array) $roles );

@@ -7,43 +7,21 @@ namespace PeerRaiser\Controller;
  */
 class Admin extends Base {
 
-    /**
-     * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_admin_head' => array(
-                array( 'add_html5shiv_to_admin_head' ),
-            ),
-            'peerraiser_admin_menu' => array(
-                array( 'add_to_admin_panel' ),
-            ),
-            'peerraiser_admin_footer_scripts' => array(
-                array( 'modify_footer' ),
-            ),
-            'peerraiser_admin_enqueue_scripts' => array(
-                array( 'add_plugin_admin_assets' ),
-                array( 'add_admin_pointers_script' ),
-                array( 'register_admin_scripts' ),
-                array( 'register_admin_styles' ),
-            ),
-            'peerraiser_admin_head' => array(
-                array( 'on_campaigns_view' ),
-            ),
-            'peerraiser_enter_title_here' => array(
-                array( 'customize_title' ),
-            ),
-            'wp_ajax_peerraiser_get_posts' => array(
-                array( 'ajax_get_posts' ),
-                array( 'peerraiser_on_ajax_send_json', 300 ),
-            ),
-            'wp_ajax_peerraiser_get_users' => array(
-                array( 'ajax_get_users' ),
-                array( 'peerraiser_on_ajax_send_json', 300 ),
-            ),
-        );
-    }
+    public function register_actions() {
+        add_action( 'admin_menu',                   array( $this, 'add_to_admin_panel' ) );
+        add_action( 'admin_head',                   array( $this, 'on_campaigns_view' ) );
+        add_action( 'admin_print_footer_scripts',   array( $this, 'modify_footer' ) );
+        add_action( 'admin_enqueue_scripts',        array( $this, 'add_plugin_admin_assets' ) );
+        add_action( 'admin_enqueue_scripts',        array( $this, 'add_admin_pointers_script' ) );
+        add_action( 'admin_enqueue_scripts',        array( $this, 'register_admin_scripts' ) );
+        add_action( 'admin_enqueue_scripts',        array( $this, 'register_admin_styles' ) );
+        add_action( 'wp_ajax_peerraiser_get_posts', array( $this, 'ajax_get_posts' ) );
+        add_action( 'wp_ajax_peerraiser_get_posts', array( $this, 'peerraiser_on_ajax_send_json' ) );
+        add_action( 'wp_ajax_peerraiser_get_users', array( $this, 'ajax_get_users' ) );
+        add_action( 'wp_ajax_peerraiser_get_users', array( $this, 'peerraiser_on_ajax_send_json' ) );
 
+        add_filter( 'enter_title_here', array( $this, 'customize_title' ), 1 );
+    }
 
     /**
      * Show plugin in administrator panel.
@@ -87,10 +65,11 @@ class Admin extends Base {
                     null
                 );
             }
-            \PeerRaiser\Hooks::add_wp_action( 'load-' . $page_id, 'peerraiser_load_' . $page_id );
+
+            do_action( 'load-' . $page_id, 'peerraiser_load_' . $page_id );
+
             $help_action = isset( $page['help'] ) ? $page['help'] : array( $this, 'help_' . $name );
-            $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-            $dispatcher->add_listener( 'peerraiser_load_' . $page_id, $help_action );
+            do_action( 'peerraiser_load_' . $page_id, $help_action );
         }
     }
 
@@ -141,26 +120,6 @@ class Admin extends Base {
         // load PeerRaiser-specific JS
         wp_enqueue_script( 'peerraiser-admin' );
 
-    }
-
-
-    /**
-     * Add html5shim to the admin_head() for Internet Explorer < 9.
-     *
-     * @wp-hook admin_head
-     * @param PeerRaiser_Core_Event $event
-     * @return void
-     */
-    public function add_html5shiv_to_admin_head( \PeerRaiser\Core\Event $event ) {
-        $event->set_echo( true );
-        $view_args = array(
-            'scripts' => array(
-                '//html5shim.googlecode.com/svn/trunk/html5.js',
-            ),
-        );
-        $this->assign( 'peerraiser', $view_args );
-
-        $event->set_result( $this->get_text_view( 'backend/partials/html5shiv' ) );
     }
 
     /**
@@ -641,10 +600,10 @@ class Admin extends Base {
     /**
      * Add WordPress pointers to pages.
      *
-     * @param \PeerRaiser\Core\Event $event
+     * @param
      * @return void
      */
-    public function modify_footer( \PeerRaiser\Core\Event $event ) {
+    public function modify_footer() {
         $pointers = \PeerRaiser\Controller\Admin::get_pointers_to_be_shown();
 
         // don't render the partial, if there are no pointers to be shown
@@ -760,7 +719,7 @@ class Admin extends Base {
     }
 
 
-    public function on_campaigns_view( \PeerRaiser\Core\Event $event ) {
+    public function on_campaigns_view() {
         $current_screen = get_current_screen();
         $campaigns_count = wp_count_posts( 'pr_campaign' );
         if ( $current_screen->id == 'edit-pr_campaign' && $campaigns_count->publish == 0) {
@@ -777,24 +736,23 @@ class Admin extends Base {
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
      */
-    public function customize_title( \PeerRaiser\Core\Event $event ) {
+    public function customize_title( $title ) {
         $current_screen = get_current_screen();
 
         switch ($current_screen->post_type) {
             case 'fundraiser':
-                if ( $event->has_argument( 'fundraiser' ) ) {
-                    $title = $event->get_argument( 'fundraiser' );
+                if ( $title === 'fundraiser' ) {
+                    $title = 'fundraiser';
                 } else {
                     $title = __( 'Enter the fundraiser name here', 'peerraiser' );
                 }
                 break;
 
             default:
-                $title = $event->get_result();
                 break;
         }
 
-        $event->set_result( $title );
+        return $title;
     }
 
 
@@ -806,7 +764,7 @@ class Admin extends Base {
      *
      * @return    array                              Data formatted for select2
      */
-    public function ajax_get_posts( \PeerRaiser\Core\Event $event ) {
+    public function ajax_get_posts() {
         $event->set_result(
             array(
                 'success' => false,
@@ -821,7 +779,7 @@ class Admin extends Base {
     }
 
 
-    public function ajax_get_users( \PeerRaiser\Core\Event $event ) {
+    public function ajax_get_users() {
         $event->set_result(
             array(
                 'success' => false,

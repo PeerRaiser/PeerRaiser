@@ -7,17 +7,9 @@ namespace PeerRaiser\Controller;
  */
 class Connections extends Base {
 
-    /**
-     * @see PeerRaiser_Core_Event_SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_p2p_init' => array(
-                array( 'register_connections', 200 ),
-            ),
-        );
+    public function register_actions() {
+        add_action( 'p2p_init',   array( $this, 'register_connections' ) );
     }
-
 
     /**
      * Setup connection types for P2P
