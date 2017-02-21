@@ -4,52 +4,15 @@ namespace PeerRaiser\Controller\Admin;
 
 class Teams extends \PeerRaiser\Controller\Base {
 
-    private static $instance = null;
-
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_cmb2_admin_init' => array(
-                array( 'register_meta_boxes' )
-            ),
-            'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'load_assets' )
-            ),
-            'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'load_assets' )
-            ),
-            'peerraiser_after_post_meta_added' => array(
-                array( 'add_connections' ),
-            ),
-            'peerraiser_before_post_meta_updated' => array(
-                array( 'update_connections' ),
-            ),
-            'peerraiser_before_post_meta_deleted' => array(
-                array( 'delete_connections' ),
-            ),
-            'peerraiser_meta_boxes' => array(
-                array( 'add_meta_boxes' ),
-            ),
-            'peerraiser_manage_team_columns' => array(
-                array( 'manage_columns' ),
-            )
-        );
-    }
-
-
-    /**
-     * Singleton to get only one Campaigns controller
-     *
-     * @return    \PeerRaiser\Admin\Campaigns
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+    public function register_actions() {
+        add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
+        add_action( 'admin_print_styles-post-new.php',    array( $this, 'load_assets' ) );
+        add_action( 'admin_print_styles-post.php',        array( $this, 'load_assets' ) );
+        add_action( 'added_post_meta',                    array( $this, 'add_connections' ) );
+        add_action( 'update_post_meta',                   array( $this, 'update_connections' ) );
+        add_action( 'delete_post_meta',                   array( $this, 'delete_connections' ) );
+        add_action( 'meta_boxes',                         array( $this, 'add_meta_boxes' ) );
+        add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
     }
 
     /**
@@ -76,7 +39,7 @@ class Teams extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function register_meta_boxes() {
 
         $teams_model = new \PeerRaiser\Model\Admin\Teams();
         $team_field_groups = $teams_model->get_fields();
@@ -158,11 +121,9 @@ class Teams extends \PeerRaiser\Controller\Base {
      * After post meta is added, add the connections
      *
      * @since    1.0.0
-     * @param    \PeerRaiser\Core\Event    $event
      * @return   null
      */
-    public function add_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_team_campaign', '_team_leader' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -193,11 +154,9 @@ class Teams extends \PeerRaiser\Controller\Base {
      * Before the post meta is updated, update the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_fundraiser_campaign', '_team_leader' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -237,11 +196,9 @@ class Teams extends \PeerRaiser\Controller\Base {
      * Before post meta is deleted, delete the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function delete_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_team_campaign', '_team_leader', );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -269,7 +226,7 @@ class Teams extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
             return;
 
@@ -313,9 +270,7 @@ class Teams extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function manage_columns( \PeerRaiser\Core\Event $event ) {
-        list( $column_name, $post_id ) = $event->get_arguments();
-
+    public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);

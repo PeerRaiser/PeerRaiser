@@ -4,18 +4,10 @@ namespace PeerRaiser\Controller\Admin;
 
 class Dashboard  extends Base {
 
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'wp_ajax_peerraiser_dismiss_message' => array(
-                array( 'process_dismiss_message_request', 100 ),
-                array( 'peerraiser_on_ajax_send_json', 300 ),
-            ),
-        );
+    public function register_actions() {
+        add_action( 'wp_ajax_peerraiser_dismiss_message',              array( $this, 'process_dismiss_message_request' ) );
+        add_action( 'wp_ajax_peerraiser_dismiss_message-post-new.php', array( $this, 'peerraiser_on_ajax_send_json' ) );
     }
-
 
     /**
      * @see \PeerRaiser\Core\View::load_assets()
@@ -143,23 +135,19 @@ class Dashboard  extends Base {
     }
 
 
-    public function process_dismiss_message_request( \PeerRaiser\Core\Event $event ) {
-        $event->set_result(
-            array(
-                'success' => false,
-                'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
-            )
+    public function process_dismiss_message_request() {
+        $result = array(
+            'success' => false,
+            'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
         );
 
         // Attempt to verify the nonce, and exit early if it fails
         if ( !wp_verify_nonce( $_POST['nonce'], 'dismiss_'.$_POST['message_type'] ) ) {
-            $event->set_result(
-                array(
-                    'success' => false,
-                    'message' => __( 'Verify nonce failed.', 'peerraiser' ),
-                )
+            $result = array(
+                'success' => false,
+                'message' => __( 'Verify nonce failed.', 'peerraiser' ),
             );
-            return;
+            return $result;
         }
 
         // Set "show welcome message" option to false
@@ -167,11 +155,9 @@ class Dashboard  extends Base {
         $plugin_options['show_welcome_message'] = false;
         update_option( 'peerraiser_options', $plugin_options );
 
-        $event->set_result(
-            array(
-                'success' => true,
-                'message' => __( 'Message has been dismissed', 'peerraiser' ),
-            )
+        return array(
+            'success' => true,
+            'message' => __( 'Message has been dismissed', 'peerraiser' ),
         );
     }
 

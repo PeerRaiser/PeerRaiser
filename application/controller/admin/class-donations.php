@@ -4,58 +4,22 @@ namespace PeerRaiser\Controller\Admin;
 
 class Donations extends \PeerRaiser\Controller\Base {
 
-    private static $instance = null;
-
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_cmb2_admin_init' => array(
-                array( 'register_meta_boxes' ),
-            ),
-            'peerraiser_do_meta_boxes' => array(
-                array( 'maybe_remove_metabox' ),
-            ),
-            'peerraiser_admin_enqueue_styles_post_new' => array(
-                array( 'load_assets' ),
-            ),
-            'peerraiser_admin_enqueue_styles_post_edit' => array(
-                array( 'load_assets' ),
-            ),
-            'peerraiser_admin_head' => array(
-                array( 'on_donations_view' ),
-            ),
-            'peerraiser_admin_menu' => array(
-                array( 'replace_submit_box' ),
-            ),
-            'peerraiser_after_post_meta_added' => array(
-                array( 'add_connections' ),
-            ),
-            'peerraiser_before_post_meta_updated' => array(
-                array( 'update_connections' ),
-            ),
-            'peerraiser_before_post_meta_deleted' => array(
-                array( 'delete_connections' ),
-            ),
-            'peerraiser_before_delete_post' => array(
-                array( 'handle_post_deleted' ),
-            ),
-            'peerraiser_new_donation' => array(
-                array( 'add_donation' ),
-            ),
-            'peerraiser_manage_donation_columns' => array(
-                array( 'manage_columns' ),
-            ),
-            'peerraiser_meta_boxes' => array(
-                array( 'add_meta_boxes' ),
-            ),
-            'peerraiser_donation_published' => array(
-                array( 'delete_transient' ),
-            )
-        );
+    public function register_actions() {
+        add_action( 'cmb2_admin_init',                        array( $this, 'register_meta_boxes' ) );
+        add_action( 'do_meta_boxes',                          array( $this, 'maybe_remove_metabox' ) );
+        add_action( 'admin_print_styles-post-new.php',        array( $this, 'load_assets' ) );
+        add_action( 'admin_print_styles-post.php',            array( $this, 'load_assets' ) );
+        add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
+        add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
+        add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
+        add_action( 'update_post_meta',                       array( $this, 'update_connections' ) );
+        add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
+        add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
+        add_action( 'peerraiser_new_donation',                array( $this, 'add_donation' ) );
+        add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
+        add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
+        add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
     }
-
 
     public function load_assets() {
         parent::load_assets();
@@ -130,7 +94,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/donation-list' );
     }
 
-    public function register_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function register_meta_boxes() {
 
         $donations_model = new \PeerRaiser\Model\Admin\Donations();
         $donation_field_groups = $donations_model->get_fields();
@@ -150,7 +114,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-    public function maybe_remove_metabox( \PeerRaiser\Core\Event $event ) {
+    public function maybe_remove_metabox() {
         // Only display fields on a "new" donations, not existing ones
         if ( $this->is_edit_page( 'edit' ) )
             remove_meta_box( 'offline-donation', 'pr_donation', 'normal' );
@@ -180,7 +144,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-    public function on_donations_view( \PeerRaiser\Core\Event $event ) {
+    public function on_donations_view() {
         global $typenow;
 
         if ( $this->is_edit_page( 'new' ) && "pr_donation" == $typenow ) {
@@ -193,11 +157,9 @@ class Donations extends \PeerRaiser\Controller\Base {
      * After post meta is added, add the connections
      *
      * @since    1.0.0
-     * @param    \PeerRaiser\Core\Event    $event
      * @return   null
      */
-    public function add_connections( \PeerRaiser\Core\Event $event ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_donor', '_campaign', '_fundraiser' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -237,11 +199,9 @@ class Donations extends \PeerRaiser\Controller\Base {
      * Before the post meta is updated, update the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function update_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_donor', '_campaign', '_fundraiser' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -288,11 +248,9 @@ class Donations extends \PeerRaiser\Controller\Base {
      * Before post meta is deleted, delete the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      */
-    public function delete_connections(  \PeerRaiser\Core\Event $event  ) {
-        list( $meta_id, $object_id, $meta_key, $_meta_value ) = $event->get_arguments();
+    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_donor', '_campaign', '_fundraiser' );
 
         // If the field updated isn't the type that needs to be connected, exit early
@@ -323,8 +281,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         }
     }
 
-    public function handle_post_deleted( \PeerRaiser\Core\Event $event ) {
-        list( $post_id ) = $event->get_arguments();
+    public function handle_post_deleted( $post_id ) {
         global $post_type;
 
         if ( 'pr_donation' != $post_type )
@@ -339,9 +296,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         p2p_type( 'donation_to_fundraiser' )->disconnect( $fundraiser, $post_id );
     }
 
-    public function add_donation( \PeerRaiser\Core\Event $event ){
-        $data = $event->get_arguments();
-
+    public function add_donation( $data ){
         if ( $this->is_existing_donation( $data['transaction_key'] ) ){
             exit;
         }
@@ -392,9 +347,7 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 
-    public function manage_columns( \PeerRaiser\Core\Event $event ) {
-        list( $column_name, $post_id ) = $event->get_arguments();
-
+    public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
@@ -439,7 +392,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         }
     }
 
-    public function add_meta_boxes( \PeerRaiser\Core\Event $event ) {
+    public function add_meta_boxes() {
         if ( !$this->is_edit_page( 'edit' ) )
             return;
 
@@ -510,7 +463,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donation-summary' );
     }
 
-    public function delete_transient( \PeerRaiser\Core\Event $event ) {
+    public function delete_transient() {
         delete_transient( 'peerraiser_donations_total' );
     }
 

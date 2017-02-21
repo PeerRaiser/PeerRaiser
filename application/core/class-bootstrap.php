@@ -70,10 +70,8 @@ class Bootstrap {
      * @return    void
      */
     public function run() {
-        $this->register_wordpress_hooks();
         $this->register_modules();
 
-        $this->register_cache_helper();
         $this->register_upgrade_checks();
 
         $this->register_custom_post_types();
@@ -85,10 +83,7 @@ class Bootstrap {
         $this->register_activity_log();
         $this->register_tables();
 
-        // PeerRaiser loaded finished. Triggering event for other plugins
-        \PeerRaiser\Hooks::get_instance()->peerraiser_ready();
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_init_finished' );
+        do_action( 'peerraiser_init_finished' );
     }
 
 
@@ -98,22 +93,20 @@ class Bootstrap {
      * @return    void
      */
     private function register_frontend_actions() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
         $post_controller = self::get_controller( 'Frontend\Post' );
-        $dispatcher->add_subscriber( $post_controller );
+        $post_controller->register_actions();
 
         $listener_controller = self::get_controller( 'Frontend\Listener' );
-        $dispatcher->add_subscriber( $listener_controller );
+        $listener_controller->register_actions();
 
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
-        $dispatcher->add_subscriber( $shortcode_controller );
+        $shortcode_controller->register_actions();
 
         $account_controller = self::get_controller( 'Frontend\Account' );
-        $dispatcher->add_subscriber( $account_controller );
+        $account_controller->register_actions();
 
         $dashboard_controller = self::get_controller( 'Frontend\Participant_Dashboard' );
-        $dispatcher->add_subscriber( $dashboard_controller );
+        $dashboard_controller->register_actions();
     }
 
 
@@ -123,10 +116,8 @@ class Bootstrap {
      * @return    void
      */
     private function register_custom_post_types() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
         $custom_post_type_controller = self::get_controller( 'Custom_Post_Type' );
-        $dispatcher->add_subscriber( $custom_post_type_controller );
+        $custom_post_type_controller->register_actions();
     }
 
     /**
@@ -135,10 +126,8 @@ class Bootstrap {
      * @return    void
      */
     private function register_taxonomies() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
         $taxonomy_controller = self::get_controller( 'Taxonomy' );
-        $dispatcher->add_subscriber( $taxonomy_controller );
+        $taxonomy_controller->register_actions();
     }
 
 
@@ -149,14 +138,7 @@ class Bootstrap {
      */
     private function register_shortcodes() {
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
-
-        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_receipt', 'peerraiser_shortcode_receipt' );
-        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_login', 'peerraiser_shortcode_login' );
-        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_signup', 'peerraiser_shortcode_signup' );
-        \PeerRaiser\Hooks::add_wp_shortcode( 'peerraiser_participant_dashboard', 'peerraiser_shortcode_dashboard' );
-
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->add_subscriber( $shortcode_controller );
+        $shortcode_controller->register_actions();
     }
 
 
@@ -167,10 +149,8 @@ class Bootstrap {
      * @return    void
      */
     private function register_connections() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
         $connections_controller = self::get_controller( 'Connections' );
-        $dispatcher->add_subscriber( $connections_controller );
+        $connections_controller->register_actions();
     }
 
 
@@ -180,66 +160,48 @@ class Bootstrap {
      * @return    void
      */
     private function register_admin_actions() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
         // add the admin panel
         $admin_controller = self::get_controller( 'Admin' );
-        $dispatcher->add_subscriber( $admin_controller );
+        $admin_controller->register_actions();
 
         // admin notices
         $admin_notices_controller = self::get_controller( 'Admin\Admin_Notices' );
-        $dispatcher->add_subscriber( $admin_notices_controller );
+        $admin_notices_controller->register_actions();
 
         // dashboard controller
         $dashboard_controller = self::get_controller( 'Admin\Dashboard' );
-        $dispatcher->add_subscriber( $dashboard_controller );
+        $dashboard_controller->register_actions();
 
         // campaigns controller
         $campaigns_controller = self::get_controller( 'Admin\Campaigns' );
-        $dispatcher->add_subscriber( $campaigns_controller );
+        $campaigns_controller->register_actions();
 
         // fundraiser controller
         $fundraisers_controller = self::get_controller( 'Admin\Fundraisers' );
-        $dispatcher->add_subscriber( $fundraisers_controller );
+        $fundraisers_controller->register_actions();
 
         // teams controller
         $teams_controller = self::get_controller( 'Admin\Teams' );
-        $dispatcher->add_subscriber( $teams_controller );
+        $teams_controller->register_actions();
 
         // settings controller
         $settings_controller = self::get_controller( 'Admin\Settings' );
-        $dispatcher->add_subscriber( $settings_controller );
+        $settings_controller->register_actions();
 
         // donations controller
         $donations_controller = self::get_controller( 'Admin\Donations' );
-        $dispatcher->add_subscriber( $donations_controller );
+        $donations_controller->register_actions();
 
         // donors controller
         $donors_controller = self::get_controller( 'Admin\Donors' );
-        $dispatcher->add_subscriber( $donors_controller );
+        $donors_controller->register_actions();
 
     }
-
-
-    /**
-     * Internal function to register the cache helper for {update_option_} hooks.
-     *
-     * @return    void
-     */
-    private function register_cache_helper() {
-        // cache helper to purge the cache on update_option()
-        $cache_helper = new \PeerRaiser\Helper\Cache();
-
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->add_listener( 'peerraiser_option_update', array( $cache_helper, 'purge_cache' ) );
-    }
-
 
     private function register_activity_log() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->add_subscriber( self::get_controller( 'Activity_Feed' ) );
+        $activity_feed_controller = self::get_controller( 'Activity_Feed' );
+        $activity_feed_controller->register_actions();
     }
-
 
     /**
      * Internal function to register all upgrade checks.
@@ -247,8 +209,8 @@ class Bootstrap {
      * @return    void
      */
     private function register_upgrade_checks() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->add_subscriber( self::get_controller( 'Install' ) );
+        $install_controller = self::get_controller( 'Install' );
+        $install_controller->register_actions();
     }
 
 
@@ -303,23 +265,14 @@ class Bootstrap {
      * @return    void
      */
     private function register_modules() {
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->add_subscriber( new \PeerRaiser\Module\Appearance() );
+        $appearance_module = new \PeerRaiser\Module\Appearance();
+        $appearance_module->register_actions();
     }
 
     private function register_tables() {
         global $wpdb;
         $wpdb->donormeta    = $wpdb->prefix . 'pr_donormeta';
         $wpdb->donationmeta = $wpdb->prefix . 'pr_donationmeta';
-    }
-
-    /**
-     * Internal function to register event subscribers.
-     *
-     * @return    void
-     */
-    private function register_wordpress_hooks() {
-        \PeerRaiser\Hooks::get_instance()->init();
     }
 
 }

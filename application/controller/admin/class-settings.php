@@ -4,20 +4,11 @@ namespace PeerRaiser\Controller\Admin;
 
 class Settings extends Base {
 
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'wp_ajax_peerraiser_update_settings' => array(
-                array( 'ajax_update_settings', 100 ),
-                array( 'peerraiser_on_ajax_send_json', 300 ),
-            ),
-            'peerraiser_wordpress_init' => array(
-                array( 'add_thumbnail_sizes' ),
-                array( 'maybe_flush_rewrite_rules' )
-            ),
-        );
+    public function register_actions() {
+        add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'ajax_update_settings' ) );
+        add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'peerraiser_on_ajax_send_json' ) );
+        add_action( 'wordpress_init',                     array( $this, 'add_thumbnail_sizes' ) );
+        add_action( 'wordpress_init',                     array( $this, 'maybe_flush_rewrite_rules' ) );
     }
 
     /**
@@ -127,7 +118,7 @@ class Settings extends Base {
     }
 
 
-    public function ajax_update_settings( \PeerRaiser\Core\Event $event ) {
+    public function ajax_update_settings() {
         check_ajax_referer($_POST['none_name']);
 
         $model = new \PeerRaiser\Model\Admin\Settings();
@@ -205,7 +196,7 @@ class Settings extends Base {
     }
 
 
-    public function add_thumbnail_sizes( \PeerRaiser\Core\Event $event ) {
+    public function add_thumbnail_sizes() {
         add_image_size( 'peerraiser_campaign_thumbnail', 150, 150, true );
     }
 

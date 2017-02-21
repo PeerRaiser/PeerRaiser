@@ -4,41 +4,28 @@ namespace PeerRaiser\Controller\Frontend;
 
 class Listener extends \PeerRaiser\Controller\Base {
 
-    private $listener = 'peerraiserListener';
-
-    private $listener_var = 'notification';
-
+    private $listener        = 'peerraiserListener';
+    private $listener_var    = 'notification';
     private $allowed_actions = array( 'new_donation' );
 
-    /**
-     * @see \PeerRaiser\Core\Event\SubscriberInterface::get_subscribed_events()
-     */
-    public static function get_subscribed_events() {
-        return array(
-            'peerraiser_query_vars' => array(
-                array( 'add_peerraiser_listener' ),
-            ),
-            'peerraiser_template_redirect' => array(
-                array( 'listen_for_notification' ),
-            ),
-        );
+    public function register_actions() {
+        add_action( 'template_redirect', array( $this, 'listen_for_notification' ) );
+
+        add_filter( 'query_vars', array( $this, 'add_peerraiser_listener' ), 1 );
     }
 
-
-    public function add_peerraiser_listener( \PeerRaiser\Core\Event $event ) {
-        list( $qvars ) = $event->get_arguments();
+    public function add_peerraiser_listener( $qvars ) {
         $qvars[] = $this->listener;
         // TODO: Delete this:
         $qvars[] = 'testListener';
-        $event->set_result( $qvars );
+        return $qvars;
     }
-
 
     /**
      * Listen for notification from PeerRaiser.com and handle the notifcation if
      * it's received.
      */
-    public function listen_for_notification( \PeerRaiser\Core\Event $event ) {
+    public function listen_for_notification() {
         if ( $this->listener_var == get_query_var( $this->listener ) ) {
             $this->handle_notification();
         } elseif ( $this->listener_var == get_query_var( 'testListener' ) ) {
@@ -47,7 +34,6 @@ class Listener extends \PeerRaiser\Controller\Base {
             exit;
         }
     }
-
 
     /**
      * Try to validate the message and then process it
@@ -59,7 +45,6 @@ class Listener extends \PeerRaiser\Controller\Base {
         }
         exit;
     }
-
 
     /**
      * Validate the message by checking with PeerRaiser.com to make that's where it
@@ -102,7 +87,6 @@ class Listener extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     private function process_message( $action, $data ){
 
