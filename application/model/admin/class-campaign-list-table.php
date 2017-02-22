@@ -53,8 +53,14 @@ class Campaign_List_Table extends WP_List_Table {
      */
     public function column_default( $item, $column_name ) {
         switch ( $column_name ) {
-            case 'count':
+            case 'count' :
                 return $item[ $column_name ];
+            case 'donations' :
+                return $item[ $column_name ];
+            case 'teams' :
+                return count( $item[ $column_name ] );
+            case 'raised' :
+                return \PeerRaiser\Helper\View::normalize( $item[ $column_name ] );
             default:
                 return print_r( $item, true ); //Show the whole array for troubleshooting purposes
         }
@@ -82,8 +88,8 @@ class Campaign_List_Table extends WP_List_Table {
         $columns = array(
             'cb'          => '<input type="checkbox" />',
             'name'        => __( 'Name', 'peerraiser' ),
-            'count'       => __( 'Fundraiers', 'peerraiser' ),
-            'donors'      => __( 'Donors', 'peerraiser' ),
+            'count'       => __( 'Fundraisers', 'peerraiser' ),
+            'donations'   => __( 'Donations', 'peerraiser' ),
             'teams'       => __( 'Teams', 'peerraiser' ),
             'raised'      => __( 'Raised', 'peerraiser' ),
         );
@@ -211,17 +217,17 @@ class Campaign_List_Table extends WP_List_Table {
 
         $results = array();
 
-        $donors = new \PeerRaiser\Model\Database\Donor();
-        $teams  = new \PeerRaiser\Model\Admin\Teams();
+        $donations = new \PeerRaiser\Model\Database\Donation();
+        $teams     = new \PeerRaiser\Model\Admin\Teams();
 
         foreach ( $term_query->terms as $term ) {
             $results[] = array(
                 'id'          => $term->term_id,
                 'name'        => $term->name,
                 'count'       => $term->count,
-                'donors'      => $donors->get_donors( array( 'campaign_id' => $term->term_id ), true ),
+                'donations'   => $donations->get_donations( array( 'campaign_id' => $term->term_id ), true ),
                 'teams'       => $teams->get_teams_by_campaign( (int) $term->term_id ),
-                'raised'      => __( 'Raised', 'peerraiser' ),
+                'raised'      => 1345.0000,
             );
         }
 
