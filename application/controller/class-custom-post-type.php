@@ -11,10 +11,29 @@ class Custom_Post_Type extends Base {
         add_action( 'peerraiser_ready', array( $this, 'register_custom_post_types' ) );
     }
 
+    /**
+     * Register Customer Post Types
+     *
+     * Currently only registers the "Fundraiser" post type, but we may register others
+     * in the future.
+     *
+     * @since     1.0.4
+     * @return    void
+     */
     public function register_custom_post_types(){
         $this->register_fundraiser_cpt();
     }
 
+    /**
+     * Register Fundraiser Customer Post Type
+     *
+     * A Fundraiser is a page that participants can customize, and use to raise money for
+     * your cause. Fundraisers are usually associated with Campaigns and can be associated
+     * with a team.
+     *
+     * @since     1.0.4
+     * @return    void
+     */
     private function register_fundraiser_cpt() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -35,7 +54,10 @@ class Custom_Post_Type extends Base {
             ),
         );
 
-        $fundraisers = new \PeerRaiser\Model\Custom_Post_Type( $post_type_name, apply_filters( 'peerraiser_fundraiser_cpt_args', $args ) );
+        $fundraisers = new \PeerRaiser\Model\Custom_Post_Type(
+                apply_filters( 'peerraiser_fundraiser_cpt_name', $post_type_name ),
+                apply_filters( 'peerraiser_fundraiser_cpt_args', $args )
+            );
 
         $columns = array(
             'cb'            => '<input type="checkbox" />',
@@ -46,8 +68,7 @@ class Custom_Post_Type extends Base {
             'goal_amount'   => __( 'Goal', 'peerraiser' ),
             'amount_raised' => __( 'Raised', 'peerraiser' ),
         );
-        $columns = apply_filters( 'peerraiser_fundraiser_cpt_columns', $columns );
-        $fundraisers->columns( $columns );
+        $fundraisers->columns( apply_filters( 'peerraiser_fundraiser_cpt_columns', $columns ) );
     }
 
 }
