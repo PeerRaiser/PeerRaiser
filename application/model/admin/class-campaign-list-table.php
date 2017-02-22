@@ -32,7 +32,7 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return string
      */
-    function column_name( $item ) {
+    public function column_name( $item ) {
         // create a nonce
         $delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign' );
 
@@ -41,6 +41,34 @@ class Campaign_List_Table extends WP_List_Table {
         $actions = array();
 
         return $title . $this->row_actions( $actions );
+    }
+
+    /**
+     * [get_views description]
+     *
+     * @since     1.0.0
+     * @return    [type]    [description]
+     */
+    public function get_views() {
+        $status_links = array(
+            'all'    => __( '<a href="#">All</a>', 'peerraiser' ),
+            'active' => __( '<a href="#">Active</a>', 'peerraiser' ),
+            'ended'  => __( '<a href="#">Ended</a>', 'peerraiser' ),
+        );
+        return $status_links;
+    }
+
+    public function current_action() {
+        if ( isset( $_REQUEST['filter_action'] ) && ! empty( $_REQUEST['filter_action'] ) )
+            return false;
+
+        if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
+            return $_REQUEST['action'];
+
+        if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] )
+            return $_REQUEST['action2'];
+
+        return false;
     }
 
     /**
@@ -73,7 +101,7 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return string
      */
-    function column_cb( $item ) {
+    public function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
         );
@@ -84,7 +112,7 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return array
      */
-    function get_columns() {
+    public function get_columns() {
         $columns = array(
             'cb'          => '<input type="checkbox" />',
             'name'        => __( 'Name', 'peerraiser' ),
