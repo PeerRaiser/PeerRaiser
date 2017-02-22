@@ -17,7 +17,6 @@ class Bootstrap {
      */
     private $config;
 
-
     /**
      * @param    \PeerRaiser\Model\Config    $config
      *
@@ -35,7 +34,6 @@ class Bootstrap {
             $textdomain_path
         );
     }
-
 
     /**
      * Internal function to create and get controllers.
@@ -61,7 +59,6 @@ class Bootstrap {
         return self::$controllers[ $class ];
     }
 
-
     /**
      * Start the plugin on plugins_loaded hook.
      *
@@ -70,10 +67,9 @@ class Bootstrap {
      * @return    void
      */
     public function run() {
+
         $this->register_modules();
-
         $this->register_upgrade_checks();
-
         $this->register_custom_post_types();
         $this->register_taxonomies();
         $this->register_admin_actions();
@@ -83,9 +79,8 @@ class Bootstrap {
         $this->register_activity_log();
         $this->register_tables();
 
-        do_action( 'peerraiser_init_finished' );
+        do_action( 'peerraiser_ready', $this );
     }
-
 
     /**
      * Internal function to register global actions for frontend.
@@ -109,7 +104,6 @@ class Bootstrap {
         $dashboard_controller->register_actions();
     }
 
-
     /**
      * Internal function to register custom post types.
      *
@@ -130,7 +124,6 @@ class Bootstrap {
         $taxonomy_controller->register_actions();
     }
 
-
     /**
      * Internal function to register all shortcodes.
      *
@@ -140,7 +133,6 @@ class Bootstrap {
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $shortcode_controller->register_actions();
     }
-
 
     /**
      * Internal function to register P2P connections
@@ -152,7 +144,6 @@ class Bootstrap {
         $connections_controller = self::get_controller( 'Connections' );
         $connections_controller->register_actions();
     }
-
 
     /**
      * Internal function to register the admin actions after the 'plugin_is_working' check.
@@ -213,22 +204,6 @@ class Bootstrap {
         $install_controller->register_actions();
     }
 
-
-    /**
-     * Late load event for other plugins to remove / add own actions to the plugin.
-     *
-     * @return    void
-     */
-    public function late_load() {
-        /**
-         * Late loading event.
-         *
-         * @param     PeerRaiser\Core\Bootstrap    $this
-         */
-        do_action( 'peerraiser_and_wp_loaded', $this );
-    }
-
-
     /**
      * Install callback to create custom database tables.
      *
@@ -239,10 +214,7 @@ class Bootstrap {
     public function activate() {
         $install_controller = self::get_controller( 'Install' );
         $install_controller->install();
-
-        // register any cron jobs here
     }
-
 
     /**
      * Callback to deactivate the plugin.
@@ -252,12 +224,8 @@ class Bootstrap {
      * @return    void
      */
     public function deactivate() {
-        // de-register the 'refresh dashboard' cron job
-        // wp_clear_scheduled_hook( 'peerraiser_refresh_dashboard_data' );
-        // de-register the 'delete old post views' cron job
-        // wp_clear_scheduled_hook( 'peerraiser_delete_old_post_views', array( '3 month' ) );
+        // de-register any cron jobs
     }
-
 
     /**
      * Internal function to register event subscribers.
