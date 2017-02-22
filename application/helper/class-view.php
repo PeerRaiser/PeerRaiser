@@ -111,16 +111,6 @@ class View {
         return $result;
     }
 
-
-    /**
-     * Check, if plugin is fully functional.
-     *
-     * @return bool
-     */
-    public static function plugin_is_working() {
-        return true;
-    }
-
     /**
      * Get current plugin mode.
      *
