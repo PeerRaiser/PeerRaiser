@@ -47,14 +47,12 @@ if ( file_exists(  plugin_dir_path( __FILE__ ) . 'library/Pimple/Container.php' 
     require_once( plugin_dir_path( __FILE__ ) . 'library/Pimple/Container.php');
 }
 
-
 // Kick everything off
 add_action( 'plugins_loaded', 'peerraiser_init' );
 
 // Register activation/deactivation functions
 register_activation_hook( __FILE__, 'peerraiser_activate' );
 register_deactivation_hook( __FILE__, 'peerraiser_deactivate' );
-
 
 /**
  * Callback for starting the plugin.
@@ -86,18 +84,23 @@ function peerraiser_activate() {
     $config = \PeerRaiser\Core\Setup::get_plugin_config();
     $peerraiser = new \PeerRaiser\Core\Bootstrap( $config );
 
-    $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-
-    $dispatcher->dispatch( 'peerraiser_activate_before' );
+    do_action( 'peerraiser_activate_before' );
     $peerraiser->activate();
-    $dispatcher->dispatch( 'peerraiser_activate_after' );
+    do_action( 'peerraiser_activate_after' );
 }
 
 /**
  * Callback for deactivating the plugin.
  */
 function peerraiser_deactivate() {
-    // TODO: Remove peerraiser data if "uninstall_deletes_data" is "true"
+    peerraiser_before_start();
+
+    $config = \PeerRaiser\Core\Setup::get_plugin_config();
+    $peerraiser = new \PeerRaiser\Core\Bootstrap( $config );
+
+    do_action( 'peerraiser_deactivate_before' );
+    $peerraiser->deactivate();
+    do_action( 'peerraiser_deactivate_after' );
 }
 
 /**
