@@ -8,9 +8,9 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                          array( $this, 'register_meta_boxes' ) );
         add_action( 'admin_print_styles-post-new.php',          array( $this, 'load_assets' ) );
         add_action( 'admin_print_styles-post.php',              array( $this, 'load_assets' ) );
-        add_action( 'added_post_meta',                          array( $this, 'add_connections' ) );
-        add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
-        add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
+        // add_action( 'added_post_meta',                          array( $this, 'add_connections' ) );
+        // add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
+        // add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
         add_action( 'cmb2_save_post_fields',                    array( $this, 'update_field_data' ) );
         add_action( 'manage_pr_campaign_posts_custom_column',   array( $this, 'manage_columns' ) );
         add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, 'sort_columns' ) );
@@ -30,16 +30,23 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $currency        = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
+        $default_views = array( 'list', 'add', 'edit' );
+
+        // Get the correct view
+        $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
+        $view = in_array( $_REQUEST['view'], $default_views ) ? $_REQUEST['view'] : apply_filters( 'peerraiser_campaign_admin_view', 'list', $_REQUEST['view'] );
+
+        // Assign data to the view
         $view_args = array(
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
             'list_table'           => new \PeerRaiser\Model\Admin\Campaign_List_Table(),
         );
-
         $this->assign( 'peerraiser', $view_args );
 
-        $this->render( 'backend/campaign-list' );
+        // Render the view
+        $this->render( 'backend/campaign-' . $view );
     }
 
     public function register_meta_boxes() {
@@ -50,10 +57,10 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         foreach ($campaign_field_groups as $field_group) {
             $cmb = new_cmb2_box( array(
                 'id'           => $field_group['id'],
-                'title'         => $field_group['title'],
-                'object_types'  => array( 'pr_campaign' ),
-                'context'       => $field_group['context'],
-                'priority'      => $field_group['priority'],
+                'title'        => $field_group['title'],
+                'object_types' => array( 'post' ),
+                'hookup'       => false,
+                'save_fields'  => false,
             ) );
             foreach ($field_group['fields'] as $key => $value) {
                 $cmb->add_field($value);
