@@ -13,26 +13,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     <hr class="wp-header-end">
 
     <form id="peerraiser-add-campaign" action="post">
-
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="postbox-container-1" class="postbox-container">
                     sidebar
                 </div>
                 <div id="postbox-container-2" class="postbox-container">
-                    <?php
-                    //$cmb = cmb2_get_metabox( 'peerraiser-campaign', 'peerraiser-campaign' );
-
-                    //echo "<pre>" . print_r( $cmb,1 ) . "</pre>";
-
-                    echo cmb2_get_metabox_form( 'peerraiser-campaign', 0, array( 'form_format' => '', ) );
-
-                    ?>
+                    <div id="normal-sortables" class="meta-box-sortables ui-sortable">
+                        <div id="campaign-options" class="postbox">
+                            <h2 class="hndle ui-sortable-handle"><span>Campaign Options</span></h2>
+                            <div class="inside">
+                                <?php echo cmb2_get_metabox_form( 'peerraiser-campaign', 0, array( 'form_format' => '', ) ); ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-
     </form>
-
 </div>
