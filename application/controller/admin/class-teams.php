@@ -8,9 +8,9 @@ class Teams extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
         add_action( 'admin_print_styles-post-new.php',    array( $this, 'load_assets' ) );
         add_action( 'admin_print_styles-post.php',        array( $this, 'load_assets' ) );
-        add_action( 'added_post_meta',                    array( $this, 'add_connections' ) );
-        add_action( 'update_post_meta',                   array( $this, 'update_connections' ) );
-        add_action( 'delete_post_meta',                   array( $this, 'delete_connections' ) );
+        // add_action( 'added_post_meta',                    array( $this, 'add_connections' ) );
+        // add_action( 'update_post_meta',                   array( $this, 'update_connections' ) );
+        // add_action( 'delete_post_meta',                   array( $this, 'delete_connections' ) );
         add_action( 'meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
     }
