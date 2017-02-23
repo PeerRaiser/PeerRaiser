@@ -11,8 +11,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
             array(
                 'title'    => __('Campaign Options', 'peerraiser'),
                 'id'       => 'peerraiser-campaign',
-                'context'  => 'normal',
-                'priority' => 'default',
                 'fields'   => array(
                     'campaign_start_date' => array(
                         'name'     => __( 'Start Date', 'peerraiser' ),
