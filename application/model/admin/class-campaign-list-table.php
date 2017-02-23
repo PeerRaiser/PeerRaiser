@@ -44,18 +44,24 @@ class Campaign_List_Table extends WP_List_Table {
     }
 
     /**
-     * [get_views description]
+     * Retrieve the view types
      *
-     * @since     1.0.0
-     * @return    [type]    [description]
+     * @access public
+     * @since 1.4
+     * @return array $views All the views available
      */
     public function get_views() {
-        $status_links = array(
-            'all'    => __( '<a href="#">All</a>', 'peerraiser' ),
-            'active' => __( '<a href="#">Active</a>', 'peerraiser' ),
-            'ended'  => __( '<a href="#">Ended</a>', 'peerraiser' ),
+        $base           = admin_url('admin.php?page=peerraiser-campaigns');
+
+        $current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
+
+        $views = array(
+            'all'      => sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( 'status', $base ), $current === 'all' || $current == '' ? ' class="current"' : '', __('All', 'peerraiser')),
+            'active'   => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'active', $base ), $current === 'active' ? ' class="current"' : '', __('Active', 'peerraiser')),
+            'ended' => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'ended', $base ), $current === 'ended' ? ' class="current"' : '', __('Ended', 'peerraiser')),
         );
-        return $status_links;
+
+        return $views;
     }
 
     public function current_action() {
