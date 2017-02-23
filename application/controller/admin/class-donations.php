@@ -11,9 +11,9 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'admin_print_styles-post.php',            array( $this, 'load_assets' ) );
         add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
         add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
-        add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
-        add_action( 'update_post_meta',                       array( $this, 'update_connections' ) );
-        add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
+        // add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
+        // add_action( 'update_post_meta',                       array( $this, 'update_connections' ) );
+        // add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
         add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
         add_action( 'peerraiser_new_donation',                array( $this, 'add_donation' ) );
         add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
