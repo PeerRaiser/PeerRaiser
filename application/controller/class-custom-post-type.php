@@ -48,7 +48,7 @@ class Custom_Post_Type extends Base {
 
         $args = array(
             'show_in_menu' => false,
-            'supports'     => array('title'),
+            'supports'     => array( 'title', 'editor' ),
             'rewrite'      => array(
                 'slug' => $fundraiser_slug
             ),
