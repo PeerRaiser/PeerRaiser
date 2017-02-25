@@ -5,16 +5,16 @@ namespace PeerRaiser\Controller\Admin;
 class Donations extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
-        add_action( 'cmb2_admin_init',                        array( $this, 'register_meta_boxes' ) );
-        add_action( 'do_meta_boxes',                          array( $this, 'maybe_remove_metabox' ) );
-        add_action( 'admin_print_styles-post-new.php',        array( $this, 'load_assets' ) );
-        add_action( 'admin_print_styles-post.php',            array( $this, 'load_assets' ) );
-        add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
-        add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
+        add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
+        add_action( 'do_meta_boxes',                        array( $this, 'maybe_remove_metabox' ) );
+        add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
+        add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'on_donations_view' ) );
+        // add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
+        // add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
         // add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
         // add_action( 'update_post_meta',                       array( $this, 'update_connections' ) );
         // add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
-        add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
+        // add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
         add_action( 'peerraiser_new_donation',                array( $this, 'add_donation' ) );
         add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
@@ -23,11 +23,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function load_assets() {
         parent::load_assets();
-
-        // If this isn't the Donation post type, exit early
-        global $post_type;
-        if ( 'pr_donation' != $post_type )
-            return;
 
         // Register and enqueue styles
         wp_register_style(
@@ -82,6 +77,13 @@ class Donations extends \PeerRaiser\Controller\Base {
         $currency        = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
+        $default_views = array( 'list', 'add', 'edit' );
+
+        // Get the correct view
+        $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
+        $view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donation_admin_view', 'list', $view );
+
+        // Assign data to the view
         $view_args = array(
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
@@ -91,7 +93,8 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $this->assign( 'peerraiser', $view_args );
 
-        $this->render( 'backend/donation-list' );
+        // Render the view
+        $this->render( 'backend/donation-' . $view );
     }
 
     public function register_meta_boxes() {
@@ -145,10 +148,8 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
     public function on_donations_view() {
-        global $typenow;
-
-        if ( $this->is_edit_page( 'new' ) && "pr_donation" == $typenow ) {
-            $message = __("A donor record is required. <a href=\"post-new.php?post_type=pr_donor\">Create one now</a> if it doesn't already exist");
+        if ( isset( $_REQUEST['view'] ) && $_REQUEST['view'] === 'add' ) {
+            $message = __("A donor record is required. <a href=\"admin.php?page=peerraiser-donors&view=add\">Create one now</a> if it doesn't already exist");
             \PeerRaiser\Controller\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
     }
