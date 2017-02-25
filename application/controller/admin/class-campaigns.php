@@ -34,7 +34,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         // Get the correct view
         $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
-        $view = in_array( $_REQUEST['view'], $default_views ) ? $_REQUEST['view'] : apply_filters( 'peerraiser_campaign_admin_view', 'list', $_REQUEST['view'] );
+        $view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_campaign_admin_view', 'list', $view );
 
         // Assign data to the view
         $view_args = array(
