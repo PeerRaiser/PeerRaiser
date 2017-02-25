@@ -47,6 +47,39 @@ class Donation_List_Table extends WP_List_Table {
     }
 
     /**
+     * Retrieve the view types
+     *
+     * @access public
+     * @since 1.4
+     * @return array $views All the views available
+     */
+    public function get_views() {
+        $base           = admin_url('admin.php?page=peerraiser-donations');
+
+        $current        = isset( $_GET['status'] ) ? $_GET['status'] : '';
+
+        $views = array(
+            'all'      => sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( 'status', $base ), $current === 'all' || $current == '' ? ' class="current"' : '', __('All', 'peerraiser')),
+            'completed'   => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'completed', $base ), $current === 'completed' ? ' class="current"' : '', __('Completed', 'peerraiser')),
+            'pending' => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'pending', $base ), $current === 'pending' ? ' class="current"' : '', __('Pending', 'peerraiser')),
+            'refunded' => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'refunded', $base ), $current === 'refunded' ? ' class="current"' : '', __('Refunded', 'peerraiser')),
+            'failed' => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'failed', $base ), $current === 'failed' ? ' class="current"' : '', __('Failed', 'peerraiser')),
+        );
+
+        return $views;
+    }
+
+    public function current_action() {
+        if ( isset( $_REQUEST['filter_action'] ) && ! empty( $_REQUEST['filter_action'] ) )
+            return false;
+
+        if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
+            return $_REQUEST['action'];
+
+        return false;
+    }
+
+    /**
      * Render a column when no column specific method exists.
      *
      * @param array $item
