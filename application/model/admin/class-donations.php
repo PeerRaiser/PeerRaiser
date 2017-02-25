@@ -10,7 +10,7 @@ class Donations extends \PeerRaiser\Model\Admin {
         $this->fields = array(
             array(
                 'title'    => __('Offline Donation', 'peerraiser'),
-                'id'       => 'offline-donation',
+                'id'       => 'peerraiser-offline-donation',
                 'context'  => 'normal',
                 'priority' => 'default',
                 'fields'   => array(
@@ -114,7 +114,6 @@ class Donations extends \PeerRaiser\Model\Admin {
 
         return $label;
     }
-
 
     public function get_selected_post( $field ) {
         // Empty array to fill with posts
