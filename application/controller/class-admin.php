@@ -64,6 +64,7 @@ class Admin extends Base {
                     $slug,
                     null
                 );
+                error_log( $page_id );
             }
 
             do_action( 'load-' . $page_id, 'peerraiser_load_' . $page_id );
