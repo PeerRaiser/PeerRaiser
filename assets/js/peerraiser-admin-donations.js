@@ -17,10 +17,8 @@
                 donor : {
                     data : function ( params ) {
                         return {
-                            action: 'peerraiser_get_posts',
-                            s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_donor']
+                            action: 'peerraiser_get_donors',
+                            s: params.term
                         };
                     },
                     templateResult : function(data) {
