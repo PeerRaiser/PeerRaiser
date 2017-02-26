@@ -8,19 +8,17 @@ namespace PeerRaiser\Controller;
 class Admin extends Base {
 
     public function register_actions() {
-        add_action( 'admin_menu',                   array( $this, 'add_to_admin_panel' ) );
-        add_action( 'admin_head',                   array( $this, 'on_campaigns_view' ) );
-        add_action( 'admin_print_footer_scripts',   array( $this, 'modify_footer' ) );
-        add_action( 'admin_enqueue_scripts',        array( $this, 'add_plugin_admin_assets' ) );
-        add_action( 'admin_enqueue_scripts',        array( $this, 'add_admin_pointers_script' ) );
-        add_action( 'admin_enqueue_scripts',        array( $this, 'register_admin_scripts' ) );
-        add_action( 'admin_enqueue_scripts',        array( $this, 'register_admin_styles' ) );
-        add_action( 'wp_ajax_peerraiser_get_posts', array( $this, 'ajax_get_posts' ) );
-        add_action( 'wp_ajax_peerraiser_get_posts', array( $this, 'peerraiser_on_ajax_send_json' ) );
-        add_action( 'wp_ajax_peerraiser_get_users', array( $this, 'ajax_get_users' ) );
-        add_action( 'wp_ajax_peerraiser_get_users', array( $this, 'peerraiser_on_ajax_send_json' ) );
-
-        add_filter( 'enter_title_here', array( $this, 'customize_title' ), 1 );
+        add_action( 'admin_menu',                     array( $this, 'add_to_admin_panel' ) );
+        add_action( 'admin_head',                     array( $this, 'on_campaigns_view' ) );
+        add_action( 'admin_print_footer_scripts',     array( $this, 'modify_footer' ) );
+        add_action( 'admin_enqueue_scripts',          array( $this, 'add_plugin_admin_assets' ) );
+        add_action( 'admin_enqueue_scripts',          array( $this, 'add_admin_pointers_script' ) );
+        add_action( 'admin_enqueue_scripts',          array( $this, 'register_admin_scripts' ) );
+        add_action( 'admin_enqueue_scripts',          array( $this, 'register_admin_styles' ) );
+        add_action( 'wp_ajax_peerraiser_get_posts',   array( $this, 'ajax_get_posts' ) );
+        add_action( 'wp_ajax_peerraiser_get_donors',  array( $this, 'ajax_get_donors' ) );
+        add_action( 'wp_ajax_peerraiser_get_users',   array( $this, 'ajax_get_users' ) );
+        add_filter( 'enter_title_here',               array( $this, 'customize_title' ), 1 );
     }
 
     /**
@@ -162,33 +160,6 @@ class Admin extends Base {
             case 'settings' :
                 $settings_controller = new \PeerRaiser\Controller\Admin\Settings( \PeerRaiser\Core\Setup::get_plugin_config() );
                 $settings_controller->render_page();
-                break;
-        }
-    }
-
-    /**
-     * Render contextual help, depending on the current page.
-     *
-     * @param string $tab
-     *
-     * @return void
-     */
-    public function help( $tab = '' ) {
-        switch ( $tab ) {
-            case 'wp_edit_post':
-            case 'wp_add_post':
-                $this->render_add_edit_post_page_help();
-                break;
-
-            case 'dashboard':
-                $this->render_dashboard_tab_help();
-                break;
-
-            // case 'appearance':
-            //     $this->render_appearance_tab_help();
-            //     break;
-
-            default:
                 break;
         }
     }
@@ -366,7 +337,28 @@ class Admin extends Base {
             'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
         );
 
-        $choices = \PeerRaiser\Helper\Field::get_choices( $_POST );
+        $choices = \PeerRaiser\Helper\Field::get_post_choices( $_POST );
+
+        echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
+
+        wp_die();
+    }
+
+    /**
+     * Retreives donors and creates <option>for select lists
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     *
+     * @return    array Data formatted for select2
+     */
+    public function ajax_get_donors() {
+        $data =  array(
+            'success' => false,
+            'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
+        );
+
+        $choices = \PeerRaiser\Helper\Field::get_donor_choices( $_POST );
 
         echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
 
