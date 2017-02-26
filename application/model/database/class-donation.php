@@ -92,57 +92,87 @@ class Donation extends Database {
 
         // specific donation
         if ( ! empty( $args['donation_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
             if ( is_array( $args['donation_id'] ) ) {
                 $donation_ids = implode( ',', $args['donation_id'] );
             } else {
                 $donation_ids = intval( $args['donation_id'] );
             }
 
-            $where .= "WHERE `donation_id` IN( {$donation_ids} ) ";
+            $where .= " `donation_id` IN( {$donation_ids} ) ";
         }
 
         // specific donor
         if ( ! empty( $args['donor_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
             if ( is_array( $args['donor_id'] ) ) {
                 $donor_ids = implode( ',', $args['donor_id'] );
             } else {
                 $donor_ids = intval( $args['donor_id'] );
             }
 
-            $where .= "WHERE `donor_id` IN( {$donor_ids} ) ";
+            $where .= " `donor_id` IN( {$donor_ids} ) ";
         }
 
         // specific campaign
         if ( ! empty( $args['campaign_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
             if ( is_array( $args['campaign_id'] ) ) {
                 $campaign_ids = implode( ',', $args['campaign_id'] );
             } else {
                 $campaign_ids = intval( $args['campaign_id'] );
             }
 
-            $where .= "WHERE `campaign_id` IN( {$campaign_ids} ) ";
+            $where .= " `campaign_id` IN( {$campaign_ids} ) ";
         }
 
         // specific team
         if ( ! empty( $args['team_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
             if ( is_array( $args['team_id'] ) ) {
                 $team_ids = implode( ',', $args['team_id'] );
             } else {
                 $team_ids = intval( $args['team_id'] );
             }
 
-            $where .= "WHERE `team_id` IN( {$team_ids} ) ";
+            $where .= " `team_id` IN( {$team_ids} ) ";
         }
 
         // specific fundraiser
         if ( ! empty( $args['fundraiser_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
             if ( is_array( $args['fundraiser_id'] ) ) {
                 $fundraiser_ids = implode( ',', $args['fundraiser_id'] );
             } else {
                 $fundraiser_ids = intval( $args['fundraiser_id'] );
             }
 
-            $where .= "WHERE `fundraiser_id` IN( {$fundraiser_ids} ) ";
+            $where .= " `fundraiser_id` IN( {$fundraiser_ids} ) ";
         }
 
 
