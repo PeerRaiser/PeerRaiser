@@ -14,16 +14,16 @@ class Field {
      * @param     array     $options
      * @return    array
      */
-    public static function get_choices( $options = array() ) {
+    public static function get_post_choices( $options = array() ) {
 
         // defaults
         $options = self::parse_args($options, array(
-            'post_id'       => 0,
-            's'             => '',
-            'lang'          => false,
-            'page'          => 1,
-            'post_type'     => '',
-            'taxonomy'      => '',
+            'post_id'   => 0,
+            's'         => '',
+            'lang'      => false,
+            'page'      => 1,
+            'post_type' => '',
+            'taxonomy'  => '',
         ));
 
         // vars
@@ -120,6 +120,47 @@ class Field {
 
         return $r;
 
+    }
+
+    public static function get_donor_choices( $options = array() ) {
+        global $wpdb;
+
+        // defaults
+        $options = self::parse_args($options, array(
+            's'             => false,
+            'page'          => 1,
+            'number'        => 20,
+            'offset'        => 0,
+        ));
+
+        $table_name = $wpdb->prefix . 'pr_donors';
+
+        if ( $options['s'] ) {
+            $prepared = $wpdb->prepare(
+                "SELECT * FROM {$table_name} WHERE donor_name LIKE %s ORDER BY donor_name DESC LIMIT %d, %d;",
+                '%' . $wpdb->esc_like($options['s']) . '%',
+                absint( $options['offset'] ),
+                absint( $options['number'] )
+            );
+        } else {
+            $prepared = $wpdb->prepare(
+                "SELECT * FROM {$table_name} ORDER BY donor_name DESC LIMIT %d, %d;",
+                absint( $options['offset'] ),
+                absint( $options['number'] )
+            );
+        }
+
+        $results = $wpdb->get_results( $prepared );
+        $options = array();
+
+        foreach( $results as $result ) {
+            $options[] = array(
+                'text' => $result->donor_name,
+                'id'    => $result->donor_id,
+            );
+        }
+
+        return $options;
     }
 
    /**
@@ -782,6 +823,5 @@ class Field {
 
         return $ordeby;
     }
-
 
 }
