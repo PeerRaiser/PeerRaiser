@@ -287,6 +287,7 @@ class Donor extends Database {
 
         $sql = "CREATE TABLE " . $this->table_name . " (
         donor_id bigint(20) NOT NULL AUTO_INCREMENT,
+        donor_name text NOT NULL,
         user_id bigint(20) NOT NULL DEFAULT 0,
         date datetime NOT NULL,
         PRIMARY KEY  (donor_id)
