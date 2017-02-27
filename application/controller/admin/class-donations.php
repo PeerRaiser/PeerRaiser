@@ -19,6 +19,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
+        add_action( 'admin_post_peerraiser_add_donation',     array( $this, 'handle_add_donation' ) );
     }
 
     public function load_assets() {
@@ -466,6 +467,19 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function delete_transient() {
         delete_transient( 'peerraiser_donations_total' );
+    }
+
+    public function handle_add_donation() {
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_donation_nonce' ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
+
+        echo $_REQUEST['_wpnonce'];exit;
+
+        $donation = new \PeerRaiser\Model\Database\Donation();
+        $donation_id = $donation->add_donation( $_REQUEST );
+
+        error_log( $donation_id );
     }
 
     private function make_donation_title( $data ) {
