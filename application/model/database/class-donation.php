@@ -49,11 +49,14 @@ class Donation extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donation_id' => 0,
-            'amount'      => '',
-            'ip'          => '',
-            'status'      => '',
-            'date'        => date( 'Y-m-d H:i:s' ),
+            'donor_id'      => 0,
+            'campaign_id'   => 0,
+            'team_id'       => 0,
+            'fundraiser_id' => 0,
+            'amount'        => 0.00,
+            'ip'            => '',
+            'status'        => 'completed',
+            'date'          => date( 'Y-m-d H:i:s' ),
         );
     }
 
@@ -304,6 +307,35 @@ class Donation extends Database {
     }
 
     /**
+     * Check if table exists
+     *
+     * @since     1.0.4
+     * @return    bool    True if table exists, false if it doesn't
+     */
+    public function table_exists( $table_name = '' ) {
+        return parent::table_exists( $this->table_name );
+    }
+
+    public function add_donation( $args = array() ) {
+        global $wpdb;
+
+        $data = array(
+            'donor_id'      => isset( $args['_donor_id'] ) ? absint( isset( $args['_donor_id'] ) ) : 0,
+            'campaign_id'   => isset( $args['_campaign_id'] ) ? absint( isset( $args['_campaign_id'] ) ) : 0,
+            'team_id'       => 0,
+            'fundraiser_id' => isset( $args['_fundraiser_id'] ) ? absint( isset( $args['_fundraiser_id'] ) ) : 0,
+            'amount'        => isset( $args['_donation_amount'] ) ? floatval( isset( $args['_donation_amount'] ) ) : 0,
+            'ip'            => 0,
+            'status'        => isset( $args['_donation_status'] ) ? absint( isset( $args['_donation_status'] ) ) : 'completed',
+            'date'          => isset( $args['_donation_date'] ) ? absint( isset( $args['_donation_date'] ) ) : current_time( 'mysql' ),
+        );
+
+        $this->insert( $data );
+
+        return $wpdb->insert_id;
+    }
+
+    /**
      * Create the table
      *
      * @access  public
@@ -331,15 +363,5 @@ class Donation extends Database {
         dbDelta( $sql );
 
         update_option( $this->table_name . '_db_version', $this->version );
-    }
-
-    /**
-     * Check if table exists
-     *
-     * @since     1.0.4
-     * @return    bool    True if table exists, false if it doesn't
-     */
-    public function table_exists( $table_name = '' ) {
-        return parent::table_exists( $this->table_name );
     }
 }
