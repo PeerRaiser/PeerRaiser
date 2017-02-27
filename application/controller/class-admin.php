@@ -8,17 +8,18 @@ namespace PeerRaiser\Controller;
 class Admin extends Base {
 
     public function register_actions() {
-        add_action( 'admin_menu',                     array( $this, 'add_to_admin_panel' ) );
-        add_action( 'admin_head',                     array( $this, 'on_campaigns_view' ) );
-        add_action( 'admin_print_footer_scripts',     array( $this, 'modify_footer' ) );
-        add_action( 'admin_enqueue_scripts',          array( $this, 'add_plugin_admin_assets' ) );
-        add_action( 'admin_enqueue_scripts',          array( $this, 'add_admin_pointers_script' ) );
-        add_action( 'admin_enqueue_scripts',          array( $this, 'register_admin_scripts' ) );
-        add_action( 'admin_enqueue_scripts',          array( $this, 'register_admin_styles' ) );
-        add_action( 'wp_ajax_peerraiser_get_posts',   array( $this, 'ajax_get_posts' ) );
-        add_action( 'wp_ajax_peerraiser_get_donors',  array( $this, 'ajax_get_donors' ) );
-        add_action( 'wp_ajax_peerraiser_get_users',   array( $this, 'ajax_get_users' ) );
-        add_filter( 'enter_title_here',               array( $this, 'customize_title' ), 1 );
+        add_action( 'admin_menu',                        array( $this, 'add_to_admin_panel' ) );
+        add_action( 'admin_head',                        array( $this, 'on_campaigns_view' ) );
+        add_action( 'admin_print_footer_scripts',        array( $this, 'modify_footer' ) );
+        add_action( 'admin_enqueue_scripts',             array( $this, 'add_plugin_admin_assets' ) );
+        add_action( 'admin_enqueue_scripts',             array( $this, 'add_admin_pointers_script' ) );
+        add_action( 'admin_enqueue_scripts',             array( $this, 'register_admin_scripts' ) );
+        add_action( 'admin_enqueue_scripts',             array( $this, 'register_admin_styles' ) );
+        add_action( 'wp_ajax_peerraiser_get_posts',      array( $this, 'ajax_get_posts' ) );
+        add_action( 'wp_ajax_peerraiser_get_donors',     array( $this, 'ajax_get_donors' ) );
+        add_action( 'wp_ajax_peerraiser_get_campaigns',  array( $this, 'ajax_get_campaigns' ) );
+        add_action( 'wp_ajax_peerraiser_get_users',      array( $this, 'ajax_get_users' ) );
+        add_filter( 'enter_title_here',                  array( $this, 'customize_title' ), 1 );
     }
 
     /**
@@ -324,7 +325,7 @@ class Admin extends Base {
 
 
     /**
-     * Retreive posts and creates <option>for select lists
+     * Retreive posts and creates <option> for select lists
      *
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
@@ -345,7 +346,7 @@ class Admin extends Base {
     }
 
     /**
-     * Retreives donors and creates <option>for select lists
+     * Retreives donors and creates <option> for select lists
      *
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
@@ -353,11 +354,6 @@ class Admin extends Base {
      * @return    array Data formatted for select2
      */
     public function ajax_get_donors() {
-        $data =  array(
-            'success' => false,
-            'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
-        );
-
         $choices = \PeerRaiser\Helper\Field::get_donor_choices( $_POST );
 
         echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
@@ -365,15 +361,23 @@ class Admin extends Base {
         wp_die();
     }
 
+    /**
+     * Retreives campaigns and creates <option> for select lists
+     *
+     * @since     1.0.0
+     * @param     \PeerRaiser\Core\Event    $event
+     *
+     * @return    array Data formatted for select2
+     */
+    public function ajax_get_campaigns() {
+        $choices = \PeerRaiser\Helper\Field::get_campaign_choices( $_POST );
+
+        echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
+
+        wp_die();
+    }
 
     public function ajax_get_users() {
-        $event->set_result(
-            array(
-                'success' => false,
-                'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
-            )
-        );
-
         $count_args  = array(
             'number'    => 999999
         );
