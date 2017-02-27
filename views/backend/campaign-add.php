@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <h1 class="wp-heading-inline"><?php _e( 'Add New Campaign', 'peerraiser' ); ?></h1>
     <hr class="wp-header-end">
 
-    <form id="peerraiser-add-campaign" action="post">
+    <form id="peerraiser-add-campaign" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="postbox-container-1" class="postbox-container">
@@ -65,6 +65,6 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
         <?php wp_nonce_field( 'peerraiser_add_campaign_nonce' ); ?>
-        <input type="hidden" name="peerraiser_action" value="add_campaign">
+        <input type="hidden" name="action" value="peerraiser_add_campaign">
     </form>
 </div>
