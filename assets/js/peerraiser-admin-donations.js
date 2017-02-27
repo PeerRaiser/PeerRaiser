@@ -18,7 +18,8 @@
                     data : function ( params ) {
                         return {
                             action: 'peerraiser_get_donors',
-                            s: params.term
+                            s: params.term,
+                            page: params.page
                         };
                     },
                     templateResult : function(data) {
@@ -39,10 +40,9 @@
                 campaign : {
                     data : function ( params ) {
                         return {
-                            action: 'peerraiser_get_posts',
+                            action: 'peerraiser_get_campaigns',
                             s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_campaign']
+                            page: params.page
                         };
                     },
                     templateResult : function(data) {
@@ -108,8 +108,8 @@
                             s: params.term,
                             page: params.page,
                             post_type  : ['fundraiser'],
-                            connected_type : 'campaign_to_fundraiser',
-                            connected_items : id
+                            taxonomy : ['peerraiser_campaign:'+id],
+                            term_id : id
                         };
                     };
                     $o.select2Fields.fundraiser.renderSelect($o.select2Options.fundraiser);
