@@ -41,8 +41,8 @@ class Taxonomy extends Base {
         $args = array(
             'hierarchical'          => false,
             'labels'                => $labels,
-            'show_ui'               => false,
-            'show_admin_column'     => false,
+            'show_ui'               => true,
+            'show_admin_column'     => true,
             'update_count_callback' => '_update_post_term_count',
             'query_var'             => true
         );
