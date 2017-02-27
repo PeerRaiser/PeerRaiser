@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Helper;
 
+use \WP_Term_Query;
+
 /**
  * Helper class for field data.
  */
@@ -34,9 +36,8 @@ class Field {
         $args['posts_per_page'] = 20;
         $args['paged'] = $options['page'];
 
-        if ( isset($options['connected_type']) && isset($options['connected_items']) ) {
-            $args['connected_type'] = $options['connected_type'];
-            $args['connected_items'] = $options['connected_items'];
+        if ( isset($options['taxonomy']) && isset($options['term_id']) ) {
+
         }
 
         // update $args
@@ -60,7 +61,7 @@ class Field {
 
                 $args['tax_query'][] = array(
                     'taxonomy'  => $taxonomy,
-                    'field'     => 'slug',
+                    'field'     => 'id',
                     'terms'     => $terms,
                 );
 
@@ -137,14 +138,14 @@ class Field {
 
         if ( $options['s'] ) {
             $prepared = $wpdb->prepare(
-                "SELECT * FROM {$table_name} WHERE donor_name LIKE %s ORDER BY donor_name DESC LIMIT %d, %d;",
+                "SELECT * FROM {$table_name} WHERE donor_name LIKE %s ORDER BY donor_id ASC LIMIT %d, %d;",
                 '%' . $wpdb->esc_like($options['s']) . '%',
                 absint( $options['offset'] ),
                 absint( $options['number'] )
             );
         } else {
             $prepared = $wpdb->prepare(
-                "SELECT * FROM {$table_name} ORDER BY donor_name DESC LIMIT %d, %d;",
+                "SELECT * FROM {$table_name} ORDER BY donor_id ASC LIMIT %d, %d;",
                 absint( $options['offset'] ),
                 absint( $options['number'] )
             );
@@ -156,7 +157,50 @@ class Field {
         foreach( $results as $result ) {
             $options[] = array(
                 'text' => $result->donor_name,
-                'id'    => $result->donor_id,
+                'id'   => $result->donor_id,
+            );
+        }
+
+        return $options;
+    }
+
+    public static function get_campaign_choices( $options = array() ) {
+        global $wpdb;
+
+        // defaults
+        $options = self::parse_args($options, array(
+            's'             => false,
+            'page'          => 1,
+            'number'        => 20,
+            'offset'        => 0,
+        ));
+
+        $args = array(
+            'taxonomy'   => array( 'peerraiser_campaign' ),
+            'number'     => $options['number'],
+            'order'      => 'ASC',
+            'orderby'    => 'id',
+            'hide_empty' => false
+        );
+
+        if ( $options['s'] ) {
+            $args['name__like'] = $options['s'];
+        }
+
+        if ( absint( $options['page'] ) > 1 ) {
+            $args['offset'] = ( $options['page'] - 1 ) * $options['number'];
+        }
+
+        $term_query = new WP_Term_Query( $args );
+
+        $options = array();
+
+        $terms = $term_query->get_terms();
+
+        foreach( $term_query->get_terms() as $term ) {
+            $options[] = array(
+                'text' => $term->name,
+                'id'   => $term->term_id,
             );
         }
 
