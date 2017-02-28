@@ -474,72 +474,23 @@ class Donations extends \PeerRaiser\Controller\Base {
             die( __('Security check failed.', 'peerraiser' ) );
         }
 
-        echo $_REQUEST['_wpnonce'];exit;
+        if ( ! $this->is_valid_donation() ) {
+            die( __('Form is invalid.', 'peerraiser' ) );
+        }
 
         $donation = new \PeerRaiser\Model\Database\Donation();
-        $donation_id = $donation->add_donation( $_REQUEST );
+        //$donation_id = $donation->add_donation( $_REQUEST );
 
         error_log( $donation_id );
     }
 
-    private function make_donation_title( $data ) {
-        return ( isset( $data['donor_name'] ) ) ? $data['donor_name'] : 'Donation';
-    }
+    private function is_valid_donation() {
+        $required_fields = array( '_donor', '_donation_amount', '_campaign', '_donation_status', '_donation_type' );
 
-    private function is_existing_donation( $key ) {
-        $query_args = array(
-            'post_type'  => 'pr_donation',
-            'meta_query' => array(
-                array(
-                    'key' => '_transaction_key',
-                    'value' => $key,
-                ),
-            )
-        );
-        $donation_query = new \WP_Query( $query_args );
-        return ( $donation_query->found_posts > 0 );
-    }
-
-    private function get_donor_by_email( $email ) {
-        $query_args = array(
-            'post_type'  => 'pr_donor',
-            'meta_query' => array(
-                array(
-                    'key' => '_donor_email',
-                    'value' => $email,
-                ),
-            )
-        );
-        $donor_query = new \WP_Query( $query_args );
-
-        if ( $donor_query->found_posts == 0 ) {
-            return false;
-        }
-
-        $donors = $donor_query->get_posts();
-        return $donors[0];
-
-    }
-
-    private function add_donor( $data ) {
-        $name = ( isset($data['first_name']) && isset($data['last_name']) ) ? $data['first_name'] . ' ' . $data['last_name'] : 'Anonymous';
-        $donor_args = array(
-            'post_type'    => 'pr_donor',
-            'post_title'   => $name,
-            'post_content' => '',
-            'post_status'  => 'publish',
-            'post_author'  => 1,
-        );
-
-        return wp_insert_post( $donor_args );
-    }
-
-    private function is_valid_donation( $fields ) {
-        $required_fields = array( 'date', 'payment_method', 'transaction_key', 'ip_address', 'test_mode', 'amount', 'campaign_id', 'email' );
-
-        foreach ($fields as $key => $value) {
-            if ( !in_array($key, $required_fields) )
+        foreach ($_REQUEST as $key => $value) {
+            if ( ! in_array( $key, $required_fields ) ) {
                 return false;
+            }
         }
 
         return true;
