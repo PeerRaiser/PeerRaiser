@@ -35,7 +35,10 @@ class Donation_List_Table extends WP_List_Table {
         // create a nonce
         $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation' );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $item['name'] . '</a></strong>';
+        $donor = new \PeerRaiser\Model\Database\Donor();
+        $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
+
+        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $donor[0]->donor_name . '</a></strong>';
 
         // $actions = array(
         //     'delete' => sprintf( '<a href="?page=%s&action=%s&donation=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce )
@@ -89,6 +92,8 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function column_default( $item, $column_name ) {
         switch ( $column_name ) {
+            case 'donation_id':
+                return $item[ $column_name ];
             case 'amount':
                 return empty( $item[ $column_name ] ) ? '$0.00' : '$'. number_format( $item[ $column_name ], 2 );
             case 'date':
@@ -108,7 +113,7 @@ class Donation_List_Table extends WP_List_Table {
      */
     function column_cb( $item ) {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['ID']
+            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['donation_id']
         );
     }
 
@@ -119,10 +124,11 @@ class Donation_List_Table extends WP_List_Table {
      */
     function get_columns() {
         $columns = array(
-            'cb'     => '<input type="checkbox" />',
-            'name'   => __( 'Name', 'peerraiser' ),
-            'amount' => __( 'Amount', 'peerraiser' ),
-            'date'   => __( 'Date', 'peerraiser' ),
+            'cb'           => '<input type="checkbox" />',
+            'donation_id'  => __( 'ID', 'peerraiser' ),
+            'name'         => __( 'Name', 'peerraiser' ),
+            'amount'       => __( 'Amount', 'peerraiser' ),
+            'date'         => __( 'Date', 'peerraiser' ),
         );
 
       return $columns;
@@ -135,9 +141,9 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'name'   => array( 'name', true ),
-            'amount' => array( 'amount', false ),
-            'date'   => array( 'date', false ),
+            'donation_id' => array( 'id', true ),
+            'amount'      => array( 'amount', false ),
+            'date'        => array( 'date', false ),
         );
 
         return $sortable_columns;
@@ -162,7 +168,7 @@ class Donation_List_Table extends WP_List_Table {
     public function prepare_items() {
 
         $columns = $this->get_columns();
-        $hidden = array( 'donation_id' );
+        $hidden = array();
         $sortable = $this->get_sortable_columns();
         $this->_column_headers = array( $columns, $hidden, $sortable );
 
