@@ -38,7 +38,7 @@ class Donation_List_Table extends WP_List_Table {
         $donor = new \PeerRaiser\Model\Database\Donor();
         $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $donor[0]->donor_name . '</a></strong>';
+        $title = '<a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $donor[0]->donor_name . '</a>';
 
         // $actions = array(
         //     'delete' => sprintf( '<a href="?page=%s&action=%s&donation=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce )
@@ -99,6 +99,8 @@ class Donation_List_Table extends WP_List_Table {
             case 'date':
                 $date = strtotime( $item[ $column_name ] );
                 return date('m-d-Y', $date);
+            case 'status':
+                return ucfirst( $item[ $column_name ] );
             default:
                 return print_r( $item, true ); //Show the whole array for troubleshooting purposes
         }
@@ -129,6 +131,7 @@ class Donation_List_Table extends WP_List_Table {
             'name'         => __( 'Name', 'peerraiser' ),
             'amount'       => __( 'Amount', 'peerraiser' ),
             'date'         => __( 'Date', 'peerraiser' ),
+            'status'       => __( 'Status', 'peerraiser' ),
         );
 
       return $columns;
