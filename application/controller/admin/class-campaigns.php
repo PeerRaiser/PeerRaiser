@@ -11,7 +11,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         // add_action( 'added_post_meta',                          array( $this, 'add_connections' ) );
         // add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
         // add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
-        add_action( 'cmb2_save_post_fields',                    array( $this, 'update_field_data' ) );
+        add_action( 'cmb2_save_post_fields',                    array( $this, 'maybe_set_start_date' ) );
         add_action( 'manage_pr_campaign_posts_custom_column',   array( $this, 'manage_columns' ) );
         add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, 'sort_columns' ) );
         add_action( 'pre_get_posts',                            array( $this, 'add_sort_type' ) );
@@ -125,6 +125,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @since    1.0.0
      * @param    \PeerRaiser\Core\Event    $event
      * @return   null
+     * @todo  Remove or modify this
      */
     public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
@@ -154,6 +155,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
      * @return    null
+     * @todo  Remove or modify this
      */
     public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
@@ -193,6 +195,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
      * @return    null
+     * @todo  Remove or modify this
      */
     public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_campaign_participants' );
@@ -218,14 +221,18 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
-    public function update_field_data( $object_id, $cmb_id, $updated, $cmb ) {
+    /**
+     * Maybe set start date
+     *
+     * If the start date isn't set, set it to today's date.
+     *
+     * @todo  Maybe add check to make sure this is the campaign taxonomy being updated
+     */
+    public function maybe_set_start_date( $object_id, $cmb_id, $updated, $cmb ) {
         $post_type = get_post_type($object_id);
 
-        if ( $post_type !== 'pr_campaign' )
-            return;
-
-        $start_date = get_post_meta( $object_id, '_peerraiser_campaign_start_date', true );
-        $post_status = get_post_status( $object_id );
+        $start_date     = get_post_meta( $object_id, '_peerraiser_campaign_start_date', true );
+        $post_status    = get_post_status( $object_id );
         $allowed_status = array( 'publish', 'future', 'private');
 
         if ( empty( $start_date ) && in_array($post_status, $allowed_status) ) {
@@ -235,6 +242,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         }
     }
 
+    /**
+     * Manage Columns
+     *
+     * @todo     Remove this or move it to the campaign list table model
+     */
     public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
@@ -274,6 +286,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         }
     }
 
+    /**
+     * Sort Columns
+     *
+     * @todo     Remove this or move it to the campaign list table model
+     */
     public function sort_columns( $sortable_columns ){
 
         $sortable_columns['start_date'] = 'campaign_start_date';
@@ -282,6 +299,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $event->set_result( $sortable_columns );
     }
 
+    /**
+     * Add Sort Type
+     *
+     * @todo     Remove this or move it to the campaign list table model
+     */
     public function add_sort_type( $query ){
 
         if ( ! is_admin() )
@@ -326,6 +348,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
+    /**
+     * Remove date filter
+     *
+     * @todo     Remove this or move it to the campaign list table model
+     */
     public function remove_date_filter(){
         $screen = get_current_screen();
 
@@ -335,6 +362,12 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     }
 
+
+    /**
+     * Get Total Fundraisers
+     *
+     * @todo Remove this or move it to the fundraiser model
+     */
     public function get_total_fundraisers( $campaign_id ) {
         $args = array(
             'post_type' => 'fundraiser',
@@ -346,6 +379,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return $fundraisers->found_posts;
     }
 
+    /**
+     * Get total teams
+     *
+     * @todo Remove this or move to the teams model
+     */
     public function get_total_teams( $campaign_id ) {
         $args = array(
             'post_type' => 'fundraiser',
@@ -357,6 +395,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return $teams->found_posts;
     }
 
+    /**
+     * Get total donations
+     *
+     * @todo Remove this or move it to the donations model
+     */
     public function get_total_donations( $campaign_id ) {
         $args = array(
             'post_type' => 'fundraiser',
@@ -368,6 +411,11 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         return $donations->found_posts;
     }
 
+    /**
+     * Add Meta Boxes
+     *
+     * @since    1.0.0
+     */
     public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
             return;
