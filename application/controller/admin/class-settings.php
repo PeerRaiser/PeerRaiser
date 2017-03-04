@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Settings extends Base {
+class Settings extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'ajax_update_settings' ) );

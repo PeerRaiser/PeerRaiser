@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Dashboard  extends Base {
+class Dashboard extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'wp_ajax_peerraiser_dismiss_message',              array( $this, 'process_dismiss_message_request' ) );
