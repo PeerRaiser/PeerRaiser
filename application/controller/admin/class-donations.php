@@ -151,7 +151,7 @@ class Donations extends \PeerRaiser\Controller\Base {
     public function on_donations_view() {
         if ( isset( $_REQUEST['view'] ) && $_REQUEST['view'] === 'add' ) {
             $message = __("A donor record is required. <a href=\"admin.php?page=peerraiser-donors&view=add\">Create one now</a> if it doesn't already exist");
-            \PeerRaiser\Controller\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
+            \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
     }
 
