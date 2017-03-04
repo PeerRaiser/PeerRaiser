@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Fundraisers extends Base {
+class Fundraisers extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                       array( $this, 'register_meta_boxes' ) );
