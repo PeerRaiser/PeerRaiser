@@ -65,6 +65,6 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
         <?php wp_nonce_field( 'peerraiser_add_campaign_nonce' ); ?>
-        <input type="hidden" name="action" value="peerraiser_add_campaign">
+        <input type="hidden" name="peerraiser_action" value="add_campaign">
     </form>
 </div>
