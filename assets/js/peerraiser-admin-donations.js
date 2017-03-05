@@ -3,6 +3,17 @@
 
     function peerRaiserAdminDonations(){
         var $o = {
+            donationStatusContainer : $('.misc-pub-section.donation-status'),
+            donationTypeContainer   : $('.misc-pub-section.donation-type'),
+            editDonationStatus      : $('.edit-donation-status'),
+            editDonationType        : $('.edit-donation-type'),
+            donationStatusSelect    : $('#donation-status-select'),
+            donationTypeSelect      : $('#donation-type-select'),
+            donationStatusCancel    : $('#donation-status-select .cancel'),
+            donationTypeCancel      : $('#donation-type-select .cancel'),
+            donationStatusSave      : $('#donation-status-select .save'),
+            donationTypeSave        : $('#donation-type-select .save'),
+
             select2Fields : {
                 donor      : $("#_donor"),
                 campaign   : $("#_campaign"),
@@ -91,6 +102,7 @@
         },
 
         bindEvents = function() {
+            // Show/hide the fundraiser if campaign selected or not
             $o.select2Fields.campaign.on('change', function(){
                 var id = $(this).val();
                 if ( id !== null ) {
@@ -111,6 +123,78 @@
                 } else {
                     $o.select2Fields.fundraiser.prop('disabled', 'disabled');
                 }
+            });
+
+            // Edit Donation Status
+            $o.editDonationStatus.on('click', function(e){
+                e.preventDefault();
+
+                $(this).hide();
+                $o.donationStatusSelect.slideDown('fast');
+            });
+
+            // Cancel Edit Donation Status
+            $o.donationStatusCancel.on('click', function(e){
+                e.preventDefault();
+
+                $o.donationStatusSelect.slideUp('fast', function(){
+                    $o.editDonationStatus.show();
+                });
+
+                var value = $o.donationStatusSelect.find('input[type=hidden]').val();
+
+                $o.donationStatusSelect.find('select option[value="'+value+'"]').attr('selected', true);
+            });
+
+            // Save Edit Donation Status
+            $o.donationStatusSave.on('click', function(e){
+                e.preventDefault();
+
+                $o.donationStatusSelect.slideUp('fast', function(){
+                    $o.editDonationStatus.show();
+                });
+
+                var value = $o.donationStatusSelect.find('select option:selected').val(),
+                    label = $o.donationStatusSelect.find('select option:selected').text();
+
+                $o.donationStatusSelect.find('input[type=hidden]').val( value );
+                $o.donationStatusContainer.find('strong').text( label );
+            });
+
+            // Edit Donation Type
+            $o.editDonationType.on('click', function(e){
+                e.preventDefault();
+
+                $(this).hide();
+                $o.donationTypeSelect.slideDown('fast');
+            });
+
+            // Cancel Edit Donation Type
+            $o.donationTypeCancel.on('click', function(e){
+                e.preventDefault();
+
+                $o.donationTypeSelect.slideUp('fast', function(){
+                    $o.editDonationType.show();
+                });
+
+                var value = $o.donationTypeSelect.find('input[type=hidden]').val();
+
+                $o.donationTypeSelect.find('select option[value="'+value+'"]').attr('selected', true);
+            });
+
+            // Save Edit Donation Type
+            $o.donationTypeSave.on('click', function(e){
+                e.preventDefault();
+
+                $o.donationTypeSelect.slideUp('fast', function(){
+                    $o.editDonationType.show();
+                });
+
+                var value = $o.donationTypeSelect.find('select option:selected').val(),
+                    label = $o.donationTypeSelect.find('select option:selected').text();
+
+                $o.donationTypeSelect.find('input[type=hidden]').val( value );
+                $o.donationTypeContainer.find('strong').text( label );
             });
         },
 
