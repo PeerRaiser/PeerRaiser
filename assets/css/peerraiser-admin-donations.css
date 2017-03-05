@@ -24,7 +24,7 @@
 #submitpost .donation-info > div .label{
     display: block;
 }
-#submitpost .donation-info > div .label:before {
+.peerraiser-form .misc-pub-section:before {
     width: 1.28571429em;
     text-align: center;
     display: inline-block;
@@ -38,11 +38,23 @@
     vertical-align: bottom;
     color: #82878c;
 }
-#submitpost .donation-info > div.donation-date .label:before {
-    content: "\f073";
+.peerraiser-form .misc-pub-section.donation-status:before {
+    content: "\f059";
 }
-#submitpost .donation-info > div.donation-method .label:before {
+.peerraiser-form .misc-pub-section.donation-status.completed:before {
+    content: "\f058";
+}
+.peerraiser-form .misc-pub-section.donation-status.pending:before {
+    content: "\f017";
+}
+.peerraiser-form .misc-pub-section.donation-status.failed:before {
+    content: "\f057";
+}
+.peerraiser-form .misc-pub-section.donation-type:before {
     content: "\f09d";
+}
+/*#submitpost .donation-info > div.donation-date .label:before {
+    content: "\f073";
 }
 #submitpost .donation-info > div.donation-key .label:before {
     content: "\f084";
@@ -52,7 +64,7 @@
 }
 #submitpost .donation-info > div.is-test-mode .label:before {
     content: "\f0c3";
-}
+}*/
 #submitpost .donation-info > div strong,
 #submitpost .donation-info > div select,
 #submitpost .donation-info > div input {
