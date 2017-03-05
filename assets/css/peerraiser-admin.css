@@ -23,6 +23,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+/* Form Styles */
+.peerraiser-metabox h2 {
+  border-bottom: 1px solid #eee;
+}
+/* Button Styles */
 .ladd-button {
     line-height: 1em;
 }
