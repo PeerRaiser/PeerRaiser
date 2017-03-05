@@ -13,7 +13,7 @@ class Admin_Notices {
     public static function add_notice( $message, $class = 'notice-info', $dismissible = false) {
         $notice = array(
             'message' => $message,
-            'class' => $class,
+            'class' => $class, // notice-error, notice-warning, or notice-info
             'is-dismissible' => $dismissible
         );
         array_push(self::$notices, $notice);
