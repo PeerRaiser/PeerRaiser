@@ -6,9 +6,8 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
-        add_action( 'do_meta_boxes',                        array( $this, 'maybe_remove_metabox' ) );
         add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
-        add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'on_donations_view' ) );
+        add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
         // add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
         // add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
         // add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
@@ -19,7 +18,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
-        add_action( 'admin_post_peerraiser_add_donation',     array( $this, 'handle_add_donation' ) );
+        add_action( 'peerraiser_add_donation',                array( $this, 'handle_add_donation' ) );
     }
 
     public function load_assets() {
@@ -118,12 +117,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     }
 
-    public function maybe_remove_metabox() {
-        // Only display fields on a "new" donations, not existing ones
-        if ( $this->is_edit_page( 'edit' ) )
-            remove_meta_box( 'offline-donation', 'pr_donation', 'normal' );
-    }
-
     public function replace_submit_box() {
         remove_meta_box('submitdiv', 'pr_donation', 'core');
         add_meta_box('submitdiv', __('Donation'), array( $this, 'get_submit_box'), 'pr_donation', 'side', 'low');
@@ -149,7 +142,7 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
     public function on_donations_view() {
-        if ( isset( $_REQUEST['view'] ) && $_REQUEST['view'] === 'add' ) {
+        if ( isset( $_REQUEST['page'], $_REQUEST['view'] ) && $_REQUEST['page'] === 'peerraiser-donations' && $_REQUEST['view'] === 'add' ) {
             $message = __("A donor record is required. <a href=\"admin.php?page=peerraiser-donors&view=add\">Create one now</a> if it doesn't already exist");
             \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
@@ -474,25 +467,48 @@ class Donations extends \PeerRaiser\Controller\Base {
             die( __('Security check failed.', 'peerraiser' ) );
         }
 
-        if ( ! $this->is_valid_donation() ) {
-            die( __('Form is invalid.', 'peerraiser' ) );
+        $validation = $this->is_valid_donation();
+        if ( ! $validation['is_valid'] ) {
+            return;
         }
 
         $donation = new \PeerRaiser\Model\Database\Donation();
         //$donation_id = $donation->add_donation( $_REQUEST );
-
-        error_log( $donation_id );
     }
 
+    /**
+     * Checks if the fields are valid
+     *
+     * @since     1.0.0
+     * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+     */
     private function is_valid_donation() {
         $required_fields = array( '_donor', '_donation_amount', '_campaign', '_donation_status', '_donation_type' );
 
-        foreach ($_REQUEST as $key => $value) {
-            if ( ! in_array( $key, $required_fields ) ) {
-                return false;
+        $data = array(
+            'is_valid'     => true,
+            'field_errors' => array(),
+        );
+
+        foreach ( $required_fields as $field ) {
+            if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+                $data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
             }
         }
 
-        return true;
+        if ( ! empty( $data['field_errors'] ) ) {
+            $message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
+            \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $message, 'notice-error', true );
+
+            wp_localize_script(
+                'jquery',
+                'peerraiser_field_errors',
+                $data['field_errors']
+            );
+
+            $data['is_valid'] = false;
+        }
+
+        return $data;
     }
 }
