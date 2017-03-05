@@ -8,6 +8,7 @@ namespace PeerRaiser\Controller;
 class Admin extends Base {
 
     public function register_actions() {
+        add_action( 'admin_init',                        array( $this, 'handle_peerraiser_actions' ) );
         add_action( 'admin_menu',                        array( $this, 'add_to_admin_panel' ) );
         add_action( 'admin_head',                        array( $this, 'on_campaigns_view' ) );
         add_action( 'admin_print_footer_scripts',        array( $this, 'modify_footer' ) );
@@ -20,6 +21,12 @@ class Admin extends Base {
         add_action( 'wp_ajax_peerraiser_get_campaigns',  array( $this, 'ajax_get_campaigns' ) );
         add_action( 'wp_ajax_peerraiser_get_users',      array( $this, 'ajax_get_users' ) );
         add_filter( 'enter_title_here',                  array( $this, 'customize_title' ), 1 );
+    }
+
+    public function handle_peerraiser_actions() {
+        if ( isset( $_REQUEST['peerraiser_action'] ) ) {
+            do_action( 'peerraiser_' . $_REQUEST['peerraiser_action'], $_REQUEST );
+        }
     }
 
     /**
