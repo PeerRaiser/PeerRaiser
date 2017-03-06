@@ -95,7 +95,7 @@ class Donation_List_Table extends WP_List_Table {
             case 'donation_id':
                 return '#' . $item[ $column_name ];
             case 'amount':
-                return empty( $item[ $column_name ] ) ? '$0.00' : '$'. number_format( $item[ $column_name ], 2 );
+                return empty( $item[ 'total' ] ) ? '$0.00' : '$'. number_format( $item[ 'total' ], 2 );
             case 'date':
                 $date = strtotime( $item[ $column_name ] );
                 return date('m-d-Y', $date);
