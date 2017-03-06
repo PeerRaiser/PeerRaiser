@@ -48,8 +48,12 @@
     padding-left: 9px;
 }
 /* CMB2 */
-.cmb-th label {
-    display: inline !important;
+.peerraiser-form .cmb-th label {
+    display: inline;
+}
+.peerraiser-form .cmb-repeat-group-wrap .cmb2-wrap>.cmb-field-list>.cmb-row,
+.peerraiser-form .postbox-container .cmb2-wrap>.cmb-field-list>.cmb-row {
+    padding: 1em 0;
 }
 /* Tooltip */
 .pr_tooltip {
