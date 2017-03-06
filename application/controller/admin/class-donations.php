@@ -480,8 +480,6 @@ class Donations extends \PeerRaiser\Controller\Base {
             return;
         }
 
-        error_log( print_r( $_REQUEST, 1) );
-
         $donation = new \PeerRaiser\Model\Donation();
 
         $donation->donor_id      = absint( $_REQUEST['_donor'] );

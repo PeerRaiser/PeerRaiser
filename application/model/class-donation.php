@@ -435,6 +435,10 @@ class Donation {
                         $this->update_meta( 'donation_type', $this->donation_type );
                         break;
 
+                    case 'gateway' :
+                        $this->update_meta( 'gateway', $this->gate );
+                        break;
+
                     default :
                         do_action( 'peerraiser_donation_save', $this, $key );
                         break;
@@ -503,6 +507,6 @@ class Donation {
 
         $donation_meta = new \PeerRaiser\Model\Database\Donation_Meta();
 
-        return $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+        $result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
     }
 }
