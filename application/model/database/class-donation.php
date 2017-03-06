@@ -29,15 +29,17 @@ class Donation extends Database {
     */
     public function get_columns() {
         return array(
-            'donation_id'   => '%d',
-            'donor_id'      => '%d',
-            'campaign_id'   => '%d',
-            'team_id'       => '%d',
-            'fundraiser_id' => '%d',
-            'amount'        => '%f',
-            'ip'            => '%s',
-            'status'        => '%s',
-            'date'          => '%s',
+            'donation_id'    => '%d',
+            'transaction_id' => '%s',
+            'donor_id'       => '%d',
+            'campaign_id'    => '%d',
+            'team_id'        => '%d',
+            'fundraiser_id'  => '%d',
+            'total'          => '%f',
+            'subtotal'       => '%f',
+            'ip'             => '%s',
+            'status'         => '%s',
+            'date'           => '%s',
         );
     }
 
@@ -49,14 +51,16 @@ class Donation extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donor_id'      => 0,
-            'campaign_id'   => 0,
-            'team_id'       => 0,
-            'fundraiser_id' => 0,
-            'amount'        => 0.00,
-            'ip'            => '',
-            'status'        => 'completed',
-            'date'          => date( 'Y-m-d H:i:s' ),
+            'transaction_id' => '',
+            'donor_id'       => 0,
+            'campaign_id'    => 0,
+            'team_id'        => 0,
+            'fundraiser_id'  => 0,
+            'total'          => 0.00,
+            'subtotal'       => 0.00,
+            'ip'             => '',
+            'status'         => 'completed',
+            'date'           => date( 'Y-m-d H:i:s' ),
         );
     }
 
@@ -73,16 +77,17 @@ class Donation extends Database {
         global $wpdb;
 
         $defaults = array(
-            'number'        => 20,
-            'offset'        => 0,
-            'donation_id'   => 0,
-            'donor_id'      => 0,
-            'campaign_id'   => 0,
-            'team_id'       => 0,
-            'fundraiser_id' => 0,
-            'status'        => '',
-            'orderby'       => 'donation_id',
-            'order'         => 'DESC',
+            'number'         => 20,
+            'offset'         => 0,
+            'donation_id'    => 0,
+            'transaction_id' => 0,
+            'donor_id'       => 0,
+            'campaign_id'    => 0,
+            'team_id'        => 0,
+            'fundraiser_id'  => 0,
+            'status'         => '',
+            'orderby'        => 'donation_id',
+            'order'          => 'DESC',
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -108,6 +113,19 @@ class Donation extends Database {
             }
 
             $where .= " `donation_id` IN( {$donation_ids} ) ";
+        }
+
+        // by transaction id
+        if ( ! empty( $args['transaction_id'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
+            $transaction_id = esc_sql( $args['transaction_id'] );
+
+            $where .= " `transaction_id` = '{$transaction_id}' ";
         }
 
         // specific donor
@@ -316,18 +334,20 @@ class Donation extends Database {
         return parent::table_exists( $this->table_name );
     }
 
-    public function add_donation( $args = array() ) {
+    public function add_donation( \PeerRaiser\Model\Donation $donation ) {
         global $wpdb;
 
         $data = array(
-            'donor_id'      => isset( $args['_donor_id'] ) ? absint( isset( $args['_donor_id'] ) ) : 0,
-            'campaign_id'   => isset( $args['_campaign_id'] ) ? absint( isset( $args['_campaign_id'] ) ) : 0,
-            'team_id'       => 0,
-            'fundraiser_id' => isset( $args['_fundraiser_id'] ) ? absint( isset( $args['_fundraiser_id'] ) ) : 0,
-            'amount'        => isset( $args['_donation_amount'] ) ? floatval( isset( $args['_donation_amount'] ) ) : 0,
-            'ip'            => 0,
-            'status'        => isset( $args['_donation_status'] ) ? absint( isset( $args['_donation_status'] ) ) : 'completed',
-            'date'          => isset( $args['_donation_date'] ) ? absint( isset( $args['_donation_date'] ) ) : current_time( 'mysql' ),
+            'transaction_id' => $donation->transaction_id,
+            'donor_id'       => $donation->donor_id,
+            'campaign_id'    => $donation->campaign_id,
+            'team_id'        => $donation->team_id,
+            'fundraiser_id'  => $donation->fundraiser_id,
+            'total'          => $donation->total,
+            'subtotal'       => $donation->subtotal,
+            'ip'             => $donation->ip,
+            'status'         => $donation->status,
+            'date'           => $donation->date,
         );
 
         $this->insert( $data );
@@ -349,11 +369,13 @@ class Donation extends Database {
 
         $sql = "CREATE TABLE " . $this->table_name . " (
         donation_id bigint(20) NOT NULL AUTO_INCREMENT,
+        transaction_id tinytext NOT NULL,
         donor_id bigint(20) NOT NULL,
         campaign_id bigint(20) NOT NULL,
         team_id bigint(20) NOT NULL,
         fundraiser_id bigint(20) NOT NULL,
-        amount decimal(13,4) NOT NULL,
+        total decimal(13,4) NOT NULL,
+        subtotal decimal(13,4) NOT NULL,
         ip tinytext NOT NULL,
         status varchar(30) NOT NULL,
         date datetime NOT NULL,
