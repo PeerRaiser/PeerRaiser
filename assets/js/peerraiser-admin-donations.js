@@ -157,6 +157,8 @@
                 var value = $o.donationStatusSelect.find('select option:selected').val(),
                     label = $o.donationStatusSelect.find('select option:selected').text();
 
+                $('.misc-pub-section.donation-status').attr('class', 'misc-pub-section donation-status ' + value );
+
                 $o.donationStatusSelect.find('input[type=hidden]').val( value );
                 $o.donationStatusContainer.find('strong').text( label );
             });
