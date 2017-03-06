@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <h1 class="wp-heading-inline"><?php _e( 'Add Offline Donation', 'peerraiser' ); ?></h1>
     <hr class="wp-header-end">
 
-    <form id="peerraiser-add-campaign" class="peerraiser-form" action="" method="post">
+    <form id="peerraiser-add-donation" class="peerraiser-form" action="" method="post">
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="postbox-container-1" class="postbox-container">
@@ -72,18 +72,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <?php do_action( 'peerraiser_after_donation_side_metaboxes' ); ?>
                     </div> <!-- / #side-sortables -->
                 </div>
-                <?php do_action( 'peerraiser_before_donation_metaboxes' ); ?>
                 <div id="postbox-container-2" class="postbox-container peerraiser-metabox">
                     <div id="normal-sortables">
-                        <div id="campaign-options" class="postbox">
+                        <?php do_action( 'peerraiser_before_donation_metaboxes' ); ?>
+
+                        <div id="donation-options" class="postbox">
                             <h2><span><?php _e( 'Donation Options', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
                                 <?php echo cmb2_get_metabox_form( 'peerraiser-offline-donation', 0, array( 'form_format' => '', ) ); ?>
                             </div>
                         </div>
+
+                        <?php do_action( 'peerraiser_after_donation_metaboxes' ); ?>
                     </div>
                 </div>
-                <?php do_action( 'peerraiser_after_donation_metaboxes' ); ?>
             </div>
         </div>
         <?php wp_nonce_field( 'peerraiser_add_donation_nonce' ); ?>
