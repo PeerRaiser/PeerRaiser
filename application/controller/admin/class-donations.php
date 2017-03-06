@@ -480,16 +480,18 @@ class Donations extends \PeerRaiser\Controller\Base {
             return;
         }
 
+        error_log( print_r( $_REQUEST, 1) );
+
         $donation = new \PeerRaiser\Model\Donation();
 
-        $donation->donor_id        = absint( $_REQUEST['_donor'] );
-        $donation->total           = $_REQUEST['_donation_amount'];
-        $donation->subtotal        = $_REQUEST['_donation_amount'];
-        $donation->campaign_id     = absint( $_REQUEST['_campaign'] );
-        $donation->fundraiser_id   = absint( $_REQUEST['_fundraiser'] );
-        $donation->donation_status = $_REQUEST['_donation_status'];
-        $donation->gateway         = 'offline';
-        $donation->type            = $_REQUEST['_donation_type'];
+        $donation->donor_id      = absint( $_REQUEST['_donor'] );
+        $donation->total         = $_REQUEST['_donation_amount'];
+        $donation->subtotal      = $_REQUEST['_donation_amount'];
+        $donation->campaign_id   = absint( $_REQUEST['_campaign'] );
+        $donation->fundraiser_id = absint( $_REQUEST['_fundraiser'] );
+        $donation->status        = $_REQUEST['_donation_status'];
+        $donation->gateway       = 'offline';
+        $donation->donation_type = $_REQUEST['_donation_type'];
 
         $donation->save();
 
