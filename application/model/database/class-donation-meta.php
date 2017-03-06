@@ -12,7 +12,6 @@ class Donation_Meta extends Database {
      * @since   1.0.0
     */
     public function __construct() {
-
         global $wpdb;
 
         $this->table_name  = $wpdb->prefix . 'pr_donationmeta';
@@ -20,7 +19,6 @@ class Donation_Meta extends Database {
         $this->version     = '1.0';
 
         add_action( 'plugins_loaded', array( $this, 'register_table'), 11 );
-
     }
 
     /**
