@@ -19,6 +19,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
         add_action( 'peerraiser_add_donation',                array( $this, 'handle_add_donation' ) );
+        add_action( 'peerraiser_after_donation_metaboxes',    array( $this, 'donation_notes_metabox' ), 50 );
     }
 
     public function load_assets() {
@@ -458,6 +459,13 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donation-summary' );
     }
 
+    public function donation_notes_metabox() {
+        if ( ! apply_filters( 'peerraiser_show_donation_notes_metabox', true ) )
+            return;
+
+        $this->render( 'backend/partials/donation-box-notes' );
+    }
+
     public function delete_transient() {
         delete_transient( 'peerraiser_donations_total' );
     }
@@ -472,8 +480,20 @@ class Donations extends \PeerRaiser\Controller\Base {
             return;
         }
 
-        $donation = new \PeerRaiser\Model\Database\Donation();
-        //$donation_id = $donation->add_donation( $_REQUEST );
+        $donation = new \PeerRaiser\Model\Donation();
+
+        $donation->donor_id        = absint( $_REQUEST['_donor'] );
+        $donation->total           = $_REQUEST['_donation_amount'];
+        $donation->subtotal        = $_REQUEST['_donation_amount'];
+        $donation->campaign_id     = absint( $_REQUEST['_campaign'] );
+        $donation->fundraiser_id   = absint( $_REQUEST['_fundraiser'] );
+        $donation->donation_status = $_REQUEST['_donation_status'];
+        $donation->gateway         = 'offline';
+        $donation->type            = $_REQUEST['_donation_type'];
+
+        $donation->save();
+
+        error_log( 'Donation ID: ' . $donation->ID );
     }
 
     /**
