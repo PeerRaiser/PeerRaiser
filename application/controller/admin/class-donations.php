@@ -78,7 +78,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $currency        = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
-        $default_views = array( 'list', 'add', 'edit' );
+        $default_views = array( 'list', 'add', 'summary' );
 
         // Get the correct view
         $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
@@ -500,7 +500,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         // Create redirect URL
         $location = add_query_arg( array(
             'page' => 'peerraiser-donations',
-            'view' => 'edit',
+            'view' => 'summary',
             'donation_id' => $donation->ID
         ), admin_url( 'admin.php' ) );
 
