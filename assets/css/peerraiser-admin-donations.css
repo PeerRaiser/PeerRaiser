@@ -24,7 +24,8 @@
 #submitpost .donation-info > div .label{
     display: block;
 }
-.peerraiser-form .misc-pub-section:before {
+.peerraiser-form .misc-pub-section:before,
+.peerraiser-form .donation-info .label:before {
     width: 1.28571429em;
     text-align: center;
     display: inline-block;
@@ -53,24 +54,27 @@
 .peerraiser-form .misc-pub-section.donation-type:before {
     content: "\f09d";
 }
-/*#submitpost .donation-info > div.donation-date .label:before {
+.peerraiser-form .donation-info .donation-date .label:before {
     content: "\f073";
 }
-#submitpost .donation-info > div.donation-key .label:before {
+.peerraiser-form .donation-info .donation-method .label:before {
+    content: "\f09d";
+}
+.peerraiser-form .donation-info .donation-key .label:before {
     content: "\f084";
 }
-#submitpost .donation-info > div.donor-ip .label:before {
+.peerraiser-form .donation-info .donor-ip .label:before {
     content: "\f0ac";
 }
-#submitpost .donation-info > div.is-test-mode .label:before {
+.peerraiser-form .donation-info .is-test-mode .label:before {
     content: "\f0c3";
-}*/
-#submitpost .donation-info > div strong,
-#submitpost .donation-info > div select,
-#submitpost .donation-info > div input {
+}
+.peerraiser-form .donation-info > div strong,
+.peerraiser-form .donation-info > div select,
+.peerraiser-form .donation-info > div input {
     margin-left: 27px;
 }
-#submitpost .donation-info .donation-key strong {
+.peerraiser-form .donation-info .donation-key strong {
     font: 700 95% monospace;
 }
 /* Donor Card */
