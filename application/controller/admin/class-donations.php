@@ -482,18 +482,30 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $donation = new \PeerRaiser\Model\Donation();
 
+        // Required Fields
         $donation->donor_id      = absint( $_REQUEST['_donor'] );
         $donation->total         = $_REQUEST['_donation_amount'];
         $donation->subtotal      = $_REQUEST['_donation_amount'];
         $donation->campaign_id   = absint( $_REQUEST['_campaign'] );
-        $donation->fundraiser_id = absint( $_REQUEST['_fundraiser'] );
         $donation->status        = $_REQUEST['_donation_status'];
-        $donation->gateway       = 'offline';
         $donation->donation_type = $_REQUEST['_donation_type'];
+        $donation->gateway       = 'offline';
 
+        // Optional Fields
+        $donation->fundraiser_id = isset( $_REQUEST['_fundraiser'] ) ? $absint( $_REQUEST['_fundraiser'] ) : 0;
+
+        // Save to the database
         $donation->save();
 
-        error_log( 'Donation ID: ' . $donation->ID );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page' => 'peerraiser-donations',
+            'view' => 'edit',
+            'donation_id' => $donation->ID
+        ), admin_url( 'admin.php' ) );
+
+        // Redirect to the edit screen for this new donation
+        wp_safe_redirect( $location );
     }
 
     /**
