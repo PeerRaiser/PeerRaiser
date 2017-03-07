@@ -144,8 +144,8 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'donation_id' => array( 'id', true ),
-            'amount'      => array( 'amount', false ),
+            'donation_id' => array( 'donation_id', true ),
+            'amount'      => array( 'total', false ),
             'date'        => array( 'date', false ),
         );
 
