@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Helper;
 
-class String {
+class Text {
 
     /**
      * Get the first given number of words from a string.
