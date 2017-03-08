@@ -369,7 +369,7 @@ class Admin extends Base {
     }
 
     /**
-     * Retreives campaigns and creates <option> for select lists
+     * Retrieves campaigns and creates <option> for select lists
      *
      * @since     1.0.0
      * @param     \PeerRaiser\Core\Event    $event
