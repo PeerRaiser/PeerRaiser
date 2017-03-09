@@ -124,40 +124,22 @@ class Field {
     }
 
     public static function get_donor_choices( $options = array() ) {
-        global $wpdb;
+        $donor_table = new \PeerRaiser\Model\Database\Donor();
 
-        // defaults
-        $options = self::parse_args($options, array(
-            's'             => false,
-            'page'          => 1,
-            'number'        => 20,
-            'offset'        => 0,
-        ));
-
-        $table_name = $wpdb->prefix . 'pr_donors';
+        $args = array();
 
         if ( $options['s'] ) {
-            $prepared = $wpdb->prepare(
-                "SELECT * FROM {$table_name} WHERE donor_name LIKE %s ORDER BY donor_id ASC LIMIT %d, %d;",
-                '%' . $wpdb->esc_like($options['s']) . '%',
-                absint( $options['offset'] ),
-                absint( $options['number'] )
-            );
-        } else {
-            $prepared = $wpdb->prepare(
-                "SELECT * FROM {$table_name} ORDER BY donor_id ASC LIMIT %d, %d;",
-                absint( $options['offset'] ),
-                absint( $options['number'] )
-            );
+            $args['s'] = $options['s'];
         }
 
-        $results = $wpdb->get_results( $prepared );
+        $donors = $donor_table->get_donors( $args );
+
         $options = array();
 
-        foreach( $results as $result ) {
+        foreach( $donors as $donor ) {
             $options[] = array(
-                'text' => $result->donor_name,
-                'id'   => $result->donor_id,
+                'text' => $donor->donor_name,
+                'id'   => $donor->donor_id,
             );
         }
 
