@@ -64,6 +64,8 @@ class Donor extends Database {
      * @since   1.0.0
      * @param   array $args
      * @param   bool  $count  Return only the total number of results found (optional)
+     *
+     * @return array Donor records
     */
     public function get_donors( $args = array(), $count = false ) {
 
@@ -87,7 +89,6 @@ class Donor extends Database {
 
         // specific donor
         if ( ! empty( $args['donor_id'] ) ) {
-            error_log( 'true' );
             if ( is_array( $args['donor_id'] ) ) {
                 $donor_ids = implode( ',', $args['donor_id'] );
             } else {
