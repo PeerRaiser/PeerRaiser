@@ -332,38 +332,31 @@ class Admin extends Base {
 
 
     /**
-     * Retreive posts and creates <option> for select lists
+     * Retrieve posts and creates <option> for select lists
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      *
      * @return    array                              Data formatted for select2
      */
     public function ajax_get_posts() {
-        $data =  array(
-            'success' => false,
-            'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
-        );
-
         $choices = \PeerRaiser\Helper\Field::get_post_choices( $_POST );
 
-        echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
+        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
 
     /**
-     * Retreives donors and creates <option> for select lists
+     * Retrieves donors and creates <option> for select lists
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      *
      * @return    array Data formatted for select2
      */
     public function ajax_get_donors() {
         $choices = \PeerRaiser\Helper\Field::get_donor_choices( $_POST );
 
-        echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
+        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
@@ -372,14 +365,13 @@ class Admin extends Base {
      * Retrieves campaigns and creates <option> for select lists
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      *
      * @return    array Data formatted for select2
      */
     public function ajax_get_campaigns() {
         $choices = \PeerRaiser\Helper\Field::get_campaign_choices( $_POST );
 
-        echo \PeerRaiser\Helper\String::peerraiser_json_encode( $choices );
+        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
