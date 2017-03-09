@@ -30,13 +30,8 @@ class Donor extends Database {
     public function get_columns() {
         return array(
             'donor_id'      => '%d',
-            'donation_id'   => '%d',
-            'campaign_id'   => '%d',
-            'team_id'       => '%d',
-            'fundraiser_id' => '%d',
-            'amount'        => '%f',
-            'ip'            => '%s',
-            'status'        => '%s',
+            'donor_name'    => '%s',
+            'user_id'       => '%d',
             'date'          => '%s',
         );
     }
@@ -49,11 +44,10 @@ class Donor extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donor_id' => 0,
-            'amount'      => '',
-            'ip'          => '',
-            'status'      => '',
-            'date'        => date( 'Y-m-d H:i:s' ),
+            'donor_id'   => 0,
+            'donor_name' => '',
+            'user_id'    => 0,
+            'date'       => date( 'Y-m-d H:i:s' ),
         );
     }
 
@@ -75,8 +69,9 @@ class Donor extends Database {
             'number'        => 20,
             'offset'        => 0,
             'donor_id'      => 0,
+            'donor_name'    => '',
             'orderby'       => 'donor_id',
-            'order'         => 'DESC',
+            'order'         => 'ASC',
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -96,6 +91,17 @@ class Donor extends Database {
             }
 
             $where .= "WHERE `donor_id` IN( {$donor_ids} ) ";
+        }
+
+        // By donor name
+        if ( ! empty( $args['donor_name'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
+
+            $where .= sprintf(" `donor_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
         }
 
         if ( ! empty( $args['status'] ) ) {
@@ -197,6 +203,13 @@ class Donor extends Database {
 
             } else {
 
+                $test = $wpdb->prepare(
+                    "SELECT * FROM {$this->table_name} {$where} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d;",
+                    absint( $args['offset'] ),
+                    absint( $args['number'] )
+                );
+                error_log( $test );
+
                 $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$this->table_name} {$where} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d;",
@@ -253,7 +266,8 @@ class Donor extends Database {
     /**
      * Check if table exists
      *
-     * @since     1.0.4
+     * @since   1.0.4
+     * @param   string  $table_name The name of the table
      * @return    bool    True if table exists, false if it doesn't
      */
     public function table_exists( $table_name = '' ) {

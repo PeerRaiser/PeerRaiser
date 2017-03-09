@@ -129,7 +129,7 @@ class Field {
         $args = array();
 
         if ( $options['s'] ) {
-            $args['s'] = $options['s'];
+            $args['donor_name'] = $options['s'];
         }
 
         $donors = $donor_table->get_donors( $args );
