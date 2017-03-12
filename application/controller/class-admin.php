@@ -2,6 +2,19 @@
 
 namespace PeerRaiser\Controller;
 
+use \PeerRaiser\Helper\View;
+use \PeerRaiser\Core\Setup;
+use \PeerRaiser\Model\Admin\Admin_Notices;
+use \PeerRaiser\Helper\Field;
+use \PeerRaiser\Helper\Text;
+use \PeerRaiser\Controller\Admin as AdminController;
+use \PeerRaiser\Controller\Admin\Dashboard as DashboardController;
+use \PeerRaiser\Controller\Admin\Campaigns as CampaignsController;
+use \PeerRaiser\Controller\Admin\Teams as TeamsController;
+use \PeerRaiser\Controller\Admin\Donations as DonationsController;
+use \PeerRaiser\Controller\Admin\Donors as DonorsController;
+use \PeerRaiser\Controller\Admin\Settings as SettingsController;
+
 /**
  * PeerRaiser admin controller.
  */
@@ -35,7 +48,7 @@ class Admin extends Base {
      * @return void
      */
     public function add_to_admin_panel() {
-        $plugin_page = \PeerRaiser\Helper\View::$pluginPage;
+        $plugin_page = View::$pluginPage;
         add_menu_page(
             __( 'PeerRaiser', 'peerraiser' ),
             'PeerRaiser',
@@ -85,7 +98,7 @@ class Admin extends Base {
      * @param string $name
      * @param mixed  $args
      *
-     * @return void
+     * @return mixed
      */
     public function __call( $name, $args ) {
         if ( substr( $name, 0, 4 ) == 'run_' ) {
@@ -105,9 +118,9 @@ class Admin extends Base {
         // load PeerRaiser-specific CSS
         wp_register_style(
             'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'css_url' ) . 'peerraiser-admin.css',
+            Setup::get_plugin_config()->get( 'css_url' ) . 'peerraiser-admin.css',
             array(),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'version' )
+            Setup::get_plugin_config()->get( 'version' )
         );
         wp_register_style(
             'open-sans',
@@ -115,9 +128,9 @@ class Admin extends Base {
         );
         wp_register_style(
             'peerraiser-select2',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'css_url' ) . 'vendor/select2.min.css',
+            Setup::get_plugin_config()->get( 'css_url' ) . 'vendor/select2.min.css',
             array(),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'version' )
+            Setup::get_plugin_config()->get( 'version' )
         );
         wp_enqueue_style( 'open-sans' );
         wp_enqueue_style( 'peerraiser-select2' );
@@ -146,27 +159,27 @@ class Admin extends Base {
         switch ( $page ) {
             default:
             case 'dashboard' :
-                $dashboard_controller = new \PeerRaiser\Controller\Admin\Dashboard( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $dashboard_controller = new DashboardController( Setup::get_plugin_config() );
                 $dashboard_controller->render_page();
                 break;
             case 'campaigns' :
-                $campaigns_controller = new \PeerRaiser\Controller\Admin\Campaigns( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $campaigns_controller = new CampaignsController( Setup::get_plugin_config() );
                 $campaigns_controller->render_page();
                 break;
             case 'teams' :
-                $teams_controller = new \PeerRaiser\Controller\Admin\Teams( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $teams_controller = new TeamsController( Setup::get_plugin_config() );
                 $teams_controller->render_page();
                 break;
             case 'donations' :
-                $donations_controller = new \PeerRaiser\Controller\Admin\Donations( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $donations_controller = new DonationsController( Setup::get_plugin_config() );
                 $donations_controller->render_page();
                 break;
             case 'donors' :
-                $donors_controller = new \PeerRaiser\Controller\Admin\Donors( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $donors_controller = new DonorsController( Setup::get_plugin_config() );
                 $donors_controller->render_page();
                 break;
             case 'settings' :
-                $settings_controller = new \PeerRaiser\Controller\Admin\Settings( \PeerRaiser\Core\Setup::get_plugin_config() );
+                $settings_controller = new SettingsController( Setup::get_plugin_config() );
                 $settings_controller->render_page();
                 break;
         }
@@ -176,10 +189,10 @@ class Admin extends Base {
      * Add WordPress pointers to pages.
      *
      * @param
-     * @return void
+     * @return string
      */
     public function modify_footer() {
-        $pointers = \PeerRaiser\Controller\Admin::get_pointers_to_be_shown();
+        $pointers = AdminController::get_pointers_to_be_shown();
 
         // don't render the partial, if there are no pointers to be shown
         if ( empty( $pointers ) ) {
@@ -192,9 +205,8 @@ class Admin extends Base {
         );
 
         $this->assign( 'peerraiser', $view_args );
-        $result = $event->get_result();
-        $result .= $this->get_text_view( 'backend/partials/pointer-scripts' );
-        $event->set_result( $result );
+        $result = $this->get_text_view( 'backend/partials/pointer-scripts' );
+        return $result;
     }
 
 
@@ -206,9 +218,9 @@ class Admin extends Base {
     public function add_plugin_admin_assets() {
         wp_register_style(
             'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->css_url . 'peerraiser-admin.css',
+            Setup::get_plugin_config()->css_url . 'peerraiser-admin.css',
             array(),
-            \PeerRaiser\Core\Setup::get_plugin_config()->version
+            Setup::get_plugin_config()->version
         );
         wp_enqueue_style( 'peerraiser-admin' );
     }
@@ -220,7 +232,7 @@ class Admin extends Base {
      * @return void
      */
     public function add_admin_pointers_script() {
-        $pointers = \PeerRaiser\Controller\Admin::get_pointers_to_be_shown();
+        $pointers = AdminController::get_pointers_to_be_shown();
 
         // don't enqueue the assets, if there are no pointers to be shown
         if ( empty( $pointers ) ) {
@@ -263,14 +275,14 @@ class Admin extends Base {
     public function register_admin_scripts() {
         wp_register_script(
             'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'js_url' ) . 'peerraiser-admin.js',
+            Setup::get_plugin_config()->get( 'js_url' ) . 'peerraiser-admin.js',
             array( 'jquery', 'peerraiser-select2' ),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get( 'version' ),
+            Setup::get_plugin_config()->get( 'version' ),
             true
         );
         wp_register_script(
             'peerraiser-select2',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'vendor/select2.min.js',
+            Setup::get_plugin_config()->get('js_url') . 'vendor/select2.min.js',
             array( 'jquery' ),
             '4.0.2',
             true
@@ -281,7 +293,7 @@ class Admin extends Base {
     public function register_admin_styles() {
         wp_register_style(
             'peerraiser-select2',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'vendor/select2.min.css',
+            Setup::get_plugin_config()->get('css_url') . 'vendor/select2.min.css',
             array(),
             '4.0.2'
         );
@@ -298,7 +310,7 @@ class Admin extends Base {
         $current_screen = get_current_screen();
         $campaigns_count = wp_count_posts( 'pr_campaign' );
         if ( $current_screen->id == 'edit-pr_campaign' && $campaigns_count->publish == 0) {
-            $admin_notices = \PeerRaiser\Model\Admin\Admin_Notices::get_instance();
+            $admin_notices = Admin_Notices::get_instance();
             $message = __( 'Create your first campaign to get started. <a href="post-new.php?post_type=pr_campaign">Create Campaign</a>' , 'peerraiser' );
             $admin_notices::add_notice( $message );
         }
@@ -308,9 +320,11 @@ class Admin extends Base {
     /**
      * Customize the "Enter title here" placeholder in the Title field based on post type
      *
-     * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
-     */
+     * @since 1.0.0
+	 * @param $title
+	 *
+	 * @return string
+	 */
     public function customize_title( $title ) {
         $current_screen = get_current_screen();
 
@@ -339,9 +353,9 @@ class Admin extends Base {
      * @return    array                              Data formatted for select2
      */
     public function ajax_get_posts() {
-        $choices = \PeerRaiser\Helper\Field::get_post_choices( $_POST );
+        $choices = Field::get_post_choices( $_POST );
 
-        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
+        echo Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
@@ -354,9 +368,9 @@ class Admin extends Base {
      * @return    array Data formatted for select2
      */
     public function ajax_get_donors() {
-        $choices = \PeerRaiser\Helper\Field::get_donor_choices( $_POST );
+        $choices = Field::get_donor_choices( $_POST );
 
-        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
+        echo Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
@@ -369,9 +383,9 @@ class Admin extends Base {
      * @return    array Data formatted for select2
      */
     public function ajax_get_campaigns() {
-        $choices = \PeerRaiser\Helper\Field::get_campaign_choices( $_POST );
+        $choices = Field::get_campaign_choices( $_POST );
 
-        echo \PeerRaiser\Helper\Text::peerraiser_json_encode( $choices );
+        echo Text::peerraiser_json_encode( $choices );
 
         wp_die();
     }
@@ -432,12 +446,10 @@ class Admin extends Base {
             }
         }
 
-        $event->set_result(
-            array(
-                'items' => $data ,
-                'total_count' => $total_users
-            )
-        );
+        return array(
+			'items' => $data ,
+			'total_count' => $total_users
+		);
     }
 
 }
