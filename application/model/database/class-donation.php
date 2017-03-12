@@ -372,13 +372,14 @@ class Donation extends Database {
         transaction_id tinytext NOT NULL,
         donor_id bigint(20) NOT NULL,
         campaign_id bigint(20) NOT NULL,
-        team_id bigint(20) NOT NULL,
-        fundraiser_id bigint(20) NOT NULL,
-        total decimal(13,4) NOT NULL,
-        subtotal decimal(13,4) NOT NULL,
+        team_id bigint(20) NOT NULL DEFAULT '0',
+        fundraiser_id bigint(20) NOT NULL DEFAULT '0',
+        total decimal(13,4) NOT NULL DEFAULT '0.00',
+        subtotal decimal(13,4) NOT NULL DEFAULT '0.00',
         ip tinytext NOT NULL,
         status varchar(30) NOT NULL,
         date datetime NOT NULL,
+        is_test tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY  (donation_id)
         ) CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
