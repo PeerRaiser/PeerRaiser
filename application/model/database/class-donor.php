@@ -203,13 +203,6 @@ class Donor extends Database {
 
             } else {
 
-                $test = $wpdb->prepare(
-                    "SELECT * FROM {$this->table_name} {$where} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d;",
-                    absint( $args['offset'] ),
-                    absint( $args['number'] )
-                );
-                error_log( $test );
-
                 $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$this->table_name} {$where} ORDER BY {$args['orderby']} {$args['order']} LIMIT %d, %d;",
