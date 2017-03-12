@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <h3><?php _e("Let's get you started...", 'peerraiser') ?></h3>
 
                     <ul>
-                        <li class="status-complete"><i class="fa fa-fw <?= $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="https://peerraiser.com/join"><?php _e('Create a free PeerRaiser account', 'peerraiser') ?></a></li>
-                        <li class="status-incomplete"><i class="fa fa-fw <?= $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?= $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings"><?php _e('Configure your settings', 'peerraiser') ?></a></li>
+                        <li class="status-complete"><i class="fa fa-fw <?= $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="https://peerraiser.com/signup"><?php _e('Create a free PeerRaiser account', 'peerraiser') ?></a></li>
+                        <li class="status-incomplete"><i class="fa fa-fw <?= $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?= $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings"><?php _e('Connect your PeerRaiser account', 'peerraiser') ?></a></li>
                         <li class="status-incomplete"><i class="fa fa-fw <?= $peerraiser['font_awesome_class']['step_3'] ?>" aria-hidden="true"></i><a href="<?= $peerraiser['admin_url'] ?>post-new.php?post_type=pr_campaign"><?php _e('Create your first campaign', 'peerraiser') ?></a></li>
                     </ul>
 
@@ -120,12 +120,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </span>
                     </li>
                 <?php endforeach; ?>
-                <!--
-                <li class="settings">
-                    <a href="">Admin</a> updated the Email settings
-                    <span class="date">3 Days ago</span>
-                </li>
-                </li> -->
             </ul>
         </div>
 
