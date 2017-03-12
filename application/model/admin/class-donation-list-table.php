@@ -6,6 +6,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use \PeerRaiser\Model\Database\Donor;
 use \WP_List_Table;
 
 /**
@@ -33,9 +34,9 @@ class Donation_List_Table extends WP_List_Table {
      */
     function column_name( $item ) {
         // create a nonce
-        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation' );
+        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation_' . $item['donation_id'] );
 
-        $donor = new \PeerRaiser\Model\Database\Donor();
+        $donor = new Donor();
         $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
 
         $title = '<a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $donor[0]->donor_name . '</a>';
@@ -43,7 +44,7 @@ class Donation_List_Table extends WP_List_Table {
 
         $actions = array(
             'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donation_id'] ) ),
-            'delete' => sprintf( '<a href="?page=%s&donation=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['donation_id'] ), $delete_nonce ),
+            'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donation_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donation', absint( $item['donation_id'] ), $delete_nonce ),
         );
 
         return $title . $this->row_actions( apply_filters( 'peerraiser_donation_actions', $actions ) );
