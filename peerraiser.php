@@ -93,13 +93,8 @@ function peerraiser_activate() {
  * Callback for deactivating the plugin.
  */
 function peerraiser_deactivate() {
-    peerraiser_before_start();
-
-    $config = \PeerRaiser\Core\Setup::get_plugin_config();
-    $peerraiser = new \PeerRaiser\Core\Bootstrap( $config );
-
     do_action( 'peerraiser_deactivate_before' );
-    $peerraiser->deactivate();
+    // $peerraiser->deactivate();
     do_action( 'peerraiser_deactivate_after' );
 }
 
