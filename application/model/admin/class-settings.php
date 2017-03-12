@@ -16,7 +16,7 @@ class Settings extends Admin {
                 'id'     => 'general-settings',
                 'fields' => array(
                     'test_mode' => array(
-                        'name'    => 'Enable Test Mode',
+                        'name'    => __( 'Enable Test Mode', 'peerraiser' ),
                         'id'      => 'test_mode',
                         'type'    => 'select',
                         'default' => array( $this, 'get_field_value'),
@@ -26,26 +26,26 @@ class Settings extends Admin {
                         ),
                     ),
                     'currency' => array(
-                        'name'    => 'Currency',
+                        'name'    => __( 'Currency', 'peerraiser' ),
                         'id'      => 'currency',
                         'type'    => 'select',
                         'default' => array( $this, 'get_field_value'),
                         'options' => array( $this, 'get_select_options'),
                     ),
                     'fundraiser_slug' => array(
-                        'name'    => 'Fundraiser Slug',
+                        'name'    => __( 'Fundraiser Slug', 'peerraiser' ),
                         'id'      => 'fundraiser_slug',
                         'type'    => 'text_small',
                         'default' => array( $this, 'get_field_value'),
                     ),
                     'campaign_slug' => array(
-                        'name'    => 'Campaign Slug',
+                        'name'    => __( 'Campaign Slug', 'peerraiser' ),
                         'id'      => 'campaign_slug',
                         'type'    => 'text_small',
                         'default' => array( $this, 'get_field_value'),
                     ),
                     'show_welcome_message' => array(
-                        'name'    => 'Show Welcome Message on Dashboard?',
+                        'name'    => __( 'Show Welcome Message on Dashboard?', 'peerraiser' ),
                         'id'      => 'show_welcome_message',
                         'type'    => 'select',
                         'default' => array( $this, 'get_field_value'),
@@ -55,7 +55,7 @@ class Settings extends Admin {
                         ),
                     ),
                     'disable_css_styles' => array(
-                        'name'    => 'Disable Default CSS Styles?',
+                        'name'    => __( 'Disable Default CSS Styles?', 'peerraiser' ),
                         'id'      => 'disable_css_styles',
                         'type'    => 'select',
                         'default' => array( $this, 'get_field_value'),
@@ -259,7 +259,7 @@ class Settings extends Admin {
                 'id'     => 'advanced-settings',
                 'fields' => array(
                     'uninstall_deletes_data' => array(
-                        'name'    => 'Delete all data when uninstalling plugin?',
+                        'name'    => __( 'Delete all data when uninstalling plugin?', 'peerraiser' ),
                         'id'      => 'uninstall_deletes_data',
                         'type'    => 'select',
                         'default' => array( $this, 'get_field_value'),
