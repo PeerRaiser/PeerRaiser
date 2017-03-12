@@ -15,11 +15,12 @@ class Donations extends \PeerRaiser\Controller\Base {
         // add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
         // add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
         add_action( 'peerraiser_new_donation',                array( $this, 'add_donation' ) );
-        add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
-        add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
-        add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
-        add_action( 'peerraiser_add_donation',                array( $this, 'handle_add_donation' ) );
-        add_action( 'peerraiser_after_donation_metaboxes',    array( $this, 'donation_notes_metabox' ), 50 );
+		add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
+		add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
+		add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
+		add_action( 'peerraiser_add_donation',                array( $this, 'handle_add_donation' ) );
+		add_action( 'peerraiser_delete_donation', 			  array( $this, 'delete_donation' ) );
+		add_action( 'peerraiser_after_donation_metaboxes',    array( $this, 'donation_notes_metabox' ), 50 );
     }
 
     public function load_assets() {
@@ -508,7 +509,24 @@ class Donations extends \PeerRaiser\Controller\Base {
         wp_safe_redirect( $location );
     }
 
-    /**
+    public function delete_donation() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_donation_' . $_REQUEST['donation_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		// Delete the donation
+		$donation = new \PeerRaiser\Model\Donation( $_REQUEST['donation_id'] );
+		$donation->delete();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-donations'
+		), admin_url( 'admin.php' ) );
+
+		wp_safe_redirect( $location );
+	}
+
+	/**
      * Checks if the fields are valid
      *
      * @since     1.0.0
