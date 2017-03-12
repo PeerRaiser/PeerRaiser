@@ -121,6 +121,35 @@ class Settings extends Admin {
 
                 ),
             ),
+			array(
+				'id' => 'account-settings',
+				'fields' => array(
+					'peerraiser_username' => array(
+						'name' => __('PeerRaiser.com Username', 'peerraiser' ),
+						'id'   => 'peerraiser_username',
+						'type' => 'text',
+						'default' => array( $this, 'get_field_value' ),
+					),
+					'peerraiser_password' => array(
+						'name' => __('PeerRaiser.com Password', 'peerraiser' ),
+						'id'   => 'peerraiser_password',
+						'type' => 'text',
+						'attributes' => array(
+							'type' => 'password',
+						),
+						'default' => array( $this, 'get_field_value' ),
+					),
+					'peerraiser_secret_key' => array(
+						'name' => __('PeerRaiser.com Key', 'peerraiser' ),
+						'id'   => 'peerraiser_secret_key',
+						'type' => 'text',
+						'attributes' => array(
+							'type' => 'password',
+						),
+						'default' => array( $this, 'get_field_value' ),
+					),
+				)
+			),
             array(
                 'id'     => 'email-settings',
                 'fields' => array(
@@ -244,38 +273,45 @@ class Settings extends Admin {
         );
         $this->tabs = array(
             'general'  => __('General', 'peerraiser'),
+			'account'  => __('Account', 'peerraiser'),
             'emails'   => __('Emails', 'peerraiser'),
-            'advanced' => __('Advanced', 'peerraiser')
+            'advanced' => __('Advanced', 'peerraiser'),
         );
         $this->content = array(
             'general' => array (
                 'general' => array(
                     'name'   => __('General Settings', 'peerraiser'),
-                    'fields' => 'general-settings'
+                    'fields' => 'general-settings',
                 )
             ),
+			'account' => array(
+				'account' => array(
+					'name' => __('Account Settings', 'peerraiser'),
+					'fields' => 'account-settings',
+				)
+			),
             'emails' => array (
                 'emails' => array(
                     'name'   => __('Email Settings', 'peerraiser'),
-                    'fields' => 'email-settings'
+                    'fields' => 'email-settings',
                 ),
                 'donation_receipt' => array(
                     'name'   => __('Donation Receipt', 'peerraiser'),
-                    'fields' => 'donation-receipt'
+                    'fields' => 'donation-receipt',
                 ),
                 'new_donation_notification' => array(
                     'name'   => __('New Donation Notification', 'peerraiser'),
-                    'fields' => 'new-donation-notification'
+                    'fields' => 'new-donation-notification',
                 ),
                 'welcome_email' => array(
                     'name'   => __('Welcome Email', 'peerraiser'),
-                    'fields' => 'welcome-email'
+                    'fields' => 'welcome-email',
                 ),
             ),
             'advanced' => array (
                 'advanced' => array(
                     'name'   => __('Advanced Settings', 'peerraiser'),
-                    'fields' => 'advanced-settings'
+                    'fields' => 'advanced-settings',
                 ),
             ),
         );
