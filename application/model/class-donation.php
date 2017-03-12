@@ -233,6 +233,8 @@ class Donation {
             return false;
         }
 
+
+
         $donation_table = new \PeerRaiser\Model\Database\Donation();
 
         $args = array( 'number' => 1 );
