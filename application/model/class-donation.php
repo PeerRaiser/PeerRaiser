@@ -233,8 +233,6 @@ class Donation {
             return false;
         }
 
-
-
         $donation_table = new \PeerRaiser\Model\Database\Donation();
 
         $args = array( 'number' => 1 );
@@ -455,6 +453,11 @@ class Donation {
 
         return true;
     }
+
+    public function delete() {
+		$donation_table = new \PeerRaiser\Model\Database\Donation();
+		$donation_table->delete( $this->ID );
+	}
 
     /**
      * Gets the IP address
