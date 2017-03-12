@@ -2,7 +2,13 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Dashboard extends \PeerRaiser\Controller\Base {
+use \PeerRaiser\Controller\Base;
+use \PeerRaiser\Model\Currency;
+use \PeerRaiser\Model\Activity_Feed;
+use \PeerRaiser\Helper\Stats;
+use \PeerRaiser\Helper\View;
+
+class Dashboard extends Base {
 
     public function register_actions() {
         add_action( 'wp_ajax_peerraiser_dismiss_message',              array( $this, 'process_dismiss_message_request' ) );
@@ -73,8 +79,8 @@ class Dashboard extends \PeerRaiser\Controller\Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        $currency        = new \PeerRaiser\Model\Currency();
-        $activity_feed   = new \PeerRaiser\Model\Activity_Feed();
+        $currency        = new Currency();
+        $activity_feed   = new Activity_Feed();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
 
@@ -86,17 +92,17 @@ class Dashboard extends \PeerRaiser\Controller\Base {
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),
-            'donations_total'      => \PeerRaiser\Helper\View::format_number( \PeerRaiser\Helper\Stats::get_total_donations(), true, true ),
-            'campaigns_total'      => \PeerRaiser\Helper\View::format_number( $this->get_campaign_total(), false, true ),
-            'fundraisers_total'    => \PeerRaiser\Helper\View::format_number( $this->get_fundraiser_total(), false, true ),
-            'donors_total'         => \PeerRaiser\Helper\View::format_number( $this->get_donor_total(), false, true ),
+            'donations_total'      => View::format_number( Stats::get_total_donations(), true, true ),
+            'campaigns_total'      => View::format_number( $this->get_campaign_total(), false, true ),
+            'fundraisers_total'    => View::format_number( $this->get_fundraiser_total(), false, true ),
+            'donors_total'         => View::format_number( $this->get_donor_total(), false, true ),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
                 'step_3'           => $this->get_campaign_status()
             ),
-            'top_donors'           => \PeerRaiser\Helper\Stats::get_top_donors(),
-            'top_fundraisers'      => \PeerRaiser\Helper\Stats::get_top_fundraisers(),
+            'top_donors'           => Stats::get_top_donors(),
+            'top_fundraisers'      => Stats::get_top_fundraisers(),
         );
 
         $this->assign( 'peerraiser', $view_args );
