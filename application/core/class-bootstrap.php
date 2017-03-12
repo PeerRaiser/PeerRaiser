@@ -39,12 +39,12 @@ class Bootstrap {
      * Internal function to create and get controllers.
      *
      * @param     string                         $name    name of the controller without prefix.
-     * @throws    \PeerRaiser\Core\Exception
+     * @throws    \Exception
      *
      * @return    bool|\PeerRaiser\Controller\Base    $controller    instance of the given controller name
      */
     public static function get_controller( $name ) {
-        $class = "\PeerRaiser\\Controller\\" . (string) $name;
+        $class = "\\PeerRaiser\\Controller\\" . (string) $name;
 
         if ( ! class_exists( $class ) ) {
             $msg = __( '%s: <code>%s</code> not found', 'peerraiser' );
