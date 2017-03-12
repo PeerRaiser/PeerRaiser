@@ -10,7 +10,6 @@ class Settings extends Base {
 
     public function register_actions() {
         add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'ajax_update_settings' ) );
-        add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'peerraiser_on_ajax_send_json' ) );
         add_action( 'wordpress_init',                     array( $this, 'add_thumbnail_sizes' ) );
         add_action( 'wordpress_init',                     array( $this, 'maybe_flush_rewrite_rules' ) );
     }
