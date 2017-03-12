@@ -42,10 +42,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <p class="stat"><strong><?= $peerraiser['donations_total'] ?></strong></p>
                     </div>
                     <div class="stats-bottom view">
-                        <a href="edit.php?post_type=pr_donation" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                        <a href="admin.php?page=peerraiser-donations" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
                     </div>
                     <div class="stats-bottom add">
-                        <a href="post-new.php?post_type=pr_donation" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        <a href="admin.php?page=peerraiser-donations&view=add" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="stats-container group">
@@ -54,10 +54,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <p class="stat"><strong><?= $peerraiser['campaigns_total'] ?></strong></p>
                     </div>
                     <div class="stats-bottom view">
-                        <a href="edit.php?post_type=pr_campaign" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                        <a href="admin.php?page=peerraiser-campaigns" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
                     </div>
                     <div class="stats-bottom add">
-                        <a href="post-new.php?post_type=pr_campaign" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        <a href="admin.php?page=peerraiser-campaigns&view=add" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div class="stats-container group">
@@ -78,10 +78,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <p class="stat"><strong><?= $peerraiser['donors_total'] ?></strong></strong></p>
                     </div>
                     <div class="stats-bottom view">
-                        <a href="edit.php?post_type=pr_donor" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
+                        <a href="admin.php?page=peerraiser-donors" class="view-all"><?php _e( 'View All', 'peerraiser'); ?></a>
                     </div>
                     <div class="stats-bottom add">
-                        <a href="post-new.php?post_type=pr_donor" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        <a href="admin.php?page=peerraiser-donors&view=add" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>
