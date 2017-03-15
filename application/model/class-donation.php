@@ -2,6 +2,9 @@
 
 namespace PeerRaiser\Model;
 
+use \PeerRaiser\Model\Database\Donation as Donation_Database;
+use \PeerRaiser\Model\Database\Donation_Meta;
+
 //TODO: 1. Set the team when a donation is made
 //      2. Save donation notes
 
@@ -233,7 +236,7 @@ class Donation {
             return false;
         }
 
-        $donation_table = new \PeerRaiser\Model\Database\Donation();
+        $donation_table = new Donation_Database();
 
         $args = array( 'number' => 1 );
 
@@ -265,7 +268,7 @@ class Donation {
     /**
      * Run when reading data from inaccessible properties.
      *
-     * @since  2.5
+     * @since  1.0.0
      * @param  string $key  The property
      * @return mixed        The value
      */
@@ -282,7 +285,7 @@ class Donation {
     /**
      * Run when writing data to inaccessible properties.
      *
-     * @since  2.5
+     * @since  1.0.0
      * @param string $key   The property name
      * @param mixed $value  The value of the property
      */
@@ -371,7 +374,7 @@ class Donation {
         // $this->last_name      = $this->user_info['last_name'];
 
         // Add your own items to this object via this hook:
-        do_action( 'peerraiser_setup_donation', $this, $donation );
+        do_action( 'peerraiser_after_setup_donation', $this, $donation );
 
         return true;
     }
@@ -384,7 +387,7 @@ class Donation {
      */
     private function insert_donation() {
         if ( empty( $this->transaction_id ) ) {
-            $this->transaction_id = $this->geneate_transaction_id();
+            $this->transaction_id = $this->generate_transaction_id();
         }
 
         // TODO: Create or update the donor record
@@ -404,7 +407,7 @@ class Donation {
             $this->date = date( 'Y-m-d H:i:s' );
         }
 
-        $donation_table = new \PeerRaiser\Model\Database\Donation();
+        $donation_table = new Donation_Database();
         $donation_id    = $donation_table->add_donation( $this );
 
         $this->ID  = $donation_id;
@@ -436,7 +439,7 @@ class Donation {
                         break;
 
                     case 'gateway' :
-                        $this->update_meta( 'gateway', $this->gate );
+                        $this->update_meta( 'gateway', $this->gateway );
                         break;
 
                     default :
@@ -455,7 +458,7 @@ class Donation {
     }
 
     public function delete() {
-		$donation_table = new \PeerRaiser\Model\Database\Donation();
+		$donation_table = new Donation_Database();
 		$donation_table->delete( $this->ID );
 	}
 
@@ -494,7 +497,7 @@ class Donation {
      * @since     1.0.0
      * @return    string    Random transaction id
      */
-    private function geneate_transaction_id() {
+    private function generate_transaction_id() {
         return md5( mt_rand() . time() );
     }
 
@@ -510,7 +513,7 @@ class Donation {
     public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
         $meta_value = apply_filters( 'peerraiser_update_donation_meta_' . $meta_key, $meta_value, $this->ID );
 
-        $donation_meta = new \PeerRaiser\Model\Database\Donation_Meta();
+        $donation_meta = new Donation_Meta();
 
         $result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
     }
