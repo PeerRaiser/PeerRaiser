@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Model;
 
+use WP_Term_Query;
+
 /**
  * Campaign Model
  *
@@ -290,11 +292,15 @@ class Campaign {
 	 * @return    int    Donation ID
 	 */
 	private function insert_campaign() {
-		if ( empty( $this->start_date ) ) {
+		if ( empty( $this->campaign_slug ) ) {
+		    $this->campaign_slug = $this->generate_campaign_slug();
+        }
+
+	    if ( empty( $this->start_date ) ) {
 			$this->start_date = date( 'Y-m-d H:i:s' );
 		}
 
-		$campaign_id = wp_insert_term( $this->campaign_slug, 'peerraiser_campaign', $args = array() )
+		$campaign_id = wp_insert_term( $this->campaign_slug, 'peerraiser_campaign', $args = array() );
 
 		$this->ID  = $campaign_id;
 		$this->_ID = $campaign_id;
@@ -335,60 +341,20 @@ class Campaign {
 			}
 		}
 
-		do_action( 'peerraiser_donation_saved', $this->ID, $this );
+		do_action( 'peerraiser_campaign_saved', $this->ID, $this );
 
 		$cache_key = md5( 'peerraiser_donation_' . $this->ID );
-		wp_cache_set( $cache_key, $this, 'donations' );
+		wp_cache_set( $cache_key, $this, 'campaigns' );
 
 		return true;
 	}
 
 	public function delete() {
-		$donation_table = new \PeerRaiser\Model\Database\Donation();
-		$donation_table->delete( $this->ID );
+		// Delete the term
 	}
 
 	/**
-	 * Gets the IP address
-	 *
-	 * Returns the IP address of the current user
-	 *
-	 * @since 1.0.0
-	 * @return string $ip User's IP address
-	 */
-	private function get_ip_address() {
-
-		$ip = '127.0.0.1';
-
-		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
-		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} elseif( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-			$ip = $_SERVER['REMOTE_ADDR'];
-		}
-
-		$ip_array = explode( ',', $ip );
-		$ip_array = array_map( 'trim', $ip_array );
-
-		return apply_filters( 'peerraiser_set_ip', $ip_array[0] );
-	}
-
-	/**
-	 * Generate a random transaction ID
-	 *
-	 * This is used if a transaction ID wasn't passed by PeerRaiser.com
-	 * For example, if this donation was added manually.
-	 *
-	 * @since     1.0.0
-	 * @return    string    Random transaction id
-	 */
-	private function geneate_transaction_id() {
-		return md5( mt_rand() . time() );
-	}
-
-	/**
-	 * Update donation meta
+	 * Update campaign meta
 	 *
 	 * @since     1.0.0
 	 * @param     string    $meta_key      Meta key to update
@@ -397,10 +363,17 @@ class Campaign {
 	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
 	 */
 	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		$meta_value = apply_filters( 'peerraiser_update_donation_meta_' . $meta_key, $meta_value, $this->ID );
-
-		$donation_meta = new \PeerRaiser\Model\Database\Donation_Meta();
-
-		$result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+		// Save term meta
 	}
+
+    /**
+     * Generate a safe campaign slug
+     *
+     * @since     1.0.0
+     * @return    string    campaign slug
+     */
+    private function generate_campaign_slug() {
+        $campaign_title = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $this->campaign_name ) ) );
+        return sanitize_title_with_dashes( $campaign_title, null, 'save' );
+    }
 }
