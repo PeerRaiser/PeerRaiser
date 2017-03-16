@@ -2,7 +2,16 @@
 
 namespace PeerRaiser\Controller\Admin;
 
-class Campaigns extends \PeerRaiser\Controller\Base {
+use \PeerRaiser\Controller\Base;
+use \PeerRaiser\Model\Admin\Admin_Notices as Admin_Notices_Model;
+use \PeerRaiser\Model\Campaign;
+use \PeerRaiser\Model\Currency;
+use \PeerRaiser\Model\Admin\Campaign_List_Table;
+use \PeerRaiser\Core\Setup;
+use \PeerRaiser\Helper\Stats;
+use \PeerRaiser\Helper\View;
+
+class Campaigns extends Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                          array( $this, 'register_meta_boxes' ) );
@@ -17,6 +26,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         add_action( 'pre_get_posts',                            array( $this, 'add_sort_type' ) );
         add_action( 'admin_head',                               array( $this, 'remove_date_filter' ) );
         add_action( 'add_meta_boxes',                           array( $this, 'add_meta_boxes' ) );
+		add_action( 'peerraiser_add_campaign',	                array( $this, 'handle_add_campaign' ) );
     }
 
     /**
@@ -27,7 +37,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        $currency        = new \PeerRaiser\Model\Currency();
+        $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $default_views = array( 'list', 'add', 'edit' );
@@ -41,7 +51,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
-            'list_table'           => new \PeerRaiser\Model\Admin\Campaign_List_Table(),
+            'list_table'           => new Campaign_List_Table(),
         );
         $this->assign( 'peerraiser', $view_args );
 
@@ -80,15 +90,15 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         // Register and enqueue styles
         wp_register_style(
             'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
+            Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
             array('peerraiser-font-awesome'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+            Setup::get_plugin_config()->get('version')
         );
         wp_register_style(
             'peerraiser-admin-campaigns',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-campaigns.css',
+            Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-campaigns.css',
             array('peerraiser-font-awesome', 'peerraiser-admin'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
+            Setup::get_plugin_config()->get('version')
         );
         wp_enqueue_style( 'peerraiser-admin' );
         wp_enqueue_style( 'peerraiser-admin-campaigns' );
@@ -98,9 +108,9 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         // Register and enqueue scripts
         wp_register_script(
             'peerraiser-admin-campaigns',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-campaigns.js',
+            Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-campaigns.js',
             array( 'jquery', 'peerraiser-admin' ),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
+            Setup::get_plugin_config()->get('version'),
             true
         );
         wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
@@ -123,7 +133,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * After post meta is added, add the connections
      *
      * @since    1.0.0
-     * @param    \PeerRaiser\Core\Event    $event
      * @return   null
      * @todo  Remove or modify this
      */
@@ -153,7 +162,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * Before the post meta is updated, update the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      * @todo  Remove or modify this
      */
@@ -193,7 +201,6 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      * Before post meta is deleted, delete the connections
      *
      * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
      * @return    null
      * @todo  Remove or modify this
      */
@@ -249,12 +256,12 @@ class Campaigns extends \PeerRaiser\Controller\Base {
      */
     public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
+        $currency = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         switch ( $column_name ) {
             case 'amount_raised':
-                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_campaign( $post_id );
+                echo $currency_symbol . Stats::get_total_donations_by_campaign( $post_id );
                 break;
 
             case 'goal_amount':
@@ -459,7 +466,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $campaign_fundraisers = $campaigns->get_fundraisers( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
-        $currency        = new \PeerRaiser\Model\Currency();
+        $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $args = array(
@@ -467,7 +474,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'paged'        => isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1,
             'paged_name'   => 'fundraisers_page'
         );
-        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+        $pagination = View::get_admin_pagination( $args );
 
         $view_args = array(
             'number_of_fundraisers' => $campaign_fundraisers->found_posts,
@@ -489,7 +496,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $campaign_donations = $campaigns->get_donations( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
-        $currency        = new \PeerRaiser\Model\Currency();
+        $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $args = array(
@@ -497,7 +504,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'paged'        => isset($_GET['donations_page']) ? $_GET['donations_page'] : 1,
             'paged_name'   => 'donations_page'
         );
-        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+        $pagination = View::get_admin_pagination( $args );
 
         $view_args = array(
             'number_of_donations' => $campaign_donations->found_posts,
@@ -519,7 +526,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
         $campaign_teams = $campaigns->get_teams( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
-        $currency        = new \PeerRaiser\Model\Currency();
+        $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $args = array(
@@ -527,7 +534,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             'paged'        => isset($_GET['teams_page']) ? $_GET['teams_page'] : 1,
             'paged_name'   => 'teams_page'
         );
-        $pagination = \PeerRaiser\Helper\View::get_admin_pagination( $args );
+        $pagination = View::get_admin_pagination( $args );
 
         $view_args = array(
             'number_of_teams' => $campaign_teams->found_posts,
@@ -543,7 +550,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
     public function display_campaign_stats( $post ) {
         $plugin_options  = get_option( 'peerraiser_options', array() );
-        $currency        = new \PeerRaiser\Model\Currency();
+        $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $end_date = get_post_meta( $post->ID, '_peerraiser_campaign_end_date', true );
@@ -556,7 +563,7 @@ class Campaigns extends \PeerRaiser\Controller\Base {
             $days_left = floor($difference/60/60/24);
         }
 
-        $total_donations = \PeerRaiser\Helper\Stats::get_total_donations_by_campaign( $post->ID );
+        $total_donations = Stats::get_total_donations_by_campaign( $post->ID );
 
         $view_args = array(
             'currency_symbol' => $currency_symbol,
@@ -572,5 +579,77 @@ class Campaigns extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/campaign-stats' );
     }
+
+	public function handle_add_campaign() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_campaign_nonce' ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$validation = $this->is_valid_campaign();
+		if ( ! $validation['is_valid'] ) {
+			return;
+		}
+
+		$campaign = new Campaign();
+
+		// Required Fields
+		$campaign->campaign_name             = $_REQUEST['_peerraiser_campaign_title'];
+		$campaign->campaign_goal             = $_REQUEST['_peerraiser_campaign_goal'];
+		$campaign->suggested_individual_goal = $_REQUEST['_peerraiser_suggested_individual_goal'];
+		$campaign->suggested_team_goal       = $_REQUEST['_peerraiser_suggested_team_goal'];
+
+		// Optional Fields
+		//$campaign->start_date = isset( $_REQUEST['_peerraiser_start_game'] ) ? $absint( $_REQUEST['_peerraiser_start_game'] ) : 0;
+
+		// Save to the database
+		$campaign->save();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-campaigns',
+			'view' => 'summary',
+			'campaign_id' => $campaign->ID
+		), admin_url( 'admin.php' ) );
+
+		// Redirect to the edit screen for this new donation
+		wp_safe_redirect( $location );
+	}
+
+	/**
+	 * Checks if the fields are valid
+	 *
+	 * @todo Check formatting of goal amounts
+	 * @since     1.0.0
+	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+	 */
+	private function is_valid_campaign() {
+		$required_fields = array( '_peerraiser_campaign_title', '_peerraiser_campaign_goal', '_peerraiser_suggested_individual_goal', '_peerraiser_suggested_team_goal' );
+
+		$data = array(
+			'is_valid'     => true,
+			'field_errors' => array(),
+		);
+
+		foreach ( $required_fields as $field ) {
+			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+				$data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
+			}
+		}
+
+		if ( ! empty( $data['field_errors'] ) ) {
+			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
+			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
+
+			wp_localize_script(
+				'jquery',
+				'peerraiser_field_errors',
+				$data['field_errors']
+			);
+
+			$data['is_valid'] = false;
+		}
+
+		return $data;
+	}
 
 }
