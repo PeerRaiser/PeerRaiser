@@ -7,12 +7,12 @@ use WP_Term_Query;
 /**
  * Campaign Model
  *
- * Use this class to interact with PeerRaiser Donations
+ * Use this class to interact with PeerRaiser Campaigns
  */
 class Campaign {
 
 	/**
-	 * The Donation ID
+	 * The Campaign ID
 	 *
 	 * @since  1.0.0
 	 * @var    integer
@@ -20,7 +20,7 @@ class Campaign {
 	public    $ID  = 0;
 
 	/**
-	 * The Protected Donation ID
+	 * The Protected Campaign ID
 	 *
 	 * @since  1.0.0
 	 * @var    integer
@@ -149,7 +149,7 @@ class Campaign {
 
 	/**
 	 * Array of items that have changed since the last save() was run
-	 * This is for internal use, to allow fewer update_donation_meta calls to be run
+	 * This is for internal use, to allow fewer update_campaign_meta calls to be run
 	 *
 	 * @since  1.0.0
 	 * @var array
@@ -157,7 +157,7 @@ class Campaign {
 	private $pending;
 
 	/**
-	 * Setup donation class
+	 * Setup campaign class
 	 *
 	 * @since 1.0.0
 	 * @param int|boolean $id Campaign ID
@@ -238,16 +238,16 @@ class Campaign {
 	}
 
 	/**
-	 * Setup the donation properties
+	 * Setup the campaign properties
 	 *
 	 * @since  1.0.0
-	 * @param  object $campaign A donation object
+	 * @param  object $campaign A campaign object
 	 * @return bool             True if the setup worked, false if not
 	 */
 	private function setup_campaign( $campaign ) {
 		$this->pending = array();
 
-		// Perform your actions before the donation is loaded with this hook:
+		// Perform your actions before the campaign is loaded with this hook:
 		do_action( 'peerraiser_before_setup_campaign', $this, $campaign );
 
 		// Primary Identifier
@@ -286,10 +286,10 @@ class Campaign {
 	}
 
 	/**
-	 * Creates a donation record in the database
+	 * Creates a campaign record in the database
 	 *
 	 * @since     1.0.0
-	 * @return    int    Donation ID
+	 * @return    int    Campaign ID
 	 */
 	private function insert_campaign() {
 		if ( empty( $this->campaign_slug ) ) {
@@ -325,32 +325,28 @@ class Campaign {
 
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
-				switch( $key ) {
-					case 'donation_type' :
-						$this->update_meta( 'donation_type', $this->donation_type );
-						break;
-
-					case 'gateway' :
-						$this->update_meta( 'gateway', $this->gate );
-						break;
-
-					default :
-						do_action( 'peerraiser_donation_save', $this, $key );
-						break;
-				}
+				if ( property_exists( $this, $key ) ) {
+                    $this->update_meta( $key, $value );
+                    unset( $this->pending[ $key ] );
+                } else {
+                    do_action( 'peerraiser_campaign_save', $this, $key );
+                }
 			}
 		}
 
 		do_action( 'peerraiser_campaign_saved', $this->ID, $this );
 
-		$cache_key = md5( 'peerraiser_donation_' . $this->ID );
+		$cache_key = md5( 'peerraiser_campaign_' . $this->ID );
 		wp_cache_set( $cache_key, $this, 'campaigns' );
 
 		return true;
 	}
 
+    /**
+     * Delete the campaign
+     */
 	public function delete() {
-		// Delete the term
+        wp_delete_term( $this->ID, 'peerraiser_campaign' );
 	}
 
 	/**
@@ -360,10 +356,11 @@ class Campaign {
 	 * @param     string    $meta_key      Meta key to update
 	 * @param     string    $meta_value    Meta value
 	 * @param     string    $prev_value    Previous value
+     *
 	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
 	 */
 	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		// Save term meta
+        return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
     /**
