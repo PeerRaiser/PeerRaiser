@@ -250,11 +250,10 @@ class Campaign {
 		// Perform your actions before the campaign is loaded with this hook:
 		do_action( 'peerraiser_before_setup_campaign', $this, $campaign );
 
-		// Primary Identifier
+		// Primary Identifiers
 		$this->ID = absint( $campaign->term_id );
-
-		// Protected ID (can't be changed)
 		$this->_ID = absint( $campaign->term_id);
+		$this->campaign_slug = $campaign->slug;
 
 		// Dates
 		$this->start_date  = get_term_meta( $this->ID, '_peerraiser_campaign_start_date', true );
@@ -300,7 +299,7 @@ class Campaign {
 			$this->start_date = date( 'Y-m-d H:i:s' );
 		}
 
-		$campaign_id = wp_insert_term( $this->campaign_slug, 'peerraiser_campaign', $args = array() );
+		$campaign_id = wp_insert_term( $this->campaign_name, 'peerraiser_campaign', $args = array() );
 
 		$this->ID  = $campaign_id;
 		$this->_ID = $campaign_id;
