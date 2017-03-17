@@ -21,10 +21,6 @@ class Campaigns extends Base {
         // add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
         // add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
         add_action( 'cmb2_save_post_fields',                    array( $this, 'maybe_set_start_date' ) );
-        add_action( 'manage_pr_campaign_posts_custom_column',   array( $this, 'manage_columns' ) );
-        add_action( 'manage_edit-pr_campaign_sortable_columns', array( $this, 'sort_columns' ) );
-        add_action( 'pre_get_posts',                            array( $this, 'add_sort_type' ) );
-        add_action( 'admin_head',                               array( $this, 'remove_date_filter' ) );
         add_action( 'add_meta_boxes',                           array( $this, 'add_meta_boxes' ) );
 		add_action( 'peerraiser_add_campaign',	                array( $this, 'handle_add_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',        		array( $this, 'delete_campaign' ) );
@@ -229,71 +225,6 @@ class Campaigns extends Base {
 
     }
 
-    /**
-     * Maybe set start date
-     *
-     * If the start date isn't set, set it to today's date.
-     *
-     * @todo  Maybe add check to make sure this is the campaign taxonomy being updated
-     */
-    public function maybe_set_start_date( $object_id, $cmb_id, $updated, $cmb ) {
-        $post_type = get_post_type($object_id);
-
-        $start_date     = get_post_meta( $object_id, '_peerraiser_campaign_start_date', true );
-        $post_status    = get_post_status( $object_id );
-        $allowed_status = array( 'publish', 'future', 'private');
-
-        if ( empty( $start_date ) && in_array($post_status, $allowed_status) ) {
-            $date = current_time( 'timestamp' );
-            // $_POST['_peerraiser_campaign_start_date'] = $date;
-            $results = update_post_meta( (int) $object_id, '_peerraiser_campaign_start_date', (string) $date);
-        }
-    }
-
-    /**
-     * Manage Columns
-     *
-     * @todo     Remove this or move it to the campaign list table model
-     */
-    public function manage_columns( $column_name, $post_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        switch ( $column_name ) {
-            case 'amount_raised':
-                echo $currency_symbol . Stats::get_total_donations_by_campaign( $post_id );
-                break;
-
-            case 'goal_amount':
-                $goal_amount = get_post_meta( $post_id, '_peerraiser_campaign_goal', true);
-                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
-                break;
-
-            case 'fundraisers':
-                echo $this->get_total_fundraisers( $post_id );
-                break;
-
-            case 'teams':
-                echo $this->get_total_teams( $post_id );
-                break;
-
-            case 'donations':
-                echo $this->get_total_donations( $post_id );
-                break;
-
-            case 'start_date':
-                $start_date = get_post_meta( $post_id, '_peerraiser_campaign_start_date', true );
-                echo ( !empty($start_date) ) ? date_i18n( get_option( 'date_format' ), $start_date ) : '&ndash;';
-                break;
-
-            case 'end_date':
-                $end_date = get_post_meta( $post_id, '_peerraiser_campaign_end_date', true );
-                echo ( !empty($end_date) ) ? date_i18n( get_option( 'date_format' ), $end_date ) : '&infin;';
-                break;
-        }
-    }
-	
     /**
      * Get Total Fundraisers
      *
