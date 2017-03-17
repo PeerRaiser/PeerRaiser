@@ -301,7 +301,7 @@ class Campaign {
         }
 
 	    if ( empty( $this->start_date ) ) {
-			$this->start_date = date( 'Y-m-d H:i:s' );
+			$this->start_date = current_time( 'timestamp' );
 		}
 
 		$campaign = wp_insert_term(
