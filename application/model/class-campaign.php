@@ -299,10 +299,15 @@ class Campaign {
 			$this->start_date = date( 'Y-m-d H:i:s' );
 		}
 
-		$campaign_id = wp_insert_term( $this->campaign_name, 'peerraiser_campaign', $args = array() );
+		$campaign = wp_insert_term(
+		    $this->campaign_name,
+            'peerraiser_campaign',
+            $args = array(
+                'slug' => $this->campaign_slug,
+            ) );
 
-		$this->ID  = $campaign_id;
-		$this->_ID = $campaign_id;
+		$this->ID  = $campaign['term_id'];
+		$this->_ID = $campaign['term_id'];
 
 		return $this->ID;
 	}
@@ -325,7 +330,7 @@ class Campaign {
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
 				if ( property_exists( $this, $key ) ) {
-                    $this->update_meta( $key, $value );
+				    $response = $this->update_meta( $key, $value );
                     unset( $this->pending[ $key ] );
                 } else {
                     do_action( 'peerraiser_campaign_save', $this, $key );
