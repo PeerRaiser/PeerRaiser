@@ -167,21 +167,25 @@ class Campaign {
 			return false;
 		}
 
+		$id = absint( $id );
+
 		// WP_Term_Query arguments
 		$args = array(
 			'taxonomy'               => array( 'peerraiser_campaign' ),
-			'include'                => array( 1 ),
+			'include'                => array( $id ),
 			'number'                 => 1,
 			'hide_empty'             => false,
 		);
 
 		$campaign = new WP_Term_Query( $args );
 
-		if ( ! empty( $term_query ) || is_wp_error( $campaign ) ) {
+		if ( empty( $campaign->terms ) || is_wp_error( $campaign ) ) {
 			return false;
 		}
 
-		$this->setup_campaign( $campaign );
+		error_log( '$campaign->terms[0]: ' . print_r( $campaign->terms[0], 1 ) );
+
+		$this->setup_campaign( $campaign->terms[0] );
 
 		return $this;
 	}
@@ -251,8 +255,9 @@ class Campaign {
 		do_action( 'peerraiser_before_setup_campaign', $this, $campaign );
 
 		// Primary Identifiers
-		$this->ID = absint( $campaign->term_id );
-		$this->_ID = absint( $campaign->term_id);
+		$this->ID			 = absint( $campaign->term_id );
+		$this->_ID           = absint( $campaign->term_id);
+		$this->campaign_name = $campaign->name;
 		$this->campaign_slug = $campaign->slug;
 
 		// Dates

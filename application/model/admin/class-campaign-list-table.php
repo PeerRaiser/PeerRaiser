@@ -8,6 +8,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 use \WP_List_Table;
 use \WP_Term_Query;
+use \PeerRaiser\Model\Campaign;
 
 /**
  * Class for displaying the list of campaigns
@@ -32,16 +33,24 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return string
      */
-    public function column_name( $item ) {
-        // create a nonce
-        $delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign' );
+	function column_name( $item ) {
+		// create a nonce
+		$delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign_' . $item['id'] );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'campaign' => $item['id'], 'view' => 'campaign-details' ) ) . '">' . $item['name'] . '</a> <span class="meta">('.$item['id'].')</span></strong>';
+		$campaign = new Campaign(  $item['id'] );
 
-        $actions = array();
+		error_log( print_r( $campaign, 1 ) );
 
-        return $title . $this->row_actions( $actions );
-    }
+		$title = '<a href="' . add_query_arg( array( 'campaign' => $item['id'], 'view' => 'campaign-details' ) ) . '">' . $campaign->campaign_name . '</a>';
+
+
+		$actions = array(
+			'view' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['id'] ) ),
+			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&campaign_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_campaign', absint( $item['id'] ), $delete_nonce ),
+		);
+
+		return $title . $this->row_actions( apply_filters( 'peerraiser_campaign_actions', $actions ) );
+	}
 
     /**
      * Retrieve the view types
