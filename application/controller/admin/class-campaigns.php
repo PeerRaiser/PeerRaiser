@@ -27,6 +27,7 @@ class Campaigns extends Base {
         add_action( 'admin_head',                               array( $this, 'remove_date_filter' ) );
         add_action( 'add_meta_boxes',                           array( $this, 'add_meta_boxes' ) );
 		add_action( 'peerraiser_add_campaign',	                array( $this, 'handle_add_campaign' ) );
+		add_action( 'peerraiser_delete_campaign',        		array( $this, 'delete_campaign' ) );
     }
 
     /**
@@ -292,84 +293,7 @@ class Campaigns extends Base {
                 break;
         }
     }
-
-    /**
-     * Sort Columns
-     *
-     * @todo     Remove this or move it to the campaign list table model
-     */
-    public function sort_columns( $sortable_columns ){
-
-        $sortable_columns['start_date'] = 'campaign_start_date';
-        $sortable_columns['end_date'] = 'campaign_end_date';
-
-        $event->set_result( $sortable_columns );
-    }
-
-    /**
-     * Add Sort Type
-     *
-     * @todo     Remove this or move it to the campaign list table model
-     */
-    public function add_sort_type( $query ){
-
-        if ( ! is_admin() )
-                return;
-
-        $orderby = $query->get( 'orderby');
-
-        switch ( $orderby ) {
-
-            case 'amount_raised':
-
-            case 'campaign_start_date':
-                $query->set('meta_query', array(
-                    'relation' => 'OR',
-                    array(
-                        'key'=>'_peerraiser_campaign_start_date',
-                        'compare' => 'EXISTS'
-                    ),
-                    array(
-                        'key'=>'_peerraiser_campaign_start_date',
-                        'compare' => 'NOT EXISTS'
-                    )
-                ));
-                $query->set('orderby','meta_value_num');
-                break;
-
-            case 'campaign_end_date':
-                $query->set('meta_query', array(
-                    'relation' => 'OR',
-                    array(
-                        'key'=>'_peerraiser_campaign_end_date',
-                        'compare' => 'EXISTS'
-                    ),
-                    array(
-                        'key'=>'_peerraiser_campaign_end_date',
-                        'compare' => 'NOT EXISTS'
-                    )
-                ));
-                $query->set('orderby','meta_value_num');
-                break;
-        }
-
-    }
-
-    /**
-     * Remove date filter
-     *
-     * @todo     Remove this or move it to the campaign list table model
-     */
-    public function remove_date_filter(){
-        $screen = get_current_screen();
-
-        if ( $screen->post_type === 'pr_campaign' ) {
-            add_filter('months_dropdown_results', '__return_empty_array');
-        }
-
-    }
-
-
+	
     /**
      * Get Total Fundraisers
      *
@@ -612,6 +536,23 @@ class Campaigns extends Base {
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
+		wp_safe_redirect( $location );
+	}
+
+	public function delete_campaign() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_campaign_' . $_REQUEST['campaign_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		// Delete the donation
+		$campaign = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign_id'] );
+		$campaign->delete();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-campaigns'
+		), admin_url( 'admin.php' ) );
+
 		wp_safe_redirect( $location );
 	}
 
