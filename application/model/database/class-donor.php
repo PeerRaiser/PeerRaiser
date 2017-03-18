@@ -29,11 +29,13 @@ class Donor extends Database {
     */
     public function get_columns() {
         return array(
-            'donor_id'      => '%d',
-            'donor_name'    => '%s',
-			'email_address' => '%s',
-            'user_id'       => '%d',
-            'date'          => '%s',
+            'donor_id'       => '%d',
+			'user_id'        => '%d',
+			'donor_name'     => '%s',
+			'email_address'  => '%s',
+			'donation_value' => '%f',
+			'donation_count' => '%d',
+            'date'           => '%s',
         );
     }
 
@@ -45,11 +47,13 @@ class Donor extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donor_id'      => 0,
-            'donor_name'    => '',
-			'email_address' => '',
-            'user_id'       => 0,
-            'date'          => date( 'Y-m-d H:i:s' ),
+            'donor_id'       => 0,
+            'donor_name'     => '',
+			'email_address'  => '',
+            'user_id'        => 0,
+			'donation_value' => '0.00',
+			'donation_count' => 0,
+            'date'           => date( 'Y-m-d H:i:s' ),
         );
     }
 
