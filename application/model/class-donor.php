@@ -2,6 +2,7 @@
 
 namespace PeerRaiser\Model;
 
+use PeerRaiser\Model\Database\Donation;
 use \PeerRaiser\Model\Database\Donor as Donor_Database;
 use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donor_Meta;
@@ -182,8 +183,8 @@ class Donor {
 		$this->donor_name     = $donor->donor_name;
 		$this->email_address  = $donor->email_address;
 		$this->date           = $donor->date;
-		$this->donation_count = $this->setup_donation_count();
-		$this->user_id        = $this->setup_user_id();
+		$this->donation_count = $this->donation_count;
+		$this->user_id        = $this->user_id;
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_donor', $this, $donor );
@@ -224,6 +225,11 @@ class Donor {
 
 		if ( $this->ID !== $this->_ID ) {
 			$this->ID = $this->_ID;
+		}
+
+		// Attempt to connect donor to existing user
+		if ( 0 === $this->user_id) {
+			$this->user_id = $this->maybe_connect_user();
 		}
 
 		if ( ! empty( $this->pending ) ) {
@@ -282,8 +288,16 @@ class Donor {
 	 *
 	 * @return int User ID (0 if no user found)
 	 */
-	private function setup_user_id( ) {
+	private function maybe_connect_user( ) {
 		if ( ! is_email( $this->email_address ) ) {
+			return 0;
+		}
+
+		$donation_table = new Donor_Database();
+		$donor_count = $donation_table->count( array( 'email_address' => $this->email_address ) );
+
+		// If there's already a donor using this email address
+		if ( $donor_count > 0 ) {
 			return 0;
 		}
 
