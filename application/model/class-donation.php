@@ -404,7 +404,7 @@ class Donation {
         }
 
         if ( empty( $this->date ) ) {
-            $this->date = date( 'Y-m-d H:i:s' );
+            $this->date = current_time( 'timestamp' );
         }
 
         $donation_table = new Donation_Database();
