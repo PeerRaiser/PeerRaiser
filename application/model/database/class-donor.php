@@ -6,7 +6,7 @@ use PeerRaiser\Core\Database;
 class Donor extends Database {
 
     /**
-     * Instaniate the class
+     * Instantiate the class
      *
      * @access  public
      * @since   1.0.0
@@ -31,6 +31,7 @@ class Donor extends Database {
         return array(
             'donor_id'      => '%d',
             'donor_name'    => '%s',
+			'email_address' => '%s',
             'user_id'       => '%d',
             'date'          => '%s',
         );
@@ -44,10 +45,11 @@ class Donor extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donor_id'   => 0,
-            'donor_name' => '',
-            'user_id'    => 0,
-            'date'       => date( 'Y-m-d H:i:s' ),
+            'donor_id'      => 0,
+            'donor_name'    => '',
+			'email_address' => '',
+            'user_id'       => 0,
+            'date'          => date( 'Y-m-d H:i:s' ),
         );
     }
 
@@ -70,6 +72,7 @@ class Donor extends Database {
             'offset'        => 0,
             'donor_id'      => 0,
             'donor_name'    => '',
+			'email_address' => '',
             'orderby'       => 'donor_id',
             'order'         => 'ASC',
         );
@@ -104,92 +107,33 @@ class Donor extends Database {
             $where .= sprintf(" `donor_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
         }
 
-        if ( ! empty( $args['status'] ) ) {
+		// By donor name
+		if ( ! empty( $args['email_address'] ) ) {
+			if ( empty( $where ) ) {
+				$where .= " WHERE";
+			} else {
+				$where .= " AND";
+			}
 
-            if ( empty( $where ) ) {
-                $where .= " WHERE";
-            } else {
-                $where .= " AND";
-            }
+			$where .= sprintf(" `email_address` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['email_address']) . "%%" );
+		}
 
-            if ( is_array( $args['status'] ) ) {
-                $where .= " `status` IN('" . implode( "','", $args['status'] ) . "') ";
-            } else {
-                $where .= " `status` = '" . $args['status'] . "' ";
-            }
+        // By date
+		if ( ! empty( $args['date'] ) ) {
+			$year  = date( 'Y', strtotime( $args['date'] ) );
+			$month = date( 'm', strtotime( $args['date'] ) );
+			$day   = date( 'd', strtotime( $args['date'] ) );
 
-        }
+			if ( empty( $where ) ) {
+				$where .= " WHERE";
+			} else {
+				$where .= " AND";
+			}
 
-        if ( ! empty( $args['date'] ) ) {
-
-            if ( is_array( $args['date'] ) ) {
-
-                if ( ! empty( $args['date']['start'] ) ) {
-
-                    if ( false !== strpos( $args['date']['start'], ':' ) ) {
-                        $format = 'Y-m-d H:i:s';
-                    } else {
-                        $format = 'Y-m-d 00:00:00';
-                    }
-
-                    $start = date( $format, strtotime( $args['date']['start'] ) );
-
-                    if ( ! empty( $where ) ) {
-
-                        $where .= " AND `date` >= '{$start}'";
-
-                    } else {
-
-                        $where .= " WHERE `date` >= '{$start}'";
-
-                    }
-
-                }
-
-                if ( ! empty( $args['date']['end'] ) ) {
-
-                    if ( false !== strpos( $args['date']['end'], ':' ) ) {
-                        $format = 'Y-m-d H:i:s';
-                    } else {
-                        $format = 'Y-m-d 23:59:59';
-                    }
-
-                    $end = date( $format, strtotime( $args['date']['end'] ) );
-
-                    if ( ! empty( $where ) ) {
-
-                        $where .= " AND `date` <= '{$end}'";
-
-                    } else {
-
-                        $where .= " WHERE `date` <= '{$end}'";
-
-                    }
-
-                }
-
-            } else {
-
-                $year  = date( 'Y', strtotime( $args['date'] ) );
-                $month = date( 'm', strtotime( $args['date'] ) );
-                $day   = date( 'd', strtotime( $args['date'] ) );
-
-                if ( empty( $where ) ) {
-                    $where .= " WHERE";
-                } else {
-                    $where .= " AND";
-                }
-
-                $where .= " $year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date )";
-            }
-
+			$where .= " $year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date )";
         }
 
         $args['orderby'] = ! array_key_exists( $args['orderby'], $this->get_columns() ) ? $this->primary_key : $args['orderby'];
-
-        if ( 'amount' === $args['orderby'] ) {
-            $args['orderby'] = 'amount+0';
-        }
 
         $cache_key = ( true === $count ) ? md5( 'pr_donors_count' . serialize( $args ) ) : md5( 'pr_donors_' . serialize( $args ) );
 
@@ -246,6 +190,7 @@ class Donor extends Database {
         $sql = "CREATE TABLE " . $this->table_name . " (
         donor_id bigint(20) NOT NULL AUTO_INCREMENT,
         donor_name text NOT NULL,
+        email_address varchar(254) NOT NULL,
         user_id bigint(20) NOT NULL DEFAULT 0,
         date datetime NOT NULL,
         PRIMARY KEY  (donor_id)
