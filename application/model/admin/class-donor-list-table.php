@@ -6,6 +6,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use \PeerRaiser\Model\Donor;
 use \WP_List_Table;
 
 /**
@@ -31,20 +32,21 @@ class Donor_List_Table extends WP_List_Table {
      *
      * @return string
      */
-    function column_name( $item ) {
-        // create a nonce
-        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donor' );
+	function column_name( $item ) {
+		// create a nonce
+		$delete_nonce = wp_create_nonce( 'peerraiser_delete_donor_' . $item['donor_id'] );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'donor-details' ) ) . '">' . $item['name'] . '</a></strong>';
+		$donor = new Donor( $item['donor_id'] );
 
-        // $actions = array(
-        //     'delete' => sprintf( '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete', absint( $item['ID'] ), $delete_nonce )
-        // );
+		$title = '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a>';
 
-        $actions = array();
+		$actions = array(
+			'view' => sprintf( '<a href="?page=%s&view=%s&donor=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donor_id'] ) ),
+			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donor_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donor', absint( $item['donor_id'] ), $delete_nonce ),
+		);
 
-        return $title . $this->row_actions( $actions );
-    }
+		return $title . $this->row_actions( apply_filters( 'peerraiser_donor_actions', $actions ) );
+	}
 
     /**
      * Render a column when no column specific method exists.
