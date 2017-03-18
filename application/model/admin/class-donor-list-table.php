@@ -7,6 +7,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 use \PeerRaiser\Model\Donor;
+use \PeerRaiser\Model\Database\Donor as Donor_DB;
 use \WP_List_Table;
 
 /**
@@ -34,15 +35,15 @@ class Donor_List_Table extends WP_List_Table {
      */
 	function column_name( $item ) {
 		// create a nonce
-		$delete_nonce = wp_create_nonce( 'peerraiser_delete_donor_' . $item['donor_id'] );
+		$delete_nonce = wp_create_nonce( 'peerraiser_delete_donor_' . $item->donor_id );
 
-		$donor = new Donor( $item['donor_id'] );
+		$donor = new Donor( $item->donor_id );
 
-		$title = '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a>';
+		$title = '<a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a>';
 
 		$actions = array(
-			'view' => sprintf( '<a href="?page=%s&view=%s&donor=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donor_id'] ) ),
-			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donor_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donor', absint( $item['donor_id'] ), $delete_nonce ),
+			'view' => sprintf( '<a href="?page=%s&view=%s&donor=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->donor_id ) ),
+			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donor_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donor', absint( $item->donor_id ), $delete_nonce ),
 		);
 
 		return $title . $this->row_actions( apply_filters( 'peerraiser_donor_actions', $actions ) );
@@ -57,11 +58,17 @@ class Donor_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default( $item, $column_name ) {
+    	$donor = new Donor( $item->donor_id );
+
         switch ( $column_name ) {
+			case 'email_address':
+				return $donor->email_address;
+			case 'donations' :
+				return $donor->donation_count;
             case 'amount':
-                return empty( $item[ $column_name ] ) ? '$0.00' : '$'. number_format( $item[ $column_name ], 2 );
+                return empty( $item->amount ) ? '$0.00' : '$'. number_format( $item->amount, 2 );
             case 'date':
-                $date = strtotime( $item[ $column_name ] );
+                $date = strtotime( $donor->date );
                 return date('m-d-Y', $date);
             default:
                 return print_r( $item, true ); //Show the whole array for troubleshooting purposes
@@ -77,7 +84,7 @@ class Donor_List_Table extends WP_List_Table {
      */
     function column_cb( $item ) {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['ID']
+            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item->donor_id
         );
     }
 
@@ -88,10 +95,12 @@ class Donor_List_Table extends WP_List_Table {
      */
     function get_columns() {
         $columns = array(
-            'cb'     => '<input type="checkbox" />',
-            'name'   => __( 'Name', 'peerraiser' ),
-            'amount' => __( 'Amount', 'peerraiser' ),
-            'date'   => __( 'Date', 'peerraiser' ),
+            'cb'            => '<input type="checkbox" />',
+            'name'          => __( 'Name', 'peerraiser' ),
+			'email_address' => __( 'Email', 'peerraiser' ),
+			'donations'     => __( 'Donations', 'peerraiser' ),
+            'amount'        => __( 'Total Donated', 'peerraiser' ),
+            'date'          => __( 'Date', 'peerraiser' ),
         );
 
       return $columns;
@@ -147,7 +156,11 @@ class Donor_List_Table extends WP_List_Table {
             'per_page'    => $per_page
         ) );
 
-        $donors = $this->get_donors( $per_page, $current_page );
+        $donors = new Donor_DB();
+        $donors = $donors->get_donors( array(
+        	'number' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page
+		) );
 
         $this->items = $donors;
     }
@@ -192,35 +205,6 @@ class Donor_List_Table extends WP_List_Table {
     /** Text displayed when no donor data is available */
     public function no_items() {
         _e( 'No donors found.', 'peerraiser' );
-    }
-
-    /**
-     * Retrieve donor’s data from the database
-     *
-     * @param int $per_page
-     * @param int $page_number
-     *
-     * @return mixed
-     */
-    public function get_donors( $per_page = 10, $page_number = 1 ) {
-
-        global $wpdb;
-
-        $sql = "SELECT * FROM {$wpdb->prefix}pr_donors";
-
-        if ( ! empty( $_REQUEST['orderby'] ) ) {
-            $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
-        }
-
-        $sql .= " LIMIT $per_page";
-
-        $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
-
-        $results = $wpdb->get_results( $sql, 'ARRAY_A' );
-
-        return $results;
-
     }
 
     /**
