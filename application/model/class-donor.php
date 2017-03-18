@@ -3,6 +3,7 @@
 namespace PeerRaiser\Model;
 
 use \PeerRaiser\Model\Database\Donor as Donor_Database;
+use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donor_Meta;
 
 class Donor {
@@ -61,6 +62,13 @@ class Donor {
 	 * @var string
 	 */
 	protected $email_address = '';
+
+	/**
+	 * The number of donations the donor has made
+	 *
+	 * @var int
+	 */
+	protected $donation_count = 0;
 
 	/**
 	 * Array of items that have changed since the last save() was run
@@ -171,9 +179,11 @@ class Donor {
 		// Protected ID (can't be changed)
 		$this->_ID = absint( $donor->donor_id);
 
-		$this->donor_name = $donor->donor_name;
-		$this->date       = $donor->date;
-		$this->user_id    = $this->setup_user_id();
+		$this->donor_name     = $donor->donor_name;
+		$this->email_address  = $donor->email_address;
+		$this->date           = $donor->date;
+		$this->donation_count = $this->setup_donation_count();
+		$this->user_id        = $this->setup_user_id();
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_donor', $this, $donor );
@@ -254,6 +264,17 @@ class Donor {
 		$donor_meta = new Donor_Meta();
 
 		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+	}
+
+	/**
+	 * Get the number of donations the donor has made
+	 *
+	 * @return int The number of donations
+	 */
+	public function setup_donation_count() {
+		$donor_table = new Donation_Database();
+
+		return $donor_table->get_donations( array( 'donor_id' => $this->ID ), true );
 	}
 
 	/**
