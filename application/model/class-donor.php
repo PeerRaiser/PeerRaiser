@@ -171,8 +171,9 @@ class Donor {
 		// Protected ID (can't be changed)
 		$this->_ID = absint( $donor->donor_id);
 
-		$this->date    = $donor->date;
-		$this->user_id = $this->setup_user_id();
+		$this->donor_name = $donor->donor_name;
+		$this->date       = $donor->date;
+		$this->user_id    = $this->setup_user_id();
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_donor', $this, $donor );
@@ -252,10 +253,21 @@ class Donor {
 
 		$donor_meta = new Donor_Meta();
 
-		$result = $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
 	}
 
+	/**
+	 * Attempt to get the donor's username by their email address
+	 *
+	 * @return int User ID (0 if no user found)
+	 */
 	private function setup_user_id( ) {
+		if ( ! is_email( $this->email_address ) ) {
+			return 0;
+		}
 
+		$user = get_user_by( 'email', $this->email_address );
+
+		return ! empty( $user ) ? $user->ID : 0;
 	}
 }
