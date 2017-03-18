@@ -189,9 +189,11 @@ class Donor extends Database {
 
         $sql = "CREATE TABLE " . $this->table_name . " (
         donor_id bigint(20) NOT NULL AUTO_INCREMENT,
-        donor_name text NOT NULL,
-        email_address varchar(254) NOT NULL,
         user_id bigint(20) NOT NULL DEFAULT 0,
+        email_address varchar(254) NOT NULL,
+        donor_name text NOT NULL,
+        donation_value decimal(13,4) NOT NULL DEFAULT '0.00',
+        donation_count bigint(20) NOT NULL DEFAULT 0,
         date datetime NOT NULL,
         PRIMARY KEY  (donor_id)
         ) CHARACTER SET utf8 COLLATE utf8_general_ci;";
