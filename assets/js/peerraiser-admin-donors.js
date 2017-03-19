@@ -1,7 +1,7 @@
 (function( $ ) {$(function() {
     'use strict';
 
-    function peerRaiserAdminDonations(){
+    function peerRaiserAdminDonors(){
         var $o = {
             dashboardTab    : $('#toplevel_page_peerraiser-dashboard'),
             dasboardTabLink : $('#toplevel_page_peerraiser-dashboard > a'),
@@ -84,6 +84,6 @@
     }
 
     // Kick it off
-    peerRaiserAdminDonations();
+    peerRaiserAdminDonors();
 
 });})(jQuery);
