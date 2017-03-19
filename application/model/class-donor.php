@@ -2,9 +2,7 @@
 
 namespace PeerRaiser\Model;
 
-use PeerRaiser\Model\Database\Donation;
 use \PeerRaiser\Model\Database\Donor as Donor_Database;
-use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donor_Meta;
 
 class Donor {
@@ -65,6 +63,13 @@ class Donor {
 	protected $email_address = '';
 
 	/**
+	 * The total amount the donor has donated
+	 *
+	 * @var float
+	 */
+	protected $donation_value = 0.00;
+
+	/**
 	 * The number of donations the donor has made
 	 *
 	 * @var int
@@ -81,24 +86,29 @@ class Donor {
 	private $pending;
 
 	/**
+	 * The donor database
+	 */
+	protected $db;
+
+	/**
 	 * Setup donor class
 	 *
 	 * @since  1.0.0
 	 * @param  int|boolean $id Donor ID
 	 */
 	public function __construct( $id = false ) {
+		$this->db = new Donor_Database();
+
 		if ( empty( $id ) ) {
 			return false;
 		}
-
-		$donor_table = new Donor_Database();
 
 		$args = array(
 			'number'   => 1,
 			'donor_id' => $id,
 		);
 
-		$donor = current( $donor_table->get_donors( $args ) );
+		$donor = current( $this->db->get_donors( $args ) );
 
 		if ( empty( $donor ) ) {
 			return false;
@@ -183,8 +193,8 @@ class Donor {
 		$this->donor_name     = $donor->donor_name;
 		$this->email_address  = $donor->email_address;
 		$this->date           = $donor->date;
-		$this->donation_count = $this->donation_count;
-		$this->user_id        = $this->user_id;
+		$this->donation_count = $donor->donation_count;
+		$this->user_id        = $donor->user_id;
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_donor', $this, $donor );
@@ -203,13 +213,45 @@ class Donor {
 			$this->date = current_time( 'timestamp' );
 		}
 
-		$donor_table = new Donor_Database();
-		$donor_id    = $donor_table->add_donor( $this );
+		$donor_id = $this->db->add_donor( $this );
 
 		$this->ID  = $donor_id;
 		$this->_ID = $donor_id;
 
 		return $this->ID;
+	}
+
+	/**
+	 * Update a donor record
+	 *
+	 * @since 1.0.0
+	 * @param array $data Array of data attributes for a donor
+	 *
+	 * @return bool If the update was successful or not
+	 */
+	public function update( $data = array() ) {
+
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		$data = $this->sanitize_columns( $data );
+
+		do_action( 'peerraiser_donor_pre_update', $this->ID, $data );
+
+		$updated = false;
+
+		if ( $this->db->update( $this->ID, $data ) ) {
+
+			$donor = $this->db->get_donors( array( 'donor_id' => $this->ID ) );
+			$this->setup_donor( current( $donor ) );
+
+			$updated = true;
+		}
+
+		do_action( 'peerraiser_donor_post_update', $updated, $this->ID, $data );
+
+		return $updated;
 	}
 
 	/**
@@ -251,8 +293,117 @@ class Donor {
 	}
 
 	public function delete() {
-		$donor_table = new Donor_Database();
-		$donor_table->delete( $this->ID );
+		$this->db->delete( $this->ID );
+	}
+
+	/**
+	 * Increase the donation count of the donor
+	 *
+	 * @since  1.0.0
+	 * @param  integer $count The number to increment by
+	 *
+	 * @return int The purchase count
+	 */
+	public function increase_donation_count( $count = 1 ) {
+		if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+			return false;
+		}
+
+		$new_total = (int) $this->donation_count + (int) $count;
+
+		do_action( 'peerraiser_donor_pre_increase_donation_count', $count, $this->ID );
+
+		if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
+			$this->donation_count = $new_total;
+		}
+
+		do_action( 'peerraiser_donor_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+
+		return $this->donation_count;
+	}
+
+	/**
+	 * Decrease the donor donation count
+	 *
+	 * @since  1.0.0
+	 * @param  integer $count The amount to decrease by
+	 *
+	 * @return mixed If successful, the new count, otherwise false
+	 */
+	public function decrease_donation_count( $count = 1 ) {
+
+		// Make sure it's numeric and not negative
+		if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+			return false;
+		}
+
+		$new_total = (int) $this->donation_count - (int) $count;
+
+		if( $new_total < 0 ) {
+			$new_total = 0;
+		}
+
+		do_action( 'peerraiser_donor_pre_decrease_donation_count', $count, $this->ID );
+
+		if ( $this->update( array( 'purchase_count' => $new_total ) ) ) {
+			$this->donation_count = $new_total;
+		}
+
+		do_action( 'peerraiser_customer_post_decrease_purchase_count', $this->donation_count, $count, $this->ID );
+
+		return $this->donation_count;
+	}
+
+	/**
+	 * Increase the customer's lifetime value
+	 *
+	 * @since  1.0.0
+	 * @param  float $value The value to increase by
+	 *
+	 * @return mixed If successful, the new value, otherwise false
+	 */
+	public function increase_value( $value = 0.00 ) {
+		$value = apply_filters( 'peerraiser_donor_increase_value', $value, $this );
+
+		$new_value = floatval( $this->donation_value ) + $value;
+
+		do_action( 'peerraiser_donor_pre_increase_value', $value, $this->ID, $this );
+
+		if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
+			$this->donation_value = $new_value;
+		}
+
+		do_action( 'peerraiser_donor_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+
+		return $this->donation_value;
+	}
+
+	/**
+	 * Decrease a customer's lifetime value
+	 *
+	 * @since  1.0.0
+	 * @param  float  $value The value to decrease by
+	 *
+	 * @return mixed If successful, the new value, otherwise false
+	 */
+	public function decrease_value( $value = 0.00 ) {
+		$value = apply_filters( 'peerraiser_donor_decrease_value', $value, $this );
+
+		$new_value = floatval( $this->donation_value ) - $value;
+
+		if( $new_value < 0 ) {
+			$new_value = 0.00;
+		}
+
+		do_action( 'peerraiser_donor_pre_decrease_value', $value, $this->ID, $this );
+
+		if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
+			$this->donation_value = $new_value;
+		}
+
+		do_action( 'peerraiser_donor_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
+
+		return $this->donation_value;
 	}
 
 	/**
@@ -270,17 +421,6 @@ class Donor {
 		$donor_meta = new Donor_Meta();
 
 		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
-	}
-
-	/**
-	 * Get the number of donations the donor has made
-	 *
-	 * @return int The number of donations
-	 */
-	public function setup_donation_count() {
-		$donor_table = new Donation_Database();
-
-		return $donor_table->get_donations( array( 'donor_id' => $this->ID ), true );
 	}
 
 	/**
@@ -304,5 +444,60 @@ class Donor {
 		$user = get_user_by( 'email', $this->email_address );
 
 		return ! empty( $user ) ? $user->ID : 0;
+	}
+
+	/**
+	 * Sanitize the data for update/create
+	 *
+	 * @since  1.0.0
+	 * @param  array $data The data to sanitize
+	 *
+	 * @return array The sanitized data, based off column defaults
+	 */
+	private function sanitize_columns( $data ) {
+		$columns        = $this->db->get_columns();
+		$default_values = $this->db->get_column_defaults();
+
+		foreach ( $columns as $key => $type ) {
+			if ( ! array_key_exists( $key, $data ) ) {
+				continue;
+			}
+
+			switch( $type ) {
+
+				case '%s':
+					if ( 'email_address' == $key ) {
+						$data[$key] = sanitize_email( $data[$key] );
+					} else {
+						$data[$key] = sanitize_text_field( $data[$key] );
+					}
+					break;
+
+				case '%d':
+					if ( ! is_numeric( $data[$key] ) || (int) $data[$key] !== absint( $data[$key] ) ) {
+						$data[$key] = $default_values[$key];
+					} else {
+						$data[$key] = absint( $data[$key] );
+					}
+					break;
+
+				case '%f':
+					$value = floatval( $data[$key] );
+
+					if ( ! is_float( $value ) ) {
+						$data[$key] = $default_values[$key];
+					} else {
+						$data[$key] = $value;
+					}
+					break;
+
+				default:
+					$data[$key] = sanitize_text_field( $data[$key] );
+					break;
+			}
+
+		}
+
+		return $data;
 	}
 }
