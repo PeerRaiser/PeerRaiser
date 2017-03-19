@@ -217,4 +217,21 @@ class Donor extends Database {
     public function table_exists( $table_name = '' ) {
         return parent::table_exists( $this->table_name );
     }
+
+	public function add_donor( \PeerRaiser\Model\Donor $donor ) {
+		global $wpdb;
+
+		$data = array(
+			'donor_name'     => $donor->donor_name,
+			'email_address'  => $donor->email_address,
+			'user_id'        => $donor->user_id,
+			'donation_value' => $donor->donation_value,
+			'donation_count' => $donor->donation_count,
+			'date'           => $donor->date,
+		);
+
+		$this->insert( $data );
+
+		return $wpdb->insert_id;
+	}
 }
