@@ -128,7 +128,7 @@ class Donor_List_Table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = array(
-            'bulk-delete' => 'Delete'
+//            'bulk-delete' => 'Delete'
         );
 
         return $actions;
