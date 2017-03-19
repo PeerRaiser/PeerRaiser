@@ -446,10 +446,12 @@ class Admin extends Base {
             }
         }
 
-        return array(
+		echo Text::peerraiser_json_encode( array(
 			'items' => $data ,
 			'total_count' => $total_users
-		);
+		) );
+
+		wp_die();
     }
 
 }
