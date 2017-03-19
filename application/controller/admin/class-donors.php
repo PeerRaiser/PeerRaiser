@@ -6,8 +6,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                     array( $this, 'register_meta_boxes' ) );
-        add_action( 'admin_print_styles-post-new.php',     array( $this, 'load_assets' ) );
-        add_action( 'admin_print_styles-post.php',         array( $this, 'load_assets' ) );
+		add_action( 'peerraiser_page_peerraiser-donors',   array( $this, 'load_assets' ) );
         add_action( 'add_meta_boxes',                      array( $this, 'add_meta_boxes' ) );
         add_action( 'admin_menu',                          array( $this, 'maybe_replace_submit_box' ) );
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
@@ -38,6 +37,12 @@ class Donors extends \PeerRaiser\Controller\Base {
         $currency        = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
+		$default_views = array( 'list', 'add', 'summary' );
+
+		// Get the correct view
+		$view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
+		$view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donation_admin_view', 'list', $view );
+
         $view_args = array(
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
@@ -47,7 +52,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
         $this->assign( 'peerraiser', $view_args );
 
-        $this->render( 'backend/donor-list' );
+        $this->render( 'backend/donor-' . $view );
     }
 
     public function register_meta_boxes() {
@@ -72,11 +77,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     public function load_assets() {
         parent::load_assets();
-
-        // If this isn't the Donor post type, exit early
-        global $post_type;
-        if ( 'pr_donor' != $post_type )
-            return;
 
         // Register and enqueue styles
         wp_register_style(
@@ -119,7 +119,6 @@ class Donors extends \PeerRaiser\Controller\Base {
         );
 
     }
-
 
     public function add_meta_boxes() {
         if ( !$this->is_edit_page( 'edit' ) )
