@@ -60,6 +60,15 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
+
+					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
+						<div id="campaign-options" class="postbox">
+							<h2 class="hndle ui-sortable-handle"><span>Donation Form</span></h2>
+							<div class="inside">
+								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign-donation-form', 0, array( 'form_format' => '', ) ); ?>
+							</div>
+						</div>
+					</div>
                 </div>
             </div>
         </div>
