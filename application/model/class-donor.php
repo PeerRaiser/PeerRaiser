@@ -210,7 +210,7 @@ class Donor {
 	 */
 	private function insert_donor() {
 		if ( empty( $this->date ) ) {
-			$this->date = current_time( 'timestamp' );
+			$this->date = current_time( 'mysql' );
 		}
 
 		$donor_id = $this->db->add_donor( $this );
