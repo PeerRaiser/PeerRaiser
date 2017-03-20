@@ -21,44 +21,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php do_action( 'peerraiser_before_donor_side_metaboxes' ); ?>
 
 						<div id="submitdiv" class="postbox">
-							<h2><span><?php _e( 'Add Donation', 'peerraiser' ); ?></span></h2>
+							<h2><span><?php _e( 'Add Donor', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
-										<div class="misc-pub-section donor-status completed">
-											<?php _e( 'Status:', 'peerraiser' ); ?> <strong>Completed</strong>
-											<a href="#donor_status" class="edit-donor-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
-											<div id="donor-status-select" class="hide-if-js">
-												<input type="hidden" name="_donor_status_hidden" value="completed">
-												<select name="_donor_status" id="donor-status">
+										<div class="misc-pub-section donor-date completed">
+											<?php _e( 'Donor Since', 'peerraiser' ); ?>: <strong><?php echo date(get_option('date_format')); ?></strong>
+											<!-- <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text">Edit status</span></a> -->
+											<div id="donation-status-select" class="hide-if-js">
+												<input type="hidden" name="_donation_status_hidden" value="completed">
+												<select name="_donation_status" id="donation-status">
 													<option value="completed">Completed</option>
 													<option value="pending">Pending</option>
 												</select>
-												<a href="#donor_status" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
-												<a href="#donor_status" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
-											</div>
-										</div>
-
-										<div class="misc-pub-section donor-type">
-											<?php _e( 'Type:', 'peerraiser' ); ?> <strong>Check</strong>
-											<a href="#donor_type" class="edit-donor-type hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit type', 'peerraiser' ); ?></span></a>
-											<div id="donor-type-select" class="hide-if-js">
-												<input type="hidden" name="_donor_type_hidden" value="check">
-												<select name="_donor_type" id="donor-type">
-													<option value="check">Check</option>
-													<option value="cc">Credit Card</option>
-													<option value="cash">Cash</option>
-													<option value="other">Other</option>
-												</select>
-												<a href="#donor_type" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
-												<a href="#donor_type" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
+												<a href="#donation_status" class="save hide-if-no-js button">OK</a>
+												<a href="#donation_status" class="cancel hide-if-no-js button-cancel">Cancel</a>
 											</div>
 										</div>
 									</div>
 									<div id="major-publishing-actions">
-										<div id="delete-action">
-											<a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
-										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
 											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Submit', 'peerraiser' ); ?>">
