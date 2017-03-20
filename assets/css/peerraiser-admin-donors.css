@@ -54,6 +54,7 @@
 #donor-card .donor-meta p {
     margin: 0;
 }
+.peerraiser-form .misc-pub-section:before,
 #donor-card .donor-meta p:before {
     width: 1.28571429em;
     text-align: center;
@@ -67,6 +68,9 @@
     font-size: 16px;
     vertical-align: bottom;
     color: #82878c;
+}
+.peerraiser-form .misc-pub-section.donor-date:before {
+    content: "\f073";
 }
 #donor-card .donor-meta .email:before {
     content: "\f003";
