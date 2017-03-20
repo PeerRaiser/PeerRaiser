@@ -277,6 +277,17 @@ class Donor {
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
 				switch( $key ) {
+					case 'first_name' :
+					case 'last_name' :
+					case 'street_address_1' :
+					case 'street_address_2' :
+					case 'city' :
+					case 'state_province' :
+					case 'zip_postal' :
+					case 'country' :
+						$this->update_meta( $key, $value );
+						break;
+
 					default :
 						do_action( 'peerraiser_donor_save', $this, $key );
 						break;
