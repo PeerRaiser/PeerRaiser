@@ -390,13 +390,8 @@ class Donation {
             $this->transaction_id = $this->generate_transaction_id();
         }
 
-        // TODO: Create or update the donor record
-        // If the user is logged in, search donor table by user ID
-        // If the user isn't logged in, search by email address
-        // If nothing found, create donor
-        // For now, just set the donor ID as 1
         if ( empty( $this->donor_id ) ) {
-            $this->donor_id = 1;
+			return new WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
         }
 
         if ( empty( $this->ip ) ) {
@@ -404,7 +399,7 @@ class Donation {
         }
 
         if ( empty( $this->date ) ) {
-            $this->date = current_time( 'timestamp' );
+            $this->date = current_time( 'mysql' );
         }
 
         $donation_table = new Donation_Database();
