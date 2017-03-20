@@ -16,7 +16,7 @@ class Donors extends \PeerRaiser\Controller\Base {
     /**
      * Singleton to get only one Campaigns controller
      *
-     * @return    \PeerRaiser\Admin\Campaigns
+     * @return    \PeerRaiser\Controller\Admin\Donors
      */
     public static function get_instance() {
         if ( ! isset( self::$instance ) ) {
@@ -30,8 +30,6 @@ class Donors extends \PeerRaiser\Controller\Base {
      * @see \PeerRaiser\Core\View::render_page
      */
     public function render_page() {
-        $this->load_assets();
-
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         $currency        = new \PeerRaiser\Model\Currency();
@@ -119,6 +117,7 @@ class Donors extends \PeerRaiser\Controller\Base {
         );
 
     }
+
 
     public function add_meta_boxes() {
         if ( !$this->is_edit_page( 'edit' ) )
