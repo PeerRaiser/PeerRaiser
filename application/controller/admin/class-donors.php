@@ -2,6 +2,9 @@
 
 namespace PeerRaiser\Controller\Admin;
 
+use \PeerRaiser\Model\Donor as Donor_Model;
+use \PeerRaiser\Model\Admin\Admin_Notices as Admin_Notices_Model;
+
 class Donors extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
@@ -11,6 +14,7 @@ class Donors extends \PeerRaiser\Controller\Base {
         add_action( 'admin_menu',                          array( $this, 'maybe_replace_submit_box' ) );
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
         add_action( 'manage_pr_donor_posts_custom_column', array( $this, 'manage_columns' ) );
+        add_action( 'peerraiser_add_donor',          	   array( $this, 'handle_add_donor' ) );
     }
 
     /**
@@ -395,5 +399,99 @@ class Donors extends \PeerRaiser\Controller\Base {
         }
 
     }
+
+	public function handle_add_donor() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_donor_nonce' ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$validation = $this->is_valid_donor();
+		if ( ! $validation['is_valid'] ) {
+			return;
+		}
+
+		$donor = new Donor_Model();
+
+		// Required Fields
+		$donor->donor_name    = esc_attr( $this->generate_donor_name() );
+		$donor->email_address = $_REQUEST['_donor_email'];
+
+		// Optional Fields
+		$donor->user_id          = isset( $_REQUEST['_donor_user_account'] ) ? absint( $_REQUEST['_donor_user_account'] ) : 0;
+		$donor->first_name       = isset( $_REQUEST['_donor_first_name'] ) ? esc_attr( $_REQUEST['_donor_first_name'] ) : '';
+        $donor->last_name        = isset( $_REQUEST['_donor_last_name'] ) ? esc_attr( $_REQUEST['_donor_last_name'] ) : '';
+        $donor->street_address_1 = isset( $_REQUEST['_donor_street_1'] ) ? esc_attr( $_REQUEST['_donor_street_1'] ) : '';
+        $donor->street_address_2 = isset( $_REQUEST['_donor_street_2'] ) ? esc_attr( $_REQUEST['_donor_street_2'] ) : '';
+        $donor->city			 = isset( $_REQUEST['_donor_city'] ) ? esc_attr( $_REQUEST['_donor_city'] ) : '';
+        $donor->state_province   = isset( $_REQUEST['_donor_state'] ) ? esc_attr( $_REQUEST['_donor_state'] ) : '';
+        $donor->zip_postal 		 = isset( $_REQUEST['_donor_zip'] ) ? esc_attr( $_REQUEST['_donor_zip'] ) : '';
+        $donor->country 		 = isset( $_REQUEST['_donor_country'] ) ? esc_attr( $_REQUEST['_donor_country'] ) : '';
+
+		// Save to the database
+		$donor->save();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-donors',
+			'view' => 'summary',
+			'donor_id' => $donor->ID
+		), admin_url( 'admin.php' ) );
+
+		// Redirect to the edit screen for this new donor
+		wp_safe_redirect( $location );
+	}
+
+	/**
+	 * Checks if the fields are valid
+	 *
+	 * @since     1.0.0
+	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+	 */
+	private function is_valid_donor() {
+		$required_fields = array( '_donor_first_name', '_donor_email' );
+
+		$data = array(
+			'is_valid'     => true,
+			'field_errors' => array(),
+		);
+
+		foreach ( $required_fields as $field ) {
+			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+				$data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
+			}
+		}
+
+		if ( isset( $_REQUEST['_donor_email'] ) && ! empty( $_REQUEST['_donor_email'] ) && ! is_email( $_REQUEST['_donor_email'] ) ) {
+			$data['field_errors'][ '_donor_email' ] = __( 'Not a valid email address.', 'peerraiser' );
+		}
+
+		// TODO: Check if $_REQUEST['_donor_user_account'] is already tied to a donor account
+
+		if ( ! empty( $data['field_errors'] ) ) {
+			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
+			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
+
+			wp_localize_script(
+				'jquery',
+				'peerraiser_field_errors',
+				$data['field_errors']
+			);
+
+			$data['is_valid'] = false;
+		}
+
+		return $data;
+	}
+
+	private function generate_donor_name() {
+		$first = trim( $_REQUEST['_donor_first_name'] );
+		$last  = trim( $_REQUEST['_donor_last_name'] );
+
+		if ( isset( $last ) && ! empty( $last ) ) {
+			$first .= ' ' . $last;
+		}
+
+		return $first;
+	}
 
 }
