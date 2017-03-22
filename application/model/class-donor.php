@@ -194,6 +194,7 @@ class Donor {
 		$this->email_address  = $donor->email_address;
 		$this->date           = $donor->date;
 		$this->donation_count = $donor->donation_count;
+		$this->donation_value = $donor->donation_value;
 		$this->user_id        = $donor->user_id;
 
 		// Add your own items to this object via this hook:
