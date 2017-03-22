@@ -515,10 +515,14 @@ class Donations extends \PeerRaiser\Controller\Base {
 		}
 
 		// Delete the donation
-		$donation = new \PeerRaiser\Model\Donation( $_REQUEST['donation_id'] );
-		$donation->delete();
+		$donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
+		$donor    = new \PeerRaiser\Model\Donor( $donation->donor_id );
 
-		// Create redirect URL
+        $donor->decrease_donation_count( 1 );
+        $donor->decrease_value( abs( $donation->total ) );
+        $donation->delete();
+
+        // Create redirect URL
 		$location = add_query_arg( array(
 			'page' => 'peerraiser-donations'
 		), admin_url( 'admin.php' ) );
