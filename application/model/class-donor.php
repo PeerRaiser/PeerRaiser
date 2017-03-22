@@ -351,17 +351,17 @@ class Donor {
 
 		$new_total = (int) $this->donation_count - (int) $count;
 
-		if( $new_total < 0 ) {
+		if ( $new_total < 0 ) {
 			$new_total = 0;
 		}
 
 		do_action( 'peerraiser_donor_pre_decrease_donation_count', $count, $this->ID );
 
-		if ( $this->update( array( 'purchase_count' => $new_total ) ) ) {
+		if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
 			$this->donation_count = $new_total;
 		}
 
-		do_action( 'peerraiser_customer_post_decrease_purchase_count', $this->donation_count, $count, $this->ID );
+		do_action( 'peerraiser_donor_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
 
 		return $this->donation_count;
 	}
