@@ -66,7 +66,7 @@ class Donor_List_Table extends WP_List_Table {
 			case 'donations' :
 				return $donor->donation_count;
             case 'amount':
-                return empty( $item->amount ) ? '$0.00' : '$'. number_format( $item->amount, 2 );
+                return '$'. number_format( $donor->donation_value, 2 );
             case 'date':
                 $date = strtotime( $donor->date );
                 return date('m-d-Y', $date);
