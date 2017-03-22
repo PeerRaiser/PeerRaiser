@@ -2,6 +2,7 @@
 
 namespace PeerRaiser\Model;
 
+use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donation_Meta;
 
@@ -394,6 +395,8 @@ class Donation {
 			return new WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
         }
 
+        $this->adjust_donor_amounts();
+
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
         }
@@ -511,5 +514,17 @@ class Donation {
         $donation_meta = new Donation_Meta();
 
         $result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+    }
+
+    private function adjust_donor_amounts() {
+        $donor = new Donor_Model( $this->donor_id );
+
+        if ( $this->total < 0) {
+            $donor->decrease_donation_count( 1 );
+            $donor->decrease_value( abs( $this->total ) );
+        } else {
+            $donor->increase_donation_count( 1 );
+            $donor->increase_value( $this->total );
+        }
     }
 }
