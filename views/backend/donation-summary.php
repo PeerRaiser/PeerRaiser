@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <div class="donation-info">
                                             <div class="donation-date">
                                                 <span class="label">Date/Time</span>
-                                                <strong>April 22, 2016</strong>
+                                                <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['donation']->date ); ?></strong>
                                             </div>
                                             <div class="donation-method">
                                                 <span class="label">Payment Method</span>
@@ -36,15 +36,15 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             </div>
                                             <div class="donation-key">
                                                 <span class="label">Transaction Key</span>
-                                                <strong>4212b56b0cc17b6fdfe936da2b125638</strong>
+                                                <strong><?php echo $peerraiser['donation']->transaction_id; ?></strong>
                                             </div>
                                             <div class="donor-ip">
                                                 <span class="label">IP Address</span>
-                                                <strong>53.61.173.12</strong>
+                                                <strong><?php echo $peerraiser['donation']->ip; ?></strong>
                                             </div>
                                             <div class="is-test-mode">
                                                 <span class="label">Test mode?</span>
-                                                <strong>No</strong>
+                                                <strong><?php echo ( $peerraiser['donation']->is_test ) ? 'Yes' : 'No'; ?></strong>
                                             </div>
                                         </div>
                                     </div>
@@ -72,8 +72,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div id="donation-summary" class="postbox">
                             <h2><span><?php _e( 'Donation Summary', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
-                                <p class="summary">John Smith made a donation of <strong>$500.00</strong> on <strong> March 6, 2017</strong></p>
-
+                                <p class="summary"><?php printf( '%s made a donation of <strong>$%f</strong> on <strong>%s</strong>', $peerraiser['donor']->donor_name, number_format( $peerraiser['donation']->total, 2 ), mysql2date( get_option('date_format'), $peerraiser['donation']->date ) ); ?></p>
                                 <table class="transaction-info table table-striped">
                                     <thead>
                                         <tr>
@@ -103,7 +102,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </tr>
                                         <tr>
                                             <td><strong>Total Donation:</strong></td>
-                                            <td><strong>$500.00</strong></td>
+                                            <td><strong>$<?php echo number_format( $peerraiser['donation']->total, 2 ); ?></strong></td>
                                         </tr>
                                     </tbody>
                                 </table>
