@@ -361,7 +361,7 @@ class Donation {
 
         // Gateway related
         // $this->gateway        = $this->setup_gateway();
-        // $this->transaction_id = $this->setup_transaction_id();
+        $this->transaction_id = $donation->transaction_id;
 
         // User related
         $this->ip             = $donation->ip;
