@@ -93,6 +93,12 @@ class Donations extends \PeerRaiser\Controller\Base {
             'list_table'           => new \PeerRaiser\Model\Admin\Donation_List_Table(),
         );
 
+        if ( $view === 'summary' ) {
+            $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
+            $view_args['donor']    = new\PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
+
+        }
+
         $this->assign( 'peerraiser', $view_args );
 
         // Render the view
@@ -493,7 +499,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->gateway       = 'offline';
 
         // Optional Fields
-        $donation->fundraiser_id = isset( $_REQUEST['_fundraiser'] ) ? $absint( $_REQUEST['_fundraiser'] ) : 0;
+        $donation->fundraiser_id = isset( $_REQUEST['_fundraiser'] ) ? absint( $_REQUEST['_fundraiser'] ) : 0;
 
         // Save to the database
         $donation->save();
