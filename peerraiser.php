@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Plugin Name:       PeerRaiser
- * Plugin URI:        http://PeerRaiser.com
- * Description:       Peer-to-peer fundraising for WordPress
- * Version:           1.0.4
- * Author:            Nate Allen
- * Author URI:        http://peerraiser.com/
- * License:           GPL-3.0+
- * License URI:       http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:       peerraiser
- * Domain Path:       /languages
+ * Plugin Name: PeerRaiser
+ * Plugin URI:  http://PeerRaiser.com
+ * Description: Peer-to-peer fundraising for WordPress
+ * Version:     1.0.4
+ * Author:      Nate Allen
+ * Author URI:  http://peerraiser.com/
+ * License:     GPL-3.0+
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.txt
+ * Text Domain: peerraiser
+ * Domain Path: /languages
  */
 
 // If this file is called directly, abort.
@@ -23,6 +23,10 @@ if ( ! defined( 'WPINC' ) ) {
  */
 if ( ! defined( 'PEERRAISER_FILE' ) ) {
     define( 'PEERRAISER_FILE', __FILE__ );
+}
+
+if ( ! defined( 'PEERRAISER_PATH' ) ) {
+    define( 'PEERRAISER_PATH', trailingslashit( __DIR__ ) );
 }
 
 if ( ! defined( 'PEERRAISER_TEXT_DOMAIN' ) ) {
