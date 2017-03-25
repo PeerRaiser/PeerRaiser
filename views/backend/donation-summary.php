@@ -81,27 +81,32 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><strong>Campaign:</strong></td>
-                                            <td><a href="post.php?action=edit&post=">Campaign Here</a></td>
+                                            <td><strong><?php _e( 'Campaign', 'peerraiser' ); ?>:</strong></td>
+                                            <?php if ( $campaign_id = $peerraiser['donation']->campaign_id ) : ?>
+                                                <?php $campaign = peerraiser_get_campaign( $campaign_id ) ?>
+                                                <td><a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=<?php echo $campaign->ID; ?>"><?php echo $campaign->campaign_name; ?></a></td>
+                                            <?php else : ?>
+                                                <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
+                                            <?php endif; ?>
                                         </tr>
                                         <tr>
-                                            <td><strong>Fundraiser:</strong></td>
+                                            <td><strong><?php _e( 'Fundraiser', 'peerraiser' ); ?>:</strong></td>
                                             <?php if ( true ) : ?>
                                                 <td><a href="post.php?action=edit&post=0">Fundraiser Name</a></td>
                                             <?php else : ?>
-                                                <td>Fundraiser</td>
+                                                <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
                                         </tr>
                                         <tr>
-                                            <td><strong>Team:</strong></td>
+                                            <td><strong><?php _e( 'Team', 'peerraiser' ); ?>:</strong></td>
                                             <?php if ( true ) : ?>
                                                 <td><a href="post.php?action=edit&post=0">Team Name</a></td>
                                             <?php else : ?>
-                                                <td>Team Title</td>
+                                                <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
                                         </tr>
                                         <tr>
-                                            <td><strong>Total Donation:</strong></td>
+                                            <td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>::</strong></td>
                                             <td><strong>$<?php echo number_format( $peerraiser['donation']->total, 2 ); ?></strong></td>
                                         </tr>
                                     </tbody>
