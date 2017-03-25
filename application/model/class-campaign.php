@@ -183,8 +183,6 @@ class Campaign {
 			return false;
 		}
 
-		error_log( '$campaign->terms[0]: ' . print_r( $campaign->terms[0], 1 ) );
-
 		$this->setup_campaign( $campaign->terms[0] );
 
 		return $this;
