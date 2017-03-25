@@ -68,7 +68,6 @@ class Bootstrap {
      */
     public function run() {
 
-        $this->register_modules();
         $this->register_upgrade_checks();
         $this->register_custom_post_types();
         $this->register_taxonomies();
@@ -78,6 +77,8 @@ class Bootstrap {
         $this->register_connections();
         $this->register_activity_log();
         $this->register_tables();
+
+        include_once( PEERRAISER_PATH . 'application/helper/functions.php' );
 
         do_action( 'peerraiser_ready', $this );
     }
@@ -225,16 +226,6 @@ class Bootstrap {
      */
     public function deactivate() {
         // de-register any cron jobs
-    }
-
-    /**
-     * Internal function to register event subscribers.
-     *
-     * @return    void
-     */
-    private function register_modules() {
-        $appearance_module = new \PeerRaiser\Module\Appearance();
-        $appearance_module->register_actions();
     }
 
     private function register_tables() {
