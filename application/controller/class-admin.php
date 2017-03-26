@@ -273,10 +273,24 @@ class Admin extends Base {
      * @return    null
      */
     public function register_admin_scripts() {
+		wp_register_script(
+			'validate',
+			Setup::get_plugin_config()->get('js_url') . 'vendor/validate/jquery.validate.min.js',
+			array( 'jquery' ),
+			'1.16.0',
+			true
+		);
+		wp_register_script(
+			'validate-additional-methods',
+			Setup::get_plugin_config()->get('js_url') . 'vendor/validate/additional-methods.min.js',
+			array( 'jquery', 'validate' ),
+			'1.16.0',
+			true
+		);
         wp_register_script(
             'peerraiser-admin',
             Setup::get_plugin_config()->get( 'js_url' ) . 'peerraiser-admin.js',
-            array( 'jquery', 'peerraiser-select2' ),
+            array( 'jquery', 'peerraiser-select2', 'validate', 'validate-additional-methods' ),
             Setup::get_plugin_config()->get( 'version' ),
             true
         );
