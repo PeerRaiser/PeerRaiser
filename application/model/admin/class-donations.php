@@ -30,9 +30,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                         'id'           => '_donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
-                            'pattern' => '^\d*(\.\d{2}$)?',
-                            'title'   => __( 'No commas. Cents (.##) are optional', 'peerraiser'),
-                            'required' => 'required'
+							'data-rule-required' => 'true',
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
