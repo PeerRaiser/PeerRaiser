@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <h1 class="wp-heading-inline"><?php _e( 'Add New Campaign', 'peerraiser' ); ?></h1>
     <hr class="wp-header-end">
 
-    <form id="peerraiser-add-campaign" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post">
+    <form id="peerraiser-add-campaign" action="" method="post">
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="postbox-container-1" class="postbox-container">
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="submitbox" id="submitpost">
                                     <div id="misc-publishing-actions">
                                         <div class="misc-pub-section">
-                                            <input type="checkbox" id="is-public" value="is_public" checked> <label for="is-public">Display publically</label>
+                                            <input type="checkbox" id="is-public" value="is_public" checked> <label for="is-public">Display publicly</label>
                                         </div>
                                     </div>
                                     <div id="major-publishing-actions">
