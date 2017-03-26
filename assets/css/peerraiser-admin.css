@@ -27,6 +27,15 @@
 .peerraiser-metabox h2 {
   border-bottom: 1px solid #eee;
 }
+.peerraiser-error {
+    color: #a94442;
+}
+.peerraiser-error label {
+    color: #a94442;
+}
+.peerraiser-error input {
+    border: 1px solid #a94442;
+}
 /* Button Styles */
 .ladd-button {
     line-height: 1em;
