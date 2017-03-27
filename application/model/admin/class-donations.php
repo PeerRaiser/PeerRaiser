@@ -27,10 +27,12 @@ class Donations extends \PeerRaiser\Model\Admin {
                     ),
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
+						'desc'         => __( 'Format should be XXXX.XX (required)'),
                         'id'           => '_donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
-							'data-rule-required' => 'true',
+							'data-rule-required' => "true",
+							'data-rule-currency' => '["",false]',
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
