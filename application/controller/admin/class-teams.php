@@ -8,9 +8,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
         add_action( 'admin_print_styles-post-new.php',    array( $this, 'load_assets' ) );
         add_action( 'admin_print_styles-post.php',        array( $this, 'load_assets' ) );
-        // add_action( 'added_post_meta',                    array( $this, 'add_connections' ) );
-        // add_action( 'update_post_meta',                   array( $this, 'update_connections' ) );
-        // add_action( 'delete_post_meta',                   array( $this, 'delete_connections' ) );
         add_action( 'meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
     }
@@ -38,7 +35,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/team-list' );
     }
 
-
     public function register_meta_boxes() {
 
         $teams_model = new \PeerRaiser\Model\Admin\Teams();
@@ -64,7 +60,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     public function load_assets() {
         parent::load_assets();
@@ -116,7 +111,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     }
 
-
     /**
      * After post meta is added, add the connections
      *
@@ -148,7 +142,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     /**
      * Before the post meta is updated, update the connections
@@ -191,7 +184,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     }
 
-
     /**
      * Before post meta is deleted, delete the connections
      *
@@ -225,7 +217,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     }
 
-
     public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
             return;
@@ -237,7 +228,6 @@ class Teams extends \PeerRaiser\Controller\Base {
             'pr_team'
         );
     }
-
 
     public function display_fundraisers_list() {
         global $post;
@@ -268,7 +258,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
         $this->render( 'backend/partials/team-fundraisers' );
     }
-
 
     public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
