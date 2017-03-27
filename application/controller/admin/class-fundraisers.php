@@ -84,7 +84,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
 
     }
 
-
     /**
      * After post meta is added, add the connections
      *
@@ -122,7 +121,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     /**
      * Before the post meta is updated, update the connections
@@ -222,23 +220,23 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         switch ( $column_name ) {
 
             case 'campaign':
-                $campaign_id = get_post_meta( $post_id, '_fundraiser_campaign', true );
+                $campaign_id = get_post_meta( $post_id, '_peerraiser_fundraiser_campaign', true );
                 echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
                 break;
 
             case 'participant':
-                $participant_id = get_post_meta( $post_id, '_fundraiser_participant', true );
+                $participant_id = get_post_meta( $post_id, '_peerraiser_fundraiser_participant', true );
                 $user_info = get_userdata( $participant_id );
                 echo '<a href="user-edit.php?user_id='.$participant_id.'">' . $user_info->user_login  . '</a>';
                 break;
 
             case 'team':
-                $team_id = get_post_meta( $post_id, '_fundraiser_team', true );
+                $team_id = get_post_meta( $post_id, '_peerraiser_fundraiser_team', true );
                 echo ( !empty($team_id) ) ? '<a href="post.php?action=edit&post='.$team_id.'">' . get_the_title( $team_id ) . '</a>' : '&mdash;';
                 break;
 
             case 'goal_amount':
-                $goal_amount = get_post_meta( $post_id, '_fundraiser_goal', true);
+                $goal_amount = get_post_meta( $post_id, '_peerraiser_fundraiser_goal', true);
                 echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
                 break;
 
@@ -249,7 +247,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
@@ -262,7 +259,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
             'fundraiser'
         );
     }
-
 
     public function display_donations_list() {
         global $post;
