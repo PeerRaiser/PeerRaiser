@@ -414,18 +414,18 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		// Required Fields
 		$donor->donor_name    = esc_attr( $this->generate_donor_name() );
-		$donor->email_address = $_REQUEST['_donor_email'];
+		$donor->email_address = $_REQUEST['_peerraiser_donor_email'];
 
 		// Optional Fields
-		$donor->user_id          = isset( $_REQUEST['_donor_user_account'] ) ? absint( $_REQUEST['_donor_user_account'] ) : 0;
-		$donor->first_name       = isset( $_REQUEST['_donor_first_name'] ) ? esc_attr( $_REQUEST['_donor_first_name'] ) : '';
-        $donor->last_name        = isset( $_REQUEST['_donor_last_name'] ) ? esc_attr( $_REQUEST['_donor_last_name'] ) : '';
-        $donor->street_address_1 = isset( $_REQUEST['_donor_street_1'] ) ? esc_attr( $_REQUEST['_donor_street_1'] ) : '';
-        $donor->street_address_2 = isset( $_REQUEST['_donor_street_2'] ) ? esc_attr( $_REQUEST['_donor_street_2'] ) : '';
-        $donor->city			 = isset( $_REQUEST['_donor_city'] ) ? esc_attr( $_REQUEST['_donor_city'] ) : '';
-        $donor->state_province   = isset( $_REQUEST['_donor_state'] ) ? esc_attr( $_REQUEST['_donor_state'] ) : '';
-        $donor->zip_postal 		 = isset( $_REQUEST['_donor_zip'] ) ? esc_attr( $_REQUEST['_donor_zip'] ) : '';
-        $donor->country 		 = isset( $_REQUEST['_donor_country'] ) ? esc_attr( $_REQUEST['_donor_country'] ) : '';
+		$donor->user_id          = isset( $_REQUEST['_peerraiser_donor_user_account'] ) ? absint( $_REQUEST['_peerraiser_donor_user_account'] ) : 0;
+		$donor->first_name       = isset( $_REQUEST['_peerraiser_donor_first_name'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_first_name'] ) : '';
+        $donor->last_name        = isset( $_REQUEST['_peerraiser_donor_last_name'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_last_name'] ) : '';
+        $donor->street_address_1 = isset( $_REQUEST['_peerraiser_donor_street_1'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_street_1'] ) : '';
+        $donor->street_address_2 = isset( $_REQUEST['_peerraiser_donor_street_2'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_street_2'] ) : '';
+        $donor->city			 = isset( $_REQUEST['_peerraiser_donor_city'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_city'] ) : '';
+        $donor->state_province   = isset( $_REQUEST['_peerraiser_donor_state'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_state'] ) : '';
+        $donor->zip_postal 		 = isset( $_REQUEST['_peerraiser_donor_zip'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_zip'] ) : '';
+        $donor->country 		 = isset( $_REQUEST['_peerraiser_donor_country'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_country'] ) : '';
 
 		// Save to the database
 		$donor->save();
@@ -448,7 +448,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
 	private function is_valid_donor() {
-		$required_fields = array( '_donor_first_name', '_donor_email' );
+		$required_fields = array( '_peerraiser_donor_first_name', '_peerraiser_donor_email' );
 
 		$data = array(
 			'is_valid'     => true,
@@ -461,11 +461,11 @@ class Donors extends \PeerRaiser\Controller\Base {
 			}
 		}
 
-		if ( isset( $_REQUEST['_donor_email'] ) && ! empty( $_REQUEST['_donor_email'] ) && ! is_email( $_REQUEST['_donor_email'] ) ) {
-			$data['field_errors'][ '_donor_email' ] = __( 'Not a valid email address.', 'peerraiser' );
+		if ( isset( $_REQUEST['_peerraiser_donor_email'] ) && ! empty( $_REQUEST['_peerraiser_donor_email'] ) && ! is_email( $_REQUEST['_peerraiser_donor_email'] ) ) {
+			$data['field_errors'][ '_peerraiser_donor_email' ] = __( 'Not a valid email address.', 'peerraiser' );
 		}
 
-		// TODO: Check if $_REQUEST['_donor_user_account'] is already tied to a donor account
+		// TODO: Check if $_REQUEST['_peerraiser_donor_user_account'] is already tied to a donor account
 
 		if ( ! empty( $data['field_errors'] ) ) {
 			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
@@ -484,8 +484,8 @@ class Donors extends \PeerRaiser\Controller\Base {
 	}
 
 	private function generate_donor_name() {
-		$first = trim( $_REQUEST['_donor_first_name'] );
-		$last  = trim( $_REQUEST['_donor_last_name'] );
+		$first = trim( $_REQUEST['_peerraiser_donor_first_name'] );
+		$last  = trim( $_REQUEST['_peerraiser_donor_last_name'] );
 
 		if ( isset( $last ) && ! empty( $last ) ) {
 			$first .= ' ' . $last;
