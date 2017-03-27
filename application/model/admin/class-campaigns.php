@@ -121,7 +121,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                 'fields'   => array(
                     'anonymous_donations' => array(
                         'name'              => __( 'Allow Anonymous Donations', 'peerraiser' ),
-                        'id'                => '_anonymous_donations',
+                        'id'                => '_peerraiser_anonymous_donations',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -133,7 +133,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     ),
                     'donation_comments' => array(
                         'name'              => __( 'Allow Donation Comments', 'peerraiser' ),
-                        'id'                => '_donation_comments',
+                        'id'                => '_peerraiser_donation_comments',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -145,7 +145,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     ),
                     'transaction_fee_option' => array(
                         'name'              => __( 'Ask donors to cover transaction fees?', 'peerraiser' ),
-                        'id'                => '_transaction_fee_option',
+                        'id'                => '_peerraiser_transaction_fee_option',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -157,7 +157,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                     ),
                     'thank_you_page' =>   array(
                         'name'              => __('Thank You Page', 'peerraiser'),
-                        'id'                => '_thank_you_page',
+                        'id'                => '_peerraiser_thank_you_page',
                         'type'              => 'select',
                         'options'           => array( $this, 'get_selected_post'),
                         'attributes'        => array(
