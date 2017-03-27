@@ -490,12 +490,12 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation = new \PeerRaiser\Model\Donation();
 
         // Required Fields
-        $donation->donor_id      = absint( $_REQUEST['_donor'] );
-        $donation->total         = $_REQUEST['_donation_amount'];
-        $donation->subtotal      = $_REQUEST['_donation_amount'];
-        $donation->campaign_id   = absint( $_REQUEST['_campaign'] );
-        $donation->status        = $_REQUEST['_donation_status'];
-        $donation->donation_type = $_REQUEST['_donation_type'];
+        $donation->donor_id      = absint( $_REQUEST['_peerraiser_donor'] );
+        $donation->total         = $_REQUEST['_peerraiser_donation_amount'];
+        $donation->subtotal      = $_REQUEST['_peerraiser_donation_amount'];
+        $donation->campaign_id   = absint( $_REQUEST['_peerraiser_campaign'] );
+        $donation->status        = $_REQUEST['_peerraiser_donation_status'];
+        $donation->donation_type = $_REQUEST['_peerraiser_donation_type'];
         $donation->gateway       = 'offline';
 
         // Optional Fields
@@ -543,7 +543,7 @@ class Donations extends \PeerRaiser\Controller\Base {
      * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
      */
     private function is_valid_donation() {
-        $required_fields = array( '_donor', '_donation_amount', '_campaign', '_donation_status', '_donation_type' );
+        $required_fields = array( '_peerraiser_donor', '_peerraiser_donation_amount', '_peerraiser_campaign', '_peerraiser_donation_status', '_peerraiser_donation_type' );
 
         $data = array(
             'is_valid'     => true,
