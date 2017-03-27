@@ -16,41 +16,45 @@ class Donations extends \PeerRaiser\Model\Admin {
                 'fields'   => array(
                     'donor' => array(
                         'name'    => __('Donor', 'peerraiser'),
-                        'desc'    => __('The donor record this donation is tied to (required)'),
-                        'id'      => '_donor',
+                        'desc'    => __('The donor record this donation is tied to'),
+                        'id'      => '_peerraiser_donor',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
-                            'required' => 'required'
+                            'data-rule-required' => 'true',
+							'data-msg-required' => __( 'A donor record is required', 'peerraiser' ),
                         ),
                     ),
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
-						'desc'         => __( 'Format should be XXXX.XX (required)'),
-                        'id'           => '_donation_amount',
+						'desc'         => __( 'Total amount donated. Format should be XXXX.XX'),
+                        'id'           => '_peerraiser_donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
 							'data-rule-required' => "true",
+							'data-msg-required' => __( 'Donation amount is required', 'peerraiser' ),
 							'data-rule-currency' => '["",false]',
+							'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
                     'campaign' => array(
                         'name'    => __( 'Campaign', 'peerraiser' ),
-                        'desc'    => __( 'The campaign should this donation be attributed to (required)' ),
-                        'id'      => '_campaign',
+                        'desc'    => __( 'The campaign this donation should be attributed to' ),
+                        'id'      => '_peerraiser_campaign',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
-                            'required' => 'required'
+                            'data-rule-required' => 'true',
+							'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
                         ),
                     ),
                     'fundraiser' => array(
                         'name'    => __( 'Fundraiser', 'peerraiser'),
                         'desc'    => __( 'The fundraiser this donation is attributed to (optional)' ),
-                        'id'      => '_fundraiser',
+                        'id'      => '_peerraiser_fundraiser',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_selected_post' ),
