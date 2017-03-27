@@ -36,6 +36,9 @@
 .peerraiser-error input {
     border: 1px solid #a94442;
 }
+.peerraiser-error label.peerraiser-error {
+    font-weight: bold;
+}
 /* Button Styles */
 .ladd-button {
     line-height: 1em;
