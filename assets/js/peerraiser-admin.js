@@ -23,9 +23,11 @@
 			},
 
 			bindEvents = function() {
-				$(document).on("select2:closing", ".select2-hidden-accessible", function () {
+				$(document).on("select2:closing", ".peerraiser-form .select2-hidden-accessible", function () {
 					$(this).valid();
 				});
+
+				// $(document).on()
 
 				$(document).on("select2:opening", function (arg) {
 					var elem = $(arg.target);
@@ -38,35 +40,25 @@
 				});
             },
 
-            displayErrors = function( errors ) {
-                for ( var key in errors ) {
-					$('[name='+key+']').parents('.cmb-row').addClass('peerraiser-error');
-                }
-            },
-
 			validationSetup = function() {
 				validationObject = $o.peerraiserForm.validate({
-					onkeyup: false,
 					errorClass: "peerraiser-error",
 					errorPlacement: function (error, element) {
-						var elem = $(element);
-						error.insertAfter(element);
+						var elem     = $(element);
+						var desc_box = elem.parent().find('.cmb2-metabox-description');
+						if ( desc_box.length ) {
+							desc_box.after( error );
+						} else {
+							elem.after( error );
+						}
 					},
 					highlight: function (element, errorClass, validClass) {
 						var elem = $(element);
-						if (elem.hasClass("select2-hidden-accessible")) {
-							$("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
-						} else {
-							elem.addClass(errorClass);
-						}
+						elem.parents('.cmb-row').addClass(errorClass);
 					},
 					unhighlight: function (element, errorClass, validClass) {
 						var elem = $(element);
-						if (elem.hasClass("select2-hidden-accessible")) {
-							$("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
-						} else {
-							elem.removeClass(errorClass);
-						}
+						elem.parents('.cmb-row').removeClass(errorClass);
 					}
 				});
 			}
