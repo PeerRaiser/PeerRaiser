@@ -27,10 +27,9 @@
 .peerraiser-metabox h2 {
   border-bottom: 1px solid #eee;
 }
-.peerraiser-error {
-    color: #a94442;
-}
-.peerraiser-error label {
+.peerraiser-error,
+.peerraiser-error label,
+.peerraiser-error p.cmb2-metabox-description{
     color: #a94442;
 }
 .peerraiser-error input {
@@ -38,6 +37,7 @@
 }
 .peerraiser-error label.peerraiser-error {
     font-weight: bold;
+    font-size: 13px;
 }
 /* Button Styles */
 .ladd-button {
@@ -62,6 +62,16 @@
 /* CMB2 */
 .peerraiser-form .cmb-th label {
     display: inline;
+    position: relative;
+}
+.peerraiser-form .cmb-th label span.required {
+    color: #a94442;
+    position: absolute;
+    right: -9px;
+    top: 3px;
+}
+.peerraiser-form .cmb-th label span.required:before {
+    content: "*";
 }
 .peerraiser-form .cmb-repeat-group-wrap .cmb2-wrap>.cmb-field-list>.cmb-row,
 .peerraiser-form .postbox-container .cmb2-wrap>.cmb-field-list>.cmb-row {
