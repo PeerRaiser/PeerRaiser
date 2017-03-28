@@ -5,11 +5,12 @@ namespace PeerRaiser\Controller\Admin;
 class Donations extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
-        add_action( 'peerraiser_page_peerraiser-donations',   array( $this, 'load_assets' ) );
-        add_action( 'admin_init',                             array( $this, 'on_donations_view' ) );
-		add_action( 'publish_pr_donation',                    array( $this, 'delete_transient' ) );
-		add_action( 'peerraiser_add_donation',                array( $this, 'handle_add_donation' ) );
-		add_action( 'peerraiser_delete_donation', 			  array( $this, 'delete_donation' ) );
+        add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
+        add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
+		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
+		add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
+		add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
+		add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
     }
 
     public function load_assets() {
@@ -93,6 +94,24 @@ class Donations extends \PeerRaiser\Controller\Base {
         // Render the view
         $this->render( 'backend/donation-' . $view );
     }
+
+	public function register_meta_boxes() {
+		$donations_model = new \PeerRaiser\Model\Admin\Donations();
+		$donation_field_groups = $donations_model->get_fields();
+
+		foreach ($donation_field_groups as $field_group) {
+			$cmb = new_cmb2_box( array(
+				'id'           => $field_group['id'],
+				'title'         => $field_group['title'],
+				'object_types'  => array( 'pr_donation' ),
+				'context'       => $field_group['context'],
+				'priority'      => $field_group['priority'],
+			) );
+			foreach ($field_group['fields'] as $key => $value) {
+				$cmb->add_field($value);
+			}
+		}
+	}
 
     public function on_donations_view() {
         if ( isset( $_REQUEST['page'], $_REQUEST['view'] ) && $_REQUEST['page'] === 'peerraiser-donations' && $_REQUEST['view'] === 'add' ) {
