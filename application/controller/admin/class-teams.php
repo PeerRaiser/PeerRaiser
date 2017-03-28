@@ -6,8 +6,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
-        add_action( 'admin_print_styles-post-new.php',    array( $this, 'load_assets' ) );
-        add_action( 'admin_print_styles-post.php',        array( $this, 'load_assets' ) );
+		add_action( 'peerraiser_page_peerraiser-teams',   array( $this, 'load_assets' ) );
         add_action( 'meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
     }
@@ -63,11 +62,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     public function load_assets() {
         parent::load_assets();
-
-        // If this isn't the Fundraiser post type, exit early
-        global $post_type;
-        if ( 'pr_team' != $post_type )
-            return;
 
         // Register and enqueue styles
         wp_register_style(
