@@ -15,9 +15,9 @@
             donationTypeSave        : $('#donation-type-select .save'),
 
             select2Fields : {
-                donor      : $("#_donor"),
-                campaign   : $("#_campaign"),
-                fundraiser : $("#_fundraiser"),
+                donor      : $("#_peerraiser_donor"),
+                campaign   : $("#_peerraiser_campaign"),
+                fundraiser : $("#_peerraiser_fundraiser"),
             },
 
             select2Options : {
