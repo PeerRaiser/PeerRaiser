@@ -14,16 +14,12 @@ use \PeerRaiser\Helper\View;
 class Campaigns extends Base {
 
     public function register_actions() {
-        add_action( 'cmb2_admin_init',                          array( $this, 'register_meta_boxes' ) );
-        add_action( 'admin_print_styles-post-new.php',          array( $this, 'load_assets' ) );
-        add_action( 'admin_print_styles-post.php',              array( $this, 'load_assets' ) );
-        // add_action( 'added_post_meta',                          array( $this, 'add_connections' ) );
-        // add_action( 'update_post_meta',                         array( $this, 'update_connections' ) );
-        // add_action( 'delete_post_meta',                         array( $this, 'delete_connections' ) );
-        add_action( 'cmb2_save_post_fields',                    array( $this, 'maybe_set_start_date' ) );
-        add_action( 'add_meta_boxes',                           array( $this, 'add_meta_boxes' ) );
-		add_action( 'peerraiser_add_campaign',	                array( $this, 'handle_add_campaign' ) );
-		add_action( 'peerraiser_delete_campaign',        		array( $this, 'delete_campaign' ) );
+        add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
+        add_action( 'peerraiser_page_peerraiser-campaigns', array( $this, 'load_assets' ) );
+        add_action( 'cmb2_save_post_fields',                array( $this, 'maybe_set_start_date' ) );
+        add_action( 'add_meta_boxes',                       array( $this, 'add_meta_boxes' ) );
+		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
+		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
     }
 
     /**
@@ -78,11 +74,6 @@ class Campaigns extends Base {
 
     public function load_assets() {
         parent::load_assets();
-
-        // If this isn't the Campaigns post type, exit early
-        global $post_type;
-        if ( 'pr_campaign' != $post_type )
-            return;
 
         // Register and enqueue styles
         wp_register_style(
