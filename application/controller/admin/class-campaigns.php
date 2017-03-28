@@ -14,6 +14,7 @@ use \PeerRaiser\Helper\View;
 class Campaigns extends Base {
 
     public function register_actions() {
+		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
         add_action( 'peerraiser_page_peerraiser-campaigns', array( $this, 'load_assets' ) );
 		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
@@ -92,6 +93,23 @@ class Campaigns extends Base {
             )
         );
 
+    }
+
+	public function register_meta_boxes() {
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaign_field_groups = $campaigns_model->get_fields();
+		foreach ($campaign_field_groups as $field_group) {
+			$cmb = new_cmb2_box( array(
+				'id'           => $field_group['id'],
+				'title'        => $field_group['title'],
+				'object_types' => array( 'post' ),
+				'hookup'       => false,
+				'save_fields'  => false,
+			) );
+			foreach ($field_group['fields'] as $key => $value) {
+				$cmb->add_field($value);
+			}
+         }
     }
 
     public function display_fundraisers_list() {
