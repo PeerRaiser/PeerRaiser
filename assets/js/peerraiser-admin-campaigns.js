@@ -8,8 +8,8 @@
             fundraiserLink         : $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]'),
 
             select2Fields          : {
-                thank_you_page     : $("#_thank_you_page"),
-                participants       : $("#_campaign_participants")
+                thank_you_page     : $("#_peerraiser_thank_you_page"),
+                participants       : $("#_peerraiser_campaign_participants")
             },
 
             select2Options         : {
@@ -69,8 +69,6 @@
         init = function(){
             bindEvents();
             renderSelect();
-            activateSubmenu();
-            renderTooltips();
         },
 
         bindEvents = function() {
@@ -83,22 +81,6 @@
                     $o.select2Fields[key].renderSelect($o.select2Options[key]);
                 }
             }
-        },
-
-        renderTooltips = function() {
-            $('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
-                var tooltip = $(this).data('tooltip');
-                if ( tooltip !== undefined ) {
-                    $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
-                }
-            });
-        },
-
-        // WordPress doesn't display submenus correctly if they're a post type. This is the workaround...
-        activateSubmenu= function() {
-            $o.dashboardTab.removeClass('wp-not-current-submenu').addClass('wp-has-current-submenu');
-            $o.dasboardTabLink.addClass('wp-has-current-submenu').removeClass('wp-not-current-submenu');
-            $o.fundraiserLink.addClass('current').parent().addClass('current');
         };
 
         init();
