@@ -77,9 +77,12 @@
 .peerraiser-form .postbox-container .cmb2-wrap>.cmb-field-list>.cmb-row {
     padding: 1em 0;
 }
+.peerraiser-form .cmb-th label {
+    position: relative;
+}
 /* Tooltip */
 .pr_tooltip {
-    position: relative;
+    position: absolute;
 }
 span.pr_tooltip+span.pr_tooltip {
     display: none;
