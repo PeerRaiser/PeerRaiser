@@ -8,9 +8,9 @@
             fundraiserLink         : $('#toplevel_page_peerraiser-dashboard a[href$="pr_team"]'),
 
             select2Fields          : {
-                team_leader        : $("#_team_leader"),
-                campaign           : $("#_team_campaign"),
-                fundraisers        : $("#_team_fundraisers"),
+                team_leader        : $("#_peerraiser_team_leader"),
+                campaign           : $("#_peerraiser_team_campaign"),
+                fundraisers        : $("#_peerraiser_team_fundraisers"),
             },
 
             select2Options         : {
