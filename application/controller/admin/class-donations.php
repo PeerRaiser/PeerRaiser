@@ -5,15 +5,9 @@ namespace PeerRaiser\Controller\Admin;
 class Donations extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
-        add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
-        add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
-        add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
-        // add_action( 'admin_head',                             array( $this, 'on_donations_view' ) );
-        // add_action( 'admin_menu',                             array( $this, 'replace_submit_box' ) );
-        // add_action( 'added_post_meta',                        array( $this, 'add_connections' ) );
-        // add_action( 'update_post_meta',                       array( $this, 'update_connections' ) );
-        // add_action( 'delete_post_meta',                       array( $this, 'delete_connections' ) );
-        // add_action( 'before_delete_post',                     array( $this, 'handle_post_deleted' ) );
+        add_action( 'cmb2_admin_init',                        array( $this, 'register_meta_boxes' ) );
+        add_action( 'peerraiser_page_peerraiser-donations',   array( $this, 'load_assets' ) );
+        add_action( 'admin_init',                             array( $this, 'on_donations_view' ) );
         add_action( 'peerraiser_new_donation',                array( $this, 'add_donation' ) );
 		add_action( 'manage_pr_donation_posts_custom_column', array( $this, 'manage_columns' ) );
 		add_action( 'add_meta_boxes',                         array( $this, 'add_meta_boxes' ) );
