@@ -10,6 +10,7 @@
 
 			init = function(){
 				bindEvents();
+				renderTooltips();
 
 				// If a PeerRaiser form is present, use jQuery validate
 				if ( $o.peerraiserForm.length ) {
@@ -61,7 +62,15 @@
 						elem.parents('.cmb-row').removeClass(errorClass);
 					}
 				});
-			}
+			},
+			renderTooltips = function() {
+				$('.cmb-td input, .cmb-td select, .cmb-td textarea').each(function(){
+					var tooltip = $(this).data('tooltip');
+					if ( tooltip !== undefined ) {
+						$(this).parents('.cmb-row').find('.cmb-th label').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
+					}
+				});
+			};
 
 		init();
 
