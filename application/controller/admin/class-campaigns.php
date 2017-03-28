@@ -14,10 +14,7 @@ use \PeerRaiser\Helper\View;
 class Campaigns extends Base {
 
     public function register_actions() {
-        add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
         add_action( 'peerraiser_page_peerraiser-campaigns', array( $this, 'load_assets' ) );
-        add_action( 'cmb2_save_post_fields',                array( $this, 'maybe_set_start_date' ) );
-        add_action( 'add_meta_boxes',                       array( $this, 'add_meta_boxes' ) );
 		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
     }
@@ -50,26 +47,6 @@ class Campaigns extends Base {
 
         // Render the view
         $this->render( 'backend/campaign-' . $view );
-    }
-
-    public function register_meta_boxes() {
-
-        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
-        $campaign_field_groups = $campaigns_model->get_fields();
-
-        foreach ($campaign_field_groups as $field_group) {
-            $cmb = new_cmb2_box( array(
-                'id'           => $field_group['id'],
-                'title'        => $field_group['title'],
-                'object_types' => array( 'post' ),
-                'hookup'       => false,
-                'save_fields'  => false,
-            ) );
-            foreach ($field_group['fields'] as $key => $value) {
-                $cmb->add_field($value);
-            }
-        }
-
     }
 
     public function load_assets() {
@@ -113,193 +90,6 @@ class Campaigns extends Base {
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
                 'template_directory' => get_template_directory_uri(),
             )
-        );
-
-    }
-
-    /**
-     * After post meta is added, add the connections
-     *
-     * @since    1.0.0
-     * @return   null
-     * @todo  Remove or modify this
-     */
-    public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_campaign_participants' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                foreach ($_meta_value as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
-                        'date' => current_time('mysql')
-                    ) );
-                }
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Before the post meta is updated, update the connections
-     *
-     * @since     1.0.0
-     * @return    null
-     * @todo  Remove or modify this
-     */
-    public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_campaign_participants' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
-
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                $removed = array_diff($old_value, $_meta_value);
-                $added = array_diff($_meta_value, $old_value);
-                // Remove the value from connection
-                foreach ($removed as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
-                }
-                // Add the new connection
-                foreach ($added as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->connect( $object_id, $value, array(
-                        'date' => current_time('mysql')
-                    ) );
-                }
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Before post meta is deleted, delete the connections
-     *
-     * @since     1.0.0
-     * @return    null
-     * @todo  Remove or modify this
-     */
-    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_campaign_participants' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
-
-        switch ( $meta_key ) {
-            case '_campaign_participants':
-                // Remove the value from connection
-                foreach ($old_value as $key => $value) {
-                    p2p_type( 'campaign_to_participant' )->disconnect( $object_id, $value );
-                }
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Get Total Fundraisers
-     *
-     * @todo Remove this or move it to the fundraiser model
-     */
-    public function get_total_fundraisers( $campaign_id ) {
-        $args = array(
-            'post_type' => 'fundraiser',
-            'connected_type' => 'campaign_to_fundraiser',
-            'connected_items' => $campaign_id,
-            'posts_per_page' => -1
-        );
-        $fundraisers = new \WP_Query( $args );
-        return $fundraisers->found_posts;
-    }
-
-    /**
-     * Get total teams
-     *
-     * @todo Remove this or move to the teams model
-     */
-    public function get_total_teams( $campaign_id ) {
-        $args = array(
-            'post_type' => 'fundraiser',
-            'connected_type' => 'campaigns_to_teams',
-            'connected_items' => $campaign_id,
-            'posts_per_page' => -1
-        );
-        $teams = new \WP_Query( $args );
-        return $teams->found_posts;
-    }
-
-    /**
-     * Get total donations
-     *
-     * @todo Remove this or move it to the donations model
-     */
-    public function get_total_donations( $campaign_id ) {
-        $args = array(
-            'post_type' => 'fundraiser',
-            'connected_type' => 'donation_to_campaign',
-            'connected_items' => $campaign_id,
-            'posts_per_page' => -1
-        );
-        $donations = new \WP_Query( $args );
-        return $donations->found_posts;
-    }
-
-    /**
-     * Add Meta Boxes
-     *
-     * @since    1.0.0
-     */
-    public function add_meta_boxes() {
-        if ( $this->is_edit_page( 'new' ) )
-            return;
-
-        add_meta_box(
-            'campaign_donations',
-            __('Donations', 'peerraiser'),
-            array( $this, 'display_donations_list' ),
-            'pr_campaign'
-        );
-
-        add_meta_box(
-            'campaign_fundraisers',
-            __('Fundraisers', 'peerraiser'),
-            array( $this, 'display_fundraisers_list' ),
-            'pr_campaign'
-        );
-
-        add_meta_box(
-            'campaign_teams',
-            __('Teams', 'peerraiser'),
-            array( $this, 'display_teams_list' ),
-            'pr_campaign'
-        );
-
-        add_meta_box(
-            "campaign_stats",
-            __( 'Campaign Stats', 'peerraiser'),
-            array( $this, 'display_campaign_stats' ),
-            'pr_campaign',
-            'side'
         );
 
     }
@@ -426,7 +216,12 @@ class Campaigns extends Base {
         $this->render( 'backend/partials/campaign-stats' );
     }
 
-	public function handle_add_campaign() {
+	/**
+	 * Handle "Add Campaign" form submission
+	 *
+	 * @since 1.0.0
+	 */
+    public function handle_add_campaign() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_campaign_nonce' ) ) {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
@@ -461,6 +256,11 @@ class Campaigns extends Base {
 		wp_safe_redirect( $location );
 	}
 
+	/**
+	 * Handle "delete campaign" action
+	 *
+	 * @since 1.0.0
+	 */
 	public function delete_campaign() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_campaign_' . $_REQUEST['campaign_id'] ) ) {
 			die( __('Security check failed.', 'peerraiser' ) );
