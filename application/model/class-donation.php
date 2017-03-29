@@ -217,6 +217,14 @@ class Donation {
     protected $currency = '';
 
     /**
+     * Donation notes
+     *
+     * @since 1.0.0
+     * @var array
+     */
+    protected $notes = array();
+
+    /**
      * Array of items that have changed since the last save() was run
      * This is for internal use, to allow fewer update_donation_meta calls to be run
      *
@@ -346,21 +354,13 @@ class Donation {
         // Status and Dates
         $this->date            = $donation->date;
         $this->status          = $donation->status;
-        // $this->mode            = $this->setup_mode();
-        // $this->parent_donation  = $donation->post_parent;
-
-        // $all_donation_statuses  = edd_get_donation_statuses();
-        // $this->status_nicename = array_key_exists( $this->status, $all_donation_statuses ) ? $all_donation_statuses[ $this->status ] : ucfirst( $this->status );
-
 
         // Money related
-        // $this->fees           = $this->setup_fees();
         $this->total          = $donation->total;
         $this->subtotal       = $donation->subtotal;
         // $this->currency       = $this->setup_currency();
 
         // Gateway related
-        // $this->gateway        = $this->setup_gateway();
         $this->transaction_id = $donation->transaction_id;
 
         // User related
@@ -373,6 +373,10 @@ class Donation {
         // $this->email          = $this->setup_email();
         // $this->first_name     = $this->user_info['first_name'];
         // $this->last_name      = $this->user_info['last_name'];
+
+        // Donation Notes
+        $donation_notes = $this->get_meta( 'notes' );
+        $this->notes = ! empty( $donation_notes ) ? $donation_notes : array();
 
         // Add your own items to this object via this hook:
         do_action( 'peerraiser_after_setup_donation', $this, $donation );
@@ -460,6 +464,16 @@ class Donation {
 		$donation_table->delete( $this->ID );
 	}
 
+	public function add_note( $note ) {
+        $notes = $this->notes;
+        $this->notes = $notes[] = array(
+            'time' => current_time('mysql'),
+            'note' => $note
+        );
+
+        return $this->notes;
+    }
+
     /**
      * Gets the IP address
      *
@@ -514,6 +528,18 @@ class Donation {
         $donation_meta = new Donation_Meta();
 
         $result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+    }
+
+    /**
+     * Get donation meta
+     *
+     * @param string $meta_key
+     * @param bool $single
+     * @return mixed
+     */
+    public function get_meta( $meta_key= '', $single = false ) {
+        $donation_meta = new Donation_Meta();
+        return $donation_meta->get_meta( $this->ID, $meta_key, $single );
     }
 
     private function adjust_donor_amounts() {
