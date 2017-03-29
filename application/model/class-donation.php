@@ -444,6 +444,9 @@ class Donation {
                         $this->update_meta( 'gateway', $this->gateway );
                         break;
 
+                    case 'notes' :
+                        $this->update_meta( 'notes', $this->notes );
+
                     default :
                         do_action( 'peerraiser_donation_save', $this, $key );
                         break;
@@ -470,6 +473,8 @@ class Donation {
             'time' => current_time('mysql'),
             'note' => $note
         );
+
+        $this->pending[ 'notes' ] = $this->notes;
 
         return $this->notes;
     }
@@ -527,7 +532,7 @@ class Donation {
 
         $donation_meta = new Donation_Meta();
 
-        $result = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+        $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
     }
 
     /**
