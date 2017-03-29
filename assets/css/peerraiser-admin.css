@@ -38,6 +38,7 @@
 .peerraiser-error label.peerraiser-error {
     font-weight: bold;
     font-size: 13px;
+    display: block;
 }
 /* Button Styles */
 .ladd-button {
