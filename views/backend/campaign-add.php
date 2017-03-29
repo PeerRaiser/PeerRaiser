@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <h1 class="wp-heading-inline"><?php _e( 'Add New Campaign', 'peerraiser' ); ?></h1>
     <hr class="wp-header-end">
 
-    <form id="peerraiser-add-campaign" action="" method="post">
+    <form id="peerraiser-add-campaign" class="peerraiser-form" action="" method="post">
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
                 <div id="postbox-container-1" class="postbox-container">
