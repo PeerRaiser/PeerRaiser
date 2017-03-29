@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <p></p>
     </div>
 
-    <h1 class="wp-heading-inline"><?php _e( 'Donation #12', 'peerraiser' ); ?></h1>
+    <h1 class="wp-heading-inline"><?php printf( esc_html__( 'Donation #%d', 'peerraiser' ), $peerraiser['donation']->ID ); ?></h1>
     <hr class="wp-header-end">
 
     <form id="peerraiser-add-donation" class="peerraiser-form" action="" method="post">
@@ -114,7 +114,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
 
-                        <?php do_action( 'peerraiser_after_donation_metaboxes' ); ?>
+                        <?php do_action( 'peerraiser_after_donation_metaboxes', $peerraiser ); ?>
                     </div>
                 </div>
             </div>
