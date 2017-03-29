@@ -8,6 +8,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
         add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
 		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
+        add_action( 'peerraiser_after_donation_metaboxes',  array( $this, 'donation_notes_metabox' ), 50 );
 		add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
 		add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
 		add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
@@ -86,7 +87,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         if ( $view === 'summary' ) {
             $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
             $view_args['donor']    = new\PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
-
         }
 
         $this->assign( 'peerraiser', $view_args );
@@ -203,7 +203,11 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->gateway       = 'offline';
 
         // Optional Fields
-        $donation->fundraiser_id = isset( $_REQUEST['_fundraiser'] ) ? absint( $_REQUEST['_fundraiser'] ) : 0;
+        $donation->fundraiser_id = isset( $_REQUEST['_peerraiser_fundraiser'] ) ? absint( $_REQUEST['_peerraiser_fundraiser'] ) : 0;
+
+        if ( isset( $_REQUEST['_peerraiser_donation_note'] ) && ! empty( $_REQUEST['_peerraiser_donation_note'] ) ) {
+            $donation->add_note( $_REQUEST['_peerraiser_donation_note'] );
+        }
 
         // Save to the database
         $donation->save();
