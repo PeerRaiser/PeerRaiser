@@ -4,6 +4,6 @@
 
     </div>
     <div class="inside">
-        <textarea name="_pr_donation_note" id="donation-note" class="large-text" rows="5"></textarea>
+        <textarea name="_peerraiser_donation_note" id="donation-note" class="large-text" rows="5"></textarea>
     </div>
 </div>
