@@ -29,8 +29,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <?php _e( 'Status:', 'peerraiser' ); ?> <strong>Completed</strong>
                                             <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                             <div id="donation-status-select" class="hide-if-js">
-                                                <input type="hidden" name="_donation_status_hidden" value="completed">
-                                                <select name="_donation_status" id="donation-status">
+                                                <input type="hidden" name="_peerraiser_donation_status_hidden" value="completed">
+                                                <select name="_peerraiser_donation_status" id="donation-status">
                                                     <option value="completed">Completed</option>
                                                     <option value="pending">Pending</option>
                                                 </select>
@@ -43,8 +43,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <?php _e( 'Type:', 'peerraiser' ); ?> <strong>Check</strong>
                                             <a href="#donation_type" class="edit-donation-type hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit type', 'peerraiser' ); ?></span></a>
                                             <div id="donation-type-select" class="hide-if-js">
-                                                <input type="hidden" name="_donation_type_hidden" value="check">
-                                                <select name="_donation_type" id="donation-type">
+                                                <input type="hidden" name="_peerraiser_donation_type_hidden" value="check">
+                                                <select name="_peerraiser_donation_type" id="donation-type">
                                                     <option value="check">Check</option>
                                                     <option value="cc">Credit Card</option>
                                                     <option value="cash">Cash</option>
