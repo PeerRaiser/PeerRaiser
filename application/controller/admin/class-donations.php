@@ -8,7 +8,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
         add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
 		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
-        add_action( 'peerraiser_after_donation_metaboxes',  array( $this, 'donation_notes_metabox' ), 50 );
+        add_action( 'peerraiser_after_donation_metaboxes',  array( $this, 'donation_notes_metabox' ), 50, 1 );
 		add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
 		add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
 		add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
@@ -169,9 +169,11 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donation-summary' );
     }
 
-    public function donation_notes_metabox() {
+    public function donation_notes_metabox( $peerraiser ) {
         if ( ! apply_filters( 'peerraiser_show_donation_notes_metabox', true ) )
             return;
+
+        $this->assign( 'peerraiser', $peerraiser );
 
         $this->render( 'backend/partials/donation-box-notes' );
     }
@@ -206,6 +208,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->fundraiser_id = isset( $_REQUEST['_peerraiser_fundraiser'] ) ? absint( $_REQUEST['_peerraiser_fundraiser'] ) : 0;
 
         if ( isset( $_REQUEST['_peerraiser_donation_note'] ) && ! empty( $_REQUEST['_peerraiser_donation_note'] ) ) {
+            error_log( 'donation note field isnt empty');
             $donation->add_note( $_REQUEST['_peerraiser_donation_note'] );
         }
 
