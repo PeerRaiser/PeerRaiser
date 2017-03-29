@@ -16,7 +16,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                 'fields'   => array(
                     'donor' => array(
                         'name'    => __('Donor', 'peerraiser'),
-                        'desc'    => __('The donor record this donation is tied to'),
+                        'desc'    => __('The donor record this donation is tied to', 'peerraiser'),
                         'id'      => '_peerraiser_donor',
                         'type'    => 'select',
                         'default' => 'custom',
@@ -28,7 +28,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                     ),
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
-						'desc'         => __( 'Total amount donated. Format should be XXXX.XX'),
+						'desc'         => __( 'Format should be XXXX.XX', 'peerraiser'),
                         'id'           => '_peerraiser_donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
@@ -41,7 +41,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                     ),
                     'campaign' => array(
                         'name'    => __( 'Campaign', 'peerraiser' ),
-                        'desc'    => __( 'The campaign this donation should be attributed to' ),
+                        'desc'    => __( 'The campaign this donation should be attributed to', 'peerraiser' ),
                         'id'      => '_peerraiser_campaign',
                         'type'    => 'select',
                         'default' => 'custom',
