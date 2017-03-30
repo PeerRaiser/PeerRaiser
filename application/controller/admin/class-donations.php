@@ -208,7 +208,6 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->fundraiser_id = isset( $_REQUEST['_peerraiser_fundraiser'] ) ? absint( $_REQUEST['_peerraiser_fundraiser'] ) : 0;
 
         if ( isset( $_REQUEST['_peerraiser_donation_note'] ) && ! empty( $_REQUEST['_peerraiser_donation_note'] ) ) {
-            error_log( 'donation note field isnt empty');
             $donation->add_note( $_REQUEST['_peerraiser_donation_note'] );
         }
 
@@ -219,7 +218,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $location = add_query_arg( array(
             'page' => 'peerraiser-donations',
             'view' => 'summary',
-            'donation_id' => $donation->ID
+            'donation' => $donation->ID
         ), admin_url( 'admin.php' ) );
 
         // Redirect to the edit screen for this new donation
