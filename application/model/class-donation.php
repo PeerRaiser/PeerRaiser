@@ -375,7 +375,7 @@ class Donation {
         // $this->last_name      = $this->user_info['last_name'];
 
         // Donation Notes
-        $donation_notes = $this->get_meta( 'notes' );
+        $donation_notes = $this->get_meta( 'notes', true );
         $this->notes = ! empty( $donation_notes ) ? $donation_notes : array();
 
         // Add your own items to this object via this hook:
@@ -469,11 +469,13 @@ class Donation {
 
 	public function add_note( $note ) {
         $notes = $this->notes;
-        $this->notes = $notes[] = array(
+
+        $notes[] = array(
             'time' => current_time('mysql'),
             'note' => $note
         );
 
+        $this->notes = $notes;
         $this->pending[ 'notes' ] = $this->notes;
 
         return $this->notes;
@@ -544,7 +546,9 @@ class Donation {
      */
     public function get_meta( $meta_key= '', $single = false ) {
         $donation_meta = new Donation_Meta();
-        return $donation_meta->get_meta( $this->ID, $meta_key, $single );
+        $result = $donation_meta->get_meta( $this->ID, $meta_key, $single );
+
+        return $result;
     }
 
     private function adjust_donor_amounts() {
