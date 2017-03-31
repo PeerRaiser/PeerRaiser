@@ -467,12 +467,31 @@ class Donation {
 		$donation_table->delete( $this->ID );
 	}
 
-	public function add_note( $note ) {
+    /**
+     * Add a note to a donation
+     *
+     * @param string $what The donation note content
+     * @param string $when When the note was added
+     * @param string $who  Who added the note
+     *
+     * @return array
+     */
+	public function add_note( $what = '', $when = 'now', $who = 'bot' ) {
         $notes = $this->notes;
 
+        if ( 'now' === $when ) {
+            $when = current_time( 'mysql' );
+        }
+
+        if ( 'bot' === $who ) {
+            $who = __( 'PeerRaiser Bot', 'peerraiser' );
+        }
+
         $notes[] = array(
-            'time' => current_time('mysql'),
-            'note' => $note
+            'id'   => md5( $what . time() ),
+            'when' => esc_attr( $when ),
+            'who'  => esc_attr( $who ),
+            'what' => wp_strip_all_tags( $what )
         );
 
         $this->notes = $notes;
