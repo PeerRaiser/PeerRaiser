@@ -11,6 +11,7 @@
 			init = function(){
 				bindEvents();
 				renderTooltips();
+				denoteRequiredFields();
 
 				// If a PeerRaiser form is present, use jQuery validate
 				if ( $o.peerraiserForm.length ) {
@@ -70,6 +71,12 @@
 						$(this).parents('.cmb-row').find('.cmb-th label').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
 					}
 				});
+			},
+
+			denoteRequiredFields = function() {
+                $('[data-rule-required="true"]').each(function(){
+                    $(this).parents('.cmb-row').find('.cmb-th label').append('<span class="required"></span>');
+                });
 			};
 
 		init();
