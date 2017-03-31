@@ -11,6 +11,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         add_action( 'peerraiser_after_donation_metaboxes',  array( $this, 'donation_notes_metabox' ), 50, 1 );
 		add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
 		add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
+		add_action( 'peerraiser_update_donation',           array( $this, 'handle_update_donation' ) );
 		add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
     }
 
@@ -223,6 +224,24 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         // Redirect to the edit screen for this new donation
         wp_safe_redirect( $location );
+    }
+
+    public function handle_update_donation() {
+        $donation_id = intval( $_REQUEST['donation_id'] );
+
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_donation_' . $donation_id ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
+
+        $donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
+
+        if ( isset( $_REQUEST['_peerraiser_donation_note'] ) ) {
+            $user          = wp_get_current_user();
+
+            $donation->add_note( $_REQUEST['_peerraiser_donation_note'], $user->user_login );
+        }
+
+        $donation->save();
     }
 
 	/**
