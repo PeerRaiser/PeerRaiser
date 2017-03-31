@@ -68,7 +68,7 @@
 .peerraiser-form .cmb-th label span.required {
     color: #a94442;
     position: absolute;
-    right: -9px;
+    left: -7px;
     top: 3px;
 }
 .peerraiser-form .cmb-th label span.required:before {
