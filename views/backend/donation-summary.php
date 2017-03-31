@@ -119,7 +119,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
         </div>
-        <?php wp_nonce_field( 'peerraiser_add_donation_nonce' ); ?>
-        <input type="hidden" name="peerraiser_action" value="add_donation">
+        <?php wp_nonce_field( 'peerraiser_update_donation_' . $peerraiser['donation']->ID ); ?>
+        <input type="hidden" name="donation_id" value="<?php echo $peerraiser['donation']->ID; ?>">
+        <input type="hidden" name="peerraiser_action" value="update_donation">
     </form>
 </div>
