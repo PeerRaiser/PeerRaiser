@@ -476,7 +476,7 @@ class Donation {
      *
      * @return array
      */
-	public function add_note( $what = '', $when = 'now', $who = 'bot' ) {
+	public function add_note( $what = '', $who = 'bot', $when = 'now' ) {
         $notes = $this->notes;
 
         if ( 'now' === $when ) {
