@@ -105,6 +105,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'type' => 'number',
                         ),
                         'attributes'        => array(
+                            'placeholder' => '&infin;',
                             'data-rule-min' => 1,
                             'data-rule-integer' => true,
                             'data-msg-min' => __( 'Please enter a positive number, or leave blank for unlimited', 'peerraiser' ),
@@ -120,6 +121,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'type' => 'number',
                         ),
                         'attributes'        => array(
+                            'placeholder' => '&infin;',
                             'data-rule-min' => 1,
                             'data-rule-integer' => true,
                             'data-msg-min' => __( 'Please enter a positive number, or leave blank for unlimited', 'peerraiser' ),
