@@ -227,6 +227,8 @@ class Donations extends \PeerRaiser\Controller\Base {
 
 	/**
 	 * Handle "delete donation" action
+     *
+     * @todo Delete donation meta
 	 *
 	 * @since     1.0.0
 	 */
