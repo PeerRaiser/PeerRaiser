@@ -36,10 +36,7 @@ class Donation_List_Table extends WP_List_Table {
         // create a nonce
         $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation_' . $item['donation_id'] );
 
-        $donor = new Donor();
-        $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
-
-        $title = '<a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'donation-details' ) ) . '">' . $donor[0]->donor_name . '</a>';
+        $title = '<a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'summary' ) ) . '">Donation #' . $item['donation_id'] . '</a>';
 
         $actions = array(
             'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donation_id'] ) ),
@@ -92,8 +89,10 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function column_default( $item, $column_name ) {
         switch ( $column_name ) {
-            case 'donation_id':
-                return '#' . $item[ $column_name ];
+            case 'donor':
+                $donor = new Donor();
+                $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
+                return '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'donor-details' ) ) . '">' . $donor[0]->donor_name . '</a>';
             case 'amount':
                 return empty( $item[ 'total' ] ) ? '$0.00' : '$'. number_format( $item[ 'total' ], 2 );
             case 'date':
@@ -126,12 +125,12 @@ class Donation_List_Table extends WP_List_Table {
      */
     function get_columns() {
         $columns = array(
-            'cb'           => '<input type="checkbox" />',
-            'donation_id'  => __( 'ID', 'peerraiser' ),
-            'name'         => __( 'Name', 'peerraiser' ),
-            'amount'       => __( 'Amount', 'peerraiser' ),
-            'date'         => __( 'Date', 'peerraiser' ),
-            'status'       => __( 'Status', 'peerraiser' ),
+            'cb'     => '<input type="checkbox" />',
+            'name'   => __( 'Donation', 'peerraiser' ),
+            'donor'  => __( 'Donor', 'peerraiser' ),
+            'amount' => __( 'Amount', 'peerraiser' ),
+            'date'   => __( 'Date', 'peerraiser' ),
+            'status' => __( 'Status', 'peerraiser' ),
         );
 
       return $columns;
@@ -144,9 +143,9 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'donation_id' => array( 'donation_id', true ),
-            'amount'      => array( 'total', false ),
-            'date'        => array( 'date', false ),
+            'donation' => array( 'donation', true ),
+            'amount'   => array( 'total', false ),
+            'date'     => array( 'date', false ),
         );
 
         return $sortable_columns;
