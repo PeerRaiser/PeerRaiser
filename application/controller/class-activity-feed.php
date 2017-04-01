@@ -8,7 +8,7 @@ namespace PeerRaiser\Controller;
 class Activity_Feed extends Base {
 
     public function register_actions() {
-        add_action( 'save_post',   array( $this, 'maybe_add_post_to_feed' ) );
+        add_action( 'save_post',   array( $this, 'maybe_add_post_to_feed' ), 10, 3 );
         add_action( 'delete_post', array( $this, 'maybe_remove_post_from_feed' ) );
     }
 
