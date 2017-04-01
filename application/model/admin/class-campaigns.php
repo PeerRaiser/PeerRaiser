@@ -66,6 +66,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-msg-required' => __( 'Campaign Goal is required', 'peerraiser' ),
                             'data-rule-currency' => '["",false]',
                             'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+                            'data-tooltip' => __('The total goal amount for the entire campaign.', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
