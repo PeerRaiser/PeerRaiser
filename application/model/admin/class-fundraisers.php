@@ -16,32 +16,42 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                 'fields'   => array(
                     'fundraiser_campaign' => array(
                         'name'    => __('Campaign', 'peerraiser'),
-                        'id'      => '_fundraiser_campaign',
+                        'id'      => '_peerraiser_fundraiser_campaign',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_selected_post'),
+                        'attributes'  => array(
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
+                        ),
                     ),
                     'fundraiser_participant' => array(
                         'name'    => __('Participant', 'peerraiser'),
-                        'id'      => '_fundraiser_participant',
+                        'id'      => '_peerraiser_fundraiser_participant',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_participants_for_select_field'),
+                        'attributes'  => array(
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A participant is required', 'peerraiser' ),
+                        ),
                     ),
                     'fundraiser_team' => array(
                         'name'    => __('Team', 'peerraiser'),
-                        'id'      => '_fundraiser_team',
+                        'id'      => '_peerraiser_fundraiser_team',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options' => array( $this, 'get_selected_post'),
                     ),
                     'fundraiser_goal' => array(
                         'name'         => __( 'Fundraising Goal', 'peerraiser'),
-                        'id'           => '_fundraiser_goal',
+                        'id'           => '_peerraiser_fundraiser_goal',
                         'type'         => 'text',
                         'attributes' => array(
-                            'pattern' => '^\d*(\.\d{2}$)?',
-                            'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
+                            'data-rule-currency' => '["",false]',
+                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A goal amount is required', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
