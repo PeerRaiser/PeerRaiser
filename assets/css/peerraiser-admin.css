@@ -39,6 +39,10 @@
     font-weight: bold;
     font-size: 13px;
     display: block;
+    padding-top: .5em;
+}
+.peerraiser-error  .cmb2-metabox-description + label.peerraiser-error {
+    padding-top: 0;
 }
 /* Button Styles */
 .ladd-button {
@@ -64,11 +68,12 @@
 .peerraiser-form .cmb-th label {
     display: inline;
     position: relative;
+    padding-left: 8px;
 }
 .peerraiser-form .cmb-th label span.required {
     color: #a94442;
     position: absolute;
-    left: -7px;
+    left: 0;
     top: 3px;
 }
 .peerraiser-form .cmb-th label span.required:before {
