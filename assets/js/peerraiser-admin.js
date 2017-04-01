@@ -46,12 +46,17 @@
 				validationObject = $o.peerraiserForm.validate({
 					errorClass: "peerraiser-error",
 					errorPlacement: function (error, element) {
-						var elem     = $(element);
-						var desc_box = elem.parent().find('.cmb2-metabox-description');
+						var elem             = $(element);
+						var desc_box         = elem.parent().find('.cmb2-metabox-description'),
+						    select2Container = elem.parent().find('.select2-container');
 						if ( desc_box.length ) {
 							desc_box.after( error );
 						} else {
-							elem.after( error );
+							if ( select2Container.length ) {
+                                select2Container.after( error );
+							} else {
+                                elem.after( error );
+                            }
 						}
 					},
 					highlight: function (element, errorClass, validClass) {
