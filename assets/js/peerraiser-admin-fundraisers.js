@@ -17,10 +17,9 @@
                 campaign           : {
                     data           : function ( params ) {
                         return {
-                            action: 'peerraiser_get_posts',
+                            action: 'peerraiser_get_campaigns',
                             s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_campaign']
+                            page: params.page
                         };
                     },
                     templateResult : function(data) {
