@@ -13,6 +13,7 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         // add_action( 'delete_post_meta',                      array( $this, 'delete_connections' ) );
         add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'meta_boxes',                            array( $this, 'add_meta_boxes' ) );
+        add_action( 'post_edit_form_tag',                    array( $this, 'add_peerraiser_class' ) );
     }
 
     public function register_meta_boxes() {
@@ -288,6 +289,15 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         $this->assign( 'peerraiser', $view_args );
 
         $this->render( 'backend/partials/fundraiser-donations' );
+    }
+
+    public function add_peerraiser_class() {
+        // If this isn't the Fundraiser post type, exit early
+        global $post_type;
+        if ( 'fundraiser' != $post_type )
+            return;
+
+        echo ' class="peerraiser-form"';
     }
 
  }
