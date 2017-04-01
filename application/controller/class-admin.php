@@ -347,7 +347,7 @@ class Admin extends Base {
                 if ( $title === 'fundraiser' ) {
                     $title = 'fundraiser';
                 } else {
-                    $title = __( 'Enter the fundraiser name here', 'peerraiser' );
+                    $title = __( 'Enter fundraiser name here', 'peerraiser' );
                 }
                 break;
 
