@@ -2,13 +2,15 @@
 
 namespace PeerRaiser\Controller\Admin;
 
+use \PeerRaiser\Model\Team as Team_Model;
+
 class Teams extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
 		add_action( 'peerraiser_page_peerraiser-teams',   array( $this, 'load_assets' ) );
-        add_action( 'meta_boxes',                         array( $this, 'add_meta_boxes' ) );
         add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
+        add_action( 'peerraiser_add_campaign',	          array( $this, 'handle_add_team' ) );
     }
 
     /**
@@ -217,18 +219,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     }
 
-    public function add_meta_boxes() {
-        if ( $this->is_edit_page( 'new' ) )
-            return;
-
-        add_meta_box(
-            'teams_fundraisers',
-            __('Fundraisers', 'peerraiser'),
-            array( $this, 'display_fundraisers_list' ),
-            'pr_team'
-        );
-    }
-
     public function display_fundraisers_list() {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
@@ -292,6 +282,88 @@ class Teams extends \PeerRaiser\Controller\Base {
 
         }
 
+    }
+
+    public function handle_add_team() {
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_team_nonce' ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
+
+        $validation = $this->is_valid_team();
+        if ( ! $validation['is_valid'] ) {
+            return;
+        }
+
+        $team = new Team_Model();
+
+        // Required Fields
+        $team->team_name   = $_REQUEST['_peerraiser_team_title'];
+        $team->team_leader = $_REQUEST['_peerraiser_team_leader'];
+        $team->campaign_id = $_REQUEST['_peerraiser_team_campaign'];
+        $team->team_goal   = $_REQUEST['_peerraiser_goal_amount'];
+
+        // Optional Fields
+        if ( isset( $_REQUEST['_peerraiser_team_thumbnail'] ) ) {
+            $team->thumbnail_image = $_REQUEST['_peerraiser_team_thumbnail'];
+        }
+
+        // Save to the database
+        $team->save();
+
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page' => 'peerraiser-teams',
+            'view' => 'summary',
+            'campaign_id' => $team->ID
+        ), admin_url( 'admin.php' ) );
+
+        // Redirect to the edit screen for this new donation
+        wp_safe_redirect( $location );
+    }
+
+    /**
+     * Checks if the fields are valid
+     *
+     * @todo Check formatting of goal amounts
+     * @since     1.0.0
+     * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+     */
+    private function is_valid_team() {
+        $required_fields = array( '_peerraiser_team_title', '_peerraiser_team_leader', '_peerraiser_team_campaign', '_peerraiser_goal_amount' );
+
+        $data = array(
+            'is_valid'     => true,
+            'field_errors' => array(),
+        );
+
+        // Make sure team name isn't already taken
+        $team_exists = term_exists( $_REQUEST['_peerraiser_team_title'], 'peerraiser_team' );
+
+        if ( $team_exists !== 0 && $team_exists !== null ) {
+            $data['field_errors'][ '_peerraiser_team_title' ] = __( 'This team name already exists', 'peerraiser' );
+        }
+
+        // Check required fields
+        foreach ( $required_fields as $field ) {
+            if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+                $data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
+            }
+        }
+
+        if ( ! empty( $data['field_errors'] ) ) {
+            $message = __( 'There was an issue creating this team. Please fix the errors below.', 'peerraiser' );
+            Admin_Notices_Model::add_notice( $message, 'notice-error', true );
+
+            wp_localize_script(
+                'jquery',
+                'peerraiser_field_errors',
+                $data['field_errors']
+            );
+
+            $data['is_valid'] = false;
+        }
+
+        return $data;
     }
 
     private function get_total_fundraisers( $team_id ) {
