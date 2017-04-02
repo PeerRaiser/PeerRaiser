@@ -120,8 +120,6 @@ class Fundraiser {
 			return false;
 		}
 
-		error_log( '$fundraiser->terms[0]: ' . print_r( $fundraiser->terms[0], 1 ) );
-
 		$this->setup_fundraiser( $fundraiser->terms[0] );
 
 		return $this;
