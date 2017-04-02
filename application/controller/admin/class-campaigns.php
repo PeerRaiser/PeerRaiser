@@ -311,6 +311,14 @@ class Campaigns extends Base {
 			'field_errors' => array(),
 		);
 
+		// Make sure campaign name isn't already taken
+        $campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_title'], 'peerraiser_campaign' );
+
+        if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
+            $data['field_errors'][ '_peerraiser_campaign_title' ] = __( 'This campaign name already exists', 'peerraiser' );
+        }
+
+        // Check required fields
 		foreach ( $required_fields as $field ) {
 			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
 				$data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
@@ -318,7 +326,7 @@ class Campaigns extends Base {
 		}
 
 		if ( ! empty( $data['field_errors'] ) ) {
-			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
+			$message = __( 'There was an issue creating this campaign. Please fix the errors below.', 'peerraiser' );
 			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
 
 			wp_localize_script(
