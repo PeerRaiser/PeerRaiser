@@ -216,7 +216,6 @@ class Field {
         return null;
     }
 
-
    /**
     * Remove the vars from the array and return it
     *
@@ -235,7 +234,6 @@ class Field {
 
         return $r;
     }
-
 
     /**
      * Force variable to be an array
@@ -264,7 +262,6 @@ class Field {
         // Anything else just put into an array
         return array( $var );
     }
-
 
     /**
     * Return an array of available post types
@@ -306,7 +303,6 @@ class Field {
 
     }
 
-
    /**
     * Decodes the $taxonomy:$term strings into a nested array
     *
@@ -342,7 +338,6 @@ class Field {
 
     }
 
-
     /**
     * Convert a term string into an array of term data
     *
@@ -371,7 +366,6 @@ class Field {
         return $r;
 
     }
-
 
    /**
     * Return an array of available taxonomy terms
@@ -411,7 +405,6 @@ class Field {
 
     }
 
-
    /**
     * Return an array of available taxonomies
     *
@@ -437,9 +430,7 @@ class Field {
         return $r;
     }
 
-
     public static function get_pretty_taxonomies( $taxonomies = array() ) {
-
         // get post types
         if( empty($taxonomies) ) {
             // get all custom post types
@@ -482,9 +473,7 @@ class Field {
 
     }
 
-
     public static function get_pretty_post_types( $post_types = array() ) {
-
         // get post types
         if( empty($post_types) ) {
             // get all custom post types
@@ -529,7 +518,6 @@ class Field {
         return $r;
     }
 
-
     /**
      * Returns all posts grouped by post_type
      *
@@ -538,7 +526,6 @@ class Field {
      * @return    array
      */
     public static function get_grouped_posts( $args ) {
-
         // vars
         $r = array();
 
@@ -648,7 +635,6 @@ class Field {
 
     }
 
-
    /**
     * Merges together 2 arrays and converts any numeric values to int
     *
@@ -675,7 +661,6 @@ class Field {
         return $args;
 
     }
-
 
     /**
     * Converts numeric values to into and trims strings
@@ -707,7 +692,6 @@ class Field {
         return $array;
     }
 
-
     public static function parse_type( $v ) {
 
         // test for array
@@ -731,7 +715,6 @@ class Field {
         return $v;
 
     }
-
 
     public static function get_post_title( $post = 0 ) {
 
@@ -762,7 +745,6 @@ class Field {
         return $title;
 
     }
-
 
     public static function order_by_search( $array, $search ) {
 
@@ -809,7 +791,6 @@ class Field {
         return $array;
     }
 
-
     /**
      * Returns a var if it exists in an array
      *
@@ -830,7 +811,6 @@ class Field {
         return $default;
     }
 
-
     /**
      * Filter for ordering posts by post type
      */
@@ -848,6 +828,13 @@ class Field {
         }
 
         return $ordeby;
+    }
+
+    public static function get_image_id_by_url( $image_url ) {
+        global $wpdb;
+        $attachment = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid='%s';", $image_url ));
+
+        return $attachment[0];
     }
 
 }
