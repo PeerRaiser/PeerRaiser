@@ -120,8 +120,6 @@ class Team {
 			return false;
 		}
 
-		error_log( '$team->terms[0]: ' . print_r( $team->terms[0], 1 ) );
-
 		$this->setup_team( $team->terms[0] );
 
 		return $this;
