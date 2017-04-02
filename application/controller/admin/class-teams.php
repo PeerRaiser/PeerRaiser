@@ -22,6 +22,12 @@ class Teams extends \PeerRaiser\Controller\Base {
         $currency        = new \PeerRaiser\Model\Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
+        $default_views = array( 'list', 'add', 'summary' );
+
+        // Get the correct view
+        $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
+        $view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donation_admin_view', 'list', $view );
+
         $view_args = array(
             'currency_symbol'      => $currency_symbol,
             'standard_currency'    => $plugin_options['currency'],
@@ -31,7 +37,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 
         $this->assign( 'peerraiser', $view_args );
 
-        $this->render( 'backend/team-list' );
+        $this->render( 'backend/team-' . $view );
     }
 
     public function register_meta_boxes() {
