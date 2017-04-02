@@ -76,7 +76,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <div id="normal-sortables">
                         <?php do_action( 'peerraiser_before_donation_metaboxes' ); ?>
 
-                        <div id="donation-options" class="postbox">
+                        <div id="donation-options" class="postbox cmb2-postbox">
                             <h2><span><?php _e( 'Donation Options', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
                                 <?php echo cmb2_get_metabox_form( 'peerraiser-offline-donation', 0, array( 'form_format' => '', ) ); ?>
