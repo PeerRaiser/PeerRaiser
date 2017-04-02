@@ -47,6 +47,7 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                         'name'         => __( 'Fundraising Goal', 'peerraiser'),
                         'id'           => '_peerraiser_fundraiser_goal',
                         'type'         => 'text',
+                        'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
                         'attributes' => array(
                             'data-rule-currency' => '["",false]',
                             'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
