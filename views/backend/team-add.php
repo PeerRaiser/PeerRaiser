@@ -54,10 +54,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div> <!-- / #side-sortables -->
                 </div>
                 <div id="postbox-container-2" class="postbox-container peerraiser-metabox">
+                    <div id="titlediv">
+                        <div id="titlewrap">
+                            <input type="text" name="_peerraiser_team_title" size="30" value="" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter team name here', 'peerraiser' ); ?>">
+                        </div>
+                        <div class="inside">
+                            <div id="edit-slug-box" class="hide-if-no-js"></div>
+                        </div>
+                    </div>
+
                     <div id="normal-sortables">
                         <?php do_action( 'peerraiser_before_team_metaboxes' ); ?>
 
-                        <div id="team-options" class="postbox">
+                        <div id="team-options" class="postbox cmb2-postbox">
                             <h2><span><?php _e( 'Team Options', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
                                 <?php echo cmb2_get_metabox_form( 'peerraiser-team', 0, array( 'form_format' => '', ) ); ?>
