@@ -3,6 +3,7 @@
 namespace PeerRaiser\Controller\Admin;
 
 use \PeerRaiser\Model\Team as Team_Model;
+use \PeerRaiser\Model\Admin\Admin_Notices as Admin_Notices_Model;
 
 class Teams extends \PeerRaiser\Controller\Base {
 
@@ -10,7 +11,7 @@ class Teams extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
 		add_action( 'peerraiser_page_peerraiser-teams',   array( $this, 'load_assets' ) );
         add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
-        add_action( 'peerraiser_add_campaign',	          array( $this, 'handle_add_team' ) );
+        add_action( 'peerraiser_add_team',	          array( $this, 'handle_add_team' ) );
     }
 
     /**
@@ -304,7 +305,8 @@ class Teams extends \PeerRaiser\Controller\Base {
 
         // Optional Fields
         if ( isset( $_REQUEST['_peerraiser_team_thumbnail'] ) ) {
-            $team->thumbnail_image = $_REQUEST['_peerraiser_team_thumbnail'];
+            $thumbnail_image_id = \PeerRaiser\Helper\Field::get_image_id_by_url( $_REQUEST['_peerraiser_team_thumbnail'] );
+            $team->thumbnail_image = $thumbnail_image_id;
         }
 
         // Save to the database
