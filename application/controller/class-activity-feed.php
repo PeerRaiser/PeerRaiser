@@ -16,12 +16,22 @@ class Activity_Feed extends Base {
      * Determines if the saved post should be added to the feed, depending on the post
      * type and status.
      *
-     * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
+     * @since 1.0.0
+     * @param \PeerRaiser\Core\Event    $event
+     */
+
+    /**
+     * @param int $post_id The post ID.
+     * @param post $post The post object.
+     * @param bool $update Whether this is an existing post being updated or not.
      */
     public function maybe_add_post_to_feed( $post_id, $post, $update ) {
+        // If this isn't a fundraiser, exist early
+        if ( $post->post_type !== 'fundraiser' )
+            return;
+
         // If this is an autosave, exit early
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
             return;
 
         // If the status isn't "publish", exit early
@@ -33,47 +43,21 @@ class Activity_Feed extends Base {
             return;
 
         $model = new \PeerRaiser\Model\Activity_Feed();
-
-        switch ( $post->post_type ) {
-            case 'pr_donation':
-                $model->add_donation_to_feed( $post );
-                break;
-
-            case 'pr_campaign':
-                $model->add_campaign_to_feed( $post );
-                break;
-
-            case 'fundraiser':
-                $model->add_fundraiser_to_feed( $post );
-                break;
-
-            default:
-                break;
-        }
-
+        $model->add_fundraiser_to_feed( $post );
     }
 
     /**
      * Determines if the deleted post should be removed from the activity feed
      *
-     * @since     1.0.0
-     * @param     \PeerRaiser\Core\Event    $event
+     * @since 1.0.0
+     * @param int $post_id
      */
     public function maybe_remove_post_from_feed( $post_id ) {
+        if ( get_post_type( $post_id ) !== 'fundraiser' )
+            return;
+
         $model = new \PeerRaiser\Model\Activity_Feed();
-        $post_type = get_post_type( $post_id );
-
-        switch ( $post_type ) {
-            case 'pr_donation':
-            case 'pr_campaign':
-            case 'fundraiser':
-                $model->remove_activity( $post_id );
-                break;
-
-            default:
-                break;
-        }
-
+        $model->remove_activity( $post_id );
     }
 
 }
