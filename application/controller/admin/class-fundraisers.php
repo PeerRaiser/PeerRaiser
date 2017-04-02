@@ -8,10 +8,10 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                       array( $this, 'register_meta_boxes' ) );
         add_action( 'admin_print_styles-post-new.php',       array( $this, 'load_assets' ) );
         add_action( 'admin_print_styles-post.php',           array( $this, 'load_assets' ) );
-        // add_action( 'added_post_meta',                       array( $this, 'add_connections' ) );
-        // add_action( 'update_post_meta',                      array( $this, 'update_connections' ) );
-        // add_action( 'delete_post_meta',                      array( $this, 'delete_connections' ) );
-        add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ) );
+        add_action( 'added_post_meta',                       array( $this, 'add_connections' ), 10, 4 );
+        add_action( 'update_post_meta',                      array( $this, 'update_connections', 10, 4 ) );
+        add_action( 'delete_post_meta',                      array( $this, 'delete_connections', 10, 4 ) );
+        add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ), 10, 2 );
         add_action( 'meta_boxes',                            array( $this, 'add_meta_boxes' ) );
         add_action( 'post_edit_form_tag',                    array( $this, 'add_peerraiser_class' ) );
     }
@@ -92,29 +92,25 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
      * @return   null
      */
     public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_fundraiser_campaign', '_fundraiser_participant', '_fundraiser_team' );
+        $fields = array( '_peerraiser_fundraiser_campaign', '_peerraiser_fundraiser_participant', '_peerraiser_fundraiser_team' );
 
         // If the field updated isn't the type that needs to be connected, exit early
         if ( !in_array($meta_key, $fields) )
             return;
 
+        error_log( 'add_connection called for ' . $meta_key );
+
         switch ( $meta_key ) {
-            case '_fundraiser_campaign':
-                p2p_type( 'campaign_to_fundraiser' )->connect( $_meta_value, $object_id, array(
-                    'date' => current_time('mysql')
-                ) );
+            case '_peerraiser_fundraiser_campaign':
+                $campaign = get_term_by( 'id', $_meta_value, 'peerraiser_campaign' );
+                wp_set_post_terms( $object_id, $campaign->name, 'peerraiser_campaign' );
                 break;
 
-            case '_fundraiser_participant':
-                p2p_type( 'fundraiser_to_participant' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
+            case '_peerraiser_fundraiser_participant':
                 break;
 
-            case '_fundraiser_team':
-                p2p_type( 'fundraiser_to_team' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
+            case '_peerraiser_fundraiser_team':
+                wp_set_post_terms( $object_id, array( $_meta_value ), 'peerraiser_team' );
                 break;
 
             default:
@@ -130,41 +126,31 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
      * @return    null
      */
     public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_fundraiser_campaign', '_fundraiser_participant', '_fundraiser_team' );
+        $fields = array( '_peerraiser_fundraiser_campaign', '_peerraiser_fundraiser_participant', '_peerraiser_fundraiser_team' );
 
         // If the field updated isn't the type that needs to be connected, exit early
         if ( !in_array($meta_key, $fields) )
             return;
 
+        error_log( 'update_connection called for ' . $meta_key );
+
         // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
+        // $old_value = get_metadata('post', $object_id, $meta_key, true);
 
         switch ( $meta_key ) {
-            case '_fundraiser_campaign':
+            case '_peerraiser_fundraiser_campaign':
                 // Remove the value from connection
-                p2p_type( 'campaign_to_fundraiser' )->disconnect( $old_value, $object_id );
                 // Add the new connection
-                p2p_type( 'campaign_to_fundraiser' )->connect( $_meta_value, $object_id, array(
-                    'date' => current_time('mysql')
-                ) );
                 break;
 
-            case '_fundraiser_participant':
+            case '_peerraiser_fundraiser_participant':
                 // Remove the value from connection
-                p2p_type( 'fundraiser_to_participant' )->disconnect( $old_value, $object_id );
                 // Add the new connection
-                p2p_type( 'fundraiser_to_participant' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
                 break;
 
-            case '_fundraiser_team':
+            case '_peerraiser_fundraiser_team':
                 // Remove the value from connection
-                p2p_type( 'fundraiser_to_team' )->disconnect( $old_value, $object_id );
                 // Add the new connection
-                p2p_type( 'fundraiser_to_team' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
                 break;
 
             default:
@@ -181,30 +167,27 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
      * @return    null
      */
     public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_fundraiser_campaign', '_fundraiser_participant', '_fundraiser_team' );
+        $fields = array( '_peerraiser_fundraiser_campaign', '_peerraiser_fundraiser_participant', '_peerraiser_fundraiser_team' );
 
         // If the field updated isn't the type that needs to be connected, exit early
         if ( !in_array($meta_key, $fields) )
             return;
 
         // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
+        // $old_value = get_metadata('post', $object_id, $meta_key, true);
 
         switch ( $meta_key ) {
-            case '_fundraiser_campaign':
+            case '_peerraiser_fundraiser_campaign':
                 // Remove the value from connection
-                p2p_type( 'campaign_to_fundraiser' )->disconnect( $old_value, $object_id );
-                break;
 
-            case '_fundraiser_participant':
-                // Remove the value from connection
-                p2p_type( 'fundraiser_to_participant' )->disconnect( $old_value, $object_id );
-                break;
 
-            case '_fundraiser_team':
+            case '_peerraiser_fundraiser_participant':
                 // Remove the value from connection
-                p2p_type( 'fundraiser_to_team' )->disconnect( $old_value, $object_id );
-                break;
+
+
+            case '_peerraiser_fundraiser_team':
+                // Remove the value from connection
+
 
             default:
                 break;
@@ -221,8 +204,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         switch ( $column_name ) {
 
             case 'campaign':
-                $campaign_id = get_post_meta( $post_id, '_peerraiser_fundraiser_campaign', true );
-                echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
+                $campaigns = wp_get_post_terms( $post_id, 'peerraiser_campaign' );
+                echo '<a href="admin.php?page=peerraiser-campaigns&campaign=' . $campaigns[0]->term_id . '&view=summary">' . $campaigns[0]->name . '</a>';
                 break;
 
             case 'participant':
