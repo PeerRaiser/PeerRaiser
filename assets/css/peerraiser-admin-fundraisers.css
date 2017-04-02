@@ -1,6 +1,6 @@
-#_fundraiser_campaign,
-#_fundraiser_team,
-#_fundraiser_participant {
+#_peerraiser_fundraiser_campaign,
+#_peerraiser_fundraiser_team,
+#_peerraiser_fundraiser_participant {
     min-width: 300px;
 }
 .select2-results__option .display_name,
