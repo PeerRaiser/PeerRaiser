@@ -39,8 +39,6 @@ class Campaign_List_Table extends WP_List_Table {
 
 		$campaign = new Campaign(  $item['id'] );
 
-		error_log( print_r( $campaign, 1 ) );
-
 		$title = '<a href="' . add_query_arg( array( 'campaign' => $item['id'], 'view' => 'campaign-details' ) ) . '">' . $campaign->campaign_name . '</a>';
 
 
