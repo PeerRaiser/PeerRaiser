@@ -19,7 +19,7 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_fundraiser_campaign',
                         'type'    => 'select',
                         'default' => 'custom',
-                        'options' => array( $this, 'get_selected_post'),
+                        'options' => array( $this, 'get_selected_term'),
                         'attributes'  => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
@@ -41,7 +41,7 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_fundraiser_team',
                         'type'    => 'select',
                         'default' => 'custom',
-                        'options' => array( $this, 'get_selected_post'),
+                        'options' => array( $this, 'get_selected_term'),
                     ),
                     'fundraiser_goal' => array(
                         'name'         => __( 'Fundraising Goal', 'peerraiser'),
@@ -155,6 +155,18 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         foreach($posts as $post) {
             $title = '(ID: ' . $post->ID .') '. $post->post_title;
             $results[$post->ID] = $title;
+        }
+
+        return $results;
+    }
+
+    public function get_selected_term( $field ) {
+        // Empty array to fill with posts
+        $results = array();
+
+        if ( isset($field->value) && $field->value !== '' ) {
+            $term = get_term($field->value);
+            $results[$field->value] = $term->name;
         }
 
         return $results;
