@@ -19,6 +19,10 @@ class Teams extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_team_leader',
                         'type'    => 'select',
                         'options' => array( $this, 'get_participants_for_select_field'),
+                        'attributes'  => array(
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
+                        ),
                     ),
                     'team_campaign' => array(
                         'name'    => __('Campaign', 'peerraiser'),
@@ -26,7 +30,11 @@ class Teams extends \PeerRaiser\Model\Admin {
                         'type'    => 'select',
                         'default' => 'custom',
                         'desc'    => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
-                        'options' => array( $this, 'get_selected_post'),
+                        'options' => array( $this, 'get_selected_term'),
+                        'attributes'  => array(
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
+                        ),
                     ),
                     'goal_amount' => array(
                         'name' => __('Goal Amount', 'peerraiser'),
@@ -37,6 +45,12 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
                         ),
                         'before_field' => $this->get_currency_symbol(),
+                        'attributes' => array(
+                            'data-rule-currency' => '["",false]',
+                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+                            'data-rule-required' => 'true',
+                            'data-msg-required' => __( 'A goal amount is required', 'peerraiser' ),
+                        ),
                     ),
                     'team_thumbnail' => array(
                         'name'    => __('Team Thumbnail Image', 'peerraiser'),
@@ -155,7 +169,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-
     public function get_selected_post( $field ) {
         // Empty array to fill with posts
         $results = array();
@@ -168,6 +181,17 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
+    public function get_selected_term( $field ) {
+        // Empty array to fill with posts
+        $results = array();
+
+        if ( isset($field->value) && $field->value !== '' ) {
+            $term = get_term($field->value);
+            $results[$field->value] = $term->name;
+        }
+
+        return $results;
+    }
 
     public function get_participants_for_select_field( $field ) {
         // Empty array to fill with posts
@@ -183,7 +207,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-
     public function get_fundraisers( $post_id, $paged = 1 ){
         $args = array(
             'post_type'       => 'fundraiser',
@@ -195,7 +218,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         );
         return new \WP_Query( $args );
     }
-
 
     public function get_participants( $post_id, $paged = 1 ){
         $args = array(
