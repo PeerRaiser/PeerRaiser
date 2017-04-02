@@ -20,7 +20,7 @@
     float: left;
 }
 .peerraiser-wrap.dashboard-wrap .column-right {
-    width: 25%;
+    width: 28%;
     float: right;
 }
 .peerraiser-wrap.dashboard-wrap .welcome-message {
@@ -264,4 +264,41 @@
 }
 .activity-feed .settings:before {
     content: "\f013";
+}
+@media (max-width: 1200px) {
+    .peerraiser-wrap.dashboard-wrap .stats-container.first,
+    .peerraiser-wrap.dashboard-wrap .stats-container.last,
+    .peerraiser-wrap.dashboard-wrap .stats-container{
+        width: 49%;
+        margin: 0;
+    }
+
+    .peerraiser-wrap.dashboard-wrap .stats-container:nth-child(odd) {
+        margin: 0 .5% 1em 0;
+    }
+    .peerraiser-wrap.dashboard-wrap .stats-container:nth-child(even) {
+        margin: 0 0 1em .5%;
+    }
+}
+@media (max-width: 768px) {
+    .peerraiser-wrap.dashboard-wrap .column-left,
+    .peerraiser-wrap.dashboard-wrap .column-right{
+        width: 100%;
+        float: none;
+    }
+}
+@media (max-width: 500px) {
+    .peerraiser-wrap.dashboard-wrap .stats-container,
+    .peerraiser-wrap.dashboard-wrap .stats-container.first,
+    .peerraiser-wrap.dashboard-wrap .stats-container.last {
+        width: 100%;
+        float: none;
+        margin: 0 0 1em 0;
+    }
+    .top-donors,
+    .top-fundraisers {
+        width: 100%;
+        margin: 0 0 1em 0;
+        float: none;
+    }
 }
