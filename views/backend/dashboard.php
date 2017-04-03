@@ -92,7 +92,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                     <ol>
                         <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
-                            <li><a href="post.php?action=edit&post=<?= $donor->ID ?>"><?= get_post_meta( $donor->ID, '_donor_first_name', true ) ?> <?= get_post_meta( $donor->ID, '_donor_last_name', true ) ?></a><span class="amount"><?= $peerraiser['currency_symbol'] . number_format_i18n($donor->total, 2) ?></li></span>
+                            <li><a href="admin.php?page=peerraiser-donors&view=summary&donor=<?php echo $donor->donor_id ?>"><?php echo $donor->donor_name ?></a><span class="amount"><?php echo $peerraiser['currency_symbol'] . number_format_i18n($donor->donation_value, 2) ?></li></span>
                         <?php endforeach; ?>
                     </ol>
                 </div>
