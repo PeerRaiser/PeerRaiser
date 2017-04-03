@@ -5,6 +5,7 @@ namespace PeerRaiser\Controller\Admin;
 use \PeerRaiser\Controller\Base;
 use \PeerRaiser\Model\Currency;
 use \PeerRaiser\Model\Activity_Feed;
+use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Helper\Stats;
 use \PeerRaiser\Helper\View;
 
@@ -56,17 +57,15 @@ class Dashboard extends Base {
             'delete'  => __( 'Delete', 'peerraiser' ),
         );
 
-        // pass localized strings and variables to script
-        // $time_passes_model  = new \PeerRaiser\Model\TimePass();
-
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         wp_localize_script(
             'peerraiser-backend-dashboard',
             'pr_dashboard_variables',
             array(
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
-                'template_directory' => get_template_directory_uri()
+                'ajax_url'           => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri(),
+                'i18n'               => $i18n
             )
         );
     }
@@ -81,8 +80,8 @@ class Dashboard extends Base {
 
         $currency        = new Currency();
         $activity_feed   = new Activity_Feed();
+        $donor_model     = new Donor_Model();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
 
         $view_args = array(
             'activity_feed'        => $activity_feed->get_activity_feed(),
@@ -101,7 +100,7 @@ class Dashboard extends Base {
                 'step_2'           => 'fa-square-o',
                 'step_3'           => $this->get_campaign_status()
             ),
-            'top_donors'           => Stats::get_top_donors(),
+            'top_donors'           => $donor_model->get_top_donors( 20 ),
             'top_fundraisers'      => Stats::get_top_fundraisers(),
         );
 
