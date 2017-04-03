@@ -256,12 +256,20 @@ class Donations extends \PeerRaiser\Controller\Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
-		// Delete the donation
+		// Models
 		$donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
 		$donor    = new \PeerRaiser\Model\Donor( $donation->donor_id );
+		$campaign = new \PeerRaiser\Model\Campaign( $donation->campaign_id );
 
+        // Decrease the donor's donation count/value
         $donor->decrease_donation_count( 1 );
         $donor->decrease_value( abs( $donation->total ) );
+
+        // Decrease the campaign's donation count/value
+        $campaign->decrease_donation_count( 1 );
+        $campaign->decrease_donation_value( abs( $donation->total ) );
+
+        // Delete the donation
         $donation->delete();
 
         // Create redirect URL
