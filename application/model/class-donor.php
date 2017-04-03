@@ -314,7 +314,7 @@ class Donor {
 	 * @since  1.0.0
 	 * @param  integer $count The number to increment by
 	 *
-	 * @return int The purchase count
+	 * @return int The donation count
 	 */
 	public function increase_donation_count( $count = 1 ) {
 		if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
@@ -434,6 +434,25 @@ class Donor {
 
 		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
 	}
+
+    /**
+     * Get the top donors, based on donation value
+     *
+     * @param int $count
+     *
+     * @return array Donors listed by value
+     */
+	public function get_top_donors( $count = -1 ) {
+        $donation_table = new Donor_Database();
+
+        $args = array(
+            'orderby' => 'donation_value',
+            'order'   => 'DESC',
+            'number'  => $count
+        );
+
+        return $donation_table->get_donors( $args );
+    }
 
 	/**
 	 * Attempt to get the donor's username by their email address
