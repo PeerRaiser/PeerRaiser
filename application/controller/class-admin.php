@@ -32,6 +32,7 @@ class Admin extends Base {
         add_action( 'wp_ajax_peerraiser_get_posts',      array( $this, 'ajax_get_posts' ) );
         add_action( 'wp_ajax_peerraiser_get_donors',     array( $this, 'ajax_get_donors' ) );
         add_action( 'wp_ajax_peerraiser_get_campaigns',  array( $this, 'ajax_get_campaigns' ) );
+        add_action( 'wp_ajax_peerraiser_get_teams',      array( $this, 'ajax_get_teams' ) );
         add_action( 'wp_ajax_peerraiser_get_users',      array( $this, 'ajax_get_users' ) );
         add_filter( 'enter_title_here',                  array( $this, 'customize_title' ), 1 );
     }
@@ -398,6 +399,21 @@ class Admin extends Base {
      */
     public function ajax_get_campaigns() {
         $choices = Field::get_campaign_choices( $_POST );
+
+        echo Text::peerraiser_json_encode( $choices );
+
+        wp_die();
+    }
+
+    /**
+     * Retrieves campaigns and creates <option> for select lists
+     *
+     * @since     1.0.0
+     *
+     * @return    array Data formatted for select2
+     */
+    public function ajax_get_teams() {
+        $choices = Field::get_team_choices( $_POST );
 
         echo Text::peerraiser_json_encode( $choices );
 
