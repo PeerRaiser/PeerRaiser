@@ -84,6 +84,20 @@ class Team {
 	 */
 	protected $campaign_id = 0;
 
+    /**
+     * The total amount the team has received
+     *
+     * @var float
+     */
+    protected $donation_value = 0.00;
+
+    /**
+     * The number of donations the team has received
+     *
+     * @var int
+     */
+    protected $donation_count = 0;
+
 	/**
 	 * Array of items that have changed since the last save() was run
 	 * This is for internal use, to allow fewer update_team_meta calls to be run
@@ -289,9 +303,120 @@ class Team {
 		return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
+    /**
+     * Add the team to a campaign
+     *
+     * @param $campaign_id The campaign to add the team to
+     */
 	public function add_to_campaign( $campaign_id ) {
 		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
 	}
+
+    /**
+     * Increase the donation count of the team
+     *
+     * @since  1.0.0
+     * @param  integer $count The number to increment by
+     *
+     * @return int The donation count
+     */
+    public function increase_donation_count( $count = 1 ) {
+        if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+            return false;
+        }
+
+        $new_total = (int) $this->donation_count + (int) $count;
+
+        do_action( 'peerraiser_team_pre_increase_donation_count', $count, $this->ID );
+
+        $this->update_meta( '_peerraiser_donation_count', $new_total );
+        $this->donation_count = $new_total;
+
+        do_action( 'peerraiser_team_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+
+        return $this->donation_count;
+    }
+
+    /**
+     * Decrease the team donation count
+     *
+     * @since  1.0.0
+     * @param  integer $count The amount to decrease by
+     *
+     * @return mixed If successful, the new count, otherwise false
+     */
+    public function decrease_donation_count( $count = 1 ) {
+
+        // Make sure it's numeric and not negative
+        if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+            return false;
+        }
+
+        $new_total = (int) $this->donation_count - (int) $count;
+
+        if ( $new_total < 0 ) {
+            $new_total = 0;
+        }
+
+        do_action( 'peerraiser_team_pre_decrease_donation_count', $count, $this->ID );
+
+        $this->update_meta( '_peerraiser_donation_count', $new_total );
+        $this->donation_count = $new_total;
+
+        do_action( 'peerraiser_team_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
+
+        return $this->donation_count;
+    }
+
+    /**
+     * Increase the customer's lifetime value
+     *
+     * @since  1.0.0
+     * @param  float $value The value to increase by
+     *
+     * @return mixed If successful, the new value, otherwise false
+     */
+    public function increase_value( $value = 0.00 ) {
+        $value = apply_filters( 'peerraiser_team_increase_value', $value, $this );
+
+        $new_value = floatval( $this->donation_value ) + $value;
+
+        do_action( 'peerraiser_team_pre_increase_value', $value, $this->ID, $this );
+
+        $this->update_meta( '_peerraiser_donation_value', $new_value );
+        $this->donation_value = $new_value;
+
+        do_action( 'peerraiser_team_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+
+        return $this->donation_value;
+    }
+
+    /**
+     * Decrease a customer's lifetime value
+     *
+     * @since  1.0.0
+     * @param  float  $value The value to decrease by
+     *
+     * @return mixed If successful, the new value, otherwise false
+     */
+    public function decrease_value( $value = 0.00 ) {
+        $value = apply_filters( 'peerraiser_team_decrease_value', $value, $this );
+
+        $new_value = floatval( $this->donation_value ) - $value;
+
+        if( $new_value < 0 ) {
+            $new_value = 0.00;
+        }
+
+        do_action( 'peerraiser_team_pre_decrease_value', $value, $this->ID, $this );
+
+        $this->update_meta( '_peerraiser_donation_value', $new_value );
+        $this->donation_value = $new_value;
+
+        do_action( 'peerraiser_team_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
+
+        return $this->donation_value;
+    }
 
 	/**
 	 * Generate a safe team slug
