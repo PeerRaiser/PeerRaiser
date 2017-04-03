@@ -61,10 +61,9 @@
                 team               : {
                     data           : function ( params ) {
                         return {
-                            action: 'peerraiser_get_posts',
+                            action: 'peerraiser_get_teams',
                             s: params.term,
-                            page: params.page,
-                            post_type  : ['pr_team']
+                            page: params.page
                         };
                     },
                     templateResult : function(data) {
