@@ -20,3 +20,8 @@ function peerraiser_get_campaign( $id ) {
 function peerraiser_money_format( $amount ) {
     
 }
+
+function peerraiser_get_top_donors( $count ) {
+    $donor = new PeerRaiser\Model\Donor();
+    return $donor->get_top_donors( $count );
+}
