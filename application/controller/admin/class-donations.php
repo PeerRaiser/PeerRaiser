@@ -267,7 +267,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         // Decrease the campaign's donation count/value
         $campaign->decrease_donation_count( 1 );
-        $campaign->decrease_donation_value( abs( $donation->total ) );
+        $campaign->decrease_value( abs( $donation->total ) );
 
         // Delete the donation
         $donation->delete();
