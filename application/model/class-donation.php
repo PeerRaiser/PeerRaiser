@@ -3,11 +3,11 @@
 namespace PeerRaiser\Model;
 
 use \PeerRaiser\Model\Donor as Donor_Model;
+use \PeerRaiser\Model\Campaign as Campaign_Model;
 use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donation_Meta;
 
 //TODO: 1. Set the team when a donation is made
-//      2. Save donation notes
 
 /**
  * Donation Model
@@ -236,9 +236,9 @@ class Donation {
     /**
      * Setup donation class
      *
-     * @since    1.0.0
-     * @param    int|boolean    $id    Donation ID or Transaction ID
-     * @param    int|boolean    $by    What to lookup the donation by (donation_id or transaction_id)
+     * @since 1.0.0
+     * @param int|boolean $id Donation ID or Transaction ID
+     * @param string      $by What to lookup the donation by (donation_id or transaction_id)
      */
     public function __construct( $id = false, $by = 'donation_id' ) {
         if ( empty( $id ) ) {
@@ -388,7 +388,8 @@ class Donation {
      * Creates a donation record in the database
      *
      * @since     1.0.0
-     * @return    int    Donation ID
+     *
+     * @return    int|\WP_Error    Donation ID
      */
     private function insert_donation() {
         if ( empty( $this->transaction_id ) ) {
@@ -396,10 +397,11 @@ class Donation {
         }
 
         if ( empty( $this->donor_id ) ) {
-			return new WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
+			return new \WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
         }
 
         $this->adjust_donor_amounts();
+        $this->adjust_campaign_amounts();
 
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
@@ -446,6 +448,7 @@ class Donation {
 
                     case 'notes' :
                         $this->update_meta( 'notes', $this->notes );
+                        break;
 
                     default :
                         do_action( 'peerraiser_donation_save', $this, $key );
@@ -553,7 +556,7 @@ class Donation {
 
         $donation_meta = new Donation_Meta();
 
-        $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+        return $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
     }
 
     /**
@@ -579,6 +582,18 @@ class Donation {
         } else {
             $donor->increase_donation_count( 1 );
             $donor->increase_value( $this->total );
+        }
+    }
+
+    private function adjust_campaign_amounts() {
+        $campaign = new Campaign_Model( $this->campaign_id );
+
+        if ( $this->total < 0) {
+            $campaign->decrease_donation_count( 1 );
+            $campaign->decrease_value( abs( $this->total ) );
+        } else {
+            $campaign->increase_donation_count( 1 );
+            $campaign->increase_value( $this->total );
         }
     }
 }
