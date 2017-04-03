@@ -147,8 +147,6 @@ class Field {
     }
 
     public static function get_campaign_choices( $options = array() ) {
-        global $wpdb;
-
         // defaults
         $options = self::parse_args($options, array(
             's'             => false,
@@ -159,6 +157,47 @@ class Field {
 
         $args = array(
             'taxonomy'   => array( 'peerraiser_campaign' ),
+            'number'     => $options['number'],
+            'order'      => 'ASC',
+            'orderby'    => 'id',
+            'hide_empty' => false
+        );
+
+        if ( $options['s'] ) {
+            $args['name__like'] = $options['s'];
+        }
+
+        if ( absint( $options['page'] ) > 1 ) {
+            $args['offset'] = ( $options['page'] - 1 ) * $options['number'];
+        }
+
+        $term_query = new WP_Term_Query( $args );
+
+        $options = array();
+
+        $terms = $term_query->get_terms();
+
+        foreach( $term_query->get_terms() as $term ) {
+            $options[] = array(
+                'text' => $term->name,
+                'id'   => $term->term_id,
+            );
+        }
+
+        return $options;
+    }
+
+    public static function get_team_choices( $options = array() ) {
+        // defaults
+        $options = self::parse_args($options, array(
+            's'             => false,
+            'page'          => 1,
+            'number'        => 20,
+            'offset'        => 0,
+        ));
+
+        $args = array(
+            'taxonomy'   => array( 'peerraiser_team' ),
             'number'     => $options['number'],
             'order'      => 'ASC',
             'orderby'    => 'id',
