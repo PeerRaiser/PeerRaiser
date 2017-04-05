@@ -4,7 +4,8 @@ function peerraiser_get_team( $id ) {
         return false;
     }
 
-    $team_model = new \PeerRaiser\Model\Team();
+    $team_model = new \PeerRaiser\Model\Team( $id );
+    return $team_model;
 }
 
 function peerraiser_get_campaign( $id ) {
@@ -17,8 +18,40 @@ function peerraiser_get_campaign( $id ) {
     return $campaign_model;
 }
 
-function peerraiser_money_format( $amount ) {
-    
+function peerraiser_get_fundraiser( $id ) {
+    if ( is_null ( $id ) ) {
+        return false;
+    }
+
+    $fundraiser_model = new \PeerRaiser\Model\Fundraiser( $id );
+
+    return $fundraiser_model;
+}
+
+function peerraiser_money_format( $amount, $decimals = true, $with_symbol = true  ) {
+    $currency_model  = new \PeerRaiser\Model\Currency();
+    $plugin_options  = get_option( 'peerraiser_options', array() );
+
+    $currency          = $plugin_options['currency'];
+    $thousands_sep     = $plugin_options['thousands_separator'];
+    $currency_position = $plugin_options['currency_position'];
+    $decimal_sep       = $decimals ? $plugin_options['decimal_separator'] : 0;
+    $currency_symbol   = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
+
+    $amount = ! empty( $amount ) ? $amount : 0;
+
+    $number_format = number_format( $amount, $decimals, $decimal_sep, $thousands_sep );
+
+    if ( $with_symbol ) {
+        if ( $currency_position === 'before' ) {
+            return $currency_symbol . $number_format;
+        } else {
+            return $number_format . $currency_symbol;
+        }
+    } else {
+        return $number_format;
+    }
+
 }
 
 function peerraiser_get_top_donors( $count ) {
