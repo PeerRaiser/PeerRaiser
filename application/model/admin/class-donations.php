@@ -20,7 +20,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_donor',
                         'type'    => 'select',
                         'default' => 'custom',
-                        'options' => array( $this, 'get_selected_post' ),
+                        'options_cb' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
                             'data-rule-required' => 'true',
 							'data-msg-required' => __( 'A donor record is required', 'peerraiser' ),
@@ -45,7 +45,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_campaign',
                         'type'    => 'select',
                         'default' => 'custom',
-                        'options' => array( $this, 'get_selected_post' ),
+                        'options_cb' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
                             'data-rule-required' => 'true',
 							'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
@@ -57,7 +57,7 @@ class Donations extends \PeerRaiser\Model\Admin {
                         'id'      => '_peerraiser_fundraiser',
                         'type'    => 'select',
                         'default' => 'custom',
-                        'options' => array( $this, 'get_selected_post' ),
+                        'options_cb' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
                             'disabled' => 'disabled'
                         ),
