@@ -28,13 +28,17 @@ class Config {
      */
     protected $deleted = array();
 
+    /**
+     * @var bool
+     */
+    protected $frozen = false;
 
     /**
      * Set new value
      *
-     * @since    1.0.0
-     * @param    string    $name
-     * @param    mixed     $value
+     * @param $name
+     * @param $value
+     * @return $this|\Exception|\WP_Error
      */
     public function set( $name, $value ) {
         if ( $this->frozen ) {
@@ -47,14 +51,11 @@ class Config {
         return $this;
     }
 
-
     /**
      * Import an array or an object as properties
      *
-     * @since     1.0.0
-     * @param     array|object    $var    Array/Object of properties and values
-     *
-     * @return    void|\PeerRaiser\Model\Config
+     * @param $var
+     * @return $this|\Exception|\WP_Error
      */
     public function import ( $var ) {
         if ( $this->frozen ) {
@@ -71,7 +72,6 @@ class Config {
 
         return $this;
     }
-
 
     /**
      * Get a value.
@@ -98,7 +98,6 @@ class Config {
         return $this->parent->get( $name );
     }
 
-
     /**
      * Get all properties.
      *
@@ -117,7 +116,6 @@ class Config {
         // Remove properties existing in the parent but deleted in this instance.
         return array_diff( $all, $this->deleted );
     }
-
 
     /**
      * Check if property exists
@@ -142,7 +140,6 @@ class Config {
         return $this->parent->has( $name );
     }
 
-
     /**
      * Delete a key and add its name to the $deleted array.
      *
@@ -163,12 +160,11 @@ class Config {
         return $this;
     }
 
-
     /**
      * Set the parent object. Properties of this object will be inherited.
      *
-     * @since    1.0.0
-     * @param    Model\Config    $object
+     * @param Config $object
+     * @return $this|\Exception|\WP_Error
      */
     public function set_parent( \PeerRaiser\Model\Config $object ) {
         if ( $this->frozen ) {
@@ -180,7 +176,6 @@ class Config {
         return $this;
     }
 
-
     /**
      * Test if the current instance has a parent.
      *
@@ -191,19 +186,17 @@ class Config {
         return null === $this-parent;
     }
 
-
     /**
      * Lock write access to this object's instance forever.
      *
      * @since     1.0.0
-     * @return    PeerRaiser\Model\Config
+     * @return    \PeerRaiser\Model\Config
      */
     public function freeze() {
         $this->frozen = true;
 
         return $this;
     }
-
 
     /**
      * Test from outside if an object has been frozen
@@ -215,15 +208,14 @@ class Config {
         return $this->frozen;
     }
 
-
     /**
      * Used for attemps to write to a frozen instance
      *
      * @since     1.0.0
      * @param     string        $message    The error message
      * @param     string        $code       Code to group error messages
-     * @throws    Exception
-     * @return    void|WP_Error
+     * @throws    \Exception
+     * @return    \Exception|\WP_Error
      */
     protected function stop( $message, $code = '' ) {
         if ( ''  === $code ) {
@@ -247,7 +239,7 @@ class Config {
      * @param  string $name
      * @param  mixed  $value
      *
-     * @return PeerRaiser\Model\Config
+     * @return \PeerRaiser\Model\Config
      */
     public function __set( $name, $value ) {
         return $this->set( $name,  $value );
