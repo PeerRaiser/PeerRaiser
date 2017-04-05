@@ -355,6 +355,14 @@ class Donation extends Database {
         return $wpdb->insert_id;
     }
 
+    public function get_donations_total() {
+        global $wpdb;
+
+        $result =  $wpdb->get_results( "SELECT sum( subtotal ) as subtotal FROM {$this->table_name}" );
+
+        return $result[0]->subtotal;
+    }
+
     /**
      * Create the table
      *
