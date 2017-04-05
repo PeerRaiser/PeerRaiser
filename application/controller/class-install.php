@@ -198,6 +198,10 @@ class Install extends Base {
         $default_options = array();
 
         $default_options['currency']                          = $this->config->get( 'currency.default' );
+        $default_options['currency_position']                 = $this->config->get( 'currency.position');
+        $default_options['thousands_separator']               = $this->config->get( 'currency.thousands_separator');
+        $default_options['decimal_separator']                 = $this->config->get( 'currency.decimal_separator');
+        $default_options['number_decimals']                   = $this->config->get( 'currency.number_decimals');
         $default_options['fundraiser_slug']                   = 'give';
         $default_options['campaign_slug']                     = 'campaign';
         $default_options['disable_css_styles']                = false;
