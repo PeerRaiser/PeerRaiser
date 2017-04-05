@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model;
 
-use WP_Term_Query;
+use WP_Query;
 
 /**
  * Fundraiser Model
@@ -50,27 +50,6 @@ class Fundraiser {
 	protected $fundraiser_slug = '';
 
 	/**
-	 * Fundraiser Leader
-	 *
-	 * @var int
-	 */
-	protected $fundraiser_leader = 0;
-
-	/**
-	 * Fundraiser Description
-	 *
-	 * @var string
-	 */
-	protected $fundraiser_description = '';
-
-	/**
-	 * Thumbnail image
-	 *
-	 * @var string
-	 */
-	protected $thumbnail_image = '';
-
-	/**
 	 * Fundraiser goal
 	 *
 	 * @var float
@@ -83,6 +62,41 @@ class Fundraiser {
 	 * @var int
 	 */
 	protected $campaign_id = 0;
+
+    /**
+     * Team ID
+     *
+     * @var int
+     */
+    protected $team_id = 0;
+
+    /**
+     * Participant ID
+     *
+     * @var int
+     */
+    protected $participant = 0;
+
+    /**
+     * Team ID
+     *
+     * @var int
+     */
+    protected $team = 0;
+
+    /**
+     * The total amount the fundraiser has received
+     *
+     * @var float
+     */
+    protected $donation_value = 0.00;
+
+    /**
+     * The number of donations the fundraiser has received
+     *
+     * @var int
+     */
+    protected $donation_count = 0;
 
 	/**
 	 * Array of items that have changed since the last save() was run
@@ -106,21 +120,13 @@ class Fundraiser {
 
 		$id = absint( $id );
 
-		// WP_Term_Query arguments
-		$args = array(
-			'taxonomy'               => array( 'peerraiser_fundraiser' ),
-			'include'                => array( $id ),
-			'number'                 => 1,
-			'hide_empty'             => false,
-		);
+		$fundraiser = get_post( $id );
 
-		$fundraiser = new WP_Term_Query( $args );
-
-		if ( empty( $fundraiser->terms ) || is_wp_error( $fundraiser ) ) {
+		if ( empty( $fundraiser ) ) {
 			return false;
 		}
 
-		$this->setup_fundraiser( $fundraiser->terms[0] );
+		$this->setup_fundraiser( $fundraiser );
 
 		return $this;
 	}
@@ -190,14 +196,24 @@ class Fundraiser {
 		do_action( 'peerraiser_before_setup_fundraiser', $this, $fundraiser );
 
 		// Primary Identifiers
-		$this->ID			   = absint( $fundraiser->term_id );
-		$this->_ID             = absint( $fundraiser->term_id);
-		$this->fundraiser_name = $fundraiser->name;
-		$this->fundraiser_slug = $fundraiser->slug;
-		$this->campaign_id     = $fundraiser->campaign_id; // Get campaign ID from campaign term relationship
+		$this->ID			   = absint( $fundraiser->ID );
+		$this->_ID             = absint( $fundraiser->ID);
+		$this->fundraiser_name = $fundraiser->post_title;
+		$this->fundraiser_slug = $fundraiser->post_name;
+        $this->participant     = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
+
+        $campaign              = wp_get_post_terms( $this->ID, 'peerraiser_campaign' );
+        $this->campaign_id     = ! empty( $campaign ) ? $campaign[0]->term_id : 0;
+
+        $team                  = wp_get_post_terms( $this->ID, 'peerraiser_team' );
+        $this->team_id         = ! empty( $team ) ? $team[0]->term_id : 0;
 
 		// Money
-		$this->fundraiser_goal = get_term_meta( $this->ID, '_peerraiser_fundraiser_goal', true );
+		$this->fundraiser_goal = get_post_meta( $this->ID, '_peerraiser_fundraiser_goal', true );
+        $donation_value        = get_post_meta( $this->ID, '_peerraiser_donation_value', true );
+        $this->donation_value  = $donation_value ? floatval( $donation_value ) : 0.00;
+        $donation_count        = get_post_meta( $this->ID, '_peerraiser_donation_count', true );
+        $this->donation_count  = $donation_count ? intval( $donation_count ) : 0;
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_fundraiser', $this, $fundraiser );
@@ -239,7 +255,11 @@ class Fundraiser {
 	 * Delete the fundraiser
 	 */
 	public function delete() {
-		wp_delete_term( $this->ID, 'peerraiser_fundraiser' );
+	    do_action( 'peerraiser_pre_delete_fundraiser', $this );
+
+        wp_delete_post( $this->ID );
+
+        do_action( 'peerraiser_post_delete_fundraiser', $this );
 	}
 
 	/**
@@ -253,11 +273,143 @@ class Fundraiser {
 	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
 	 */
 	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
+		return update_post_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
+    /**
+     * Add the fundraiser to a campaign
+     *
+     * @param $campaign_id int The campaign to add the fundraiser to
+     */
 	public function add_to_campaign( $campaign_id ) {
 		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
 	}
+
+    /**
+     * Get the total number of fundraisers
+     *
+     * @return int Number of fundraisers
+     */
+	public function get_total_fundraisers() {
+        $fundraisers_count = wp_count_posts( 'fundraiser' );
+        return (int) $fundraisers_count->publish;
+    }
+
+    /**
+     * Get the top fundraisers sort by value
+     *
+     * @param int $count Number of top fundraisers to get
+     *
+     * @return array Top fundraisers
+     */
+    public function get_top_fundraisers( $count = 20 ) {
+	    // Stuff here
+    }
+
+    /**
+     * Increase the donation count of the fundraiser
+     *
+     * @since  1.0.0
+     * @param  integer $count The number to increment by
+     *
+     * @return int The donation count
+     */
+    public function increase_donation_count( $count = 1 ) {
+        if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+            return false;
+        }
+
+        $new_total = (int) $this->donation_count + (int) $count;
+
+        do_action( 'peerraiser_fundraiser_pre_increase_donation_count', $count, $this->ID );
+
+        $this->update_meta( '_peerraiser_donation_count', $new_total );
+        $this->donation_count = $new_total;
+
+        do_action( 'peerraiser_fundraiser_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+
+        return $this->donation_count;
+    }
+
+    /**
+     * Decrease the fundraiser donation count
+     *
+     * @since  1.0.0
+     * @param  integer $count The amount to decrease by
+     *
+     * @return mixed If successful, the new count, otherwise false
+     */
+    public function decrease_donation_count( $count = 1 ) {
+
+        // Make sure it's numeric and not negative
+        if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
+            return false;
+        }
+
+        $new_total = (int) $this->donation_count - (int) $count;
+
+        if ( $new_total < 0 ) {
+            $new_total = 0;
+        }
+
+        do_action( 'peerraiser_fundraiser_pre_decrease_donation_count', $count, $this->ID );
+
+        $this->update_meta( '_peerraiser_donation_count', $new_total );
+        $this->donation_count = $new_total;
+
+        do_action( 'peerraiser_fundraiser_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
+
+        return $this->donation_count;
+    }
+
+    /**
+     * Increase the customer's lifetime value
+     *
+     * @since  1.0.0
+     * @param  float $value The value to increase by
+     *
+     * @return mixed If successful, the new value, otherwise false
+     */
+    public function increase_value( $value = 0.00 ) {
+        $value = apply_filters( 'peerraiser_fundraiser_increase_value', $value, $this );
+
+        $new_value = floatval( $this->donation_value ) + $value;
+
+        do_action( 'peerraiser_fundraiser_pre_increase_value', $value, $this->ID, $this );
+
+        $this->update_meta( '_peerraiser_donation_value', $new_value );
+        $this->donation_value = $new_value;
+
+        do_action( 'peerraiser_fundraiser_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+
+        return $this->donation_value;
+    }
+
+    /**
+     * Decrease a customer's lifetime value
+     *
+     * @since  1.0.0
+     * @param  float  $value The value to decrease by
+     *
+     * @return mixed If successful, the new value, otherwise false
+     */
+    public function decrease_value( $value = 0.00 ) {
+        $value = apply_filters( 'peerraiser_fundraiser_decrease_value', $value, $this );
+
+        $new_value = floatval( $this->donation_value ) - $value;
+
+        if( $new_value < 0 ) {
+            $new_value = 0.00;
+        }
+
+        do_action( 'peerraiser_fundraiser_pre_decrease_value', $value, $this->ID, $this );
+
+        $this->update_meta( '_peerraiser_donation_value', $new_value );
+        $this->donation_value = $new_value;
+
+        do_action( 'peerraiser_fundraiser_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
+
+        return $this->donation_value;
+    }
 
 }
