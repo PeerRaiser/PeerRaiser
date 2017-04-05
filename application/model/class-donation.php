@@ -4,6 +4,8 @@ namespace PeerRaiser\Model;
 
 use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Model\Campaign as Campaign_Model;
+use \PeerRaiser\Model\Fundraiser as Fundraiser_Model;
+use \PeerRaiser\Model\Team as Team_Model;
 use \PeerRaiser\Model\Database\Donation as Donation_Database;
 use \PeerRaiser\Model\Database\Donation_Meta;
 
@@ -306,7 +308,7 @@ class Donation {
         }
 
         if ( ! in_array( $key, $ignore ) ) {
-            $this->pending[ $key ] = $value;
+            $this->pending[$key] = $value;
         }
 
         if( '_ID' !== $key ) {
@@ -348,31 +350,25 @@ class Donation {
         // Protected ID (can't be changed)
         $this->_ID = absint( $donation->donation_id);
 
-        // We have a donation, get the generic donation_meta item to reduce calls to it
-        //$this->donation_meta    = $this->get_meta();
-
         // Status and Dates
-        $this->date            = $donation->date;
-        $this->status          = $donation->status;
+        $this->date   = $donation->date;
+        $this->status = $donation->status;
 
         // Money related
-        $this->total          = $donation->total;
-        $this->subtotal       = $donation->subtotal;
-        // $this->currency       = $this->setup_currency();
+        $this->total    = $donation->total;
+        $this->subtotal = $donation->subtotal;
 
         // Gateway related
+        $this->gateway        = $this->get_meta( 'gateway', true );
         $this->transaction_id = $donation->transaction_id;
+        $this->donation_type  = $this->get_meta( 'donation_type', true );
 
         // User related
         $this->ip             = $donation->ip;
         $this->donor_id       = $donation->donor_id;
-        // $this->user_id        = $this->setup_user_id();
         $this->campaign_id    = $donation->campaign_id;
         $this->fundraiser_id  = $donation->fundraiser_id;
         $this->team_id        = $donation->team_id;
-        // $this->email          = $this->setup_email();
-        // $this->first_name     = $this->user_info['first_name'];
-        // $this->last_name      = $this->user_info['last_name'];
 
         // Donation Notes
         $donation_notes = $this->get_meta( 'notes', true );
@@ -400,8 +396,22 @@ class Donation {
 			return new \WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
         }
 
-        $this->adjust_donor_amounts();
-        $this->adjust_campaign_amounts();
+        // If no team is currently set, try to see if the fundraiser is part of one
+        if ( ! $this->team_id && $this->fundraiser_id ) {
+            $fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
+
+            $team_id = $fundraiser->team_id;
+
+            if ( $team_id ) {
+                $this->team_id = $team_id;
+                $this->pending['team_id'] = $team_id;
+            }
+        }
+
+        $this->increase_donor_amounts();
+        $this->increase_campaign_amounts();
+        $this->increase_fundraiser_amounts();
+        $this->increase_team_amounts();
 
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
@@ -465,9 +475,22 @@ class Donation {
         return true;
     }
 
+    /**
+     * Delete the donation record
+     */
     public function delete() {
+        do_action( 'peerraiser_pre_delete_donation', $this );
+
 		$donation_table = new Donation_Database();
 		$donation_table->delete( $this->ID );
+
+        $this->decrease_donor_amounts();
+        $this->decrease_campaign_amounts();
+        $this->decrease_fundraiser_amounts();
+        $this->decrease_fundraiser_amounts();
+        $this->decrease_team_amounts();
+
+		do_action( 'peerraiser_post_delete_donation', $this );
 	}
 
     /**
@@ -498,7 +521,7 @@ class Donation {
         );
 
         $this->notes = $notes;
-        $this->pending[ 'notes' ] = $this->notes;
+        $this->pending['notes'] = $this->notes;
 
         return $this->notes;
     }
@@ -573,27 +596,82 @@ class Donation {
         return $result;
     }
 
-    private function adjust_donor_amounts() {
-        $donor = new Donor_Model( $this->donor_id );
-
-        if ( $this->total < 0) {
-            $donor->decrease_donation_count( 1 );
-            $donor->decrease_value( abs( $this->total ) );
-        } else {
-            $donor->increase_donation_count( 1 );
-            $donor->increase_value( $this->total );
-        }
+    public function get_donations_total() {
+        $donation_table = new Donation_Database();
+        $total = $donation_table->get_donations_total();
+        error_log( print_r( $total, 1 ) );
+        return $total;
     }
 
-    private function adjust_campaign_amounts() {
+    private function increase_donor_amounts() {
+        $donor = new Donor_Model( $this->donor_id );
+
+        $donor->increase_donation_count( 1 );
+        $donor->increase_value( $this->total );
+    }
+
+    private function decrease_donor_amounts() {
+        $donor = new Donor_Model( $this->donor_id );
+
+        $donor->decrease_donation_count( 1 );
+        $donor->decrease_value( abs( $this->total ) );
+    }
+
+    private function increase_fundraiser_amounts() {
+        if ( empty( $this->fundraiser_id ) ) {
+            return;
+        }
+
+        $fundraiser = new Fundraiser_Model( $this->fundraiser_id );
+
+        $fundraiser->increase_donation_count( 1 );
+        $fundraiser->increase_value( $this->total );
+    }
+
+    private function decrease_fundraiser_amounts() {
+        if ( empty( $this->fundraiser_id ) ) {
+            return;
+        }
+
+        $fundraiser = new Fundraiser_Model( $this->fundraiser_id );
+
+        $fundraiser->decrease_donation_count( 1 );
+        $fundraiser->decrease_value( abs( $this->total ) );
+    }
+
+    private function increase_team_amounts() {
+        if ( empty( $this->team_id ) ) {
+            return;
+        }
+
+        $team = new Team_Model( $this->team_id );
+
+        $team->increase_donation_count( 1 );
+        $team->increase_value( $this->total );
+    }
+
+    private function decrease_team_amounts() {
+        if ( empty( $this->team_id ) ) {
+            return;
+        }
+
+        $team = new Team_Model( $this->team_id );
+
+        $team->decrease_donation_count( 1 );
+        $team->decrease_value( abs( $this->total ) );
+    }
+
+    private function increase_campaign_amounts() {
         $campaign = new Campaign_Model( $this->campaign_id );
 
-        if ( $this->total < 0) {
-            $campaign->decrease_donation_count( 1 );
-            $campaign->decrease_value( abs( $this->total ) );
-        } else {
-            $campaign->increase_donation_count( 1 );
-            $campaign->increase_value( $this->total );
-        }
+        $campaign->increase_donation_count( 1 );
+        $campaign->increase_value( $this->total );
+    }
+
+    private function decrease_campaign_amounts() {
+        $campaign = new Campaign_Model( $this->campaign_id );
+
+        $campaign->decrease_donation_count( 1 );
+        $campaign->decrease_value( abs( $this->total ) );
     }
 }
