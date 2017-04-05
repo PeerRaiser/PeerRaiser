@@ -6,6 +6,9 @@ use \PeerRaiser\Controller\Base;
 use \PeerRaiser\Model\Currency;
 use \PeerRaiser\Model\Activity_Feed;
 use \PeerRaiser\Model\Donor as Donor_Model;
+use \PeerRaiser\Model\Donation as Donation_Model;
+use \PeerRaiser\Model\Campaign as Campaign_Model;
+use \PeerRaiser\Model\Fundraiser as Fundraiser_Model;
 use \PeerRaiser\Helper\Stats;
 use \PeerRaiser\Helper\View;
 
@@ -78,9 +81,12 @@ class Dashboard extends Base {
 
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        $currency        = new Currency();
-        $activity_feed   = new Activity_Feed();
-        $donor_model     = new Donor_Model();
+        $currency         = new Currency();
+        $activity_feed    = new Activity_Feed();
+        $donor_model      = new Donor_Model();
+        $donation_model   = new Donation_Model();
+        $campaign_model   = new Campaign_Model();
+        $fundraiser_model = new Fundraiser_Model();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         $view_args = array(
@@ -91,17 +97,17 @@ class Dashboard extends Base {
             'display_name'         => $this->get_current_users_name(),
             'plugin_version'       => $plugin_options['peerraiser_version'],
             'admin_url'            => get_admin_url(),
-            'donations_total'      => View::format_number( Stats::get_total_donations(), true, true ),
-            'campaigns_total'      => View::format_number( $this->get_campaign_total(), false, true ),
-            'fundraisers_total'    => View::format_number( $this->get_fundraiser_total(), false, true ),
-            'donors_total'         => View::format_number( $this->get_donor_total(), false, true ),
+            'donations_total'      => View::format_number( $donation_model->get_donations_total(), true, true ),
+            'campaigns_total'      => View::format_number( $campaign_model->get_total_campaigns(), false, true ),
+            'fundraisers_total'    => View::format_number( $fundraiser_model->get_total_fundraisers(), false, true ),
+            'donors_total'         => View::format_number( $donor_model->get_total_donors(), false, true ),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
                 'step_2'           => 'fa-square-o',
-                'step_3'           => $this->get_campaign_status()
+                'step_3'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o'
             ),
-            'top_donors'           => $donor_model->get_top_donors( 20 ),
-            'top_fundraisers'      => Stats::get_top_fundraisers(),
+            'top_donors'           => $donor_model->get_top_donors(),
+            'top_fundraisers'      => $fundraiser_model->get_top_fundraisers(),
         );
 
         $this->assign( 'peerraiser', $view_args );
@@ -109,36 +115,10 @@ class Dashboard extends Base {
         $this->render( 'backend/dashboard' );
     }
 
-
     private function get_current_users_name(){
         $current_user = wp_get_current_user();
         return ( isset($current_user->user_firstname) && !empty($current_user->user_firstname) ) ? $current_user->user_firstname : $current_user->display_name;
     }
-
-
-    private function get_campaign_status() {
-        $campaigns_count = wp_count_posts( 'pr_campaign' );
-        return ( $campaigns_count->publish > 0 ) ? 'fa-check-square-o' : 'fa-square-o';
-    }
-
-
-    private function get_campaign_total(){
-        $campaigns_count = wp_count_posts( 'pr_campaign' );
-        return $campaigns_count->publish;
-    }
-
-
-    private function get_fundraiser_total(){
-        $fundraisers_count = wp_count_posts( 'fundraiser' );
-        return $fundraisers_count->publish;
-    }
-
-
-    private function get_donor_total(){
-        $donors_count = wp_count_posts( 'pr_donor' );
-        return $donors_count->publish;
-    }
-
 
     public function process_dismiss_message_request() {
         $result = array(
@@ -165,5 +145,4 @@ class Dashboard extends Base {
             'message' => __( 'Message has been dismissed', 'peerraiser' ),
         );
     }
-
 }
