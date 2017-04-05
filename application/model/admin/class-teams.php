@@ -15,23 +15,23 @@ class Teams extends \PeerRaiser\Model\Admin {
                 'priority' => 'default',
                 'fields'   => array(
                     'team_leader' => array(
-                        'name'    => __('Team Leader', 'peerraiser'),
-                        'id'      => '_peerraiser_team_leader',
-                        'type'    => 'select',
-                        'options' => array( $this, 'get_participants_for_select_field'),
-                        'attributes'  => array(
+                        'name'       => __('Team Leader', 'peerraiser'),
+                        'id'         => '_peerraiser_team_leader',
+                        'type'       => 'select',
+                        'options_cb' => array( $this, 'get_participants_for_select_field'),
+                        'attributes' => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
                         ),
                     ),
                     'team_campaign' => array(
-                        'name'    => __('Campaign', 'peerraiser'),
-                        'id'      => '_peerraiser_team_campaign',
-                        'type'    => 'select',
-                        'default' => 'custom',
-                        'desc'    => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
-                        'options' => array( $this, 'get_selected_term'),
-                        'attributes'  => array(
+                        'name'       => __('Campaign', 'peerraiser'),
+                        'id'         => '_peerraiser_team_campaign',
+                        'type'       => 'select',
+                        'default'    => 'custom',
+                        'desc'       => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
+                        'options_cb' => array( $this, 'get_selected_term'),
+                        'attributes' => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
                         ),
