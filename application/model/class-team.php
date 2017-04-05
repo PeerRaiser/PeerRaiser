@@ -122,10 +122,10 @@ class Team {
 
 		// WP_Term_Query arguments
 		$args = array(
-			'taxonomy'               => array( 'peerraiser_team' ),
-			'include'                => array( $id ),
-			'number'                 => 1,
-			'hide_empty'             => false,
+			'taxonomy'   => array( 'peerraiser_team' ),
+			'include'    => array( $id ),
+			'number'     => 1,
+			'hide_empty' => false,
 		);
 
 		$team = new WP_Term_Query( $args );
@@ -216,7 +216,11 @@ class Team {
 		$this->thumbnail_image  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
 
 		// Money
-		$this->team_goal = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
+		$this->team_goal       = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
+        $donation_value        = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
+        $this->donation_value  = $donation_value ? floatval( $donation_value ) : 0.00;
+        $donation_count        = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
+        $this->donation_count  = $donation_count ? intval( $donation_count ) : 0;
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_team', $this, $team );
@@ -286,7 +290,11 @@ class Team {
 	 * Delete the team
 	 */
 	public function delete() {
+        do_action( 'peerraiser_pre_delete_team', $this );
+
 		wp_delete_term( $this->ID, 'peerraiser_team' );
+
+        do_action( 'peerraiser_post_delete_team', $this );
 	}
 
 	/**
@@ -306,7 +314,7 @@ class Team {
     /**
      * Add the team to a campaign
      *
-     * @param $campaign_id The campaign to add the team to
+     * @param $campaign_id int The campaign to add the team to
      */
 	public function add_to_campaign( $campaign_id ) {
 		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
