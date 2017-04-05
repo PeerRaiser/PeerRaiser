@@ -57,8 +57,14 @@
 .peerraiser-form .donation-info .donation-date .label:before {
     content: "\f073";
 }
+.peerraiser-form .donation-info .donation-status .label:before {
+    content: "\f059";
+}
 .peerraiser-form .donation-info .donation-method .label:before {
     content: "\f09d";
+}
+.peerraiser-form .donation-info .donation-gateway .label:before {
+    content: "\f023";
 }
 .peerraiser-form .donation-info .donation-key .label:before {
     content: "\f084";
