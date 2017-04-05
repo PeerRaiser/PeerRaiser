@@ -442,7 +442,7 @@ class Donor {
      *
      * @return array Donors listed by value
      */
-	public function get_top_donors( $count = -1 ) {
+	public function get_top_donors( $count = 20 ) {
         $donation_table = new Donor_Database();
 
         $args = array(
@@ -531,4 +531,9 @@ class Donor {
 
 		return $data;
 	}
+
+    public function get_total_donors() {
+        $donation_table = new Donor_Database();
+        return $donation_table->get_donors( array( 'number' => -1 ), true );
+    }
 }
