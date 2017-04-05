@@ -98,8 +98,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         if ( !in_array($meta_key, $fields) )
             return;
 
-        error_log( 'add_connection called for ' . $meta_key );
-
         switch ( $meta_key ) {
             case '_peerraiser_fundraiser_campaign':
                 $campaign = get_term_by( 'id', $_meta_value, 'peerraiser_campaign' );
@@ -132,8 +130,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         // If the field updated isn't the type that needs to be connected, exit early
         if ( !in_array($meta_key, $fields) )
             return;
-
-        error_log( 'update_connection called for ' . $meta_key );
 
         switch ( $meta_key ) {
             case '_peerraiser_fundraiser_campaign':
@@ -171,8 +167,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         // If the field updated isn't the type that needs to be connected, exit early
         if ( ! in_array($meta_key, $fields) )
             return;
-
-        error_log( 'remove_connection called for ' . $meta_key );
 
         switch ( $meta_key ) {
             case '_peerraiser_fundraiser_campaign':
