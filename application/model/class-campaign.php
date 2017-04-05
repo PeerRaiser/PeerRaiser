@@ -495,6 +495,15 @@ class Campaign {
     }
 
     /**
+     * Returns the total number of campaigns
+     *
+     * @return array|int|\WP_Error
+     */
+    public function get_total_campaigns() {
+        return wp_count_terms( 'peerraiser_campaign', array( 'hide_empty' => false ) );
+    }
+
+    /**
      * Generate a safe campaign slug
      *
      * @since     1.0.0
