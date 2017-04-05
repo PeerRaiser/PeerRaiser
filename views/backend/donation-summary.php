@@ -27,23 +27,31 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <div id="misc-publishing-actions">
                                         <div class="donation-info">
                                             <div class="donation-date">
-                                                <span class="label">Date/Time</span>
+                                                <span class="label"><?php _e( 'Date/Time', 'peerraiser' ); ?></span>
                                                 <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['donation']->date ); ?></strong>
                                             </div>
+                                            <div class="donation-status">
+                                                <span class="label"><?php _e( 'Donation Status', 'peerraiser' ); ?></span>
+                                                <strong><?php echo ucwords( $peerraiser['donation']->status ) ?></strong>
+                                            </div>
                                             <div class="donation-method">
-                                                <span class="label">Payment Method</span>
-                                                <strong>Credit Card</strong>
+                                                <span class="label"><?php _e( 'Payment Method', 'peerraiser' ); ?></span>
+                                                <strong><?php echo ucwords( $peerraiser['donation']->donation_type ); ?></strong>
+                                            </div>
+                                            <div class="donation-gateway">
+                                                <span class="label"><?php _e( 'Gateway', 'peerraiser' ); ?></span>
+                                                <strong><?php echo ucwords( $peerraiser['donation']->gateway ); ?></strong>
                                             </div>
                                             <div class="donation-key">
-                                                <span class="label">Transaction Key</span>
+                                                <span class="label"><?php _e( 'Transaction Key', 'peerraiser' ); ?></span>
                                                 <strong><?php echo $peerraiser['donation']->transaction_id; ?></strong>
                                             </div>
                                             <div class="donor-ip">
-                                                <span class="label">IP Address</span>
+                                                <span class="label"><?php _e( 'IP Address', 'peerraiser' ); ?></span>
                                                 <strong><?php echo $peerraiser['donation']->ip; ?></strong>
                                             </div>
                                             <div class="is-test-mode">
-                                                <span class="label">Test mode?</span>
+                                                <span class="label"><?php _e( 'Test mode?', 'peerraiser' ); ?></span>
                                                 <strong><?php echo ( $peerraiser['donation']->is_test ) ? 'Yes' : 'No'; ?></strong>
                                             </div>
                                         </div>
@@ -91,22 +99,23 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </tr>
                                         <tr>
                                             <td><strong><?php _e( 'Fundraiser', 'peerraiser' ); ?>:</strong></td>
-                                            <?php if ( true ) : ?>
-                                                <td><a href="post.php?action=edit&post=0">Fundraiser Name</a></td>
+                                            <?php if ( $fundraiser_id = $peerraiser['donation']->fundraiser_id ) : ?>
+                                                <?php $fundraiser = peerraiser_get_fundraiser( $fundraiser_id ); ?>
+                                                <td><a href="post.php?action=edit&post=<?php echo $fundraiser->ID; ?>"><?php echo $fundraiser->fundraiser_name; ?></a></td>
                                             <?php else : ?>
                                                 <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
                                         </tr>
                                         <tr>
                                             <td><strong><?php _e( 'Team', 'peerraiser' ); ?>:</strong></td>
-                                            <?php if ( true ) : ?>
-                                                <td><a href="post.php?action=edit&post=0">Team Name</a></td>
+                                            <?php if ( $team_id = $peerraiser['donation']->team_id ) : ?>
+                                                <td><a href="admin.php?page=peerraiser-teams&view=team-details&team=">Team Name</a></td>
                                             <?php else : ?>
                                                 <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
                                         </tr>
                                         <tr>
-                                            <td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>::</strong></td>
+                                            <td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>:</strong></td>
                                             <td><strong>$<?php echo number_format( $peerraiser['donation']->total, 2 ); ?></strong></td>
                                         </tr>
                                     </tbody>
