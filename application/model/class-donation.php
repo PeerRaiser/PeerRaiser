@@ -599,7 +599,7 @@ class Donation {
     public function get_donations_total() {
         $donation_table = new Donation_Database();
         $total = $donation_table->get_donations_total();
-        error_log( print_r( $total, 1 ) );
+
         return $total;
     }
 
