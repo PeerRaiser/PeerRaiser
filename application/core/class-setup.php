@@ -68,8 +68,12 @@ class Setup {
 
         // Currency and Country defaults
         $currency_settings = array(
-            'currency.default' => 'USD',
-            'country.default' => 'US'
+            'currency.default'             => 'USD',
+            'currency.position'            => 'before',
+            'currency.thousands_separator' => ',',
+            'currency.decimal_separator'   => '.',
+            'currency.number_decimals'     => 2,
+            'country.default'              => 'US'
         );
         $config->import( $currency_settings );
 
