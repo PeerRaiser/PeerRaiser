@@ -67,14 +67,14 @@ class Activity_Feed {
         );
     }
     public function add_fundraiser_to_feed( $post ) {
-        $participant_id        = $_POST[ '_fundraiser_participant' ];
+        $participant_id        = $_POST[ '_peerraiser_fundraiser_participant' ];
         $participant_details   = get_user_by( 'id', $participant_id );
         $participant_full_name = $participant_details->first_name . ' ' . $participant_details->last_name;
         $user_info             = get_userdata( $participant_id );
         $participant_name      = ( trim( $participant_full_name ) == false ) ? $user_info->user_login : $participant_full_name;
-        $campaign_id           = $_POST[ '_fundraiser_campaign' ];
+        $campaign              = new \PeerRaiser\Model\Campaign( $_POST[ '_peerraiser_fundraiser_campaign' ] );
 
-        $message = "<a href=\"user-edit.php?user_id=" . $participant_id . "\">" . $participant_name . "</a> created fundraiser \"<a href=\"post.php?action=edit&post=" . $post->ID . "\">" . get_the_title( $post->ID ) . "</a>\" for the \"<a href=\"user-edit.php?user_id=" . $campaign_id . "\">" . get_the_title( $campaign_id ) . "</a>\" campaign";
+        $message = sprintf( __( '<a href="user-edit.php?user_id=%1$d">%2$s</a> created fundraiser <a href="post.php?action=edit&post=%3$d">%4$s</a> for the <a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%5$d">%6$s</a> campaign.', 'peerraiser' ), $participant_id, $participant_name, $post->ID, get_the_title( $post->ID ), $campaign->ID, $campaign->campaign_name );
 
         $this->add_activity(
             array(
