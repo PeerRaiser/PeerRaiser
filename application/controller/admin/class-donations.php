@@ -236,7 +236,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
 
         if ( isset( $_REQUEST['_peerraiser_donation_note'] ) ) {
-            $user          = wp_get_current_user();
+            $user = wp_get_current_user();
 
             $donation->add_note( $_REQUEST['_peerraiser_donation_note'], $user->user_login );
         }
@@ -246,8 +246,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
 	/**
 	 * Handle "delete donation" action
-     *
-     * @todo Delete donation meta
 	 *
 	 * @since     1.0.0
 	 */
@@ -258,16 +256,6 @@ class Donations extends \PeerRaiser\Controller\Base {
 
 		// Models
 		$donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
-		$donor    = new \PeerRaiser\Model\Donor( $donation->donor_id );
-		$campaign = new \PeerRaiser\Model\Campaign( $donation->campaign_id );
-
-        // Decrease the donor's donation count/value
-        $donor->decrease_donation_count( 1 );
-        $donor->decrease_value( abs( $donation->total ) );
-
-        // Decrease the campaign's donation count/value
-        $campaign->decrease_donation_count( 1 );
-        $campaign->decrease_value( abs( $donation->total ) );
 
         // Delete the donation
         $donation->delete();
