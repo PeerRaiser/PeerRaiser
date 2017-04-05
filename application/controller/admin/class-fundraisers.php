@@ -9,8 +9,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         add_action( 'admin_print_styles-post-new.php',       array( $this, 'load_assets' ) );
         add_action( 'admin_print_styles-post.php',           array( $this, 'load_assets' ) );
         add_action( 'added_post_meta',                       array( $this, 'add_connections' ), 10, 4 );
-        add_action( 'update_post_meta',                      array( $this, 'update_connections', 10, 4 ) );
-        add_action( 'delete_post_meta',                      array( $this, 'delete_connections', 10, 4 ) );
+        add_action( 'update_post_meta',                      array( $this, 'update_connections'), 10, 4 );
+        add_action( 'delete_post_meta',                      array( $this, 'delete_connections'), 10, 4 );
         add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ), 10, 2 );
         add_action( 'meta_boxes',                            array( $this, 'add_meta_boxes' ) );
         add_action( 'post_edit_form_tag',                    array( $this, 'add_peerraiser_class' ) );
@@ -110,7 +110,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 break;
 
             case '_peerraiser_fundraiser_team':
-                wp_set_post_terms( $object_id, array( $_meta_value ), 'peerraiser_team' );
+                $team = get_term_by( 'id', $_meta_value, 'peerraiser_team' );
+                wp_set_post_terms( $object_id, $team->name, 'peerraiser_team' );
                 break;
 
             default:
@@ -134,13 +135,11 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
 
         error_log( 'update_connection called for ' . $meta_key );
 
-        // Get the old value
-        // $old_value = get_metadata('post', $object_id, $meta_key, true);
-
         switch ( $meta_key ) {
             case '_peerraiser_fundraiser_campaign':
-                // Remove the value from connection
                 // Add the new connection
+                $new_value = get_term_by( 'id', $_meta_value, 'peerraiser_campaign' );
+                wp_set_post_terms( $object_id, $new_value->name, 'peerraiser_campaign' );
                 break;
 
             case '_peerraiser_fundraiser_participant':
@@ -149,8 +148,9 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 break;
 
             case '_peerraiser_fundraiser_team':
-                // Remove the value from connection
                 // Add the new connection
+                $new_value = get_term_by( 'id', $_meta_value, 'peerraiser_team' );
+                wp_set_post_terms( $object_id, $new_value->name, 'peerraiser_team' );
                 break;
 
             default:
@@ -158,7 +158,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         }
 
     }
-
 
     /**
      * Before post meta is deleted, delete the connections
@@ -166,35 +165,36 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
      * @since     1.0.0
      * @return    null
      */
-    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
+    public function delete_connections( $meta_ids, $object_id, $meta_key, $_meta_value ) {
         $fields = array( '_peerraiser_fundraiser_campaign', '_peerraiser_fundraiser_participant', '_peerraiser_fundraiser_team' );
 
         // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
+        if ( ! in_array($meta_key, $fields) )
             return;
 
-        // Get the old value
-        // $old_value = get_metadata('post', $object_id, $meta_key, true);
+        error_log( 'remove_connection called for ' . $meta_key );
 
         switch ( $meta_key ) {
             case '_peerraiser_fundraiser_campaign':
-                // Remove the value from connection
-
+                $old_value = get_post_meta( $object_id, '_peerraiser_fundraiser_team', true );
+                $campaign  = get_term_by( 'id', $old_value, 'peerraiser_campaign' );
+                wp_remove_object_terms( $object_id, $campaign->name, 'peerraiser_campaign' );
+                break;
 
             case '_peerraiser_fundraiser_participant':
                 // Remove the value from connection
 
-
             case '_peerraiser_fundraiser_team':
-                // Remove the value from connection
-
+                $old_value = get_post_meta( $object_id, '_peerraiser_fundraiser_team', true );
+                $team      = get_term_by( 'id', $old_value, 'peerraiser_team' );
+                wp_remove_object_terms( $object_id, $team->name, 'peerraiser_team' );
+                break;
 
             default:
                 break;
         }
 
     }
-
 
     public function manage_columns( $column_name, $post_id ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
@@ -215,8 +215,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 break;
 
             case 'team':
-                $team_id = get_post_meta( $post_id, '_peerraiser_fundraiser_team', true );
-                echo ( !empty($team_id) ) ? '<a href="post.php?action=edit&post='.$team_id.'">' . get_the_title( $team_id ) . '</a>' : '&mdash;';
+                $teams = wp_get_post_terms( $post_id, 'peerraiser_team' );
+                echo ( ! empty($teams) ) ? '<a href="admin.php?page=peerraiser-teams&view=team-details&team='.$teams[0]->term_id.'">' . $teams[0]->name . '</a>' : '&mdash;';
                 break;
 
             case 'goal_amount':
@@ -225,7 +225,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 break;
 
             case 'amount_raised':
-                echo $currency_symbol . \PeerRaiser\Helper\Stats::get_total_donations_by_fundraiser( $post_id );
+                $amount_raised = get_post_meta( $post_id, '_peerraiser_donation_value', true);
+                echo  $amount_raised ? $currency_symbol . $amount_raised : $currency_symbol . '0.00';
                 break;
 
         }
