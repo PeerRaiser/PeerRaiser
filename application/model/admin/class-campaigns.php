@@ -19,6 +19,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'campaign_end_date' =>   array(
                         'name' => __( 'End Date', 'peerraiser' ),
@@ -301,6 +302,25 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         );
         return new \WP_Query( $args );
     }
+
+	public function get_field_value( $field ) {
+		$campaign_model = new \PeerRaiser\Model\Campaign( $_GET['campaign'] );
+		$plugin_options = get_option( 'peerraiser_options', array() );
+
+		switch ($field['id']) {
+			case '_peerraiser_campaign_start_date':
+				error_log( print_r( $campaign_model,1 ) );
+				$field_value = $campaign_model->start_date ? $campaign_model->start_date : '';
+				break;
+
+			default:
+				$field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : '';
+				break;
+		}
+
+		return $field_value;
+
+	}
 
     private function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
