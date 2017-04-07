@@ -31,7 +31,7 @@ class Campaigns extends Base {
         $currency        = new Currency();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
-        $default_views = array( 'list', 'add', 'edit' );
+        $default_views = array( 'list', 'add', 'summary' );
 
         // Get the correct view
         $view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
