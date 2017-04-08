@@ -273,18 +273,18 @@ class Campaign {
 		$this->campaign_slug = $campaign->slug;
 
 		// Dates
-		$this->start_date  = get_term_meta( $this->ID, '_peerraiser_campaign_start_date', true );
-		$this->end_date    = get_term_meta( $this->ID, '_peerraiser_campaign_end_date', true );
+		$this->start_date  = get_term_meta( $this->ID, 'start_date', true );
+		$this->end_date    = get_term_meta( $this->ID, 'end_date', true );
 
 		// Campaign content
-		$this->campaign_description = get_term_meta( $this->ID, '_peerraiser_campaign_description', true );
-		$this->banner_image         = get_term_meta( $this->ID, '_peerraiser_banner_image', true );
-		$this->thumbnail_image      = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+		$this->campaign_description = get_term_meta( $this->ID, 'campaign_description', true );
+		$this->banner_image         = get_term_meta( $this->ID, 'banner_image', true );
+		$this->thumbnail_image      = get_term_meta( $this->ID, 'thumbnail_image', true );
 
 		// Money
-		$this->campaign_goal			 = get_term_meta( $this->ID, '_peerraiser_campaign_goal', true );
-		$this->suggested_individual_goal = get_term_meta( $this->ID, '_peerraiser_thumbnail_goal', true );
-		$this->suggested_team_goal       = get_term_meta( $this->ID, '_peerraiser_suggested_goal', true );
+		$this->campaign_goal			 = get_term_meta( $this->ID, 'campaign_goal', true );
+		$this->suggested_individual_goal = get_term_meta( $this->ID, 'suggested_individual_goal', true );
+		$this->suggested_team_goal       = get_term_meta( $this->ID, 'suggested_team_goal', true );
 		$donation_value                  = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
 		$this->donation_value            = $donation_value ? floatval( $donation_value ) : 0.00;
 		$donation_count                  = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
@@ -318,6 +318,7 @@ class Campaign {
 
 	    if ( empty( $this->start_date ) ) {
 			$this->start_date = current_time( 'timestamp' );
+			$this->pending['start_date'] = $this->start_date;
 		}
 
 		$campaign = wp_insert_term(
