@@ -258,7 +258,63 @@ class Campaigns extends Base {
 		$campaign->suggested_team_goal       = $_REQUEST['_peerraiser_suggested_team_goal'];
 
 		// Optional Fields
-		//$campaign->start_date = isset( $_REQUEST['_peerraiser_start_game'] ) ? $absint( $_REQUEST['_peerraiser_start_game'] ) : 0;
+	    if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
+		    $campaign->start_date = $_REQUEST['_peerraiser_start_date'];
+	    } else {
+	    	$campaign->start_date = current_time( 'mysql' );
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_end_date'] ) ) {
+		    $campaign->end_date = $_REQUEST['_peerraiser_end_date'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_campaign_description'] ) ) {
+		    $campaign->campaign_description = $_REQUEST['_peerraiser_campaign_description'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_campaign_image'] ) ) {
+		    $campaign->banner_image = $_REQUEST['_peerraiser_campaign_image'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_campaign_thumbnail'] ) ) {
+		    $campaign->thumbnail_image = $_REQUEST['_peerraiser_campaign_thumbnail'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_campaign_goal'] ) ) {
+		    $campaign->campaign_goal = $_REQUEST['_peerraiser_campaign_goal'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_suggested_individual_goal'] ) ) {
+		    $campaign->suggested_individual_goal = $_REQUEST['_peerraiser_suggested_individual_goal'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_suggested_team_goal'] ) ) {
+		    $campaign->suggested_team_goal = $_REQUEST['_peerraiser_suggested_team_goal'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_campaign_limit'] ) ) {
+		    $campaign->registration_limit = $_REQUEST['_peerraiser_campaign_limit'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_team_limit'] ) ) {
+		    $campaign->team_limit = $_REQUEST['_peerraiser_team_limit'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_anonymous_donations'] ) ) {
+		    $campaign->allow_anonymous_donations = $_REQUEST['_peerraiser_anonymous_donations'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_donation_comments'] ) ) {
+		    $campaign->allow_comments = $_REQUEST['_peerraiser_donation_comments'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_transaction_fee_option'] ) ) {
+		    $campaign->allow_fees_covered = $_REQUEST['_peerraiser_transaction_fee_option'];
+	    }
+
+	    if ( isset( $_REQUEST['_peerraiser_thank_you_page'] ) ) {
+		    $campaign->thank_you_page = $_REQUEST['_peerraiser_thank_you_page'];
+	    }
 
 		// Save to the database
 		$campaign->save();
