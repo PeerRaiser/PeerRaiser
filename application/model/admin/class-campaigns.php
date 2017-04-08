@@ -309,7 +309,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
 		switch ($field['id']) {
 			case '_peerraiser_campaign_start_date':
-				error_log( print_r( $campaign_model,1 ) );
 				$field_value = $campaign_model->start_date ? $campaign_model->start_date : '';
 				break;
 
