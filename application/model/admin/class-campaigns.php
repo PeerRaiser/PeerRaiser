@@ -321,6 +321,29 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
 	}
 
+	public function get_field_ids() {
+    	$ids = array();
+    	foreach ( $this->fields as $field_group ) {
+    		$ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
+	    }
+
+	    return $ids;
+	}
+
+	public function get_required_field_ids() {
+    	$required_fields = array();
+
+    	foreach ( $this->fields as $field_group ) {
+    		foreach ( $field_group['fields'] as $field ) {
+    			if ( isset( $field['attributes']['data-rule-required'] ) ) {
+    				$required_fields[] =  $field['id'];
+			    }
+		    }
+	    }
+
+	    return $required_fields;
+	}
+
     private function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
         $currency = new \PeerRaiser\Model\Currency();
