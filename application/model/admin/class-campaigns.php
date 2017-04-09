@@ -179,7 +179,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'name'              => __('Thank You Page', 'peerraiser'),
                         'id'                => '_peerraiser_thank_you_page',
                         'type'              => 'select',
-                        'options'           => array( $this, 'get_selected_post'),
+                        'options_cb'        => array( $this, 'get_selected_post'),
                         'attributes'        => array(
                             'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
                         ),
