@@ -44,6 +44,11 @@ class Campaigns extends Base {
             'admin_url'            => get_admin_url(),
             'list_table'           => new Campaign_List_Table(),
         );
+
+	    if ( $view === 'summary' ) {
+		    $view_args['campaign'] = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign'] );
+	    }
+
         $this->assign( 'peerraiser', $view_args );
 
         // Render the view
