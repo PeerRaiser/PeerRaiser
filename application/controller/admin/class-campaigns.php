@@ -17,6 +17,7 @@ class Campaigns extends Base {
 		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
         add_action( 'peerraiser_page_peerraiser-campaigns', array( $this, 'load_assets' ) );
 		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
+		add_action( 'peerraiser_update_campaign',           array( $this, 'handle_update_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
     }
 
@@ -335,6 +336,11 @@ class Campaigns extends Base {
 		wp_safe_redirect( $location );
 	}
 
+	public function handle_update_campaign() {
+    	$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+    	error_log( print_r( $campaigns_model->get_required_field_ids(), 1 ) );
+	}
+
 	/**
 	 * Handle "delete campaign" action
 	 *
@@ -365,7 +371,8 @@ class Campaigns extends Base {
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
 	private function is_valid_campaign() {
-		$required_fields = array( '_peerraiser_campaign_title', '_peerraiser_campaign_goal', '_peerraiser_suggested_individual_goal', '_peerraiser_suggested_team_goal' );
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$required_fields = $campaigns_model->get_required_field_ids();
 
 		$data = array(
 			'is_valid'     => true,
