@@ -258,7 +258,7 @@ class Campaigns extends Base {
 		$campaign = new Campaign();
 
 		// Required Fields
-		$campaign->campaign_name             = $_REQUEST['_peerraiser_campaign_title'];
+		$campaign->campaign_name             = $_REQUEST['_peerraiser_campaign_name'];
 		$campaign->campaign_goal             = $_REQUEST['_peerraiser_campaign_goal'];
 		$campaign->suggested_individual_goal = $_REQUEST['_peerraiser_suggested_individual_goal'];
 		$campaign->suggested_team_goal       = $_REQUEST['_peerraiser_suggested_team_goal'];
@@ -278,12 +278,12 @@ class Campaigns extends Base {
 		    $campaign->campaign_description = $_REQUEST['_peerraiser_campaign_description'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_campaign_image'] ) ) {
-		    $campaign->banner_image = $_REQUEST['_peerraiser_campaign_image'];
+	    if ( isset( $_REQUEST['_peerraiser_banner_image'] ) ) {
+		    $campaign->banner_image = $_REQUEST['_peerraiser_banner_image'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_campaign_thumbnail'] ) ) {
-		    $campaign->thumbnail_image = $_REQUEST['_peerraiser_campaign_thumbnail'];
+	    if ( isset( $_REQUEST['_peerraiser_thumbnail_image'] ) ) {
+		    $campaign->thumbnail_image = $_REQUEST['_peerraiser_thumbnail_image'];
 	    }
 
 	    if ( isset( $_REQUEST['_peerraiser_campaign_goal'] ) ) {
@@ -298,24 +298,24 @@ class Campaigns extends Base {
 		    $campaign->suggested_team_goal = $_REQUEST['_peerraiser_suggested_team_goal'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_campaign_limit'] ) ) {
-		    $campaign->registration_limit = $_REQUEST['_peerraiser_campaign_limit'];
+	    if ( isset( $_REQUEST['_peerraiser_registration_limit'] ) ) {
+		    $campaign->registration_limit = $_REQUEST['_peerraiser_registration_limit'];
 	    }
 
 	    if ( isset( $_REQUEST['_peerraiser_team_limit'] ) ) {
 		    $campaign->team_limit = $_REQUEST['_peerraiser_team_limit'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_anonymous_donations'] ) ) {
-		    $campaign->allow_anonymous_donations = $_REQUEST['_peerraiser_anonymous_donations'];
+	    if ( isset( $_REQUEST['_peerraiser_allow_anonymous_donations'] ) ) {
+		    $campaign->allow_anonymous_donations = $_REQUEST['_peerraiser_allow_anonymous_donations'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_donation_comments'] ) ) {
-		    $campaign->allow_comments = $_REQUEST['_peerraiser_donation_comments'];
+	    if ( isset( $_REQUEST['_peerraiser_allow_comments'] ) ) {
+		    $campaign->allow_comments = $_REQUEST['_peerraiser_allow_comments'];
 	    }
 
-	    if ( isset( $_REQUEST['_peerraiser_transaction_fee_option'] ) ) {
-		    $campaign->allow_fees_covered = $_REQUEST['_peerraiser_transaction_fee_option'];
+	    if ( isset( $_REQUEST['_peerraiser_allow_fees_covered'] ) ) {
+		    $campaign->allow_fees_covered = $_REQUEST['_peerraiser_allow_fees_covered'];
 	    }
 
 	    if ( isset( $_REQUEST['_peerraiser_thank_you_page'] ) ) {
@@ -329,7 +329,7 @@ class Campaigns extends Base {
 		$location = add_query_arg( array(
 			'page' => 'peerraiser-campaigns',
 			'view' => 'summary',
-			'campaign_id' => $campaign->ID
+			'campaign' => $campaign->ID
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
