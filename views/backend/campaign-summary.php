@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p></p>
 	</div>
 
-	<h1 class="wp-heading-inline"><?php _e( 'Add New Campaign', 'peerraiser' ); ?></h1>
+	<h1 class="wp-heading-inline"><?php _e( 'Edit Campaign', 'peerraiser' ); ?></h1>
+    <a href="<?php echo admin_url( 'admin.php?page=peerraiser-campaigns&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
 	<hr class="wp-header-end">
 
 	<form id="peerraiser-add-campaign" class="peerraiser-form" action="" method="post">
@@ -18,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="side-sortables" class="meta-box-sortables">
 						<div id="submitdiv" class="postbox">
-							<h2><span>Publish</span></h2>
+							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?>></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
@@ -45,7 +46,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div id="postbox-container-2" class="postbox-container">
 					<div id="titlediv">
 						<div id="titlewrap">
-							<input type="text" name="_peerraiser_campaign_title" size="30" value="" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter campaign name here', 'peerraiser' ); ?>">
+							<input type="text" name="_peerraiser_campaign_name" size="30" value="<?php echo $peerraiser['campaign']->campaign_name; ?>" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter campaign name here', 'peerraiser' ); ?>" data-rule-required="true" data-msg-required="<?php _e( 'Campaign Name is required', 'peerraiser' ); ?>">
 						</div>
 						<div class="inside">
 							<div id="edit-slug-box" class="hide-if-no-js"></div>
