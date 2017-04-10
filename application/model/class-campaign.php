@@ -110,14 +110,14 @@ class Campaign {
 	 *
 	 * @var int
 	 */
-	protected $registration_limit = -1;
+	protected $registration_limit;
 
 	/**
 	 * Team limit
 	 *
 	 * @var int
 	 */
-	protected $team_limit = -1;
+	protected $team_limit;
 
 	/**
 	 * Allow anonymous donations?
@@ -295,6 +295,7 @@ class Campaign {
 		$this->team_limit         		 = get_term_meta( $this->ID, '_peerraiser_team_limit', true );
 		$this->allow_anonymous_donations = get_term_meta( $this->ID, '_peerraiser_allow_anonymous_donations', true );
 		$this->allow_comments            = get_term_meta( $this->ID, '_peerraiser_allow_comments', true );
+		$this->allow_fees_covered        = get_term_meta( $this->ID, '_peerraiser_allow_fees_covered', true );
 
 		// Thank you page
 		$this->thank_you_page = get_term_meta( $this->ID, '_peerraiser_thank_you_page', true );
@@ -352,7 +353,7 @@ class Campaign {
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
 				if ( property_exists( $this, $key ) ) {
-				    $this->update_meta( $key, $value );
+				    $this->update_meta( '_peerraiser_' . $key, $value );
                     unset( $this->pending[ $key ] );
                 } else {
                     do_action( 'peerraiser_campaign_save', $this, $key );
@@ -511,7 +512,7 @@ class Campaign {
      * @return    string    campaign slug
      */
     private function generate_campaign_slug() {
-        $campaign_title = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $this->campaign_name ) ) );
-        return sanitize_title_with_dashes( $campaign_title, null, 'save' );
+        $campaign_name = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $this->campaign_name ) ) );
+        return sanitize_title_with_dashes( $campaign_name, null, 'save' );
     }
 }
