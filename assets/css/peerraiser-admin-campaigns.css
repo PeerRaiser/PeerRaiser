@@ -9,8 +9,8 @@
     display: block;
     opacity: 0.5;
 }
-.cmb2-id--peerraiser-campaign-start-date,
-.cmb2-id--peerraiser-campaign-end-date {
+.cmb2-id--peerraiser-start-date,
+.cmb2-id--peerraiser-end-date {
     float: left;
     width: 50%;
     height: 90px;
