@@ -12,42 +12,45 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                 'title'    => __('Campaign Options', 'peerraiser'),
                 'id'       => 'peerraiser-campaign',
                 'fields'   => array(
-                    'campaign_start_date' => array(
+                    'start_date' => array(
                         'name'     => __( 'Start Date', 'peerraiser' ),
-                        'id'       => '_peerraiser_campaign_start_date',
+                        'id'       => '_peerraiser_start_date',
                         'type'     => 'text_date_timestamp',
                         'attributes'        => array(
                             'data-tooltip' => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
                         ),
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'campaign_end_date' =>   array(
+                    'end_date' =>   array(
                         'name' => __( 'End Date', 'peerraiser' ),
-                        'id'   => '_peerraiser_campaign_end_date',
+                        'id'   => '_peerraiser_end_date',
                         'type' => 'text_date_timestamp',
                         'attributes'        => array(
                             'data-tooltip' => __('Leave blank if the campaign is ongoing.', 'peerraiser' ),
                             'placeholder' => '&infin;',
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'campaign_description' => array(
                         'name'    => __('Campaign Description', 'peerraiser'),
                         'id'      => '_peerraiser_campaign_description',
                         'type'    => 'wysiwyg',
                         'options' => array(),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'campaign_image' => array(
+                    'banner_image' => array(
                         'name'    => __('Campaign Banner Image', 'peerraiser'),
-                        'id'      => '_peerraiser_campaign_image',
+                        'id'      => '_peerraiser_banner_image',
                         'type'    => 'file',
                         'options' => array(
                             'url' => false,
                             'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'campaign_thumbnail' => array(
+                    'thumbnail_image' => array(
                         'name'    => __('Campaign Thumbnail Image', 'peerraiser'),
-                        'id'      => '_peerraiser_campaign_thumbnail',
+                        'id'      => '_peerraiser_thumbnail_image',
                         'type'    => 'file',
                         'options' => array(
                             'url' => false,
@@ -56,6 +59,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'campaign_goal' => array(
                         'name' => __('Campaign Goal', 'peerraiser'),
@@ -70,8 +74,9 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-tooltip' => __('The total goal amount for the entire campaign.', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'individual_goal' => array(
+                    'suggested_individual_goal' => array(
                         'name' => __('Suggested Individual Goal', 'peerraiser'),
                         'id'   => '_peerraiser_suggested_individual_goal',
                         'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
@@ -84,8 +89,9 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-tooltip' => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'team_goal' => array(
+                    'suggested_team_goal' => array(
                         'name' => __('Suggested Team Goal', 'peerraiser'),
                         'id'   => '_peerraiser_suggested_team_goal',
                         'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
@@ -98,10 +104,11 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-tooltip' => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'campaign_limit' => array(
+                    'registration_limit' => array(
                         'name' => __( 'Registration Limit', 'peerraiser' ),
-                        'id'   => '_peerraiser_campaign_limit',
+                        'id'   => '_peerraiser_registration_limit',
                         'type' => 'text_small',
                         'attributes' => array(
                             'type' => 'number',
@@ -114,6 +121,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-msg-integer' => __( 'Please enter a whole number', 'peerraiser' ),
                             'data-tooltip' => __('Enter the max number of participants that can register. Leave blank for unlimited.', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'team_limit' => array(
                         'name' => __( 'Team Limit', 'peerraiser' ),
@@ -130,6 +138,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                             'data-msg-integer' => __( 'Please enter a whole number', 'peerraiser' ),
                             'data-tooltip' => __('Enter the max number of teams that can be formed. Leave blank for unlimited.', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
             ),
@@ -139,9 +148,9 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                 'context'  => 'normal',
                 'priority' => 'default',
                 'fields'   => array(
-                    'anonymous_donations' => array(
+                    'allow_anonymous_donations' => array(
                         'name'              => __( 'Allow Anonymous Donations', 'peerraiser' ),
-                        'id'                => '_peerraiser_anonymous_donations',
+                        'id'                => '_peerraiser_allow_anonymous_donations',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -150,10 +159,11 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __( 'Should donors to this campaign have the option to remain anonymous? You will still receive their info, but it will not be displayed publicly', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donation_comments' => array(
+                    'allow_comments' => array(
                         'name'              => __( 'Allow Donation Comments', 'peerraiser' ),
-                        'id'                => '_peerraiser_donation_comments',
+                        'id'                => '_peerraiser_allow_comments',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -162,10 +172,11 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __( 'Should donors to this campaign have the option to leave a comment with their donation?', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'transaction_fee_option' => array(
+                    'allow_fees_covered' => array(
                         'name'              => __( 'Ask donors to cover transaction fees?', 'peerraiser' ),
-                        'id'                => '_peerraiser_transaction_fee_option',
+                        'id'                => '_peerraiser_allow_fees_covered',
                         'type'              => 'select',
                         'options'           => array(
                             'true' => __('Yes', 'peerraiser'),
@@ -174,6 +185,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __( 'Should donors to this campaign have the option to pay the transaction fee?', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'thank_you_page' =>   array(
                         'name'              => __('Thank You Page', 'peerraiser'),
@@ -183,6 +195,7 @@ class Campaigns extends \PeerRaiser\Model\Admin {
                         'attributes'        => array(
                             'data-tooltip' => __( 'The page people will see after making a donation.', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
             ),
@@ -236,12 +249,15 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
 
     public function get_selected_post( $field ) {
-        // Empty array to fill with posts
-        $results = array();
+        $id = isset( $_GET['campaign'] ) ? $_GET['campaign'] : 0;
+	    $campaign_model = new \PeerRaiser\Model\Campaign( $id );
+	    $short_field = substr( $field->args['id'], 12 );
 
-        if ( isset($field->value) && $field->value !== '' ) {
-            $post = get_post($field->value);
-            $results[$field->value] = get_the_title( $post );
+	    $results = array();
+
+	    if ( ! empty( $campaign_model->$short_field ) ) {
+            $post = get_post( $campaign_model->$short_field );
+            $results[ $campaign_model->$short_field ] = get_the_title( $post );
         } else {
             $plugin_options = get_option( 'peerraiser_options', array() );
             $post = get_post( $plugin_options[ 'thank_you_page' ] );
@@ -304,16 +320,15 @@ class Campaigns extends \PeerRaiser\Model\Admin {
     }
 
 	public function get_field_value( $field ) {
+    	if ( ! isset( $_GET['campaign'] ) )
+    		return;
+
 		$campaign_model = new \PeerRaiser\Model\Campaign( $_GET['campaign'] );
-		$plugin_options = get_option( 'peerraiser_options', array() );
+		$short_field = substr( $field['id'], 12 );
 
-		switch ($field['id']) {
-			case '_peerraiser_campaign_start_date':
-				$field_value = $campaign_model->start_date ? $campaign_model->start_date : '';
-				break;
-
+		switch ( $field['id'] ) {
 			default:
-				$field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : '';
+				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : '';
 				break;
 		}
 
@@ -346,7 +361,8 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
     private function get_currency_symbol(){
         $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
+        $currency       = new \PeerRaiser\Model\Currency();
+
         return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
