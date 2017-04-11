@@ -329,6 +329,11 @@ class Campaign {
                 'slug' => $this->campaign_slug,
             ) );
 
+		if ( is_wp_error( $campaign ) ) {
+			error_log( $campaign->get_error_message() );
+			die( $campaign->get_error_message() );
+		}
+
 		$this->ID  = $campaign['term_id'];
 		$this->_ID = $campaign['term_id'];
 
