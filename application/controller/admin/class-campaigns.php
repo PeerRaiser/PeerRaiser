@@ -257,73 +257,8 @@ class Campaigns extends Base {
 
 		$campaign = new Campaign();
 
-		// Required Fields
-		$campaign->campaign_name             = $_REQUEST['_peerraiser_campaign_name'];
-		$campaign->campaign_goal             = $_REQUEST['_peerraiser_campaign_goal'];
-		$campaign->suggested_individual_goal = $_REQUEST['_peerraiser_suggested_individual_goal'];
-		$campaign->suggested_team_goal       = $_REQUEST['_peerraiser_suggested_team_goal'];
-
-		// Optional Fields
-	    if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
-		    $campaign->start_date = $_REQUEST['_peerraiser_start_date'];
-	    } else {
-	    	$campaign->start_date = current_time( 'mysql' );
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_end_date'] ) ) {
-		    $campaign->end_date = $_REQUEST['_peerraiser_end_date'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_campaign_description'] ) ) {
-		    $campaign->campaign_description = $_REQUEST['_peerraiser_campaign_description'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_banner_image'] ) ) {
-		    $campaign->banner_image = $_REQUEST['_peerraiser_banner_image'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_thumbnail_image'] ) ) {
-		    $campaign->thumbnail_image = $_REQUEST['_peerraiser_thumbnail_image'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_campaign_goal'] ) ) {
-		    $campaign->campaign_goal = $_REQUEST['_peerraiser_campaign_goal'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_suggested_individual_goal'] ) ) {
-		    $campaign->suggested_individual_goal = $_REQUEST['_peerraiser_suggested_individual_goal'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_suggested_team_goal'] ) ) {
-		    $campaign->suggested_team_goal = $_REQUEST['_peerraiser_suggested_team_goal'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_registration_limit'] ) ) {
-		    $campaign->registration_limit = $_REQUEST['_peerraiser_registration_limit'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_team_limit'] ) ) {
-		    $campaign->team_limit = $_REQUEST['_peerraiser_team_limit'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_allow_anonymous_donations'] ) ) {
-		    $campaign->allow_anonymous_donations = $_REQUEST['_peerraiser_allow_anonymous_donations'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_allow_comments'] ) ) {
-		    $campaign->allow_comments = $_REQUEST['_peerraiser_allow_comments'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_allow_fees_covered'] ) ) {
-		    $campaign->allow_fees_covered = $_REQUEST['_peerraiser_allow_fees_covered'];
-	    }
-
-	    if ( isset( $_REQUEST['_peerraiser_thank_you_page'] ) ) {
-		    $campaign->thank_you_page = $_REQUEST['_peerraiser_thank_you_page'];
-	    }
-
-		// Save to the database
-		$campaign->save();
+	    $this->add_fields( $campaign );
+	    $campaign->save();
 
 		// Create redirect URL
 		$location = add_query_arg( array(
@@ -380,10 +315,10 @@ class Campaigns extends Base {
 		);
 
 		// Make sure campaign name isn't already taken
-        $campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_title'], 'peerraiser_campaign' );
+        $campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_name'], 'peerraiser_campaign' );
 
         if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
-            $data['field_errors'][ '_peerraiser_campaign_title' ] = __( 'This campaign name already exists', 'peerraiser' );
+            $data['field_errors'][ '_peerraiser_campaign_name' ] = __( 'This campaign name already exists', 'peerraiser' );
         }
 
         // Check required fields
@@ -407,6 +342,33 @@ class Campaigns extends Base {
 		}
 
 		return $data;
+	}
+
+	private function add_fields( $campaign) {
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$field_ids = $campaigns_model->get_field_ids();
+
+		$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
+
+		foreach ( $field_ids as $field_id ) {
+			$short_field = substr( $field_id, 12 );
+
+			switch ( $field_id ) {
+				case "_peerraiser_start_date" :
+					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
+						$campaign->start_date = $_REQUEST['_peerraiser_start_date'];
+					} else {
+						$campaign->start_date = current_time( 'mysql' );
+					}
+					break;
+				default :
+					if ( isset( $_REQUEST[$field_id] ) ) {
+						error_log( $short_field . ' = ' . $_REQUEST[$field_id] );
+						$campaign->$short_field = $_REQUEST[$field_id];
+					}
+					break;
+			}
+		}
 	}
 
 }
