@@ -272,8 +272,24 @@ class Campaigns extends Base {
 	}
 
 	public function handle_update_campaign() {
-    	$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
-    	error_log( print_r( $campaigns_model->get_required_field_ids(), 1 ) );
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_campaign_' . $_REQUEST['campaign_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$campaign = new Campaign( $_REQUEST['campaign_id'] );
+
+		$this->update_fields( $campaign );
+		$campaign->save();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-campaigns',
+			'view' => 'summary',
+			'campaign' => $campaign->ID
+		), admin_url( 'admin.php' ) );
+
+		// Redirect to the edit screen for this new donation
+		wp_safe_redirect( $location );
 	}
 
 	/**
@@ -350,10 +366,8 @@ class Campaigns extends Base {
 
 		$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
 
-		foreach ( $field_ids as $field_id ) {
-			$short_field = substr( $field_id, 12 );
-
-			switch ( $field_id ) {
+		foreach ( $field_ids as $key => $value ) {
+			switch ( $value ) {
 				case "_peerraiser_start_date" :
 					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
 						$campaign->start_date = $_REQUEST['_peerraiser_start_date'];
@@ -362,11 +376,27 @@ class Campaigns extends Base {
 					}
 					break;
 				default :
-					if ( isset( $_REQUEST[$field_id] ) ) {
-						error_log( $short_field . ' = ' . $_REQUEST[$field_id] );
-						$campaign->$short_field = $_REQUEST[$field_id];
+					if ( isset( $_REQUEST[$value] ) ) {
+						$campaign->$key = $_REQUEST[$value];
 					}
 					break;
+			}
+		}
+	}
+
+	private function update_fields( $campaign ) {
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$field_ids = $campaigns_model->get_field_ids();
+
+		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
+			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
+		}
+
+		foreach ( $field_ids as $key => $value ) {
+			if ( isset( $_REQUEST[$value] ) ) {
+				$campaign->$key = $_REQUEST[$value];
+			} else {
+				$campaign->delete_meta($value);
 			}
 		}
 	}
