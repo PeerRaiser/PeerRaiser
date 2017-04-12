@@ -43,7 +43,7 @@ class Campaign_List_Table extends WP_List_Table {
 
 
 		$actions = array(
-			'view' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['id'] ) ),
+			'edit' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['id'] ) ),
 			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&campaign_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_campaign', absint( $item['id'] ), $delete_nonce ),
 		);
 
@@ -101,7 +101,7 @@ class Campaign_List_Table extends WP_List_Table {
             case 'teams' :
                 return count( $item[ $column_name ] );
             case 'raised' :
-                return \PeerRaiser\Helper\View::normalize( $item[ $column_name ] );
+                return $item[ $column_name ];
             default:
                 return print_r( $item, true ); //Show the whole array for troubleshooting purposes
         }
@@ -262,18 +262,19 @@ class Campaign_List_Table extends WP_List_Table {
         $teams     = new \PeerRaiser\Model\Admin\Teams();
 
         foreach ( $term_query->terms as $term ) {
+	        $campaign = new \PeerRaiser\Model\Campaign( $term->term_id );
+
             $results[] = array(
-                'id'          => $term->term_id,
-                'name'        => $term->name,
+                'id'          => $campaign->ID,
+                'name'        => $campaign->campaign_name,
                 'count'       => $term->count,
                 'donations'   => $donations->get_donations( array( 'campaign_id' => $term->term_id ), true ),
                 'teams'       => $teams->get_teams_by_campaign( (int) $term->term_id ),
-                'raised'      => 1345.0000,
+                'raised'      => peerraiser_money_format( $campaign->donation_value ),
             );
         }
 
         return $results;
-
     }
 
     /**
