@@ -395,6 +395,30 @@ class Campaign {
         return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
+	public function update_campaign_name( $name, $slug = false ) {
+		error_log( 'update_campaign_name' );
+		$args = array(
+			'name' => $name,
+			'slug' => $slug ? $slug : $this->campaign_slug,
+		);
+
+		wp_update_term( $this->ID, 'peerraiser_campaign', $args );
+	}
+
+	/**
+	 * Removes campaign meta
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $meta_key   Metadata name.
+	 * @param mixed  $meta_value Optional. Metadata value. If provided, rows will only be removed that match the value.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	function delete_meta( $meta_key, $meta_value = '' ) {
+		return delete_term_meta( $this->ID, $meta_key, $meta_value );
+	}
+
     /**
      * Increase the donation count of the campaign
      *
