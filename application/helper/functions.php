@@ -28,19 +28,20 @@ function peerraiser_get_fundraiser( $id ) {
     return $fundraiser_model;
 }
 
-function peerraiser_money_format( $amount, $decimals = true, $with_symbol = true  ) {
+function peerraiser_money_format( $amount, $with_symbol = true  ) {
     $currency_model  = new \PeerRaiser\Model\Currency();
     $plugin_options  = get_option( 'peerraiser_options', array() );
 
     $currency          = $plugin_options['currency'];
     $thousands_sep     = $plugin_options['thousands_separator'];
     $currency_position = $plugin_options['currency_position'];
-    $decimal_sep       = $decimals ? $plugin_options['decimal_separator'] : 0;
+    $decimal_sep       = $plugin_options['decimal_separator'];
+    $number_decimals   = $plugin_options['number_decimals'];
     $currency_symbol   = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
 
     $amount = ! empty( $amount ) ? $amount : 0;
 
-    $number_format = number_format( $amount, $decimals, $decimal_sep, $thousands_sep );
+    $number_format = number_format( $amount, $number_decimals, $decimal_sep, $thousands_sep );
 
     if ( $with_symbol ) {
         if ( $currency_position === 'before' ) {
