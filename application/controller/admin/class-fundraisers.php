@@ -215,12 +215,12 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
 
             case 'goal_amount':
                 $goal_amount = get_post_meta( $post_id, '_peerraiser_fundraiser_goal', true);
-                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
+                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? peerraiser_money_format( $goal_amount ) : '&mdash;';
                 break;
 
             case 'amount_raised':
                 $amount_raised = get_post_meta( $post_id, '_peerraiser_donation_value', true);
-                echo  $amount_raised ? $currency_symbol . $amount_raised : $currency_symbol . '0.00';
+                echo  $amount_raised ? peerraiser_money_format( $amount_raised ) : peerraiser_money_format( 0.00 );
                 break;
 
         }
