@@ -33,18 +33,18 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return string
      */
-	function column_name( $item ) {
+	function column_name( $campaign ) {
 		// create a nonce
-		$delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign_' . $item['id'] );
+		$delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign_' . $campaign->ID );
 
-		$campaign = new Campaign(  $item['id'] );
+		$campaign = new Campaign(  $campaign->ID );
 
-		$title = '<a href="' . add_query_arg( array( 'campaign' => $item['id'], 'view' => 'campaign-details' ) ) . '">' . $campaign->campaign_name . '</a>';
+		$title = '<a href="' . add_query_arg( array( 'campaign' => $campaign->ID, 'view' => 'campaign-details' ) ) . '">' . $campaign->campaign_name . '</a>';
 
 
 		$actions = array(
-			'edit' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['id'] ) ),
-			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&campaign_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_campaign', absint( $item['id'] ), $delete_nonce ),
+			'edit' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $campaign->ID ) ),
+			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&campaign_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_campaign', absint( $campaign->ID ), $delete_nonce ),
 		);
 
 		return $title . $this->row_actions( apply_filters( 'peerraiser_campaign_actions', $actions ) );
@@ -87,23 +87,23 @@ class Campaign_List_Table extends WP_List_Table {
     /**
      * Render a column when no column specific method exists.
      *
-     * @param array $item
+     * @param object $campaign
      * @param string $column_name
      *
      * @return mixed
      */
-    public function column_default( $item, $column_name ) {
+    public function column_default( $campaign, $column_name ) {
         switch ( $column_name ) {
             case 'count' :
-                return $item[ $column_name ];
+                return $campaign->get_total_fundraisers();
             case 'donations' :
-                return $item[ $column_name ];
+                return $campaign->donation_count;
             case 'teams' :
-                return count( $item[ $column_name ] );
+                return $campaign->get_total_teams();
             case 'raised' :
-                return $item[ $column_name ];
+                return peerraiser_money_format( $campaign->donation_value );
             default:
-                return print_r( $item, true ); //Show the whole array for troubleshooting purposes
+                return print_r( $campaign, true ); //Show the whole array for troubleshooting purposes
         }
     }
 
@@ -114,9 +114,9 @@ class Campaign_List_Table extends WP_List_Table {
      *
      * @return string
      */
-    public function column_cb( $item ) {
+    public function column_cb( $campaign ) {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
+            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $campaign->ID
         );
     }
 
@@ -241,40 +241,19 @@ class Campaign_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_campaigns( $per_page = 10, $page_number = 1 ) {
+	    $campaign_model = new \PeerRaiser\Model\Campaign();
 
-        $args = array(
-            'taxonomy'   => array( 'peerraiser_campaign' ),
-            'count'      => $per_page,
-            'offset'     => $per_page * ( $page_number - 1 ),
-            'hide_empty' => false,
+    	$args = array(
+			'count'      => $per_page,
+	        'offset'     => $per_page * ( $page_number - 1 )
         );
 
-        if ( ! empty( $_REQUEST['orderby'] ) ) {
-            $args['orderby'] = $_REQUEST['orderby'];
-            $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
-        }
+	    if ( ! empty( $_REQUEST['orderby'] ) ) {
+		    $args['orderby'] = $_REQUEST['orderby'];
+		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+	    }
 
-        $term_query = new WP_Term_Query( $args );
-
-        $results = array();
-
-        $donations = new \PeerRaiser\Model\Database\Donation();
-        $teams     = new \PeerRaiser\Model\Admin\Teams();
-
-        foreach ( $term_query->terms as $term ) {
-	        $campaign = new \PeerRaiser\Model\Campaign( $term->term_id );
-
-            $results[] = array(
-                'id'          => $campaign->ID,
-                'name'        => $campaign->campaign_name,
-                'count'       => $term->count,
-                'donations'   => $donations->get_donations( array( 'campaign_id' => $term->term_id ), true ),
-                'teams'       => $teams->get_teams_by_campaign( (int) $term->term_id ),
-                'raised'      => peerraiser_money_format( $campaign->donation_value ),
-            );
-        }
-
-        return $results;
+	    return $campaign_model->get_campaigns( $args );
     }
 
     /**
