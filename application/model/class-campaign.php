@@ -534,6 +534,60 @@ class Campaign {
         return wp_count_terms( 'peerraiser_campaign', array( 'hide_empty' => false ) );
     }
 
+	/**
+	 * Get the total number of fundraisers for this campaign
+	 * 
+	 * @return int
+	 */
+    public function get_total_fundraisers() {
+		$args = array(
+			'post_type' => 'fundraiser',
+			'tax_query' => array(
+				array(
+					'taxonomy'       => 'peerraiser_campaign',
+					'field'          => 'id',
+					'terms'          => $this->ID,
+					'posts_per_page' => -1
+				)
+			)
+		);
+		$query = new \WP_Query( $args );
+
+		return $query->post_count;
+    }
+
+	/**
+	 * Get the total number of teams for this campaign
+	 *
+	 * @todo Make this work
+	 *
+	 * @return int
+	 */
+    public function get_total_teams() {
+		return 0;
+	}
+
+    public function get_campaigns( $args = array()) {
+    	$defaults = array(
+    		'count'      => 20,
+		    'offset'     => 0,
+		    'hide_empty' => false,
+		    'taxonomy'   => array( 'peerraiser_campaign' ),
+	    );
+
+	    $args = wp_parse_args( $args, $defaults );
+
+	    $term_query = new WP_Term_Query( $args );
+
+	    $results = array();
+
+	    foreach ( $term_query->terms as $term ) {
+	    	$results[] = new self( $term->term_id );
+	    }
+
+	    return $results;
+    }
+
     /**
      * Generate a safe campaign slug
      *
