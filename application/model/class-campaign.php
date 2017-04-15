@@ -162,6 +162,13 @@ class Campaign {
     protected $donation_count = 0;
 
 	/**
+	 * The campaign status
+	 *
+	 * @var string
+	 */
+    protected $status = 'active';
+
+	/**
 	 * Array of items that have changed since the last save() was run
 	 * This is for internal use, to allow fewer update_campaign_meta calls to be run
 	 *
@@ -395,20 +402,22 @@ class Campaign {
         return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
-	public function update_campaign_name( $name, $slug = false ) {
-		$args = array(
-			'name' => $name,
-			'slug' => $slug ? $slug : $this->campaign_slug,
-		);
-
-		wp_update_term( $this->ID, 'peerraiser_campaign', $args );
+	/**
+	 * Get campaign meta
+	 *
+	 * @param string $meta_key The meta key to retrieve. By default, returns data for all keys.
+	 * @param bool   $single   Whether to return a single value
+	 *
+	 * @return mixed
+	 */
+	public function get_meta( $meta_key = '', $single = false ) {
+		return get_term_meta( $this->ID, $meta_key, true );
 	}
 
 	/**
 	 * Removes campaign meta
 	 *
 	 * @since 1.0.0
-	 *
 	 * @param string $meta_key   Metadata name.
 	 * @param mixed  $meta_value Optional. Metadata value. If provided, rows will only be removed that match the value.
 	 *
@@ -416,6 +425,22 @@ class Campaign {
 	 */
 	function delete_meta( $meta_key, $meta_value = '' ) {
 		return delete_term_meta( $this->ID, $meta_key, $meta_value );
+	}
+
+	/**
+	 * Update the campaign name
+	 *
+	 * @since  1.0.0
+	 * @param string $name Campaign name
+	 * @param bool   $slug Campaign slug
+	 */
+	public function update_campaign_name( $name, $slug = false ) {
+		$args = array(
+			'name' => $name,
+			'slug' => $slug ? $slug : $this->campaign_slug,
+		);
+
+		wp_update_term( $this->ID, 'peerraiser_campaign', $args );
 	}
 
     /**
