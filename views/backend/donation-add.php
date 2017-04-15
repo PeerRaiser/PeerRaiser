@@ -47,8 +47,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <select name="_peerraiser_donation_type" id="donation-type">
                                                     <option value="check"><?php _e( 'Check', 'peerraiser' ); ?></option>
                                                     <option value="cc"><?php _e( 'Credit Card', 'peerraiser' ); ?></option>
-                                                    <option value="cash"><?php _e( 'Cash', 'peerraiser'  ;?></option>
-                                                    <option value="other"><?php _e( 'Other', 'peerraiser'  ;?></option>
+                                                    <option value="cash"><?php _e( 'Cash', 'peerraiser' );?></option>
+                                                    <option value="other"><?php _e( 'Other', 'peerraiser' );?></option>
                                                 </select>
                                                 <a href="#donation_type" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
                                                 <a href="#donation_type" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
