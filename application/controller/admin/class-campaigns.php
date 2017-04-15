@@ -44,6 +44,7 @@ class Campaigns extends Base {
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
             'list_table'           => new Campaign_List_Table(),
+	        'campaign_admin'       => new \PeerRaiser\Model\Admin\Campaigns()
         );
 
 	    if ( $view === 'summary' ) {
@@ -369,12 +370,17 @@ class Campaigns extends Base {
 
 	private function add_fields( $campaign) {
 		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
-		$field_ids = $campaigns_model->get_field_ids();
 
-		$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
+		$field_ids   = $campaigns_model->get_field_ids();
+
+		// Add campaign name and status to field list, since they're not a CMB2 fields
+		$field_ids['campaign_name']   = '_peerraiser_campaign_name';
+		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
 		foreach ( $field_ids as $key => $value ) {
 			switch ( $value ) {
+				case "_peerraiser_campaign_name" :
+					$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
 				case "_peerraiser_start_date" :
 					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
 						$campaign->start_date = $_REQUEST['_peerraiser_start_date'];
@@ -393,7 +399,11 @@ class Campaigns extends Base {
 
 	private function update_fields( $campaign ) {
 		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
-		$field_ids = $campaigns_model->get_field_ids();
+
+		$field_ids   = $campaigns_model->get_field_ids();
+
+		// Add campaign status to field list, since its not a CMB2 field
+		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
 		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
 			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
@@ -401,14 +411,15 @@ class Campaigns extends Base {
 
 		// If the start date is empty, set it to today's date
 		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			error_log( 'no start date' );
 			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
 		}
 
+		$current = $campaign->get_meta();
+
 		foreach ( $field_ids as $key => $value ) {
-			if ( isset( $_REQUEST[$value] ) ) {
+			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $current[$value][0] ) {
 				$campaign->$key = $_REQUEST[$value];
-			} else {
+			} elseif ( ! isset( $_REQUEST[$value] ) ) {
 				$campaign->delete_meta($value);
 			}
 		}
