@@ -268,7 +268,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
     }
 
-
     public function get_participants_for_select_field( $field ) {
         // Empty array to fill with participants
         $results = array();
@@ -357,6 +356,29 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 	    }
 
 	    return $required_fields;
+	}
+
+	public function get_campaign_statuses() {
+    	$default_campaign_statuses = array(
+    		'active' => __( 'Active', 'peerraiser' ),
+		    'private' => __( 'Private', 'peerraiser' ),
+			'ended' => __( 'Ended', 'peerraiser' ),
+	    );
+
+    	return apply_filters( 'peerraiser_campaign_statuses', $default_campaign_statuses );
+	}
+
+	/**
+	 * Get the campaign status label by its key
+	 *
+	 * @param $key
+	 *
+	 * @return bool
+	 */
+	public function get_campaign_status_by_key( $key ) {
+		$campaign_statuses = $this->get_campaign_statuses();
+
+		return isset( $campaign_statuses[$key] ) ? $campaign_statuses[$key] : reset( $campaign_statuses );
 	}
 
     private function get_currency_symbol(){
