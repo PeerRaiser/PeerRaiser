@@ -19,22 +19,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="side-sortables" class="meta-box-sortables">
 						<div id="submitdiv" class="postbox">
-							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?>></span></h2>
+							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
 										<div class="misc-pub-section">
-											<input type="checkbox" id="is-public" value="is_public" checked> <label for="is-public">Display publicly</label>
+											<input type="checkbox" id="is-public" value="is_public" checked> <label for="is-public"><?php _e( 'Display publicly', 'peerraiser' ); ?></label>
 										</div>
 									</div>
 									<div id="major-publishing-actions">
 										<div id="delete-action">
-											<a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6">Move to Trash</a>
+											<a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6"><?php _e( 'Move to Trash', 'peerraiser' ); ?></a>
 										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
-											<input name="original_publish" type="hidden" id="original_publish" value="Publish">
-											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="Publish">
+											<input name="original_publish" type="hidden" id="original_publish" value="<?php _e( 'Publish', 'peerraiser'); ?>">
+											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Publish', 'peerraiser'); ?>">
 										</div>
 										<div class="clear"></div>
 									</div>
@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="campaign-options" class="postbox cmb2-postbox">
-							<h2 class="hndle ui-sortable-handle"><span>Campaign Options</span></h2>
+							<h2 class="hndle ui-sortable-handle"><span><?php _e( 'Campaign Options', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign', 0, array( 'form_format' => '', ) ); ?>
 							</div>
@@ -64,7 +64,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 						<div id="campaign-options" class="postbox cmb2-postbox">
-							<h2 class="hndle ui-sortable-handle"><span>Donation Form</span></h2>
+							<h2 class="hndle ui-sortable-handle"><span><?php _e( 'Donation Form', 'peerraiser'); ?></span></h2>
 							<div class="inside">
 								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign-donation-form', 0, array( 'form_format' => '', ) ); ?>
 							</div>
