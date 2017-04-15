@@ -51,3 +51,30 @@
 #campaign_stats .campaign-info li span.negative {
     background-color: #d9534f;
 }
+.peerraiser-form .misc-pub-section:before,
+.peerraiser-form .campaign-info .label:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
+.peerraiser-form .misc-pub-section.campaign-status:before {
+    content: "\f059";
+}
+.peerraiser-form .misc-pub-section.campaign-status.active:before {
+    content: "\f058";
+}
+.peerraiser-form .misc-pub-section.campaign-status.private:before {
+    content: "\f023";
+}
+.peerraiser-form .misc-pub-section.campaign-status.ended:before {
+    content: "\f253";
+}
