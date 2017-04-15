@@ -534,37 +534,52 @@ class Campaign {
         return wp_count_terms( 'peerraiser_campaign', array( 'hide_empty' => false ) );
     }
 
+    public function get_fundraisers( $count = false ) {
+	    $args = array(
+		    'post_type' => 'fundraiser',
+		    'tax_query' => array(
+			    array(
+				    'taxonomy'       => 'peerraiser_campaign',
+				    'field'          => 'id',
+				    'terms'          => $this->ID,
+				    'posts_per_page' => -1
+			    )
+		    )
+	    );
+	    $query = new \WP_Query( $args );
+
+	    return  $count ? $query->post_count : $query;
+    }
+
 	/**
 	 * Get the total number of fundraisers for this campaign
-	 * 
+	 *
 	 * @return int
 	 */
     public function get_total_fundraisers() {
-		$args = array(
-			'post_type' => 'fundraiser',
-			'tax_query' => array(
-				array(
-					'taxonomy'       => 'peerraiser_campaign',
-					'field'          => 'id',
-					'terms'          => $this->ID,
-					'posts_per_page' => -1
-				)
-			)
-		);
-		$query = new \WP_Query( $args );
-
-		return $query->post_count;
+		return $this->get_fundraisers( true );
     }
 
 	/**
 	 * Get the total number of teams for this campaign
 	 *
-	 * @todo Make this work
-	 *
+	 * @param  bool  $count Just return the total number of teams
 	 * @return int
 	 */
-    public function get_total_teams() {
-		return 0;
+    public function get_teams( $count = false) {
+		$fundraiser_ids = wp_list_pluck( $this->get_fundraisers()->posts, 'ID' );
+
+		$args = array(
+			'fields' => $count ? 'ids' : 'all',
+		);
+
+	    $terms = wp_get_object_terms( $fundraiser_ids, 'peerraiser_team', $args );
+
+	    return $count ? count( $terms ) : $terms;
+	}
+
+	public function get_total_teams() {
+    	return $this->get_teams(true);
 	}
 
     public function get_campaigns( $args = array()) {
