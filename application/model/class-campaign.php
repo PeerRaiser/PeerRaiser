@@ -396,7 +396,6 @@ class Campaign {
 	}
 
 	public function update_campaign_name( $name, $slug = false ) {
-		error_log( 'update_campaign_name' );
 		$args = array(
 			'name' => $name,
 			'slug' => $slug ? $slug : $this->campaign_slug,
