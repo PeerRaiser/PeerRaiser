@@ -276,6 +276,11 @@ class Campaigns extends Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
+		$validation = $this->is_valid_campaign();
+		if ( ! $validation['is_valid'] ) {
+			return;
+		}
+
 		$campaign = new Campaign( $_REQUEST['campaign_id'] );
 
 		$this->update_fields( $campaign );
@@ -330,12 +335,14 @@ class Campaigns extends Base {
 			'field_errors' => array(),
 		);
 
-		// Make sure campaign name isn't already taken
-        $campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_name'], 'peerraiser_campaign' );
+		// If this is a new campaign, make sure campaign name isn't already taken
+		if ( isset( $_REQUEST['peerraiser_action'] ) && 'add_campaign' === $_REQUEST['peerraiser_action'] ) {
+			$campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_name'], 'peerraiser_campaign' );
 
-        if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
-            $data['field_errors'][ '_peerraiser_campaign_name' ] = __( 'This campaign name already exists', 'peerraiser' );
-        }
+			if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
+				$data['field_errors'][ '_peerraiser_campaign_name' ] = __( 'This campaign name already exists', 'peerraiser' );
+			}
+		}
 
         // Check required fields
 		foreach ( $required_fields as $field ) {
@@ -390,6 +397,12 @@ class Campaigns extends Base {
 
 		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
 			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
+		}
+
+		// If the start date is empty, set it to today's date
+		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+			error_log( 'no start date' );
+			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
 		}
 
 		foreach ( $field_ids as $key => $value ) {
