@@ -53,6 +53,8 @@ class Campaign_List_Table extends WP_List_Table {
     /**
      * Retrieve the view types
      *
+     * @todo: make this work
+     *
      * @access public
      * @since 1.4
      * @return array $views All the views available
@@ -65,6 +67,7 @@ class Campaign_List_Table extends WP_List_Table {
         $views = array(
             'all'      => sprintf( '<a href="%s"%s>%s</a>', remove_query_arg( 'status', $base ), $current === 'all' || $current == '' ? ' class="current"' : '', __('All', 'peerraiser')),
             'active'   => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'active', $base ), $current === 'active' ? ' class="current"' : '', __('Active', 'peerraiser')),
+            'private'   => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'private', $base ), $current === 'private' ? ' class="current"' : '', __('Private', 'peerraiser')),
             'ended' => sprintf( '<a href="%s"%s>%s</a>', add_query_arg( 'status', 'ended', $base ), $current === 'ended' ? ' class="current"' : '', __('Ended', 'peerraiser')),
         );
 
