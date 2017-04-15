@@ -3,13 +3,18 @@
 
     function peerRaiserAdminCampaigns(){
         var $o = {
-            dashboardTab           : $('#toplevel_page_peerraiser-dashboard'),
-            dasboardTabLink        : $('#toplevel_page_peerraiser-dashboard > a'),
-            fundraiserLink         : $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]'),
+            dashboardTab            : $('#toplevel_page_peerraiser-dashboard'),
+            dasboardTabLink         : $('#toplevel_page_peerraiser-dashboard > a'),
+            fundraiserLink          : $('#toplevel_page_peerraiser-dashboard a[href$="pr_campaign"]'),
+            campaignStatusContainer : $('.misc-pub-section.campaign-status'),
+            editCampaignStatus      : $('.edit-campaign-status'),
+            campaignStatusSelect    : $('#campaign-status-select'),
+            campaignStatusCancel    : $('#campaign-status-select .cancel'),
+            campaignStatusSave      : $('#campaign-status-select .save'),
 
-            select2Fields          : {
-                thank_you_page     : $("#_peerraiser_thank_you_page"),
-                participants       : $("#_peerraiser_campaign_participants")
+            select2Fields           : {
+                thank_you_page      : $("#_peerraiser_thank_you_page"),
+                participants        : $("#_peerraiser_campaign_participants")
             },
 
             select2Options         : {
@@ -72,7 +77,43 @@
         },
 
         bindEvents = function() {
+            // Edit Campaign Status
+            $o.editCampaignStatus.on('click', function(e){
+                e.preventDefault();
 
+                $(this).hide();
+                $o.campaignStatusSelect.slideDown('fast');
+            });
+
+            // Cancel Edit Campaign Status
+            $o.campaignStatusCancel.on('click', function(e){
+                e.preventDefault();
+
+                $o.campaignStatusSelect.slideUp('fast', function(){
+                    $o.editCampaignStatus.show();
+                });
+
+                var value = $o.campaignStatusSelect.find('input[type=hidden]').val();
+
+                $o.campaignStatusSelect.find('select option[value="'+value+'"]').attr('selected', true);
+            });
+
+            // Save Edit Campaign Status
+            $o.campaignStatusSave.on('click', function(e){
+                e.preventDefault();
+
+                $o.campaignStatusSelect.slideUp('fast', function(){
+                    $o.editCampaignStatus.show();
+                });
+
+                var value = $o.campaignStatusSelect.find('select option:selected').val(),
+                    label = $o.campaignStatusSelect.find('select option:selected').text();
+
+                $('.misc-pub-section.campaign-status').attr('class', 'misc-pub-section campaign-status ' + value );
+
+                $o.campaignStatusSelect.find('input[type=hidden]').val( value );
+                $o.campaignStatusContainer.find('strong').text( label );
+            });
         },
 
         renderSelect = function() {
