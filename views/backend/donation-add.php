@@ -26,13 +26,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="submitbox" id="submitpost">
                                     <div id="misc-publishing-actions">
                                         <div class="misc-pub-section donation-status completed">
-                                            <?php _e( 'Status:', 'peerraiser' ); ?> <strong>Completed</strong>
+                                            <?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php _e( 'Completed', 'peerraiser' ); ?></strong>
                                             <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                             <div id="donation-status-select" class="hide-if-js">
                                                 <input type="hidden" name="_peerraiser_donation_status_hidden" value="completed">
                                                 <select name="_peerraiser_donation_status" id="donation-status">
-                                                    <option value="completed">Completed</option>
-                                                    <option value="pending">Pending</option>
+                                                    <option value="completed"><?php _e( 'Completed', 'peerraiser' ); ?></option>
+                                                    <option value="pending"><?php _e( 'Pending', 'peerraiser' ); ?></option>
                                                 </select>
                                                 <a href="#donation_status" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
                                                 <a href="#donation_status" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
@@ -40,15 +40,15 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
 
                                         <div class="misc-pub-section donation-type">
-                                            <?php _e( 'Type:', 'peerraiser' ); ?> <strong>Check</strong>
-                                            <a href="#donation_type" class="edit-donation-type hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit type', 'peerraiser' ); ?></span></a>
+                                            <?php _e( 'Type:', 'peerraiser' ); ?> <strong><?php _e( 'Check', 'peerraiser' ); ?></strong>
+                                            <a href="#donation_type" class="edit-donation-type hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit', 'peerraiser' ); ?></span> <span class="screen-reader-text"><?php _e( 'Edit type', 'peerraiser' ); ?></span></a>
                                             <div id="donation-type-select" class="hide-if-js">
                                                 <input type="hidden" name="_peerraiser_donation_type_hidden" value="check">
                                                 <select name="_peerraiser_donation_type" id="donation-type">
-                                                    <option value="check">Check</option>
-                                                    <option value="cc">Credit Card</option>
-                                                    <option value="cash">Cash</option>
-                                                    <option value="other">Other</option>
+                                                    <option value="check"><?php _e( 'Check', 'peerraiser' ); ?></option>
+                                                    <option value="cc"><?php _e( 'Credit Card', 'peerraiser' ); ?></option>
+                                                    <option value="cash"><?php _e( 'Cash', 'peerraiser'  ;?></option>
+                                                    <option value="other"><?php _e( 'Other', 'peerraiser'  ;?></option>
                                                 </select>
                                                 <a href="#donation_type" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
                                                 <a href="#donation_type" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
