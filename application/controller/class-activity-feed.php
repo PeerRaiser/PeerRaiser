@@ -8,8 +8,10 @@ namespace PeerRaiser\Controller;
 class Activity_Feed extends Base {
 
     public function register_actions() {
-        add_action( 'save_post',   array( $this, 'maybe_add_post_to_feed' ), 10, 3 );
-        add_action( 'delete_post', array( $this, 'maybe_remove_post_from_feed' ) );
+        add_action( 'save_post',                   array( $this, 'maybe_add_post_to_feed' ), 10, 3 );
+        add_action( 'delete_post',                 array( $this, 'maybe_remove_post_from_feed' ) );
+	    add_action( 'peerraiser_campaign_added',   array( $this, 'add_campaign_to_feed' ) );
+	    add_action( 'peerraiser_campaign_deleted', array( $this, 'remove_campaign_from_feed', ) );
     }
 
     /**
@@ -58,6 +60,16 @@ class Activity_Feed extends Base {
 
         $model = new \PeerRaiser\Model\Activity_Feed();
         $model->remove_activity( $post_id );
+    }
+
+    public function add_campaign_to_feed( $campaign ) {
+	    $model = new \PeerRaiser\Model\Activity_Feed();
+	    $model->add_campaign_to_feed( $campaign );
+    }
+
+    public function remove_campaign_from_feed( $campaign ) {
+		$model = new \PeerRaiser\Model\Activity_Feed();
+		$model->remove_campaign_from_feed( $campaign );
     }
 
 }
