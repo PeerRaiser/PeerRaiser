@@ -50,22 +50,23 @@ class Activity_Feed {
         );
     }
 
-    public function add_campaign_to_feed( $post ) {
-        $author_id      = get_post_field( 'post_author', $post->ID );
-        $author_details = get_user_by( 'id', $author_id );
-        $author_name    = $author_details->first_name . ' ' . $author_details->last_name;
-
-        $message = "<a href=\"user-edit.php?user_id=" . $author_id . "\">" . $author_name . "</a> created campaign \"<a href=\"post.php?action=edit&post=" . $post->ID . "\">" . get_the_title( $post->ID ) . "</a>\"";
+    public function add_campaign_to_feed( $campaign ) {
+	    $message = sprintf( __( '"<a href="admin.php?page=peerraiser-campaigns&campaign=%1$d&view=summary">%2$s</a>" campaign created.', 'peerraiser' ), $campaign->ID, $campaign->campaign_name );
 
         $this->add_activity(
             array(
-                'id'      => $post->ID,
+                'id'      => $campaign->ID,
                 'type'    => 'campaign',
                 'message' => $message,
                 'time'    => time()
             )
         );
     }
+
+    public function remove_campaign_from_feed( $campaign ) {
+	    $this->remove_activity( $campaign->ID );
+    }
+
     public function add_fundraiser_to_feed( $post ) {
         $participant_id        = $_POST[ '_peerraiser_fundraiser_participant' ];
         $participant_details   = get_user_by( 'id', $participant_id );
