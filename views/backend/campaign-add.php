@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <input type="hidden" name="_peerraiser_campaign_status_hidden" value="active">
                                             <select name="_peerraiser_campaign_status" id="campaign-status">
 		                                        <?php foreach ( $peerraiser['campaign_admin']->get_campaign_statuses() as $key => $value ) : ?>
-                                                    <option value="<?php echo $key ?>" <?php selected( $campaign_status, $key, true ); ?>><?php echo $value ?></option>
+                                                    <option value="<?php echo $key ?>"><?php echo $value ?></option>
 		                                        <?php endforeach; ?>
                                             </select>
                                             <a href="#campaign_status" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
