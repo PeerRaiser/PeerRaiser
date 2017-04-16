@@ -345,6 +345,8 @@ class Campaign {
 		$this->ID  = $campaign['term_id'];
 		$this->_ID = $campaign['term_id'];
 
+		do_action( 'peerraiser_campaign_added', $this );
+
 		return $this->ID;
 	}
 
@@ -386,7 +388,11 @@ class Campaign {
      * Delete the campaign
      */
 	public function delete() {
+		do_action( 'peerraiser_campaign_delete', $this );
+
         wp_delete_term( $this->ID, 'peerraiser_campaign' );
+
+        do_action( 'peerraiser_campaign_deleted', $this );
 	}
 
 	/**
