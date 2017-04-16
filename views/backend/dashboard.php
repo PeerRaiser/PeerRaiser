@@ -90,20 +90,28 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <div class="top-donors">
                     <p class="title"><?php _e('Top Donors', 'peerraiser') ?></p>
 
-                    <ol>
-                        <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
-                            <li><a href="admin.php?page=peerraiser-donors&view=summary&donor=<?php echo $donor->donor_id ?>"><?php echo $donor->donor_name ?></a><span class="amount"><?php echo peerraiser_money_format( $donor->donation_value ); ?></li></span>
-                        <?php endforeach; ?>
-                    </ol>
+	                <?php if ( empty( $peerraiser['top_donors'] ) ) : ?>
+                        <p><?php _e( 'No donors have made donations yet.', 'peerraiser' ); ?></p>
+	                <?php else : ?>
+                        <ol>
+                            <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
+                                <li><a href="admin.php?page=peerraiser-donors&view=summary&donor=<?php echo $donor->donor_id ?>"><?php echo $donor->donor_name ?></a><span class="amount"><?php echo peerraiser_money_format( $donor->donation_value ); ?></li></span>
+                            <?php endforeach; ?>
+                        </ol>
+	                <?php endif; ?>
                 </div>
                 <div class="top-fundraisers">
                     <p class="title"><?php _e('Top Fundraisers', 'peerraiser') ?></p>
 
-                    <ol>
-                        <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
-                            <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->donation_value ); ?></li></span>
-                        <?php endforeach; ?>
-                    </ol>
+                    <?php if ( empty( $peerraiser['top_fundraisers'] ) ) : ?>
+                        <p><?php _e( 'No fundraisers have received donations yet.', 'peerraiser' ); ?></p>
+                    <?php else : ?>
+                        <ol>
+                            <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
+                                <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->donation_value ); ?></li></span>
+                            <?php endforeach; ?>
+                        </ol>
+                    <?php endif; ?>
 
                 </div>
             </div>
