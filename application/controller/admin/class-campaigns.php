@@ -259,6 +259,7 @@ class Campaigns extends Base {
 		$campaign = new Campaign();
 
 	    $this->add_fields( $campaign );
+
 	    $campaign->save();
 
 		// Create redirect URL
@@ -308,8 +309,9 @@ class Campaigns extends Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
-		// Delete the donation
+		// Delete the campaign
 		$campaign = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign_id'] );
+
 		$campaign->delete();
 
 		// Create redirect URL
