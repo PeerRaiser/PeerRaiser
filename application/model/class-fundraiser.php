@@ -300,10 +300,26 @@ class Fundraiser {
      *
      * @param int $count Number of top fundraisers to get
      *
-     * @return array Top fundraisers
+     * @return array Fundraisers
      */
     public function get_top_fundraisers( $count = 20 ) {
-	    // Stuff here
+	    $args = array(
+	    	'post_type'      => 'fundraiser',
+		    'posts_per_page' => $count,
+		    'meta_key'       => '_peerraiser_donation_value',
+            'orderby'        => 'meta_value_num',
+            'order'          => 'DESC'
+	    );
+
+	    $fundraisers = new \WP_Query( $args );
+	    $fundraiser_ids = wp_list_pluck( $fundraisers->posts, 'ID' );
+	    $data = array();
+
+	    foreach ( $fundraiser_ids as $fundraiser_id ) {
+	    	$data[] = new $this( $fundraiser_id );
+	    }
+
+	    return $data;
     }
 
     /**
