@@ -29,7 +29,7 @@ class Campaign_List_Table extends WP_List_Table {
     /**
      * Method for name column
      *
-     * @param array $item an array of DB data
+     * @param array $campaign PeerRaiser campaign
      *
      * @return string
      */
@@ -96,6 +96,8 @@ class Campaign_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default( $campaign, $column_name ) {
+    	$admin_campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+
         switch ( $column_name ) {
             case 'count' :
                 return $campaign->get_total_fundraisers();
@@ -105,6 +107,8 @@ class Campaign_List_Table extends WP_List_Table {
                 return $campaign->get_total_teams();
             case 'raised' :
                 return peerraiser_money_format( $campaign->donation_value );
+	        case 'status' :
+		        return $admin_campaigns_model->get_campaign_status_by_key( $campaign->status );
             default:
                 return print_r( $campaign, true ); //Show the whole array for troubleshooting purposes
         }
@@ -113,7 +117,7 @@ class Campaign_List_Table extends WP_List_Table {
     /**
      * Render the bulk edit checkbox
      *
-     * @param array $item
+     * @param array $campaign
      *
      * @return string
      */
@@ -136,6 +140,7 @@ class Campaign_List_Table extends WP_List_Table {
             'donations'   => __( 'Donations', 'peerraiser' ),
             'teams'       => __( 'Teams', 'peerraiser' ),
             'raised'      => __( 'Raised', 'peerraiser' ),
+            'status'      => __( 'Status', 'peerraiser' ),
         );
 
       return apply_filters( 'peerraiser_campaign_columns', $columns );
