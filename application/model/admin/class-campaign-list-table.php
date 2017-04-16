@@ -210,9 +210,6 @@ class Campaign_List_Table extends WP_List_Table {
             }
             else {
                 self::delete_campaign( absint( $_GET['campaign'] ) );
-
-                wp_redirect( esc_url( add_query_arg() ) );
-                exit;
             }
         }
 
@@ -227,9 +224,6 @@ class Campaign_List_Table extends WP_List_Table {
           foreach ( $delete_ids as $id ) {
             self::delete_campaign( $id );
           }
-
-          wp_redirect( esc_url( add_query_arg() ) );
-          exit;
         }
     }
 
@@ -278,7 +272,8 @@ class Campaign_List_Table extends WP_List_Table {
      * @param int $id campaign ID
      */
     public function delete_campaign( $id ) {
-        //TODO: delete term by id
+        $campaign = new \PeerRaiser\Model\Campaign( $id );
+        $campaign->delete();
     }
 
     /**
@@ -287,7 +282,8 @@ class Campaign_List_Table extends WP_List_Table {
      * @return null|string
      */
     public function record_count() {
-        // TODO: Get term count
+        $campaign = new \PeerRaiser\Model\Campaign();
+        return $campaign->get_total_campaigns();
     }
 
 }
