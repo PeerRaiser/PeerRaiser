@@ -22,8 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
-                                    <div class="misc-pub-section campaign-status active">
-	                                    <?php $campaign_status = $peerraiser['campaign']->get_meta( '_peerraiser_campaign_status', true ); ?>
+									<?php $campaign_status = $peerraiser['campaign']->get_meta( '_peerraiser_campaign_status', true ); ?>
+                                    <div class="misc-pub-section campaign-status <?php echo $campaign_status; ?>">
 										<?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php echo $peerraiser['campaign_admin']->get_campaign_status_by_key( $campaign_status ); ?></strong>
                                         <a href="#campaign_status" class="edit-campaign-status hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit', 'peerraiser') ?></span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                         <div id="campaign-status-select" class="hide-if-js">
