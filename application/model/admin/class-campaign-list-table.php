@@ -53,8 +53,6 @@ class Campaign_List_Table extends WP_List_Table {
     /**
      * Retrieve the view types
      *
-     * @todo: make this work
-     *
      * @access public
      * @since 1.4
      * @return array $views All the views available
@@ -259,6 +257,16 @@ class Campaign_List_Table extends WP_List_Table {
 	    if ( ! empty( $_REQUEST['orderby'] ) ) {
 		    $args['orderby'] = $_REQUEST['orderby'];
 		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+	    }
+
+	    if ( ! empty( $_REQUEST['status'] ) ) {
+		    $args['meta_query'] = array(
+			    array(
+				    'key'       => '_peerraiser_campaign_status',
+				    'value'     => $_REQUEST['status'],
+				    'compare'   => '='
+			    )
+		    );
 	    }
 
 	    return $campaign_model->get_campaigns( $args );
