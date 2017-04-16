@@ -621,8 +621,10 @@ class Campaign {
 
 	    $results = array();
 
-	    foreach ( $term_query->terms as $term ) {
-	    	$results[] = new self( $term->term_id );
+	    if ( ! empty( $term_query->terms ) ) {
+		    foreach ( $term_query->terms as $term ) {
+			    $results[] = new self( $term->term_id );
+		    }
 	    }
 
 	    return $results;
