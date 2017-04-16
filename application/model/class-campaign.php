@@ -279,9 +279,10 @@ class Campaign {
 		$this->campaign_name = $campaign->name;
 		$this->campaign_slug = $campaign->slug;
 
-		// Dates
+		// Dates / Status
 		$this->start_date  = get_term_meta( $this->ID, '_peerraiser_start_date', true );
 		$this->end_date    = get_term_meta( $this->ID, '_peerraiser_end_date', true );
+		$this->status      = get_term_meta( $this->ID, '_peerraiser_campaign_status', true );
 
 		// Campaign content
 		$this->campaign_description = get_term_meta( $this->ID, '_peerraiser_campaign_description', true );
