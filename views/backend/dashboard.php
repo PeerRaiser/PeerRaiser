@@ -101,7 +101,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                     <ol>
                         <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
-                            <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->total ); ?></li></span>
+                            <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->donation_value ); ?></li></span>
                         <?php endforeach; ?>
                     </ol>
 
