@@ -36,9 +36,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                     <div id="major-publishing-actions">
-                                        <div id="delete-action">
-                                            <a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6">Move to Trash</a>
-                                        </div>
                                         <div id="publishing-action">
                                             <span class="spinner"></span>
                                             <input name="original_publish" type="hidden" id="original_publish" value="Publish">
