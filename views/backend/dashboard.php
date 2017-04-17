@@ -19,10 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             <?php if ( $peerraiser['show_welcome_message'] ) : ?>
                 <div class="welcome-message">
-                    <h2><?php printf( esc_html__( 'Welcome to your dashboard, %s', 'peerraiser' ), $peerraiser['display_name'] ); ?></h2>
+                    <h2><?php printf( esc_html__( 'Hi %s, welcome to your dashboard!', 'peerraiser' ), $peerraiser['display_name'] ); ?></h2>
                     <p><?php //_e('The dashboard provides an overview of your peer-to-peer campaigns, fundraising tips, and the latest news about this plugin.', 'peerraiser') ?></p>
 
-                    <h3><?php _e("Let's get you started...", 'peerraiser') ?></h3>
+                    <h3><?php _e("Get started by following these steps:", 'peerraiser') ?></h3>
 
                     <ul>
                         <li class="status-complete"><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="https://peerraiser.com/signup"><?php _e('Create a free PeerRaiser account', 'peerraiser') ?></a></li>
