@@ -28,48 +28,63 @@ class Team_List_Table extends WP_List_Table {
     /**
      * Method for name column
      *
-     * @param array $item an array of DB data
+     * @param array $team an array of Team objects
      *
      * @return string
      */
-    function column_name( $item ) {
-        // create a nonce
-        $delete_nonce = wp_create_nonce( 'peerraiser_delete_team' );
+    function column_name( $team ) {
+	    // create a nonce
+	    $delete_nonce = wp_create_nonce( 'peerraiser_delete_team_' . $team->ID );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'team' => $item['id'], 'view' => 'team-details' ) ) . '">' . $item['name'] . '</a> <span class="meta">('.$item['id'].')</span></strong>';
+	    $title = '<a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a>';
 
-        $actions = array();
+	    $actions = array(
+		    'edit' => sprintf( '<a href="?page=%s&view=%s&team=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ) ),
+		    'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&team_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_team', absint( $team->ID ), $delete_nonce ),
+	    );
 
-        return $title . $this->row_actions( $actions );
+	    return $title . $this->row_actions( apply_filters( 'peerraiser_team_actions', $actions ) );
     }
 
     /**
      * Render a column when no column specific method exists.
      *
-     * @param array $item
+     * @param array  $team
      * @param string $column_name
      *
      * @return mixed
      */
-    public function column_default( $item, $column_name ) {
+    public function column_default( $team, $column_name ) {
         switch ( $column_name ) {
-            case 'count':
-                return $item[ $column_name ];
+            case 'count' :
+                return $team->get_total_members();
+                break;
+	        case 'raised' :
+	        	return peerraiser_money_format( $team->donation_value );
+	        	break;
+	        case 'leader' :
+		        $user_info = get_userdata( $team->team_leader );
+	        	return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s %3$s</a>', $team->team_leader, $user_info->first_name, $user_info->last_name);
+	        	break;
+	        case 'campaign' :
+	        	$campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id );
+	        	return $campaign->campaign_name;
+	        	break;
             default:
-                return print_r( $item, true ); //Show the whole array for troubleshooting purposes
+                return print_r( $team, true ); //Show the whole array for troubleshooting purposes
         }
     }
 
     /**
      * Render the bulk edit checkbox
      *
-     * @param array $item
+     * @param array $team
      *
      * @return string
      */
-    function column_cb( $item ) {
+    function column_cb( $team ) {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
+            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $team->ID
         );
     }
 
@@ -80,9 +95,12 @@ class Team_List_Table extends WP_List_Table {
      */
     function get_columns() {
         $columns = array(
-            'cb'    => '<input type="checkbox" />',
-            'name'  => __( 'Name', 'peerraiser' ),
-            'count' => __( 'Members', 'peerraiser' ),
+            'cb'       => '<input type="checkbox" />',
+            'name'     => __( 'Name', 'peerraiser' ),
+            'leader'   => __( 'Team Leader', 'peerraiser' ),
+            'campaign' => __( 'Campaign', 'peerraiser' ),
+            'count'    => __( 'Fundraisers', 'peerraiser' ),
+	        'raised'   => __( 'Raised', 'peerraiser' ),
         );
 
       return $columns;
@@ -97,6 +115,7 @@ class Team_List_Table extends WP_List_Table {
         $sortable_columns = array(
             'name'  => array( 'name', true ),
             'count' => array( 'count', false ),
+            'raised' => array( 'raised', false ),
             // 'date'   => array( 'date', false ),
         );
 
@@ -120,7 +139,6 @@ class Team_List_Table extends WP_List_Table {
      * Handles data query and filter, sorting, and pagination.
      */
     public function prepare_items() {
-
         $columns = $this->get_columns();
         $hidden = array( 'team_id' );
         $sortable = $this->get_sortable_columns();
@@ -192,32 +210,19 @@ class Team_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_teams( $per_page = 10, $page_number = 1 ) {
+	    $team_model = new \PeerRaiser\Model\Team();
 
-        $args = array(
-            'taxonomy'   => array( 'peerraiser_team' ),
-            'count'      => $per_page,
-            'offset'     => $per_page * ( $page_number - 1 ),
-            'hide_empty' => false,
-        );
+	    $args = array(
+		    'count'      => $per_page,
+		    'offset'     => $per_page * ( $page_number - 1 )
+	    );
 
-        if ( ! empty( $_REQUEST['orderby'] ) ) {
-            $args['orderby'] = $_REQUEST['orderby'];
-            $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
-        }
+	    if ( ! empty( $_REQUEST['orderby'] ) ) {
+		    $args['orderby'] = $_REQUEST['orderby'];
+		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+	    }
 
-        $term_query = new WP_Term_Query( $args );
-
-        $results = array();
-        foreach ( $term_query->terms as $term ) {
-            $results[] = array(
-                'id'    => $term->term_id,
-                'name'  => $term->name,
-                'count' => $term->count,
-            );
-        }
-
-        return $results;
-
+	    return $team_model->get_teams( $args );
     }
 
     /**
