@@ -209,7 +209,7 @@ class Team {
 		$this->team_leader   = absint( get_term_meta( $this->ID, '_peerraiser_team_leader', true ) );
 		$this->team_name     = $team->name;
 		$this->team_slug     = $team->slug;
-		$this->campaign_id   = $team->campaign_id; // Get campaign ID from campaign term relationship
+		$this->campaign_id   = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
 
 		// Team content
 		$this->team_description = get_term_meta( $this->ID, '_peerraiser_team_description', true );
@@ -270,7 +270,7 @@ class Team {
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
 				if ( property_exists( $this, $key ) ) {
-					$this->update_meta( $key, $value );
+					$this->update_meta( '_peerraiser_' . $key, $value );
 					unset( $this->pending[ $key ] );
 				} else {
 					do_action( 'peerraiser_team_save', $this, $key );
@@ -318,6 +318,29 @@ class Team {
      */
 	public function add_to_campaign( $campaign_id ) {
 		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
+	}
+
+	public function get_teams( $args = array() ) {
+		$defaults = array(
+			'count'      => 20,
+			'offset'     => 0,
+			'hide_empty' => false,
+			'taxonomy'   => array( 'peerraiser_team' ),
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$term_query = new WP_Term_Query( $args );
+
+		$results = array();
+
+		if ( ! empty( $term_query->terms ) ) {
+			foreach ( $term_query->terms as $term ) {
+				$results[] = new self( $term->term_id );
+			}
+		}
+
+		return $results;
 	}
 
     /**
@@ -424,6 +447,11 @@ class Team {
         do_action( 'peerraiser_team_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
 
         return $this->donation_value;
+    }
+
+    public function get_total_members() {
+	    $term = get_term( $this->ID, 'peerraiser_team' );
+	    return $term->count;
     }
 
 	/**
