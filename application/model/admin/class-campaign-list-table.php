@@ -37,10 +37,7 @@ class Campaign_List_Table extends WP_List_Table {
 		// create a nonce
 		$delete_nonce = wp_create_nonce( 'peerraiser_delete_campaign_' . $campaign->ID );
 
-		$campaign = new Campaign(  $campaign->ID );
-
 		$title = '<a href="' . add_query_arg( array( 'campaign' => $campaign->ID, 'view' => 'summary' ) ) . '">' . $campaign->campaign_name . '</a>';
-
 
 		$actions = array(
 			'edit' => sprintf( '<a href="?page=%s&view=%s&campaign=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $campaign->ID ) ),
