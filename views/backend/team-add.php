@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <div id="postbox-container-2" class="postbox-container peerraiser-metabox">
                     <div id="titlediv">
                         <div id="titlewrap">
-                            <input type="text" name="_peerraiser_team_title" size="30" value="" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter team name here', 'peerraiser' ); ?>">
+                            <input type="text" name="_peerraiser_team_name" size="30" value="" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter team name here', 'peerraiser' ); ?>">
                         </div>
                         <div class="inside">
                             <div id="edit-slug-box" class="hide-if-no-js"></div>
