@@ -23,22 +23,23 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'team_campaign' => array(
+                    'campaign_id' => array(
                         'name'       => __('Campaign', 'peerraiser'),
-                        'id'         => '_peerraiser_team_campaign',
+                        'id'         => '_peerraiser_campaign_id',
                         'type'       => 'select',
                         'default'    => 'custom',
-                        'desc'       => __( 'Campaign can\'t be changed after Team is created.', 'peerraiser' ),
                         'options_cb' => array( $this, 'get_selected_term'),
                         'attributes' => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'goal_amount' => array(
+                    'team_goal' => array(
                         'name' => __('Goal Amount', 'peerraiser'),
-                        'id'   => '_peerraiser_goal_amount',
+                        'id'   => '_peerraiser_team_goal',
                         'type' => 'text',
                         'attributes' => array(
                             'pattern' => '^\d*(\.\d{2}$)?',
@@ -51,18 +52,18 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A goal amount is required', 'peerraiser' ),
                         ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'team_thumbnail' => array(
+                    'thumbnail_image' => array(
                         'name'    => __('Team Thumbnail Image', 'peerraiser'),
-                        'id'      => '_peerraiser_team_thumbnail',
+                        'id'      => '_peerraiser_thumbnail_image',
                         'type'    => 'file',
                         'options' => array(
                             'url' => false,
                             'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
                         ),
-                        'attributes'        => array(
-                            'data-tooltip' => __('A square image at least 150x150 pixels works best', 'peerraiser' ),
-                        ),
+
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
             ),
@@ -184,10 +185,12 @@ class Teams extends \PeerRaiser\Model\Admin {
     public function get_selected_term( $field ) {
         // Empty array to fill with posts
         $results = array();
+	    $team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
+	    $short_field = substr( $field->args['id'], 12 );
 
-        if ( isset($field->value) && $field->value !== '' ) {
-            $term = get_term($field->value);
-            $results[$field->value] = $term->name;
+        if ( isset($team_model->$short_field) && $team_model->$short_field !== '' ) {
+            $term = get_term($team_model->$short_field);
+            $results[$team_model->$short_field] = $term->name;
         }
 
         return $results;
@@ -250,5 +253,44 @@ class Teams extends \PeerRaiser\Model\Admin {
 
         return wp_get_object_terms( $fundraiser_ids, "peerraiser_team" );
     }
+
+	public function get_field_value( $field ) {
+		if ( ! isset( $_GET['team'] ) )
+			return;
+
+		$team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
+		$short_field = substr( $field['id'], 12 );
+
+		switch ( $field['id'] ) {
+			default:
+				$field_value = isset( $team_model->$short_field ) ? $team_model->$short_field : '';
+				break;
+		}
+
+		return $field_value;
+	}
+
+	public function get_required_field_ids() {
+		$required_fields = array();
+
+		foreach ( $this->fields as $field_group ) {
+			foreach ( $field_group['fields'] as $field ) {
+				if ( isset( $field['attributes']['data-rule-required'] ) ) {
+					$required_fields[] =  $field['id'];
+				}
+			}
+		}
+
+		return $required_fields;
+	}
+
+	public function get_field_ids() {
+		$ids = array();
+		foreach ( $this->fields as $field_group ) {
+			$ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
+		}
+
+		return $ids;
+	}
 
 }
