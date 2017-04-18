@@ -311,6 +311,31 @@ class Team {
 		return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
 	}
 
+	/**
+	 * Get team meta
+	 *
+	 * @param string $meta_key The meta key to retrieve. By default, returns data for all keys.
+	 * @param bool   $single   Whether to return a single value
+	 *
+	 * @return mixed
+	 */
+	public function get_meta( $meta_key = '', $single = false ) {
+		return get_term_meta( $this->ID, $meta_key, true );
+	}
+
+	/**
+	 * Removes team meta
+	 *
+	 * @since 1.0.0
+	 * @param string $meta_key   Metadata name.
+	 * @param mixed  $meta_value Optional. Metadata value. If provided, rows will only be removed that match the value.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	function delete_meta( $meta_key, $meta_value = '' ) {
+		return delete_term_meta( $this->ID, $meta_key, $meta_value );
+	}
+
     /**
      * Add the team to a campaign
      *
