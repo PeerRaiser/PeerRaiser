@@ -368,6 +368,22 @@ class Team {
 		return $results;
 	}
 
+	/**
+	 * Update the team name
+	 *
+	 * @since  1.0.0
+	 * @param string $name Team name
+	 * @param bool   $slug Team slug
+	 */
+	public function update_team_name( $name, $slug = false ) {
+		$args = array(
+			'name' => $name,
+			'slug' => $slug ? $slug : $this->team_slug,
+		);
+
+		wp_update_term( $this->ID, 'peerraiser_team', $args );
+	}
+
     /**
      * Increase the donation count of the team
      *
