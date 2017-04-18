@@ -9,8 +9,7 @@
 
             select2Fields          : {
                 team_leader        : $("#_peerraiser_team_leader"),
-                campaign           : $("#_peerraiser_team_campaign"),
-                fundraisers        : $("#_peerraiser_team_fundraisers"),
+                campaign           : $("#_peerraiser_campaign_id"),
             },
 
             select2Options         : {
@@ -57,24 +56,6 @@
                         }
                         return $('<span>').html(html);
                     }
-                },
-                fundraisers : {
-                    data : function (params) {
-                        return {
-                            action: 'peerraiser_get_posts',
-                            q: params.term,
-                            page: params.page,
-                            post_type  : ['fundraiser']
-                        };
-                    },
-                    templateResult: function(data) {
-                        var html = '<span class="display_name">' + data.text + '</span>';
-                        if ( data.id ) {
-                            html += '<span class="user_id">Fundraiser ID: ' + data.id + '</span>';
-                        }
-                        return $('<span>').html(html);
-                    },
-                    multiple: true,
                 },
             },
         },
