@@ -383,6 +383,7 @@ class Campaigns extends Base {
 			switch ( $value ) {
 				case "_peerraiser_campaign_name" :
 					$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
+					break;
 				case "_peerraiser_start_date" :
 					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
 						$campaign->start_date = $_REQUEST['_peerraiser_start_date'];
