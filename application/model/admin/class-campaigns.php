@@ -332,7 +332,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 		}
 
 		return $field_value;
-
 	}
 
 	public function get_field_ids() {
