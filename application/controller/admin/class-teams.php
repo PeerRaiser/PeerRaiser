@@ -10,8 +10,7 @@ class Teams extends \PeerRaiser\Controller\Base {
     public function register_actions() {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
 		add_action( 'peerraiser_page_peerraiser-teams',   array( $this, 'load_assets' ) );
-        add_action( 'manage_pr_team_posts_custom_column', array( $this, 'manage_columns' ) );
-        add_action( 'peerraiser_add_team',	          array( $this, 'handle_add_team' ) );
+        add_action( 'peerraiser_add_team',	              array( $this, 'handle_add_team' ) );
     }
 
     /**
@@ -36,7 +35,12 @@ class Teams extends \PeerRaiser\Controller\Base {
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
             'list_table'           => new \PeerRaiser\Model\Admin\Team_List_Table(),
+            'team_admin'       => new \PeerRaiser\Model\Admin\Teams()
         );
+
+	    if ( $view === 'summary' ) {
+		    $view_args['team'] = new \PeerRaiser\Model\Team( $_REQUEST['team'] );
+	    }
 
         $this->assign( 'peerraiser', $view_args );
 
@@ -248,41 +252,6 @@ class Teams extends \PeerRaiser\Controller\Base {
         $this->assign( 'peerraiser', $view_args );
 
         $this->render( 'backend/partials/team-fundraisers' );
-    }
-
-    public function manage_columns( $column_name, $post_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        switch ( $column_name ) {
-
-            case 'leader':
-                $leader_id = get_post_meta( $post_id, '_team_leader', true );
-                $user_info = get_userdata( $leader_id );
-                echo '<a href="user-edit.php?user_id='.$leader_id.'">' . $user_info->user_login  . '</a>';
-                break;
-
-            case 'campaign':
-                $campaign_id = get_post_meta( $post_id, '_team_campaign', true );
-                echo '<a href="post.php?action=edit&post='.$campaign_id.'">' . get_the_title( $campaign_id ) . '</a>';
-                break;
-
-            case 'amount_raised':
-                echo $currency_symbol . number_format_i18n( \PeerRaiser\Helper\Stats::get_total_donations_by_team( $post_id ), 2);
-                break;
-
-            case 'goal_amount':
-                $goal_amount = get_post_meta( $post_id, '_goal_amount', true);
-                echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? $currency_symbol . $goal_amount : '&mdash;';
-                break;
-
-            case 'fundraisers':
-                echo $this->get_total_fundraisers( $post_id );
-                break;
-
-        }
-
     }
 
     public function handle_add_team() {
