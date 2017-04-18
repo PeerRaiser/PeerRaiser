@@ -11,6 +11,7 @@ class Teams extends \PeerRaiser\Controller\Base {
         add_action( 'cmb2_admin_init',                    array( $this, 'register_meta_boxes' ) );
 		add_action( 'peerraiser_page_peerraiser-teams',   array( $this, 'load_assets' ) );
         add_action( 'peerraiser_add_team',	              array( $this, 'handle_add_team' ) );
+	    add_action( 'peerraiser_delete_team',             array( $this, 'delete_team' ) );
     }
 
     /**
@@ -118,112 +119,6 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     }
 
-    /**
-     * After post meta is added, add the connections
-     *
-     * @since    1.0.0
-     * @return   null
-     */
-    public function add_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_team_campaign', '_team_leader' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        switch ( $meta_key ) {
-            case '_team_campaign':
-                p2p_type( 'campaigns_to_teams' )->connect( $_meta_value, $object_id, array(
-                    'date' => current_time('mysql')
-                ) );
-                break;
-
-            case '_team_leader':
-                p2p_type( 'teams_to_captains' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Before the post meta is updated, update the connections
-     *
-     * @since     1.0.0
-     * @return    null
-     */
-    public function update_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_fundraiser_campaign', '_team_leader' );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
-
-        switch ( $meta_key ) {
-            case '_team_campaign':
-                // Remove the value from connection
-                p2p_type( 'campaigns_to_teams' )->disconnect( $old_value, $object_id );
-                // Add the new connection
-                p2p_type( 'campaigns_to_teams' )->connect( $_meta_value, $object_id, array(
-                    'date' => current_time('mysql')
-                ) );
-                break;
-
-            case '_team_leader':
-                // Remove the value from connection
-                p2p_type( 'teams_to_captains' )->disconnect( $old_value, $object_id );
-                // Add the new connection
-                p2p_type( 'teams_to_captains' )->connect( $object_id, $_meta_value, array(
-                    'date' => current_time('mysql')
-                ) );
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Before post meta is deleted, delete the connections
-     *
-     * @since     1.0.0
-     * @return    null
-     */
-    public function delete_connections( $meta_id, $object_id, $meta_key, $_meta_value ) {
-        $fields = array( '_team_campaign', '_team_leader', );
-
-        // If the field updated isn't the type that needs to be connected, exit early
-        if ( !in_array($meta_key, $fields) )
-            return;
-
-        // Get the old value
-        $old_value = get_metadata('post', $object_id, $meta_key, true);
-
-        switch ( $meta_key ) {
-            case '_team_campaign':
-                // Remove the value from connection
-                p2p_type( 'campaigns_to_teams' )->disconnect( $old_value, $object_id );
-                break;
-
-            case '_team_leader':
-                // Remove the value from connection
-                p2p_type( 'teams_to_captains' )->disconnect( $old_value, $object_id );
-                break;
-
-            default:
-                break;
-        }
-
-    }
-
     public function display_fundraisers_list() {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
@@ -266,17 +161,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 
         $team = new Team_Model();
 
-        // Required Fields
-        $team->team_name   = $_REQUEST['_peerraiser_team_title'];
-        $team->team_leader = $_REQUEST['_peerraiser_team_leader'];
-        $team->campaign_id = $_REQUEST['_peerraiser_team_campaign'];
-        $team->team_goal   = $_REQUEST['_peerraiser_goal_amount'];
-
-        // Optional Fields
-        if ( isset( $_REQUEST['_peerraiser_team_thumbnail'] ) ) {
-            $thumbnail_image_id = \PeerRaiser\Helper\Field::get_image_id_by_url( $_REQUEST['_peerraiser_team_thumbnail'] );
-            $team->thumbnail_image = $thumbnail_image_id;
-        }
+	    $this->add_fields( $team );
 
         // Save to the database
         $team->save();
@@ -285,7 +170,7 @@ class Teams extends \PeerRaiser\Controller\Base {
         $location = add_query_arg( array(
             'page' => 'peerraiser-teams',
             'view' => 'summary',
-            'campaign_id' => $team->ID
+            'team' => $team->ID
         ), admin_url( 'admin.php' ) );
 
         // Redirect to the edit screen for this new donation
@@ -300,7 +185,8 @@ class Teams extends \PeerRaiser\Controller\Base {
      * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
      */
     private function is_valid_team() {
-        $required_fields = array( '_peerraiser_team_title', '_peerraiser_team_leader', '_peerraiser_team_campaign', '_peerraiser_goal_amount' );
+	    $teams_model = new \PeerRaiser\Model\Admin\Teams();
+	    $required_fields = $teams_model->get_required_field_ids();
 
         $data = array(
             'is_valid'     => true,
@@ -308,10 +194,10 @@ class Teams extends \PeerRaiser\Controller\Base {
         );
 
         // Make sure team name isn't already taken
-        $team_exists = term_exists( $_REQUEST['_peerraiser_team_title'], 'peerraiser_team' );
+        $team_exists = term_exists( $_REQUEST['_peerraiser_team_name'], 'peerraiser_team' );
 
         if ( $team_exists !== 0 && $team_exists !== null ) {
-            $data['field_errors'][ '_peerraiser_team_title' ] = __( 'This team name already exists', 'peerraiser' );
+            $data['field_errors'][ '_peerraiser_team_name' ] = __( 'This team name already exists', 'peerraiser' );
         }
 
         // Check required fields
@@ -337,16 +223,69 @@ class Teams extends \PeerRaiser\Controller\Base {
         return $data;
     }
 
-    private function get_total_fundraisers( $team_id ) {
-        $args = array(
-            'post_type'       => 'fundraiser',
-            'posts_per_page'  => -1,
-            'post_status'     => 'publish',
-            'connected_type'  => 'fundraiser_to_team',
-            'connected_items' => $team_id
-        );
-        $fundraisers = new \WP_Query( $args );
-        return $fundraisers->found_posts;
-    }
+	/**
+	 * Handle "delete campaign" action
+	 *
+	 * @since 1.0.0
+	 */
+	public function delete_team() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_team_' . $_REQUEST['team_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		// Delete the campaign
+		$team = new \PeerRaiser\Model\Team( $_REQUEST['team_id'] );
+
+		$team->delete();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-teams'
+		), admin_url( 'admin.php' ) );
+
+		wp_safe_redirect( $location );
+	}
+
+	private function add_fields( $team) {
+		$teams_model = new \PeerRaiser\Model\Admin\Teams();
+
+		$field_ids   = $teams_model->get_field_ids();
+
+		// Add team name to field list, since its not a CMB2 field
+		$field_ids['team_name']   = '_peerraiser_team_name';
+
+		foreach ( $field_ids as $key => $value ) {
+			switch ( $value ) {
+				case "_peerraiser_team_name" :
+					$team->team_name = $_REQUEST['_peerraiser_team_name'];
+					break;
+				default :
+					if ( isset( $_REQUEST[$value] ) ) {
+						$team->$key = $_REQUEST[$value];
+					}
+					break;
+			}
+		}
+	}
+
+	private function update_fields( $team ) {
+		$teams_model = new \PeerRaiser\Model\Admin\Teams();
+
+		$field_ids   = $teams_model->get_field_ids();
+
+		if ( isset( $_REQUEST['_peerraiser_team_name'] ) ) {
+			$team->update_team_name( $_REQUEST['_peerraiser_team_name'] );
+		}
+
+		$current = $team->get_meta();
+
+		foreach ( $field_ids as $key => $value ) {
+			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $current[$value][0] ) {
+				$team->$key = $_REQUEST[$value];
+			} elseif ( ! isset( $_REQUEST[$value] ) ) {
+				$team->delete_meta($value);
+			}
+		}
+	}
 
  }
