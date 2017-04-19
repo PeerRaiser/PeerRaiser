@@ -322,30 +322,94 @@ class View {
      * @since     1.0.0
      * @return    string    Custom avatar, Gravatar, or default avatar image URL.
      */
-    public static function get_avatar() {
+	public static function get_avatar() {
 
-        // Get the current user's email address
-        $current_user  = wp_get_current_user();
-        $email_address = $current_user->user_email;
+		// Get the current user's email address
+		$current_user  = wp_get_current_user();
+		$email_address = $current_user->user_email;
 
-        // User's Custom Avatar ID
-        $avatar_id = get_user_meta( $current_user->ID, '_peerraiser_custom_avatar', true );
+		// User's Custom Avatar ID
+		$avatar_id = get_user_meta( $current_user->ID, '_peerraiser_custom_avatar', true );
 
-        if ( $avatar_id ==! "" ) {
-            return wp_get_attachment_image_url( $avatar_id, 'peerraiser_campaign_thumbnail' );
-        }
+		if ( $avatar_id == ! "" ) {
+			return wp_get_attachment_image_url( $avatar_id, 'peerraiser_campaign_thumbnail' );
+		}
 
-        // User doesn't have a custom avatar, return gravatar or default avatar
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $default_avatar = $plugin_options['user_thumbnail_image'];
+		// User doesn't have a custom avatar, return gravatar or default avatar
+		$plugin_options = get_option( 'peerraiser_options', array() );
+		$default_avatar = $plugin_options['user_thumbnail_image'];
 
-        $args = array(
-            'size' => 125,
-            'default' => $default_avatar,
-        );
+		$args = array(
+			'size'    => 125,
+			'default' => $default_avatar,
+		);
 
-        return get_avatar_url( $email_address, $args );
+		return get_avatar_url( $email_address, $args );
+	}
 
-    }
+	function get_time_fields( $edit = 1 ) {
+		global $wp_locale;
+		$post = get_post();
+
+		$time_adj  = current_time( 'timestamp' );
+		$post_date = $post->post_date; // todo: Fix this
+
+		$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+		$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+		$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+		$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+		$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+		$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+
+		$cur_jj = gmdate( 'd', $time_adj );
+		$cur_mm = gmdate( 'm', $time_adj );
+		$cur_aa = gmdate( 'Y', $time_adj );
+		$cur_hh = gmdate( 'H', $time_adj );
+		$cur_mn = gmdate( 'i', $time_adj );
+
+		$month = '<label><span class="screen-reader-text">' . __( 'Month' ) . '</span><select id="mm" name="mm">';
+		for ( $i = 1; $i < 13; $i = $i +1 ) {
+			$monthnum = zeroise($i, 2);
+			$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
+			$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
+			/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+			$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
+		}
+		$month .= '</select></label>';
+
+		$day = '<label><span class="screen-reader-text">' . __( 'Day' ) . '</span><input type="text" id="jj" name="jj" value="' . $jj . '" size="2" maxlength="2" autocomplete="off" /></label>';
+		$year = '<label><span class="screen-reader-text">' . __( 'Year' ) . '</span><input type="text" id="aa" name="aa" value="' . $aa . '" size="4" maxlength="4" autocomplete="off" /></label>';
+		$hour = '<label><span class="screen-reader-text">' . __( 'Hour' ) . '</span><input type="text" id="hh" name="hh" value="' . $hh . '" size="2" maxlength="2" autocomplete="off" /></label>';
+		$minute = '<label><span class="screen-reader-text">' . __( 'Minute' ) . '</span><input type="text" id="mn" name="mn" value="' . $mn . '" size="2" maxlength="2" autocomplete="off" /></label>';
+
+		echo '<div class="timestamp-wrap">';
+		/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
+		printf( __( '%1$s %2$s, %3$s @ %4$s:%5$s' ), $month, $day, $year, $hour, $minute );
+
+		echo '</div><input type="hidden" id="ss" name="ss" value="' . $ss . '" />';
+
+		echo "\n\n";
+		$map = array(
+			'mm' => array( $mm, $cur_mm ),
+			'jj' => array( $jj, $cur_jj ),
+			'aa' => array( $aa, $cur_aa ),
+			'hh' => array( $hh, $cur_hh ),
+			'mn' => array( $mn, $cur_mn ),
+		);
+		foreach ( $map as $timeunit => $value ) {
+			list( $unit, $curr ) = $value;
+
+			echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+			$cur_timeunit = 'cur_' . $timeunit;
+			echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+		}
+		?>
+
+		<p>
+			<a href="#edit_timestamp" class="save-timestamp hide-if-no-js button"><?php _e('OK'); ?></a>
+			<a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js button-cancel"><?php _e('Cancel'); ?></a>
+		</p>
+		<?php
+	}
 
 }
