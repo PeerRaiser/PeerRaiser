@@ -27,16 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <div id="misc-publishing-actions">
                                         <div class="misc-pub-section team-date completed">
                                             <?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo date(get_option('date_format')); ?></strong>
-                                            <!-- <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text">Edit status</span></a> -->
-                                            <div id="donation-status-select" class="hide-if-js">
-                                                <input type="hidden" name="_donation_status_hidden" value="completed">
-                                                <select name="_donation_status" id="donation-status">
-                                                    <option value="completed">Completed</option>
-                                                    <option value="pending">Pending</option>
-                                                </select>
-                                                <a href="#donation_status" class="save hide-if-no-js button">OK</a>
-                                                <a href="#donation_status" class="cancel hide-if-no-js button-cancel">Cancel</a>
-                                            </div>
+
                                         </div>
                                     </div>
                                     <div id="major-publishing-actions">

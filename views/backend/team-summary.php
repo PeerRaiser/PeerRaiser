@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<div class="submitbox" id="submitpost">
                                     <div id="misc-publishing-actions">
                                         <div class="misc-pub-section team-date completed">
-											<?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo date(get_option('date_format')); ?></strong>
+											<?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['team']->created, true ); ?></strong>
                                         </div>
                                     </div>
 									<div id="major-publishing-actions">
