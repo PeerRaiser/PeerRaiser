@@ -99,6 +99,13 @@ class Team {
     protected $donation_count = 0;
 
 	/**
+	 * Date Team Created
+	 *
+	 * $var string
+	 */
+	protected $created = '';
+
+	/**
 	 * Array of items that have changed since the last save() was run
 	 * This is for internal use, to allow fewer update_team_meta calls to be run
 	 *
@@ -204,23 +211,26 @@ class Team {
 		do_action( 'peerraiser_before_setup_team', $this, $team );
 
 		// Primary Identifiers
-		$this->ID			 = absint( $team->term_id );
-		$this->_ID           = absint( $team->term_id);
-		$this->team_leader   = absint( get_term_meta( $this->ID, '_peerraiser_team_leader', true ) );
-		$this->team_name     = $team->name;
-		$this->team_slug     = $team->slug;
-		$this->campaign_id   = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
+		$this->ID          = absint( $team->term_id );
+		$this->_ID         = absint( $team->term_id );
+		$this->team_leader = absint( get_term_meta( $this->ID, '_peerraiser_team_leader', true ) );
+		$this->team_name   = $team->name;
+		$this->team_slug   = $team->slug;
+		$this->campaign_id = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
 
 		// Team content
 		$this->team_description = get_term_meta( $this->ID, '_peerraiser_team_description', true );
 		$this->thumbnail_image  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
 
 		// Money
-		$this->team_goal       = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
-        $donation_value        = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
-        $this->donation_value  = $donation_value ? floatval( $donation_value ) : 0.00;
-        $donation_count        = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
-        $this->donation_count  = $donation_count ? intval( $donation_count ) : 0;
+		$this->team_goal      = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
+		$donation_value       = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
+		$this->donation_value = $donation_value ? floatval( $donation_value ) : 0.00;
+		$donation_count       = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
+		$this->donation_count = $donation_count ? intval( $donation_count ) : 0;
+
+        // Team info
+		$this->created = get_term_meta( $this->ID, '_peerraiser_created', true );
 
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_team', $this, $team );
@@ -248,6 +258,9 @@ class Team {
 
 		$this->ID  = $team['term_id'];
 		$this->_ID = $team['term_id'];
+
+		$this->created            = current_time( 'mysql' );
+		$this->pending['created'] = $this->created;
 
 		return $this->ID;
 	}
@@ -320,7 +333,7 @@ class Team {
 	 * @return mixed
 	 */
 	public function get_meta( $meta_key = '', $single = false ) {
-		return get_term_meta( $this->ID, $meta_key, true );
+		return get_term_meta( $this->ID, $meta_key, $single );
 	}
 
 	/**
