@@ -22,8 +22,7 @@ class Teams extends \PeerRaiser\Model\Admin {
                         'attributes' => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
-                        ),
-                        'default_cb' => array( $this, 'get_field_value'),
+                        )
                     ),
                     'campaign_id' => array(
                         'name'       => __('Campaign', 'peerraiser'),
@@ -34,8 +33,7 @@ class Teams extends \PeerRaiser\Model\Admin {
                         'attributes' => array(
                             'data-rule-required' => 'true',
                             'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
-                        ),
-                        'default_cb' => array( $this, 'get_field_value'),
+                        )
                     ),
                     'team_goal' => array(
                         'name' => __('Goal Amount', 'peerraiser'),
@@ -62,7 +60,6 @@ class Teams extends \PeerRaiser\Model\Admin {
                             'url' => false,
                             'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
                         ),
-
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
@@ -183,13 +180,16 @@ class Teams extends \PeerRaiser\Model\Admin {
     }
 
     public function get_selected_term( $field ) {
+    	if ( ! isset( $_GET['team'] ) )
+    		return;
+
         // Empty array to fill with posts
         $results = array();
 	    $team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
 	    $short_field = substr( $field->args['id'], 12 );
 
-        if ( isset($team_model->$short_field) && $team_model->$short_field !== '' ) {
-            $term = get_term($team_model->$short_field);
+        if ( isset( $team_model->$short_field ) && $team_model->$short_field !== '' ) {
+            $term = get_term( $team_model->$short_field );
             $results[$team_model->$short_field] = $term->name;
         }
 
@@ -197,13 +197,19 @@ class Teams extends \PeerRaiser\Model\Admin {
     }
 
     public function get_participants_for_select_field( $field ) {
-        // Empty array to fill with posts
+	    if ( ! isset( $_GET['team'] ) )
+		    return;
+
+    	// Empty array to fill with posts
         $results = array();
 
-        if ( isset($field->value) ) {
-            $user_info = get_userdata($field->value);
+        $team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
+	    $short_field = substr( $field->args['id'], 12 );
+
+        if ( isset( $team_model->$short_field ) && $team_model->$short_field !== '' ) {
+            $user_info = get_userdata( $team_model->$short_field );
             if ( $user_info ) {
-                $results[$field->value] = $user_info->display_name;
+                $results[$team_model->$short_field] = $user_info->display_name;
             }
         }
 
