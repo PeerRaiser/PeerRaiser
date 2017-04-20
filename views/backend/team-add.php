@@ -25,9 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="inside">
                                 <div class="submitbox" id="submitpost">
                                     <div id="misc-publishing-actions">
-                                        <div class="misc-pub-section team-date completed">
+                                        <div class="misc-pub-section team-date">
                                             <?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo date(get_option('date_format')); ?></strong>
+                                            <a href="#edit_timestamp" class="edit-team-date hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit' ); ?></span> <span class="screen-reader-text"><?php _e( 'Edit date and time' ); ?></span></a>
 
+                                            <fieldset id="timestampdiv" class="hide-if-js">
+                                                <legend class="screen-reader-text"><?php _e( 'Date and time' ); ?></legend>
+	                                            <?php \PeerRaiser\Helper\View::get_time_fields(); ?>
+                                            </fieldset>
                                         </div>
                                     </div>
                                     <div id="major-publishing-actions">
