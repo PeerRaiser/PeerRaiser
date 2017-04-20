@@ -347,19 +347,19 @@ class View {
 		return get_avatar_url( $email_address, $args );
 	}
 
-	function get_time_fields( $edit = 1 ) {
+	public static function get_time_fields( $edit = 1, $date = '' ) {
 		global $wp_locale;
 		$post = get_post();
 
 		$time_adj  = current_time( 'timestamp' );
-		$post_date = $post->post_date; // todo: Fix this
+		$date = empty( $date ) ? current_time( 'timestamp' ) : $date;
 
-		$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
-		$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
-		$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
-		$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
-		$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
-		$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+		$jj = ($edit) ? mysql2date( 'd', $date, false ) : gmdate( 'd', $time_adj );
+		$mm = ($edit) ? mysql2date( 'm', $date, false ) : gmdate( 'm', $time_adj );
+		$aa = ($edit) ? mysql2date( 'Y', $date, false ) : gmdate( 'Y', $time_adj );
+		$hh = ($edit) ? mysql2date( 'H', $date, false ) : gmdate( 'H', $time_adj );
+		$mn = ($edit) ? mysql2date( 'i', $date, false ) : gmdate( 'i', $time_adj );
+		$ss = ($edit) ? mysql2date( 's', $date, false ) : gmdate( 's', $time_adj );
 
 		$cur_jj = gmdate( 'd', $time_adj );
 		$cur_mm = gmdate( 'm', $time_adj );
