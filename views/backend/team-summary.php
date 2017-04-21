@@ -22,9 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
-                                    <div id="misc-publishing-actions">
-                                        <div class="misc-pub-section team-date completed">
-											<?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['team']->created, true ); ?></strong>
+                                    <div id="misc-publishing-actions" class="team-info">
+                                        <div class="misc-pub-section team-date">
+                                            <span class="timestamp">
+                                                <span class="label"><?php _e( 'Team Since', 'peerraiser' ); ?>:</span>
+                                                <strong><?php echo mysql2date( "M j, Y", $peerraiser['team']->created, true ); ?></strong>
+                                            </span>
                                         </div>
                                     </div>
 									<div id="major-publishing-actions">
