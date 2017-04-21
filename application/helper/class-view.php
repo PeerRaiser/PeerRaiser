@@ -349,52 +349,40 @@ class View {
 
 	public static function get_time_fields( $edit = 1, $date = '' ) {
 		global $wp_locale;
-		$post = get_post();
 
-		$time_adj  = current_time( 'timestamp' );
-		$date = empty( $date ) ? current_time( 'timestamp' ) : $date;
+		$time_adj = current_time( 'timestamp' );
+		$date     = empty( $date ) ? current_time( 'timestamp' ) : $date;
 
-		$jj = ($edit) ? mysql2date( 'd', $date, false ) : gmdate( 'd', $time_adj );
-		$mm = ($edit) ? mysql2date( 'm', $date, false ) : gmdate( 'm', $time_adj );
-		$aa = ($edit) ? mysql2date( 'Y', $date, false ) : gmdate( 'Y', $time_adj );
-		$hh = ($edit) ? mysql2date( 'H', $date, false ) : gmdate( 'H', $time_adj );
-		$mn = ($edit) ? mysql2date( 'i', $date, false ) : gmdate( 'i', $time_adj );
-		$ss = ($edit) ? mysql2date( 's', $date, false ) : gmdate( 's', $time_adj );
+		$jj = ( $edit ) ? mysql2date( 'd', $date, false ) : gmdate( 'd', $time_adj );
+		$mm = ( $edit ) ? mysql2date( 'm', $date, false ) : gmdate( 'm', $time_adj );
+		$aa = ( $edit ) ? mysql2date( 'Y', $date, false ) : gmdate( 'Y', $time_adj );
 
 		$cur_jj = gmdate( 'd', $time_adj );
 		$cur_mm = gmdate( 'm', $time_adj );
 		$cur_aa = gmdate( 'Y', $time_adj );
-		$cur_hh = gmdate( 'H', $time_adj );
-		$cur_mn = gmdate( 'i', $time_adj );
 
 		$month = '<label><span class="screen-reader-text">' . __( 'Month' ) . '</span><select id="mm" name="mm">';
-		for ( $i = 1; $i < 13; $i = $i +1 ) {
-			$monthnum = zeroise($i, 2);
+		for ( $i = 1; $i < 13; $i = $i + 1 ) {
+			$monthnum  = zeroise( $i, 2 );
 			$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
-			$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
+			$month     .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
 			/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
 			$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
 		}
 		$month .= '</select></label>';
 
-		$day = '<label><span class="screen-reader-text">' . __( 'Day' ) . '</span><input type="text" id="jj" name="jj" value="' . $jj . '" size="2" maxlength="2" autocomplete="off" /></label>';
-		$year = '<label><span class="screen-reader-text">' . __( 'Year' ) . '</span><input type="text" id="aa" name="aa" value="' . $aa . '" size="4" maxlength="4" autocomplete="off" /></label>';
-		$hour = '<label><span class="screen-reader-text">' . __( 'Hour' ) . '</span><input type="text" id="hh" name="hh" value="' . $hh . '" size="2" maxlength="2" autocomplete="off" /></label>';
-		$minute = '<label><span class="screen-reader-text">' . __( 'Minute' ) . '</span><input type="text" id="mn" name="mn" value="' . $mn . '" size="2" maxlength="2" autocomplete="off" /></label>';
+		$day    = '<label><span class="screen-reader-text">' . __( 'Day' ) . '</span><input type="text" id="jj" name="jj" value="' . $jj . '" size="2" maxlength="2" autocomplete="off" /></label>';
+		$year   = '<label><span class="screen-reader-text">' . __( 'Year' ) . '</span><input type="text" id="aa" name="aa" value="' . $aa . '" size="4" maxlength="4" autocomplete="off" /></label>';
 
 		echo '<div class="timestamp-wrap">';
 		/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
-		printf( __( '%1$s %2$s, %3$s @ %4$s:%5$s' ), $month, $day, $year, $hour, $minute );
-
-		echo '</div><input type="hidden" id="ss" name="ss" value="' . $ss . '" />';
+		printf( __( '%1$s %2$s, %3$s' ), $month, $day, $year );
 
 		echo "\n\n";
 		$map = array(
 			'mm' => array( $mm, $cur_mm ),
 			'jj' => array( $jj, $cur_jj ),
 			'aa' => array( $aa, $cur_aa ),
-			'hh' => array( $hh, $cur_hh ),
-			'mn' => array( $mn, $cur_mn ),
 		);
 		foreach ( $map as $timeunit => $value ) {
 			list( $unit, $curr ) = $value;
