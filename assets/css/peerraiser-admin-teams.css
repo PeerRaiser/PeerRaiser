@@ -14,6 +14,25 @@
     display: block;
     opacity: 0.5;
 }
+/* Fields */
+.peerraiser-form .team-info .team-date .label:before {
+    content: "\f073";
+}
+.peerraiser-form .misc-pub-section:before,
+.peerraiser-form .team-info .label:before {
+    width: 1.28571429em;
+    text-align: center;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 0 5px 0 0;
+    font-size: 16px;
+    vertical-align: bottom;
+    color: #82878c;
+}
 /* Misc */
 .text-center {
     text-align: center;
