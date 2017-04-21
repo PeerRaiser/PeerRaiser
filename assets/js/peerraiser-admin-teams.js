@@ -84,25 +84,28 @@
                     $o.editTeamDate.show();
                 });
 
-                var value = $o.teamDateWrap.find('input[type=hidden]').val();
-
-                $o.teamDateWrap.find('select option[value="'+value+'"]').attr('selected', true);
+                $('#mm').val($('#hidden_mm').val());
+                $('#jj').val($('#hidden_jj').val());
+                $('#aa').val($('#hidden_aa').val());
             });
 
             // Save Edit Donation Status
             $o.teamDateSave.on('click', function(e){
                 e.preventDefault();
 
+                var aa = $('#aa').val(), mm = $('#mm').val(), jj = $('#jj').val();
+
                 $o.teamDateWrap.parent().slideUp('fast', function(){
                     $o.editTeamDate.show();
                 });
 
-                var value = $o.teamDateWrap.find('select option:selected').val(),
-                    label = $o.teamDateWrap.find('select option:selected').text();
+                $o.teamDateContainer.find('.timestamp strong').html(
+                    "%1$s %2$s, %3$s"
+                        .replace( '%1$s', $( 'option[value="' + mm + '"]', '#mm' ).attr( 'data-text' ) )
+                        .replace( '%2$s', parseInt( jj, 10 ) )
+                        .replace( '%3$s', aa )
+                );
 
-                $('.misc-pub-section.donation-status').attr('class', 'misc-pub-section donation-status ' + value );
-
-                $o.teamDateWrap.find('input[type=hidden]').val( value );
                 $o.teamDateContainer.find('strong').text( label );
             });
         },
