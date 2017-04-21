@@ -295,6 +295,22 @@ class Teams extends \PeerRaiser\Controller\Base {
 					break;
 			}
 		}
+
+		foreach ( array ('aa', 'mm', 'jj') as $timeunit ) {
+			if ( !empty( $_POST['hidden_' . $timeunit] ) && $_POST['hidden_' . $timeunit] != $_POST[$timeunit] ) {
+				$_POST['edit_date'] = '1';
+				break;
+			}
+		}
+
+		if ( !empty ( $_POST['edit_date'] ) ) {
+			$aa = $_POST['aa'];
+			$mm = $_POST['mm'];
+			$jj = $_POST['jj'];
+			$jj = ( $jj > 31 ) ? 31 : $jj;
+
+			$team->created = "$aa-$mm-$jj 00:00:00";
+		}
 	}
 
 	private function update_fields( $team ) {
