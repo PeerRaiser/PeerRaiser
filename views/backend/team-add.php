@@ -24,10 +24,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <h2><span><?php _e( 'Add Team', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
                                 <div class="submitbox" id="submitpost">
-                                    <div id="misc-publishing-actions">
+                                    <div id="misc-publishing-actions" class="team-info">
                                         <div class="misc-pub-section team-date">
                                             <span class="timestamp">
-                                                <?php _e( 'Team Since', 'peerraiser' ); ?>: <strong><?php echo date( "M j, Y" ); ?></strong>
+                                                <span class="label"><?php _e( 'Team Since', 'peerraiser' ); ?>:</span>
+                                                <strong><?php echo date( "M j, Y" ); ?></strong>
                                             </span>
                                             <a href="#edit_timestamp" class="edit-team-date hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit' ); ?></span> <span class="screen-reader-text"><?php _e( 'Edit date and time' ); ?></span></a>
 
