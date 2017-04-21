@@ -259,8 +259,10 @@ class Team {
 		$this->ID  = $team['term_id'];
 		$this->_ID = $team['term_id'];
 
-		$this->created            = current_time( 'mysql' );
-		$this->pending['created'] = $this->created;
+		if ( empty( $this->created ) ) {
+			$this->created            = current_time( 'mysql' );
+			$this->pending['created'] = $this->created;
+		}
 
 		return $this->ID;
 	}
