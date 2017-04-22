@@ -68,7 +68,7 @@ class Team_List_Table extends WP_List_Table {
 	        	break;
 	        case 'campaign' :
 	        	$campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id );
-	        	return $campaign->campaign_name;
+		        return sprintf( '<a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%1$d">%2$s</a>', $campaign->ID, $campaign->campaign_name );
 	        	break;
             default:
                 return print_r( $team, true ); //Show the whole array for troubleshooting purposes
