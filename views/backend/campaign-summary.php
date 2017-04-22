@@ -39,8 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     </div>
 									<div id="major-publishing-actions">
 										<div id="delete-action">
-                                            <?php // todo: Make this work: ?>
-											<a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6"><?php _e( 'Delete', 'peerraiser' ); ?></a>
+                                            <a class="submitdelete deletion" href="<?php echo add_query_arg( array( 'peerraiser_action' => 'delete_campaign', 'campaign_id' => $peerraiser['campaign']->ID, '_wpnonce' => wp_create_nonce( 'peerraiser_delete_campaign_' . $peerraiser['campaign']->ID ) ), admin_url( sprintf( 'admin.php?page=peerraiser-campaigns' ) ) ) ?>"><?php _e( 'Delete', 'peerraiser' ); ?></a>
 										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
