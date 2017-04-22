@@ -534,11 +534,11 @@ class Donors extends \PeerRaiser\Model\Admin {
     public function get_select_options( $field ) {
 
         switch ( $field->args['id'] ) {
-            case '_donor_country':
+            case '_peerraiser_donor_country':
                 return $this->countries;
                 break;
 
-            case '_donor_state':
+            case '_peerraiser_donor_state':
                 return $this->states;
 
             default:
