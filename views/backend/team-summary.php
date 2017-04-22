@@ -31,10 +31,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
 									<div id="major-publishing-actions">
-										<div id="delete-action">
-											<?php // todo: Make this work: ?>
-											<a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6"><?php _e( 'Delete', 'peerraiser' ); ?></a>
-										</div>
+                                        <?php // todo: Check if user can delete teams ?>
+                                        <?php //if ( current_user_can( 'delete_team', $peerraiser['team']->ID ) ) : ?>
+                                            <div id="delete-action">
+                                                <a class="submitdelete deletion" href="<?php echo add_query_arg( array( 'peerraiser_action' => 'delete_team', 'team_id' => $peerraiser['team']->ID, '_wpnonce' => wp_create_nonce( 'peerraiser_delete_team_' . $peerraiser['team']->ID ) ), admin_url( sprintf( 'admin.php?page=peerraiser-teams' ) ) ) ?>"><?php _e( 'Delete', 'peerraiser' ); ?></a>
+                                            </div>
+                                        <?php //endif; ?>
 										<div id="publishing-action">
 											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Update', 'peerraiser'); ?>">
 										</div>
