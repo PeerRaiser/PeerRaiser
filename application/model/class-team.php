@@ -360,6 +360,15 @@ class Team {
 		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
 	}
 
+	/**
+	 * Returns the total number of teams
+	 *
+	 * @return array|int|\WP_Error
+	 */
+	public function get_total_teams() {
+		return wp_count_terms( 'peerraiser_team', array( 'hide_empty' => false ) );
+	}
+
 	public function get_teams( $args = array() ) {
 		$defaults = array(
 			'count'      => 20,
