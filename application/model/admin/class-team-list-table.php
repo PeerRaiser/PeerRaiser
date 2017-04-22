@@ -36,7 +36,7 @@ class Team_List_Table extends WP_List_Table {
 	    // create a nonce
 	    $delete_nonce = wp_create_nonce( 'peerraiser_delete_team_' . $team->ID );
 
-	    $title = '<a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a>';
+	    $title = '<strong><a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a></strong>';
 
 	    $actions = array(
 		    'edit' => sprintf( '<a href="?page=%s&view=%s&team=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ) ),

@@ -36,7 +36,7 @@ class Donation_List_Table extends WP_List_Table {
         // create a nonce
         $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation_' . $item['donation_id'] );
 
-        $title = '<a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'summary' ) ) . '">Donation #' . $item['donation_id'] . '</a>';
+        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'summary' ) ) . '">Donation #' . $item['donation_id'] . '</a></strong>';
 
         $actions = array(
             'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donation_id'] ) ),

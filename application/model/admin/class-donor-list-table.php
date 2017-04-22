@@ -39,7 +39,7 @@ class Donor_List_Table extends WP_List_Table {
 
 		$donor = new Donor( $item->donor_id );
 
-		$title = '<a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a>';
+		$title = '<strong><a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a></strong>';
 
 		$actions = array(
 			'view' => sprintf( '<a href="?page=%s&view=%s&donor=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->donor_id ) ),
