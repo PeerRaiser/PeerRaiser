@@ -173,9 +173,6 @@ class Team_List_Table extends WP_List_Table {
             }
             else {
                 self::delete_team( absint( $_GET['team'] ) );
-
-                wp_redirect( esc_url( add_query_arg() ) );
-                exit;
             }
         }
 
@@ -190,9 +187,6 @@ class Team_List_Table extends WP_List_Table {
           foreach ( $delete_ids as $id ) {
             self::delete_team( $id );
           }
-
-          wp_redirect( esc_url( add_query_arg() ) );
-          exit;
         }
     }
 
@@ -231,7 +225,8 @@ class Team_List_Table extends WP_List_Table {
      * @param int $id team ID
      */
     public function delete_team( $id ) {
-        // TODO: Delete term by id
+	    $team = new \PeerRaiser\Model\Team( $id );
+	    $team->delete();
     }
 
     /**
@@ -240,7 +235,8 @@ class Team_List_Table extends WP_List_Table {
      * @return null|string
      */
     public function record_count() {
-        // TODO: Get term count
+	    $team = new \PeerRaiser\Model\Team();
+	    return $team->get_total_teams();
     }
 
 }
