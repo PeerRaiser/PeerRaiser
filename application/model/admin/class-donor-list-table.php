@@ -62,7 +62,7 @@ class Donor_List_Table extends WP_List_Table {
 
         switch ( $column_name ) {
 			case 'email_address':
-				return $donor->email_address;
+				return  empty( $donor->email_address) ? '&mdash;' : $donor->email_address;
 			case 'donations' :
 				return $donor->donation_count;
             case 'amount':
