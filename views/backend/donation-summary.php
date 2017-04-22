@@ -58,7 +58,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     </div>
                                     <div id="major-publishing-actions">
                                         <div id="delete-action">
-                                            <a class="submitdelete deletion" href="http://localhost/wordpress/wp-admin/post.php?post=1080&amp;action=trash&amp;_wpnonce=f77a7b0df6"><?php _e( 'Delete Donation', 'peerraiser' ); ?></a>
+                                            <a class="submitdelete deletion" href="<?php echo add_query_arg( array( 'peerraiser_action' => 'delete_donation', 'donation_id' => $peerraiser['donation']->ID, '_wpnonce' => wp_create_nonce( 'peerraiser_delete_donation_' . $peerraiser['donation']->ID ) ), admin_url( sprintf( 'admin.php?page=peerraiser-donations' ) ) ) ?>"><?php _e( 'Delete', 'peerraiser' ); ?></a>
                                         </div>
                                         <div id="publishing-action">
                                             <span class="spinner"></span>
