@@ -19,10 +19,20 @@
     padding-top: 12px;
 }
 /* Donor Card */
+#donor-card {
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+}
 #donor-card img.profile-image {
     border-radius: 50%;
     float: left;
     margin-right: 10px;
+    width: 96px;
+    height: 96px;
+    background-color: #dddddd;
 }
 #donor-card img.profile-image.guest {
     background-color: #9d9b9b;
