@@ -86,9 +86,9 @@ class Donations extends \PeerRaiser\Controller\Base {
         );
 
         if ( $view === 'summary' ) {
-            $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
-            $view_args['donor']    = new\PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
-        }
+		    $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
+		    $view_args['donor']    = new \PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
+	    }
 
         $this->assign( 'peerraiser', $view_args );
 
