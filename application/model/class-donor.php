@@ -454,6 +454,29 @@ class Donor {
         return $donation_table->get_donors( $args );
     }
 
+    public function get_donor_image() {
+	    $hash = md5( strtolower( trim( $this->email_address ) ) );
+	    $uri  = 'http://www.gravatar.com/avatar/' . $hash . '?d=404&s=192';
+
+	    $data = wp_cache_get( $hash );
+
+	    if ( false === $data ) {
+		    $response = wp_remote_head( $uri );
+
+		    if ( is_wp_error( $response ) ) {
+			    $data = '404';
+		    } else {
+			    $data = $response['response']['code'];
+		    }
+		    wp_cache_set( $hash, $data, $group = '', $expire = 60 * 5 );
+	    }
+	    if ( $data == '200' ) {
+		    return $uri . '.jpg';
+	    } else {
+		    return \PeerRaiser\Core\Setup::get_plugin_config()->get('images_url') . 'profile-mask.png';
+	    }
+    }
+
 	/**
 	 * Attempt to get the donor's username by their email address
 	 *
