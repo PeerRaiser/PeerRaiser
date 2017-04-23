@@ -439,7 +439,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 		$location = add_query_arg( array(
 			'page' => 'peerraiser-donors',
 			'view' => 'summary',
-			'donor_id' => $donor->ID
+			'donor' => $donor->ID
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donor
