@@ -73,53 +73,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 						<?php do_action( 'peerraiser_before_donor_metaboxes' ); ?>
 
-						<div id="donor-summary" class="postbox">
-							<h2><span><?php _e( 'Donation Summary', 'peerraiser' ); ?></span></h2>
+						<div id="donor-options" class="postbox cmb2-postbox">
+							<h2><span><?php _e( 'Donor Options', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
-								<p class="summary"><?php printf( '%s made a donor of <strong>$%.2F</strong> on <strong>%s</strong>', $peerraiser['donor']->donor_name, number_format( $peerraiser['donor']->total, 2 ), mysql2date( get_option('date_format'), $peerraiser['donor']->date ) ); ?></p>
-								<table class="transaction-info table table-striped">
-									<thead>
-									<tr>
-										<th colspan="2"><?php _e( 'Allocation', 'peerraiser') ?></th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr>
-										<td><strong><?php _e( 'Campaign', 'peerraiser' ); ?>:</strong></td>
-										<?php if ( $campaign_id = $peerraiser['donor']->campaign_id ) : ?>
-											<?php $campaign = peerraiser_get_campaign( $campaign_id ) ?>
-											<?php if ( empty( $campaign->campaign_name ) ) : ?>
-												<td><em><?php _e( 'Deleted', 'peerraiser' ); ?></em></td>
-											<?php else : ?>
-												<td><a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=<?php echo $campaign->ID; ?>"><?php echo $campaign->campaign_name; ?></a></td>
-											<?php endif; ?>
-										<?php else : ?>
-											<td><?php _e( 'N/A', 'peerraiser' ); ?></td>
-										<?php endif; ?>
-									</tr>
-									<tr>
-										<td><strong><?php _e( 'Fundraiser', 'peerraiser' ); ?>:</strong></td>
-										<?php if ( $fundraiser_id = $peerraiser['donor']->fundraiser_id ) : ?>
-											<?php $fundraiser = peerraiser_get_fundraiser( $fundraiser_id ); ?>
-											<td><a href="post.php?action=edit&post=<?php echo $fundraiser->ID; ?>"><?php echo $fundraiser->fundraiser_name; ?></a></td>
-										<?php else : ?>
-											<td><?php _e( 'N/A', 'peerraiser' ); ?></td>
-										<?php endif; ?>
-									</tr>
-									<tr>
-										<td><strong><?php _e( 'Team', 'peerraiser' ); ?>:</strong></td>
-										<?php if ( $team_id = $peerraiser['donor']->team_id ) : ?>
-											<td><a href="admin.php?page=peerraiser-teams&view=team-details&team=">Team Name</a></td>
-										<?php else : ?>
-											<td><?php _e( 'N/A', 'peerraiser' ); ?></td>
-										<?php endif; ?>
-									</tr>
-									<tr>
-										<td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>:</strong></td>
-										<td><strong>$<?php echo number_format( $peerraiser['donor']->total, 2 ); ?></strong></td>
-									</tr>
-									</tbody>
-								</table>
+								<?php echo cmb2_get_metabox_form( 'peerraiser-donor-info', 0, array( 'form_format' => '', ) ); ?>
 							</div>
 						</div>
 
