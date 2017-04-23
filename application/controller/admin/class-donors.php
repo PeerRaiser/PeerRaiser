@@ -45,12 +45,17 @@ class Donors extends \PeerRaiser\Controller\Base {
 		$view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
 		$view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donation_admin_view', 'list', $view );
 
-        $view_args = array(
-            'currency_symbol'      => $currency_symbol,
-            'standard_currency'    => $plugin_options['currency'],
-            'admin_url'            => get_admin_url(),
-            'list_table'           => new \PeerRaiser\Model\Admin\Donor_List_Table(),
-        );
+	    $view_args = array(
+		    'currency_symbol'   => $currency_symbol,
+		    'standard_currency' => $plugin_options['currency'],
+		    'admin_url'         => get_admin_url(),
+		    'list_table'        => new \PeerRaiser\Model\Admin\Donor_List_Table(),
+	    );
+
+	    if ( $view === 'summary' ) {
+		    $view_args['donor'] = new \PeerRaiser\Model\Donor( $_REQUEST['donor'] );
+		    $view_args['profile_image_url'] = $view_args['donor']->get_donor_image();
+	    }
 
         $this->assign( 'peerraiser', $view_args );
 
