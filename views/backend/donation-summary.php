@@ -92,7 +92,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <td><strong><?php _e( 'Campaign', 'peerraiser' ); ?>:</strong></td>
                                             <?php if ( $campaign_id = $peerraiser['donation']->campaign_id ) : ?>
                                                 <?php $campaign = peerraiser_get_campaign( $campaign_id ) ?>
-                                                <td><a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=<?php echo $campaign->ID; ?>"><?php echo $campaign->campaign_name; ?></a></td>
+                                                <?php if ( empty( $campaign->campaign_name ) ) : ?>
+                                                    <td><em><?php _e( 'Deleted', 'peerraiser' ); ?></em></td>
+                                                <?php else : ?>
+                                                    <td><a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=<?php echo $campaign->ID; ?>"><?php echo $campaign->campaign_name; ?></a></td>
+                                                <?php endif; ?>
                                             <?php else : ?>
                                                 <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
