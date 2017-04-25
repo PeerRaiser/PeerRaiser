@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div id="postbox-container-1" class="postbox-container">
 					<div id="side-sortables" class="meta-box-sortables">
 						<div id="submitdiv" class="postbox">
-							<h2><span><?php _e( 'Publish', 'peerraiser' ); ?></span></h2>
+							<h2><span><?php _e( 'Campaign Details', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<?php $campaign_status = $peerraiser['campaign']->get_meta( '_peerraiser_campaign_status', true ); ?>
@@ -43,7 +43,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
-											<input name="original_publish" type="hidden" id="original_publish" value="<?php _e( 'Publish', 'peerraiser'); ?>">
 											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Publish', 'peerraiser'); ?>">
 										</div>
 										<div class="clear"></div>
