@@ -48,12 +48,20 @@ class Donor {
 	protected $user_id = 0;
 
 	/**
-	 * The name of the donor
+	 * The first name of the donor
 	 *
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $donor_name = '';
+	protected $first_name = '';
+
+	/**
+	 * The last name of the donor
+	 *
+	 * @since  1.0.0
+	 * @var string
+	 */
+	protected $last_name = '';
 
 	/**
 	 * The donor's primary email address
@@ -190,7 +198,8 @@ class Donor {
 		// Protected ID (can't be changed)
 		$this->_ID = absint( $donor->donor_id);
 
-		$this->donor_name     = $donor->donor_name;
+		$this->first_name     = $donor->first_name;
+		$this->last_name      = $donor->last_name;
 		$this->email_address  = $donor->email_address;
 		$this->date           = $donor->date;
 		$this->donation_count = $donor->donation_count;
@@ -553,6 +562,10 @@ class Donor {
 		}
 
 		return $data;
+	}
+
+	public function get_full_name() {
+		return trim( $this->first_name . ' ' . $this->last_name );
 	}
 
     public function get_total_donors() {
