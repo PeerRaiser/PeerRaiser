@@ -39,7 +39,7 @@ class Donor_List_Table extends WP_List_Table {
 
 		$donor = new Donor( $item->donor_id );
 
-		$title = '<strong><a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->donor_name . '</a></strong>';
+		$title = '<strong><a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->full_name . '</a></strong>';
 
 		$actions = array(
 			'view' => sprintf( '<a href="?page=%s&view=%s&donor=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->donor_id ) ),
@@ -128,7 +128,7 @@ class Donor_List_Table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = array(
-//            'bulk-delete' => 'Delete'
+            'bulk-delete' => 'Delete'
         );
 
         return $actions;
@@ -178,9 +178,6 @@ class Donor_List_Table extends WP_List_Table {
             }
             else {
                 self::delete_donor( absint( $_GET['donor'] ) );
-
-                wp_redirect( esc_url( add_query_arg() ) );
-                exit;
             }
 
         }
@@ -194,11 +191,8 @@ class Donor_List_Table extends WP_List_Table {
 
           // loop over the array of record IDs and delete them
           foreach ( $delete_ids as $id ) {
-            self::delete_donor( $id );
+	          self::delete_donor( $id );
           }
-
-          wp_redirect( esc_url( add_query_arg() ) );
-          exit;
         }
     }
 
@@ -213,13 +207,8 @@ class Donor_List_Table extends WP_List_Table {
      * @param int $id donor ID
      */
     public function delete_donor( $id ) {
-        global $wpdb;
-
-        $wpdb->delete(
-            "{$wpdb->prefix}pr_donors",
-            array( 'donor_id' => $id ),
-            array( '%d' )
-        );
+	    $donor = new \PeerRaiser\Model\Donor( $id );
+	    $donor->delete();
     }
 
     /**
