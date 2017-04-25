@@ -346,54 +346,55 @@ class Donors extends \PeerRaiser\Model\Admin {
                 'fields'   => array(
                     'donor_first_name' => array(
                         'name' => __( 'First Name', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_first_name',
+                        'id'   => '_peerraiser_first_name',
                         'type' => 'text',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'donor_last_name' => array(
                         'name' => __( 'Last Name', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_last_name',
+                        'id'   => '_peerraiser_last_name',
                         'type' => 'text',
                     ),
                     'donor_user_account' => array(
                         'name'       => __('User Account', 'peerraiser'),
-                        'id'         => '_peerraiser_donor_user_account',
+                        'id'         => '_peerraiser_user_id',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_participants_for_select_field' ),
                     ),
                     'donor_email' => array(
                         'name' => __( 'Email Address', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_email',
+                        'id'   => '_peerraiser_email_address',
                         'type' => 'text_email',
                     ),
                     'donor_street_1' => array(
                         'name' => __( 'Street Address Line 1', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_street_1',
+                        'id'   => '_peerraiser_street_address_1',
                         'type' => 'text',
                     ),
                     'donor__street_2' => array(
                         'name' => __( 'Street Address Line 2', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_street_2',
+                        'id'   => '_peerraiser_street_address_2',
                         'type' => 'text',
                     ),
                     'donor_city' => array(
                         'name' => __( 'City', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_city',
+                        'id'   => '_peerraiser_city',
                         'type' => 'text',
                     ),
                     'donor_state' => array(
                         'name'       => __( 'State / Province', 'peerraiser' ),
-                        'id'         => '_peerraiser_donor_state',
+                        'id'         => '_peerraiser_state_province',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_select_options' ),
                     ),
                     'donor_zip' => array(
                         'name' => __( 'Zip / Postal Code', 'peerraiser' ),
-                        'id'   => '_peerraiser_donor_zip',
+                        'id'   => '_peerraiser_zip_postal',
                         'type' => 'text_small',
                     ),
                     'donor_country' => array(
                         'name'       => __( 'Country', 'peerraiser' ),
-                        'id'         => '_peerraiser_donor_country',
+                        'id'         => '_peerraiser_country',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_select_options' ),
                     ),
@@ -427,6 +428,22 @@ class Donors extends \PeerRaiser\Model\Admin {
             return false;
         }
     }
+
+	public function get_field_value( $field ) {
+		if ( ! isset( $_GET['donor'] ) )
+			return;
+
+		$donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
+		$short_field = substr( $field['id'], 12 );
+
+		switch ( $field['id'] ) {
+			default:
+				$field_value = isset( $donor_model->$short_field ) ? $donor_model->$short_field : '';
+				break;
+		}
+
+		return $field_value;
+	}
 
     /**
      * Add fields
