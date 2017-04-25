@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php do_action( 'peerraiser_before_donor_side_metaboxes' ); ?>
 
 						<div id="submitdiv" class="postbox">
-							<h2><span><?php _e( 'Donation Details', 'peerraiser' ); ?></span></h2>
+							<h2><span><?php _e( 'Donor Details', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
@@ -57,15 +57,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<div id="donor-card">
 							<img src="<?php echo $peerraiser['profile_image_url']; ?>" alt="Profile Picture" class="profile-image">
 							<div class="donor-info">
-								<h1><?php echo $peerraiser['donor']->donor_name; ?> <span>#<?php echo $peerraiser['donor']->ID ?></span></h1>
+								<h1><?php echo $peerraiser['donor']->full_name; ?> <span>#<?php echo $peerraiser['donor']->ID ?></span></h1>
 								<div class="donor-meta">
 									<?php if ( ! empty( $peerraiser['donor']->email_address ) ) : ?>
-										<p class="email"><?php echo $peerraiser['donor']->email_address ?></p>
+										<p class="email"><?php echo $peerraiser['donor']->email_address; ?></p>
 									<?php endif; ?>
 
 									<p class="since"><?php printf( __( 'Donor since %s', 'peerraiser' ), mysql2date( get_option('date_format'), $peerraiser['donor']->date ) ); ?></p>
 									<?php if ( ! empty( $peerraiser['donor']->user_id ) ) : ?>
-										<p class="user-account">User Account: <?php echo $peerraiser['donor']->user_id; ?></p>
+										<?php $user_info = get_userdata( $peerraiser['donor']->user_id ); ?>
+										<p class="user-account"><?php printf( __( 'User Account: <a href="user-edit.php?user_id=%1$s">%2$s</a>', 'peerraiser' ), $user_info->ID, $user_info->user_login ); ?></p>
 									<?php endif; ?>
 								</div>
 							</div>
