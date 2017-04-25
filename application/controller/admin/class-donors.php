@@ -15,6 +15,7 @@ class Donors extends \PeerRaiser\Controller\Base {
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
         add_action( 'manage_pr_donor_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'peerraiser_add_donor',          	   array( $this, 'handle_add_donor' ) );
+	    add_action( 'peerraiser_delete_donor',             array( $this, 'delete_donor' ) );
     }
 
     /**
@@ -417,20 +418,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		$donor = new Donor_Model();
 
-		// Required Fields
-		$donor->donor_name    = esc_attr( $this->generate_donor_name() );
-		$donor->email_address = $_REQUEST['_peerraiser_donor_email'];
-
-		// Optional Fields
-		$donor->user_id          = isset( $_REQUEST['_peerraiser_donor_user_account'] ) ? absint( $_REQUEST['_peerraiser_donor_user_account'] ) : 0;
-		$donor->first_name       = isset( $_REQUEST['_peerraiser_donor_first_name'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_first_name'] ) : '';
-        $donor->last_name        = isset( $_REQUEST['_peerraiser_donor_last_name'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_last_name'] ) : '';
-        $donor->street_address_1 = isset( $_REQUEST['_peerraiser_donor_street_1'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_street_1'] ) : '';
-        $donor->street_address_2 = isset( $_REQUEST['_peerraiser_donor_street_2'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_street_2'] ) : '';
-        $donor->city			 = isset( $_REQUEST['_peerraiser_donor_city'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_city'] ) : '';
-        $donor->state_province   = isset( $_REQUEST['_peerraiser_donor_state'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_state'] ) : '';
-        $donor->zip_postal 		 = isset( $_REQUEST['_peerraiser_donor_zip'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_zip'] ) : '';
-        $donor->country 		 = isset( $_REQUEST['_peerraiser_donor_country'] ) ? esc_attr( $_REQUEST['_peerraiser_donor_country'] ) : '';
+		$this->add_fields( $donor );
 
 		// Save to the database
 		$donor->save();
@@ -443,6 +431,29 @@ class Donors extends \PeerRaiser\Controller\Base {
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donor
+		wp_safe_redirect( $location );
+	}
+
+	/**
+	 * Handle "delete donor" action
+	 *
+	 * @since 1.0.0
+	 */
+	public function delete_donor() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_donor_' . $_REQUEST['donor_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		// Delete the donor
+		$donor = new \PeerRaiser\Model\Donor( $_REQUEST['donor_id'] );
+
+		$donor->delete();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-donors'
+		), admin_url( 'admin.php' ) );
+
 		wp_safe_redirect( $location );
 	}
 
@@ -488,15 +499,61 @@ class Donors extends \PeerRaiser\Controller\Base {
 		return $data;
 	}
 
-	private function generate_donor_name() {
-		$first = trim( $_REQUEST['_peerraiser_donor_first_name'] );
-		$last  = trim( $_REQUEST['_peerraiser_donor_last_name'] );
+	private function add_fields( $donor) {
+		$donor_model = new \PeerRaiser\Model\Admin\Campaigns();
 
-		if ( isset( $last ) && ! empty( $last ) ) {
-			$first .= ' ' . $last;
+		$field_ids = $donor_model->get_field_ids();
+
+		$field_ids[] = '_peerraiser_date';
+
+		foreach ( $field_ids as $key => $value ) {
+			switch ( $value ) {
+				case "_peerraiser_first_name" :
+				case "_peerraiser_last_name" :
+					$donor->donor_name  = trim( $_REQUEST['_peerraiser_first_name'] . ' ' . $_REQUEST['_peerraiser_last_name'] );
+					break;
+				case "_peerraiser_date" :
+					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
+						$donor->date = $_REQUEST['_peerraiser_start_date'];
+					} else {
+						$donor->date = current_time( 'mysql' );
+					}
+					break;
+				default :
+					if ( isset( $_REQUEST[$value] ) ) {
+						$donor->$key = $_REQUEST[$value];
+					}
+					break;
+			}
+		}
+	}
+
+	private function update_fields( $campaign ) {
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+
+		$field_ids   = $campaigns_model->get_field_ids();
+
+		// Add campaign status to field list, since its not a CMB2 field
+		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
+
+		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
+			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
 		}
 
-		return $first;
+		// If the start date is empty, set it to today's date
+		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
+		}
+
+		$current = $campaign->get_meta();
+
+		foreach ( $field_ids as $key => $value ) {
+			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $current[$value][0] ) {
+				$campaign->$key = $_REQUEST[$value];
+			} elseif ( ! isset( $_REQUEST[$value] ) ) {
+				$campaign->delete_meta($value);
+			}
+		}
 	}
 
 }
