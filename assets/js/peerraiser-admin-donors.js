@@ -9,7 +9,7 @@
             profileImage    : $('#donor-card img'),
 
             select2Fields : {
-                donor_user_acount      : $("#_peerraiser_donor_user_account"),
+                donor_user_acount      : $("#_peerraiser_user_id"),
             },
 
             select2Options : {
