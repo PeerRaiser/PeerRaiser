@@ -6,7 +6,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
-use \PeerRaiser\Model\Database\Donor;
+use \PeerRaiser\Model\Donor;
 use \WP_List_Table;
 
 /**
@@ -90,9 +90,8 @@ class Donation_List_Table extends WP_List_Table {
     public function column_default( $item, $column_name ) {
         switch ( $column_name ) {
             case 'donor':
-                $donor = new Donor();
-                $donor = $donor->get_donors( array( 'donor_id' => $item['donor_id'] ) );
-                return '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'donor-details' ) ) . '">' . $donor[0]->donor_name . '</a>';
+                $donor = new Donor( $item['donor_id'] );
+                return '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'summary' ), 'admin.php?page=peerraiser-donors' ) . '">' . $donor->full_name . '</a>';
             case 'amount':
                 return empty( $item[ 'total' ] ) ? '$0.00' : '$'. number_format( $item[ 'total' ], 2 );
             case 'date':
