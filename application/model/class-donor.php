@@ -2,8 +2,8 @@
 
 namespace PeerRaiser\Model;
 
-use \PeerRaiser\Model\Database\Donor as Donor_Database;
-use \PeerRaiser\Model\Database\Donor_Meta;
+use \PeerRaiser\Model\Database\Donor_Table as Donor_Database;
+use \PeerRaiser\Model\Database\Donor_Meta_Table;
 
 class Donor {
 
@@ -62,6 +62,8 @@ class Donor {
 	 * @var string
 	 */
 	protected $last_name = '';
+
+
 
 	/**
 	 * The donor's primary email address
@@ -439,7 +441,7 @@ class Donor {
 	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
 		$meta_value = apply_filters( 'peerraiser_update_donor_meta_' . $meta_key, $meta_value, $this->ID );
 
-		$donor_meta = new Donor_Meta();
+		$donor_meta = new Donor_Meta_Table();
 
 		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
 	}
@@ -460,7 +462,17 @@ class Donor {
             'number'  => $count
         );
 
-        return $donation_table->get_donors( $args );
+        $donors = $donation_table->get_donors( $args );
+
+		$results = array();
+
+		if ( ! empty( $donors ) ) {
+			foreach ( $donors as $donor ) {
+				$results[] = new self( $donor->donor_id );
+			}
+		}
+
+		return $results;
     }
 
     public function get_donor_image() {
@@ -566,6 +578,10 @@ class Donor {
 
 	public function get_full_name() {
 		return trim( $this->first_name . ' ' . $this->last_name );
+	}
+
+	public function get_country() {
+		return 'Afghanistan';
 	}
 
     public function get_total_donors() {

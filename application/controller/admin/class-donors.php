@@ -65,7 +65,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes() {
 
-        $donors_model = new \PeerRaiser\Model\Admin\Donors();
+        $donors_model = new \PeerRaiser\Model\Admin\Donors_Admin();
         $donor_field_groups = $donors_model->get_fields();
 
         foreach ($donor_field_groups as $field_group) {
@@ -206,7 +206,7 @@ class Donors extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
 
-        $donors_model = new \PeerRaiser\Model\Admin\Donors();
+        $donors_model = new \PeerRaiser\Model\Admin\Donors_Admin();
         $donor_donations = $donors_model->get_donations( $post->ID, $paged );
 
         $plugin_options = get_option( 'peerraiser_options', array() );
@@ -464,7 +464,8 @@ class Donors extends \PeerRaiser\Controller\Base {
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
 	private function is_valid_donor() {
-		$required_fields = array( '_peerraiser_donor_first_name', '_peerraiser_donor_email' );
+		$donors_model     = new \PeerRaiser\Model\Admin\Donors_Admin();
+		$required_fields = $donors_model->get_required_field_ids();
 
 		$data = array(
 			'is_valid'     => true,
@@ -500,7 +501,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 	}
 
 	private function add_fields( $donor) {
-		$donor_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$donor_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
 		$field_ids = $donor_model->get_field_ids();
 
@@ -529,7 +530,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 	}
 
 	private function update_fields( $campaign ) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
 		$field_ids   = $campaigns_model->get_field_ids();
 

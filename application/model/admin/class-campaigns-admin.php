@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model\Admin;
 
-class Campaigns extends \PeerRaiser\Model\Admin {
+class Campaigns_Admin extends Admin {
 
     private $fields = array();
 
@@ -265,7 +265,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
         }
 
         return $results;
-
     }
 
     public function get_participants_for_select_field( $field ) {
@@ -334,29 +333,6 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 		return $field_value;
 	}
 
-	public function get_field_ids() {
-    	$ids = array();
-    	foreach ( $this->fields as $field_group ) {
-    		$ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
-	    }
-
-	    return $ids;
-	}
-
-	public function get_required_field_ids() {
-    	$required_fields = array();
-
-    	foreach ( $this->fields as $field_group ) {
-    		foreach ( $field_group['fields'] as $field ) {
-    			if ( isset( $field['attributes']['data-rule-required'] ) ) {
-    				$required_fields[] =  $field['id'];
-			    }
-		    }
-	    }
-
-	    return $required_fields;
-	}
-
 	public function get_campaign_statuses() {
     	$default_campaign_statuses = array(
     		'active' => __( 'Active', 'peerraiser' ),
@@ -379,12 +355,4 @@ class Campaigns extends \PeerRaiser\Model\Admin {
 
 		return isset( $campaign_statuses[$key] ) ? $campaign_statuses[$key] : reset( $campaign_statuses );
 	}
-
-    private function get_currency_symbol(){
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency       = new \PeerRaiser\Model\Currency();
-
-        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-    }
-
 }

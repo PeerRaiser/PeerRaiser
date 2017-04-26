@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model\Admin;
 
-class Donors extends \PeerRaiser\Model\Admin {
+class Donors_Admin extends Admin {
 
     private $fields = array();
     private $countries = array();
@@ -344,59 +344,67 @@ class Donors extends \PeerRaiser\Model\Admin {
                 'context'  => 'normal',
                 'priority' => 'default',
                 'fields'   => array(
-                    'donor_first_name' => array(
+                    'first_name' => array(
                         'name' => __( 'First Name', 'peerraiser' ),
                         'id'   => '_peerraiser_first_name',
                         'type' => 'text',
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_last_name' => array(
+                    'last_name' => array(
                         'name' => __( 'Last Name', 'peerraiser' ),
                         'id'   => '_peerraiser_last_name',
                         'type' => 'text',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_user_account' => array(
+                    'user_id' => array(
                         'name'       => __('User Account', 'peerraiser'),
                         'id'         => '_peerraiser_user_id',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_participants_for_select_field' ),
                     ),
-                    'donor_email' => array(
+                    'email_address' => array(
                         'name' => __( 'Email Address', 'peerraiser' ),
                         'id'   => '_peerraiser_email_address',
                         'type' => 'text_email',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_street_1' => array(
+                    'street_address_1' => array(
                         'name' => __( 'Street Address Line 1', 'peerraiser' ),
                         'id'   => '_peerraiser_street_address_1',
                         'type' => 'text',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor__street_2' => array(
+                    'street_address_2' => array(
                         'name' => __( 'Street Address Line 2', 'peerraiser' ),
                         'id'   => '_peerraiser_street_address_2',
                         'type' => 'text',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_city' => array(
+                    'city' => array(
                         'name' => __( 'City', 'peerraiser' ),
                         'id'   => '_peerraiser_city',
                         'type' => 'text',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_state' => array(
+                    'state_province' => array(
                         'name'       => __( 'State / Province', 'peerraiser' ),
                         'id'         => '_peerraiser_state_province',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_select_options' ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_zip' => array(
+                    'zip_postal' => array(
                         'name' => __( 'Zip / Postal Code', 'peerraiser' ),
                         'id'   => '_peerraiser_zip_postal',
                         'type' => 'text_small',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'donor_country' => array(
+                    'country' => array(
                         'name'       => __( 'Country', 'peerraiser' ),
                         'id'         => '_peerraiser_country',
                         'type'       => 'select',
                         'options_cb' => array( $this, 'get_select_options' ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
             ),
@@ -460,102 +468,34 @@ class Donors extends \PeerRaiser\Model\Admin {
         return $this->fields;
     }
 
-    public function custom_label( $field_args, $field ) {
-
-        $label = $field_args['name'];
-
-        if ( $field_args['options']['tooltip'] ) {
-            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-        }
-
-        return $label;
-    }
-
-    /**
-     * Get posts for CMB2 Select fields
-     *
-     * @since     1.0.0
-     * @param     CMB2_Field    $field    The CMB2 field object
-     * @return    array                   An array of posts
-     */
-    public function get_posts_for_select_field( $field ) {
-
-        switch ( $field->args['name'] ) {
-            case 'Campaign':
-            case 'Campaigns':
-                $post_type = 'pr_campaign';
-                break;
-            case 'Team':
-            case 'Teams':
-                $post_type = 'pr_team';
-                break;
-            case 'Fundraiser':
-            case 'Fundraisers':
-                $post_type = 'fundraiser';
-                break;
-            default:
-                $post_type = 'post';
-                break;
-        }
-
-        // Empty array to fill with posts
-        $results = array();
-
-        // WP_Query arguments
-        $args = array (
-            'post_type'              => array( $post_type ),
-            'posts_per_page'         => '-1'
-        );
-
-        // The Query
-        $query = new \WP_Query( $args );
-        $posts = $query->get_posts();
-
-        foreach($posts as $post) {
-            $title = '(ID: ' . $post->ID .') '. $post->post_title;
-            $results[$post->ID] = $title;
-        }
-
-        return $results;
-    }
-
-
-    public function get_selected_post( $field ) {
-        // Empty array to fill with posts
-        $results = array();
-
-        if ( isset($field->value) && $field->value !== '' ) {
-            $post = get_post($field->value);
-            $results[$field->value] = get_the_title( $post );
-        }
-
-        return $results;
-    }
-
-
     public function get_participants_for_select_field( $field ) {
+	    if ( ! isset( $_GET['donor'] ) )
+		    return;
+
         // Empty array to fill with posts
         $results = array();
 
-        if ( isset($field->value) ) {
-            $user_info = get_userdata($field->value);
-            if ( $user_info ) {
-                $results[$field->value] = $user_info->display_name;
-            }
-        }
+	    $donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
+	    $short_field = substr( $field->args['id'], 12 );
 
-        return $results;
+	    if ( isset( $donor_model->$short_field ) && $donor_model->$short_field !== '' ) {
+		    $user_info = get_userdata( $donor_model->$short_field );
+		    if ( $user_info ) {
+			    $results[$donor_model->$short_field] = $user_info->display_name;
+		    }
+	    }
+
+	    return $results;
     }
-
 
     public function get_select_options( $field ) {
 
         switch ( $field->args['id'] ) {
-            case '_peerraiser_donor_country':
+            case '_peerraiser_country':
                 return $this->countries;
                 break;
 
-            case '_peerraiser_donor_state':
+            case '_peerraiser_state_province':
                 return $this->states;
 
             default:
@@ -563,25 +503,6 @@ class Donors extends \PeerRaiser\Model\Admin {
                 break;
         }
 
-    }
-
-
-    public function get_donations( $post_id, $paged = 1 ) {
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'posts_per_page'  => 20,
-            'post_status'     => 'publish',
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $post_id,
-            'paged' => $paged
-        );
-        return new \WP_Query( $args );
-    }
-
-    private function get_currency_symbol(){
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
     }
 
 }

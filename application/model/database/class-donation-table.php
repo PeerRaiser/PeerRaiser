@@ -3,7 +3,7 @@ namespace PeerRaiser\Model\Database;
 
 use PeerRaiser\Core\Database;
 
-class Donation extends Database {
+class Donation_Table extends Database {
 
     /**
      * Instaniate the class

@@ -44,7 +44,7 @@ class Campaigns extends Base {
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
             'list_table'           => new Campaign_List_Table(),
-	        'campaign_admin'       => new \PeerRaiser\Model\Admin\Campaigns()
+	        'campaign_admin'       => new \PeerRaiser\Model\Admin\Campaigns_Admin()
         );
 
 	    if ( $view === 'summary' ) {
@@ -103,7 +103,7 @@ class Campaigns extends Base {
     }
 
 	public function register_meta_boxes() {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 		$campaign_field_groups = $campaigns_model->get_fields();
 		foreach ($campaign_field_groups as $field_group) {
 			$cmb = new_cmb2_box( array(
@@ -123,7 +123,7 @@ class Campaigns extends Base {
         global $post;
         $paged = isset($_GET['fundraisers_page']) ? $_GET['fundraisers_page'] : 1;
 
-        $campaigns    = new \PeerRaiser\Model\Admin\Campaigns();
+        $campaigns    = new \PeerRaiser\Model\Admin\Campaigns_Admin();
         $campaign_fundraisers = $campaigns->get_fundraisers( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -153,7 +153,7 @@ class Campaigns extends Base {
         global $post;
         $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
 
-        $campaigns          = new \PeerRaiser\Model\Admin\Campaigns();
+        $campaigns          = new \PeerRaiser\Model\Admin\Campaigns_Admin();
         $campaign_donations = $campaigns->get_donations( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -183,7 +183,7 @@ class Campaigns extends Base {
         global $post;
         $paged = isset($_GET['teams_page']) ? $_GET['teams_page'] : 1;
 
-        $campaigns      = new \PeerRaiser\Model\Admin\Campaigns();
+        $campaigns      = new \PeerRaiser\Model\Admin\Campaigns_Admin();
         $campaign_teams = $campaigns->get_teams( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );
@@ -330,7 +330,7 @@ class Campaigns extends Base {
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
 	private function is_valid_campaign() {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 		$required_fields = $campaigns_model->get_required_field_ids();
 
 		$data = array(
@@ -371,7 +371,7 @@ class Campaigns extends Base {
 	}
 
 	private function add_fields( $campaign) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
 		$field_ids   = $campaigns_model->get_field_ids();
 
@@ -401,7 +401,7 @@ class Campaigns extends Base {
 	}
 
 	private function update_fields( $campaign ) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
 		$field_ids   = $campaigns_model->get_field_ids();
 

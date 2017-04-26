@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model\Admin;
 
-class Fundraisers extends \PeerRaiser\Model\Admin {
+class Fundraisers_Admin extends Admin {
 
     private $fields = array();
 
@@ -102,17 +102,6 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         return $this->fields;
     }
 
-    public function custom_label( $field_args, $field ) {
-
-        $label = $field_args['name'];
-
-        if ( $field_args['options']['tooltip'] ) {
-            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-        }
-
-        return $label;
-    }
-
     /**
      * Get posts for CMB2 Select fields
      *
@@ -173,20 +162,6 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-
-    public function get_selected_post( $field ) {
-        // Empty array to fill with posts
-        $results = array();
-
-        if ( isset($field->value) && $field->value !== '' ) {
-            $post = get_post($field->value);
-            $results[$field->value] = get_the_title( $post );
-        }
-
-        return $results;
-    }
-
-
     public function get_participants_for_select_field( $field ) {
         // Empty array to fill with posts
         $results = array();
@@ -201,7 +176,6 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         return $results;
     }
 
-
     public function get_donations( $post_id, $paged = 1 ){
         $args = array(
             'post_type'       => 'pr_donation',
@@ -213,12 +187,4 @@ class Fundraisers extends \PeerRaiser\Model\Admin {
         );
         return new \WP_Query( $args );
     }
-
-
-    private function get_currency_symbol(){
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-    }
-
 }

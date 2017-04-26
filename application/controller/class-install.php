@@ -302,25 +302,25 @@ class Install extends Base {
      */
     private function maybe_create_databases() {
         // Donation
-        $donation_database = new \PeerRaiser\Model\Database\Donation();
+        $donation_database = new \PeerRaiser\Model\Database\Donation_Table();
         if ( ! $donation_database->table_exists() ) {
             $donation_database->create_table();
         }
 
         // Donation Meta
-        $donation_meta_database = new \PeerRaiser\Model\Database\Donation_Meta();
+        $donation_meta_database = new \PeerRaiser\Model\Database\Donation_Meta_Table();
         if ( ! $donation_meta_database->table_exists() ) {
             $donation_meta_database->create_table();
         }
 
         // Donor
-        $donor_database = new \PeerRaiser\Model\Database\Donor();
+        $donor_database = new \PeerRaiser\Model\Database\Donor_Table();
         if ( ! $donor_database->table_exists() ) {
             $donor_database->create_table();
         }
 
         // Donor Meta
-        $donor_meta_database = new \PeerRaiser\Model\Database\Donor_Meta();
+        $donor_meta_database = new \PeerRaiser\Model\Database\Donor_Meta_Table();
         if ( ! $donor_meta_database->table_exists() ) {
             $donor_meta_database->create_table();
         }

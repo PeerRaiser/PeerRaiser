@@ -37,7 +37,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 	        'standard_currency' => $plugin_options['currency'],
 	        'admin_url'         => get_admin_url(),
 	        'list_table'        => new \PeerRaiser\Model\Admin\Team_List_Table(),
-	        'team_admin'        => new \PeerRaiser\Model\Admin\Teams()
+	        'team_admin'        => new \PeerRaiser\Model\Admin\Teams_Admin()
         );
 
 	    if ( $view === 'summary' ) {
@@ -51,7 +51,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 
     public function register_meta_boxes() {
 
-        $teams_model = new \PeerRaiser\Model\Admin\Teams();
+        $teams_model = new \PeerRaiser\Model\Admin\Teams_Admin();
         $team_field_groups = $teams_model->get_fields();
 
 	    foreach ( $team_field_groups as $field_group ) {
@@ -124,7 +124,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 		global $post;
 		$paged = isset( $_GET['fundraisers_page'] ) ? $_GET['fundraisers_page'] : 1;
 
-		$teams_model      = new \PeerRaiser\Model\Admin\Teams();
+		$teams_model      = new \PeerRaiser\Model\Admin\Teams_Admin();
 		$team_fundraisers = $teams_model->get_fundraisers( $post->ID, $paged );
 
 		$plugin_options  = get_option( 'peerraiser_options', array() );
@@ -212,7 +212,7 @@ class Teams extends \PeerRaiser\Controller\Base {
      * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
      */
 	private function is_valid_team() {
-		$teams_model     = new \PeerRaiser\Model\Admin\Teams();
+		$teams_model     = new \PeerRaiser\Model\Admin\Teams_Admin();
 		$required_fields = $teams_model->get_required_field_ids();
 
 		$data = array(
@@ -276,7 +276,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 	}
 
 	private function add_fields( $team ) {
-		$teams_model = new \PeerRaiser\Model\Admin\Teams();
+		$teams_model = new \PeerRaiser\Model\Admin\Teams_Admin();
 
 		$field_ids = $teams_model->get_field_ids();
 
@@ -314,7 +314,7 @@ class Teams extends \PeerRaiser\Controller\Base {
 	}
 
 	private function update_fields( $team ) {
-		$teams_model = new \PeerRaiser\Model\Admin\Teams();
+		$teams_model = new \PeerRaiser\Model\Admin\Teams_Admin();
 
 		$field_ids = $teams_model->get_field_ids();
 

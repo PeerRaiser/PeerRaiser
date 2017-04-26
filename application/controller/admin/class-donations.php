@@ -97,7 +97,7 @@ class Donations extends \PeerRaiser\Controller\Base {
     }
 
 	public function register_meta_boxes() {
-		$donations_model = new \PeerRaiser\Model\Admin\Donations();
+		$donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
 		$donation_field_groups = $donations_model->get_fields();
 
 		foreach ($donation_field_groups as $field_group) {

@@ -91,7 +91,7 @@ class Campaign_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default( $campaign, $column_name ) {
-    	$admin_campaigns_model = new \PeerRaiser\Model\Admin\Campaigns();
+    	$admin_campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
         switch ( $column_name ) {
             case 'count' :

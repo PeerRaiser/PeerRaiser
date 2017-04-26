@@ -2,8 +2,6 @@
 
 namespace PeerRaiser\Model\Admin;
 
-use \PeerRaiser\Model\Admin;
-
 class Settings extends Admin {
 
     private $fields   = array();
@@ -395,20 +393,7 @@ class Settings extends Admin {
         return $this->fields;
     }
 
-    public function custom_label( $field_args, $field ) {
-
-        $label = $field_args['name'];
-
-        if ( $field_args['options']['tooltip'] ) {
-            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-        }
-
-        return $label;
-    }
-
-
     public function get_select_options( $field ) {
-
         if ( $field->args['name'] === 'Currency' ) {
 
             $currency_model = new \PeerRaiser\Model\Currency();
@@ -420,14 +405,10 @@ class Settings extends Admin {
             }
 
             return ( isset($currency_options) ) ? $currency_options : array();
-
         }
-
     }
 
-
     public function get_field_value( $field ) {
-
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         switch ($field['id']) {
@@ -532,7 +513,6 @@ class Settings extends Admin {
 
     }
 
-
     public function get_selected_post( $field ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
         $results = array();
@@ -552,7 +532,6 @@ class Settings extends Admin {
         }
         return $field_names;
     }
-
 
     public function get_settings_tabs() {
         return $this->tabs;
