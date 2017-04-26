@@ -17,7 +17,7 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
     }
 
     public function register_meta_boxes() {
-        $fundraisers_model = new \PeerRaiser\Model\Admin\Fundraisers();
+        $fundraisers_model = new \PeerRaiser\Model\Admin\Fundraisers_Admin();
         $fundraiser_field_groups = $fundraisers_model->get_fields();
 
         foreach ($fundraiser_field_groups as $field_group) {
@@ -243,7 +243,7 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         global $post;
         $paged = isset($_GET['donations_page']) ? $_GET['donations_page'] : 1;
 
-        $fundraisers_model    = new \PeerRaiser\Model\Admin\Fundraisers();
+        $fundraisers_model    = new \PeerRaiser\Model\Admin\Fundraisers_Admin();
         $fundraiser_donations = $fundraisers_model->get_donations( $post->ID, $paged );
 
         $plugin_options  = get_option( 'peerraiser_options', array() );

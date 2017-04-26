@@ -3,7 +3,7 @@ namespace PeerRaiser\Model\Database;
 
 use PeerRaiser\Core\Database;
 
-class Donor_Meta extends Database {
+class Donation_Meta_Table extends Database {
 
     /**
      * Instaniate the class
@@ -12,15 +12,13 @@ class Donor_Meta extends Database {
      * @since   1.0.0
     */
     public function __construct() {
-
         global $wpdb;
 
-        $this->table_name  = $wpdb->prefix . 'pr_donormeta';
+        $this->table_name  = $wpdb->prefix . 'pr_donationmeta';
         $this->primary_key = 'meta_id';
         $this->version     = '1.0';
 
         add_action( 'plugins_loaded', array( $this, 'register_table'), 11 );
-
     }
 
     /**
@@ -32,7 +30,7 @@ class Donor_Meta extends Database {
     public function get_columns() {
         return array(
             'meta_id'     => '%d',
-            'donor_id' => '%d',
+            'donation_id' => '%d',
             'meta_key'    => '%s',
             'meta_value'  => '%s',
         );
@@ -46,30 +44,30 @@ class Donor_Meta extends Database {
      */
     public function register_table() {
         global $wpdb;
-        $wpdb->donormeta = $this->table_name;
+        $wpdb->donationmeta = $this->table_name;
     }
 
     /**
-     * Get donor meta data
+     * Get donation meta data
      *
      * @since     1.0.4
-     * @param     integer    $donor_id    Donor ID
-     * @param     string     $meta_key    The meta key
-     * @param     boolean    $single      Should a single value be returned, or an array
-     * @return    mixed                   Array if $single is false, or the value of the meta key if true
+     * @param     integer    $donation_id    Donation ID
+     * @param     string     $meta_key       The meta key
+     * @param     boolean    $single         Should a single value be returned, or an array
+     * @return    mixed                      Array if $single is false, or the value of the meta key if true
      */
-    public function get_meta( $donor_id = 0, $meta_key = '', $single = false ) {
-        $donor_id = $this->sanitize_donor_id( $donor_id );
-        if ( false === $donor_id )
+    public function get_meta( $donation_id = 0, $meta_key = '', $single = false ) {
+        $donation_id = $this->sanitize_donation_id( $donation_id );
+        if ( false === $donation_id )
             return false;
 
-        return get_metadata( 'donor', $donor_id, $meta_key, $single );
+        return get_metadata( 'donation', $donation_id, $meta_key, $single );
     }
 
     /**
-     * Add meta data field to a donor.
+     * Add meta data field to a donation.
      *
-     * @param   int    $donor_id   donor ID.
+     * @param   int    $donation_id   donation ID.
      * @param   string $meta_key      Metadata name.
      * @param   mixed  $meta_value    Metadata value.
      * @param   bool   $unique        Optional, default is false. Whether the same key should not be added.
@@ -78,24 +76,24 @@ class Donor_Meta extends Database {
      * @access  private
      * @since   1.0.4
      */
-    public function add_meta( $donor_id = 0, $meta_key = '', $meta_value, $unique = false ) {
-        $donor_id = $this->sanitize_donor_id( $donor_id );
-        if ( false === $donor_id ) {
+    public function add_meta( $donation_id = 0, $meta_key = '', $meta_value, $unique = false ) {
+        $donation_id = $this->sanitize_donation_id( $donation_id );
+        if ( false === $donation_id ) {
             return false;
         }
 
-        return add_metadata( 'donor', $donor_id, $meta_key, $meta_value, $unique );
+        return add_metadata( 'donation', $donation_id, $meta_key, $meta_value, $unique );
     }
 
     /**
-     * Update donor meta field based on Donor ID.
+     * Update donation meta field based on Donation ID.
      *
      * Use the $prev_value parameter to differentiate between meta fields with the
-     * same key and donor ID.
+     * same key and donation ID.
      *
-     * If the meta field for the donor does not exist, it will be added.
+     * If the meta field for the donation does not exist, it will be added.
      *
-     * @param   int    $donor_id      Donor ID.
+     * @param   int    $donation_id   Donation ID.
      * @param   string $meta_key      Metadata key.
      * @param   mixed  $meta_value    Metadata value.
      * @param   mixed  $prev_value    Optional. Previous value to check before removing.
@@ -104,18 +102,18 @@ class Donor_Meta extends Database {
      * @access  public
      * @since   1.0.4
      */
-    public function update_meta( $donor_id = 0, $meta_key = '', $meta_value, $prev_value = '' ) {
-        $donor_id = $this->sanitize_donor_id( $donor_id );
-        if ( false === $donor_id )
+    public function update_meta( $donation_id = 0, $meta_key = '', $meta_value, $prev_value = '' ) {
+        $donation_id = $this->sanitize_donation_id( $donation_id );
+        if ( false === $donation_id )
             return false;
 
-        return update_metadata( 'donor', $donor_id, $meta_key, $meta_value, $prev_value );
+        return update_metadata( 'donation', $donation_id, $meta_key, $meta_value, $prev_value );
     }
 
     /**
-     * Remove metadata matching criteria from a donor.
+     * Remove metadata matching criteria from a donation.
      *
-     * @param   int    $donor_id      Donor ID.
+     * @param   int    $donation_id   Donation ID.
      * @param   string $meta_key      Metadata name.
      * @param   mixed  $meta_value    Optional. Metadata value.
      * @return  bool                  False for failure. True for success.
@@ -123,8 +121,8 @@ class Donor_Meta extends Database {
      * @access  public
      * @since   1.0.4
      */
-    public function delete_meta( $donor_id = 0, $meta_key = '', $meta_value = '' ) {
-        return delete_metadata( 'donor', $donor_id, $meta_key, $meta_value );
+    public function delete_meta( $donation_id = 0, $meta_key = '', $meta_value = '' ) {
+        return delete_metadata( 'donation', $donation_id, $meta_key, $meta_value );
     }
 
     /**
@@ -139,11 +137,11 @@ class Donor_Meta extends Database {
 
         $sql = "CREATE TABLE {$this->table_name} (
             meta_id bigint(20) NOT NULL AUTO_INCREMENT,
-            donor_id bigint(20) NOT NULL,
+            donation_id bigint(20) NOT NULL,
             meta_key varchar(255) DEFAULT NULL,
             meta_value longtext,
             PRIMARY KEY  (meta_id),
-            KEY donor_id (donor_id),
+            KEY donation_id (donation_id),
             KEY meta_key (meta_key)
             ) CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
@@ -163,25 +161,25 @@ class Donor_Meta extends Database {
     }
 
     /**
-     * Given a Donor ID, make sure it's a positive number, greater than zero before inserting or adding.
+     * Given a Donation ID, make sure it's a positive number, greater than zero before inserting or adding.
      *
      * @since  1.0.4
-     * @param  int|stirng $donor_id A passed donor ID.
-     * @return int|bool                The normalized donor ID or false if it's found to not be valid.
+     * @param  int|stirng $donation_id A passed donation ID.
+     * @return int|bool                The normalized donation ID or false if it's found to not be valid.
      */
-    private function sanitize_donor_id( $donor_id ) {
-        if ( ! is_numeric( $donor_id ) )
+    private function sanitize_donation_id( $donation_id ) {
+        if ( ! is_numeric( $donation_id ) )
             return false;
 
-        $donor_id = (int) $donor_id;
+        $donation_id = (int) $donation_id;
 
-        if ( absint( $donor_id ) !== $donor_id )
+        if ( absint( $donation_id ) !== $donation_id )
             return false;
 
-        if ( empty( $donor_id ) )
+        if ( empty( $donation_id ) )
             return false;
 
-        return absint( $donor_id );
+        return absint( $donation_id );
     }
 
 }

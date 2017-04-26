@@ -60,7 +60,7 @@ class Admin extends Base {
             81
         );
 
-        $model = new \PeerRaiser\Model\Admin();
+        $model = new \PeerRaiser\Model\Admin\Admin();
         $menu_items = $model->get_menu_items();
 
         foreach ( $menu_items as $name => $page ) {

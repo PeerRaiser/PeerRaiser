@@ -6,8 +6,8 @@ use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Model\Campaign as Campaign_Model;
 use \PeerRaiser\Model\Fundraiser as Fundraiser_Model;
 use \PeerRaiser\Model\Team as Team_Model;
-use \PeerRaiser\Model\Database\Donation as Donation_Database;
-use \PeerRaiser\Model\Database\Donation_Meta;
+use \PeerRaiser\Model\Database\Donation_Table as Donation_Database;
+use \PeerRaiser\Model\Database\Donation_Meta_Table;
 
 //TODO: 1. Set the team when a donation is made
 
@@ -577,7 +577,7 @@ class Donation {
     public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
         $meta_value = apply_filters( 'peerraiser_update_donation_meta_' . $meta_key, $meta_value, $this->ID );
 
-        $donation_meta = new Donation_Meta();
+        $donation_meta = new Donation_Meta_Table();
 
         return $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
     }
@@ -590,7 +590,7 @@ class Donation {
      * @return mixed
      */
     public function get_meta( $meta_key= '', $single = false ) {
-        $donation_meta = new Donation_Meta();
+        $donation_meta = new Donation_Meta_Table();
         $result = $donation_meta->get_meta( $this->ID, $meta_key, $single );
 
         return $result;

@@ -124,7 +124,7 @@ class Field {
     }
 
     public static function get_donor_choices( $options = array() ) {
-        $donor_table = new \PeerRaiser\Model\Database\Donor();
+        $donor_table = new \PeerRaiser\Model\Database\Donor_Table();
 
         $args = array();
 

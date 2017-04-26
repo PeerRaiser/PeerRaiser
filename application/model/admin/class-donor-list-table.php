@@ -7,7 +7,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 use \PeerRaiser\Model\Donor;
-use \PeerRaiser\Model\Database\Donor as Donor_DB;
+use \PeerRaiser\Model\Database\Donor_Table as Donor_DB;
 use \WP_List_Table;
 
 /**

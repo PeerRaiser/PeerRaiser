@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model\Admin;
 
-class Teams extends \PeerRaiser\Model\Admin {
+class Teams_Admin extends Admin {
 
     private $fields = array();
 
@@ -108,17 +108,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         return $this->fields;
     }
 
-    public function custom_label( $field_args, $field ) {
-
-        $label = $field_args['name'];
-
-        if ( $field_args['options']['tooltip'] ) {
-            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-        }
-
-        return $label;
-    }
-
     /**
      * Get posts for CMB2 Select fields
      *
@@ -162,18 +151,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         foreach($posts as $post) {
             $title = '(ID: ' . $post->ID .') '. $post->post_title;
             $results[$post->ID] = $title;
-        }
-
-        return $results;
-    }
-
-    public function get_selected_post( $field ) {
-        // Empty array to fill with posts
-        $results = array();
-
-        if ( isset($field->value) && $field->value !== '' ) {
-            $post = get_post($field->value);
-            $results[$field->value] = get_the_title( $post );
         }
 
         return $results;
@@ -238,12 +215,6 @@ class Teams extends \PeerRaiser\Model\Admin {
         return new \WP_User_Query( $args );
     }
 
-    private function get_currency_symbol(){
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-    }
-
     public function get_teams_by_campaign( $campaign, $count = false ) {
         $args = array(
             "fields"    => "ids",
@@ -259,44 +230,4 @@ class Teams extends \PeerRaiser\Model\Admin {
 
         return wp_get_object_terms( $fundraiser_ids, "peerraiser_team" );
     }
-
-	public function get_field_value( $field ) {
-		if ( ! isset( $_GET['team'] ) )
-			return;
-
-		$team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
-		$short_field = substr( $field['id'], 12 );
-
-		switch ( $field['id'] ) {
-			default:
-				$field_value = isset( $team_model->$short_field ) ? $team_model->$short_field : '';
-				break;
-		}
-
-		return $field_value;
-	}
-
-	public function get_required_field_ids() {
-		$required_fields = array();
-
-		foreach ( $this->fields as $field_group ) {
-			foreach ( $field_group['fields'] as $field ) {
-				if ( isset( $field['attributes']['data-rule-required'] ) ) {
-					$required_fields[] =  $field['id'];
-				}
-			}
-		}
-
-		return $required_fields;
-	}
-
-	public function get_field_ids() {
-		$ids = array();
-		foreach ( $this->fields as $field_group ) {
-			$ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
-		}
-
-		return $ids;
-	}
-
 }
