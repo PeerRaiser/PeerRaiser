@@ -4,7 +4,7 @@ namespace PeerRaiser\Model\Admin;
 
 class Fundraisers_Admin extends Admin {
 
-    private $fields = array();
+	protected $fields = array();
 
     public function __construct() {
         $this->fields = array(
