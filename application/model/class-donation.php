@@ -400,9 +400,7 @@ class Donation {
         if ( ! $this->team_id && $this->fundraiser_id ) {
             $fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
 
-            $team_id = $fundraiser->team_id;
-
-            if ( $team_id ) {
+            if ( $team_id = $fundraiser->team_id ) {
                 $this->team_id = $team_id;
                 $this->pending['team_id'] = $team_id;
             }
