@@ -4,9 +4,9 @@ namespace PeerRaiser\Model\Admin;
 
 class Donors_Admin extends Admin {
 
-    private $fields = array();
-    private $countries = array();
-    private $states = array();
+    protected $fields = array();
+    protected $countries = array();
+    protected $states = array();
 
     public function __construct() {
         $this->countries = array(
