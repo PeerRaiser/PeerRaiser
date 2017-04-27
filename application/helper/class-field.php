@@ -138,7 +138,7 @@ class Field {
 
         foreach( $donors as $donor ) {
             $options[] = array(
-                'text' => $donor->donor_name,
+                'text' => $donor->full_name,
                 'id'   => $donor->donor_id,
             );
         }
