@@ -31,7 +31,8 @@ class Donor_Table extends Database {
         return array(
             'donor_id'       => '%d',
 			'user_id'        => '%d',
-			'donor_name'     => '%s',
+			'first_name'     => '%s',
+            'last_name'      => '%s',
 			'email_address'  => '%s',
 			'donation_value' => '%f',
 			'donation_count' => '%d',
@@ -48,7 +49,8 @@ class Donor_Table extends Database {
     public function get_column_defaults() {
         return array(
             'donor_id'       => 0,
-            'donor_name'     => '',
+            'first_name'     => '',
+            'last_name'      => '',
 			'email_address'  => '',
             'user_id'        => 0,
 			'donation_value' => '0.00',
@@ -75,7 +77,8 @@ class Donor_Table extends Database {
             'number'        => 20,
             'offset'        => 0,
             'donor_id'      => 0,
-            'donor_name'    => '',
+            'first_name'    => '',
+            'last_name'     => '',
 			'email_address' => '',
             'orderby'       => 'donor_id',
             'order'         => 'ASC',
@@ -100,16 +103,27 @@ class Donor_Table extends Database {
             $where .= "WHERE `donor_id` IN( {$donor_ids} ) ";
         }
 
-        // By donor name
-        if ( ! empty( $args['donor_name'] ) ) {
+        // By donor first name
+        if ( ! empty( $args['first_name'] ) ) {
             if ( empty( $where ) ) {
                 $where .= " WHERE";
             } else {
                 $where .= " AND";
             }
 
-            $where .= sprintf(" `donor_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
+            $where .= sprintf(" `first_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['first_name']) . "%%" );
         }
+
+	    // By donor last name
+	    if ( ! empty( $args['last_name'] ) ) {
+		    if ( empty( $where ) ) {
+			    $where .= " WHERE";
+		    } else {
+			    $where .= " AND";
+		    }
+
+		    $where .= sprintf(" `last_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['last_name']) . "%%" );
+	    }
 
 		// By donor name
 		if ( ! empty( $args['email_address'] ) ) {
@@ -223,7 +237,8 @@ class Donor_Table extends Database {
 		global $wpdb;
 
 		$data = array(
-			'donor_name'     => $donor->donor_name,
+			'first_name'     => $donor->first_name,
+			'last_name'      => $donor->last_name,
 			'email_address'  => $donor->email_address,
 			'user_id'        => $donor->user_id,
 			'donation_value' => $donor->donation_value,
