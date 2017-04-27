@@ -63,8 +63,6 @@ class Donor {
 	 */
 	protected $last_name = '';
 
-
-
 	/**
 	 * The donor's primary email address
 	 *
@@ -291,6 +289,7 @@ class Donor {
 				switch( $key ) {
 					case 'first_name' :
 					case 'last_name' :
+
 					case 'street_address_1' :
 					case 'street_address_2' :
 					case 'city' :
@@ -578,6 +577,10 @@ class Donor {
 
 	public function get_full_name() {
 		return trim( $this->first_name . ' ' . $this->last_name );
+	}
+
+	public function get_street_address_1() {
+		// return trim( $this->get_meta)
 	}
 
 	public function get_country() {
