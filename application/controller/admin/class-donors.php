@@ -501,21 +501,17 @@ class Donors extends \PeerRaiser\Controller\Base {
 	}
 
 	private function add_fields( $donor) {
-		$donor_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+		$donor_model = new \PeerRaiser\Model\Admin\Donors_Admin();
 
 		$field_ids = $donor_model->get_field_ids();
 
-		$field_ids[] = '_peerraiser_date';
+		$field_ids['date'] = '_peerraiser_date';
 
 		foreach ( $field_ids as $key => $value ) {
 			switch ( $value ) {
-				case "_peerraiser_first_name" :
-				case "_peerraiser_last_name" :
-					$donor->donor_name  = trim( $_REQUEST['_peerraiser_first_name'] . ' ' . $_REQUEST['_peerraiser_last_name'] );
-					break;
 				case "_peerraiser_date" :
-					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
-						$donor->date = $_REQUEST['_peerraiser_start_date'];
+					if ( isset( $_REQUEST['_peerraiser_date'] ) ) {
+						$donor->date = $_REQUEST['_peerraiser_date'];
 					} else {
 						$donor->date = current_time( 'mysql' );
 					}
@@ -529,7 +525,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 		}
 	}
 
-	private function update_fields( $campaign ) {
+	private function update_fields( $donor ) {
 		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
 		$field_ids   = $campaigns_model->get_field_ids();
