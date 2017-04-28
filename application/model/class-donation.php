@@ -6,7 +6,7 @@ use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Model\Campaign as Campaign_Model;
 use \PeerRaiser\Model\Fundraiser as Fundraiser_Model;
 use \PeerRaiser\Model\Team as Team_Model;
-use \PeerRaiser\Model\Database\Donation_Table as Donation_Database;
+use \PeerRaiser\Model\Database\Donation_Table;
 use \PeerRaiser\Model\Database\Donation_Meta_Table;
 
 //TODO: 1. Set the team when a donation is made
@@ -235,6 +235,11 @@ class Donation {
      */
     private $pending;
 
+	/**
+	 * The donation database
+	 */
+	protected $db;
+
     /**
      * Setup donation class
      *
@@ -243,11 +248,11 @@ class Donation {
      * @param string      $by What to lookup the donation by (donation_id or transaction_id)
      */
     public function __construct( $id = false, $by = 'donation_id' ) {
+	    $this->db = new Donation_Table();
+
         if ( empty( $id ) ) {
             return false;
         }
-
-        $donation_table = new Donation_Database();
 
         $args = array( 'number' => 1 );
 
@@ -265,7 +270,7 @@ class Donation {
                 break;
         }
 
-        $donation = current( $donation_table->get_donations( $args ) );
+        $donation = current( $this->db->get_donations( $args ) );
 
         if ( empty( $donation ) ) {
             return false;
@@ -419,8 +424,7 @@ class Donation {
             $this->date = current_time( 'mysql' );
         }
 
-        $donation_table = new Donation_Database();
-        $donation_id    = $donation_table->add_donation( $this );
+        $donation_id    = $this->db->add_donation( $this );
 
         $this->ID  = $donation_id;
         $this->_ID = $donation_id;
@@ -479,8 +483,7 @@ class Donation {
     public function delete() {
         do_action( 'peerraiser_pre_delete_donation', $this );
 
-		$donation_table = new Donation_Database();
-		$donation_table->delete( $this->ID );
+		$this->db->delete( $this->ID );
 
         $this->decrease_donor_amounts();
         $this->decrease_campaign_amounts();
@@ -595,8 +598,7 @@ class Donation {
     }
 
     public function get_donations_total() {
-        $donation_table = new Donation_Database();
-        $total = $donation_table->get_donations_total();
+        $total = $this->db->get_donations_total();
 
         return $total;
     }
