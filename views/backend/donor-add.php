@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
-										<div class="misc-pub-section donor-date completed">
-											<?php _e( 'Donor Since', 'peerraiser' ); ?>: <strong><?php echo date(get_option('date_format')); ?></strong>
+										<div class="misc-pub-section donor-date">
+											<?php _e( 'Donor Since', 'peerraiser' ); ?>: <strong><?php echo current_time(get_option('date_format')); ?></strong>
 											<!-- <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text">Edit status</span></a> -->
 											<div id="donation-status-select" class="hide-if-js">
 												<input type="hidden" name="_donation_status_hidden" value="completed">
