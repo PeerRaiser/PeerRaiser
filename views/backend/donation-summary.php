@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
     <h1 class="wp-heading-inline"><?php printf( esc_html__( 'Donation #%d', 'peerraiser' ), $peerraiser['donation']->ID ); ?></h1>
+    <a href="<?php echo admin_url( 'admin.php?page=peerraiser-donations&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
     <hr class="wp-header-end">
 
     <form id="peerraiser-add-donation" class="peerraiser-form" action="" method="post">
