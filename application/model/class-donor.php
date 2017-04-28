@@ -135,6 +135,7 @@ class Donor {
 	 * @return mixed        The value
 	 */
 	public function __get( $key ) {
+		error_log( $key );
 		if ( method_exists( $this, 'get_' . $key ) ) {
 			$value = call_user_func( array( $this, 'get_' . $key ) );
 		} else {
@@ -171,8 +172,10 @@ class Donor {
 	 * @return boolean       If the item is set or not
 	 */
 	public function __isset( $name ) {
-		if ( property_exists( $this, $name) ) {
+		if ( property_exists( $this, $name ) ) {
 			return false === empty( $this->$name );
+		} elseif ( method_exists( $this, 'get_' . $name ) ) {
+			return false === empty( call_user_func( array( $this, 'get_' . $name ) ) );
 		} else {
 			return null;
 		}
@@ -232,6 +235,71 @@ class Donor {
 	}
 
 	/**
+	 * Save information to the database
+	 *
+	 * @since 1.0.0
+	 * @return bool  True of the save occurred, false if it failed
+	 */
+	public function save() {
+		if ( empty( $this->ID ) ) {
+			$this->insert_donor();
+		}
+
+		if ( $this->ID !== $this->_ID ) {
+			$this->ID = $this->_ID;
+		}
+
+		// Attempt to connect donor to existing user
+		if ( 0 === $this->user_id) {
+			$this->user_id = $this->maybe_connect_user();
+		}
+
+		$bulk_update = array();
+
+		if ( ! empty( $this->pending ) ) {
+			foreach ( $this->pending as $key => $value ) {
+				switch( $key ) {
+					case 'first_name' :
+					case 'last_name' :
+					case 'email_address' :
+					case 'date' :
+						$bulk_update[$key] = $value;
+					case 'street_address_1' :
+					case 'street_address_2' :
+					case 'city' :
+					case 'state_province' :
+					case 'zip_postal' :
+					case 'country' :
+						$this->update_meta( $key, $value );
+						break;
+
+					default :
+						do_action( 'peerraiser_donor_save', $this, $key );
+						break;
+				}
+			}
+		}
+
+		if ( ! empty( $bulk_update ) ) {
+			$this->update( $bulk_update );
+		}
+
+		do_action( 'peerraiser_donor_saved', $this->ID, $this );
+
+		$cache_key = md5( 'peerraiser_donor_' . $this->ID );
+		wp_cache_set( $cache_key, $this, 'donors' );
+
+		return true;
+	}
+
+	/**
+	 * Delete this donor
+	 */
+	public function delete() {
+		$this->db->delete( $this->ID );
+	}
+
+	/**
 	 * Update a donor record
 	 *
 	 * @since 1.0.0
@@ -265,57 +333,35 @@ class Donor {
 	}
 
 	/**
-	 * Save information to the database
+	 * Update donor meta
 	 *
-	 * @since 1.0.0
-	 * @return bool  True of the save occurred, false if it failed
+	 * @since     1.0.0
+	 * @param     string    $meta_key      Meta key to update
+	 * @param     string    $meta_value    Meta value
+	 * @param     string    $prev_value    Previous value
+	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
 	 */
-	public function save() {
-		if ( empty( $this->ID ) ) {
-			$this->insert_donor();
-		}
+	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
+		$meta_value = apply_filters( 'peerraiser_update_donor_meta_' . $meta_key, $meta_value, $this->ID );
 
-		if ( $this->ID !== $this->_ID ) {
-			$this->ID = $this->_ID;
-		}
+		$donor_meta = new Donor_Meta_Table();
 
-		// Attempt to connect donor to existing user
-		if ( 0 === $this->user_id) {
-			$this->user_id = $this->maybe_connect_user();
-		}
-
-		if ( ! empty( $this->pending ) ) {
-			foreach ( $this->pending as $key => $value ) {
-				switch( $key ) {
-					case 'first_name' :
-					case 'last_name' :
-
-					case 'street_address_1' :
-					case 'street_address_2' :
-					case 'city' :
-					case 'state_province' :
-					case 'zip_postal' :
-					case 'country' :
-						$this->update_meta( $key, $value );
-						break;
-
-					default :
-						do_action( 'peerraiser_donor_save', $this, $key );
-						break;
-				}
-			}
-		}
-
-		do_action( 'peerraiser_donor_saved', $this->ID, $this );
-
-		$cache_key = md5( 'peerraiser_donor_' . $this->ID );
-		wp_cache_set( $cache_key, $this, 'donors' );
-
-		return true;
+		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
 	}
 
-	public function delete() {
-		$this->db->delete( $this->ID );
+	/**
+	 * Get donor meta
+	 *
+	 * @param string $meta_key
+	 * @param bool $single
+	 *
+	 * @return mixed
+	 */
+	public function get_meta( $meta_key= '', $single = false ) {
+		$donor_meta = new Donor_Meta_Table();
+		$result = $donor_meta->get_meta( $this->ID, $meta_key, $single );
+
+		return $result;
 	}
 
 	/**
@@ -426,23 +472,6 @@ class Donor {
 		do_action( 'peerraiser_donor_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
 
 		return $this->donation_value;
-	}
-
-	/**
-	 * Update donor meta
-	 *
-	 * @since     1.0.0
-	 * @param     string    $meta_key      Meta key to update
-	 * @param     string    $meta_value    Meta value
-	 * @param     string    $prev_value    Previous value
-	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
-	 */
-	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		$meta_value = apply_filters( 'peerraiser_update_donor_meta_' . $meta_key, $meta_value, $this->ID );
-
-		$donor_meta = new Donor_Meta_Table();
-
-		return $donor_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
 	}
 
     /**
@@ -580,11 +609,27 @@ class Donor {
 	}
 
 	public function get_street_address_1() {
-		// return trim( $this->get_meta)
+		return  $this->get_meta('street_address_1', true );
+	}
+
+	public function get_street_address_2() {
+		return  $this->get_meta('street_address_2', true );
+	}
+
+	public function get_city() {
+		return  $this->get_meta('city', true );
+	}
+
+	public function get_state_province() {
+		return  $this->get_meta('state_province', true );
+	}
+
+	public function get_zip_postal() {
+		return  $this->get_meta('zip_postal', true );
 	}
 
 	public function get_country() {
-		return 'Afghanistan';
+		return  $this->get_meta('country', true );
 	}
 
     public function get_total_donors() {
