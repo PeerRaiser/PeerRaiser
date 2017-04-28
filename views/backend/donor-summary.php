@@ -26,11 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
 									<div id="misc-publishing-actions">
-										<div class="donor-info">
-											<div class="donor-date">
-												<span class="label"><?php _e( 'Date/Time', 'peerraiser' ); ?></span>
-												<strong><?php echo mysql2date( get_option('date_format'), $peerraiser['donor']->date ); ?></strong>
-											</div>
+                                        <div class="misc-pub-section donor-date">
+                                            <span class="label"><?php _e( 'Donor Since:', 'peerraiser' ); ?></span>
+                                            <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['donor']->date ); ?></strong>
 										</div>
 									</div>
 									<div id="major-publishing-actions">
@@ -39,7 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
-											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Save', 'peerraiser' ); ?>">
+											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Update', 'peerraiser' ); ?>">
 										</div>
 										<div class="clear"></div>
 									</div>
