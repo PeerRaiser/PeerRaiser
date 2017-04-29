@@ -95,7 +95,10 @@ span.pr_tooltip+span.pr_tooltip {
 }
 .pr_tooltip .pr_icon {
     margin-left: 5px;
-    cursor: help;
+    color: #a1a1a1;
+}
+.pr_tooltip .pr_icon:hover {
+    color: #000;
 }
 .pr_tooltip .pr_icon:hover + .pr_tip {
     display: block;
