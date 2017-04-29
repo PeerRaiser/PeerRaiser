@@ -29,7 +29,13 @@
 					$(this).valid();
 				});
 
-				// $(document).on()
+				$(document).on( 'click', '.peerraiser-form .deletion, .peerraiser-list-table .delete a', function( event ) {
+                    var delete_this = confirm(window.peerraiser_admin_object.i10n.confirm_delete);
+
+                    if ( ! delete_this ) {
+                        event.preventDefault();
+					}
+                });
 
 				$(document).on("select2:opening", function (arg) {
 					var elem = $(arg.target);
