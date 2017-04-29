@@ -16,6 +16,15 @@
     height: 90px;
     box-sizing: border-box;
 }
+
+.cmb2-postbox .cmb2-id--peerraiser-start-date .cmb-th,
+.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th{
+    width: 21%;
+}
+.cmb2-postbox .cmb2-id--peerraiser-start-date .cmb-th + .cmb-td,
+.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th + .cmb-td{
+    width: 77%;
+}
 /* Misc */
 .text-center {
     text-align: center;
