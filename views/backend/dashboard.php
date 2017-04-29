@@ -95,7 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	                <?php else : ?>
                         <ol>
                             <?php foreach ( $peerraiser['top_donors'] as $donor) : ?>
-                                <li><a href="admin.php?page=peerraiser-donors&view=summary&donor=<?php echo $donor->donor_id ?>"><?php echo $donor->full_name; ?></a><span class="amount"><?php echo peerraiser_money_format( $donor->donation_value ); ?></li></span>
+                                <li><a href="admin.php?page=peerraiser-donors&view=summary&donor=<?php echo $donor->ID; ?>"><?php echo $donor->full_name; ?></a><span class="amount"><?php echo peerraiser_money_format( $donor->donation_value ); ?></li></span>
                             <?php endforeach; ?>
                         </ol>
 	                <?php endif; ?>
