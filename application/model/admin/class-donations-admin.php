@@ -17,7 +17,7 @@ class Donations_Admin extends Admin {
                     'donor' => array(
                         'name'    => __('Donor', 'peerraiser'),
                         'desc'    => __('The donor record this donation is tied to', 'peerraiser'),
-                        'id'      => '_peerraiser_donor',
+                        'id'      => 'donor',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options_cb' => array( $this, 'get_selected_post' ),
@@ -29,7 +29,7 @@ class Donations_Admin extends Admin {
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
 						'desc'         => __( 'Format should be XXXX.XX', 'peerraiser'),
-                        'id'           => '_peerraiser_donation_amount',
+                        'id'           => 'donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
 							'data-rule-required' => "true",
@@ -42,7 +42,7 @@ class Donations_Admin extends Admin {
                     'campaign' => array(
                         'name'    => __( 'Campaign', 'peerraiser' ),
                         'desc'    => __( 'The campaign this donation should be attributed to', 'peerraiser' ),
-                        'id'      => '_peerraiser_campaign',
+                        'id'      => 'campaign',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options_cb' => array( $this, 'get_selected_post' ),
@@ -54,7 +54,7 @@ class Donations_Admin extends Admin {
                     'fundraiser' => array(
                         'name'    => __( 'Fundraiser', 'peerraiser'),
                         'desc'    => __( 'The fundraiser this donation is attributed to (optional)' ),
-                        'id'      => '_peerraiser_fundraiser',
+                        'id'      => 'fundraiser',
                         'type'    => 'select',
                         'default' => 'custom',
                         'options_cb' => array( $this, 'get_selected_post' ),
