@@ -33,6 +33,7 @@ class Donor_Table extends Database {
 			'user_id'        => '%d',
 			'first_name'     => '%s',
             'last_name'      => '%s',
+            'full_name'      => '%s',
 			'email_address'  => '%s',
 			'donation_value' => '%f',
 			'donation_count' => '%d',
@@ -51,6 +52,7 @@ class Donor_Table extends Database {
             'donor_id'       => 0,
             'first_name'     => '',
             'last_name'      => '',
+            'full_name'      => '',
 			'email_address'  => '',
             'user_id'        => 0,
 			'donation_value' => '0.00',
@@ -79,6 +81,7 @@ class Donor_Table extends Database {
             'donor_id'      => 0,
             'first_name'    => '',
             'last_name'     => '',
+            'full_name'    => '',
 			'email_address' => '',
             'orderby'       => 'donor_id',
             'order'         => 'ASC',
@@ -123,6 +126,17 @@ class Donor_Table extends Database {
 		    }
 
 		    $where .= sprintf(" `last_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['last_name']) . "%%" );
+	    }
+
+	    // By donor name
+	    if ( ! empty( $args['donor_name'] ) ) {
+		    if ( empty( $where ) ) {
+			    $where .= " WHERE";
+		    } else {
+			    $where .= " AND";
+		    }
+
+		    $where .= sprintf(" `full_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
 	    }
 
 		// By donor name
@@ -211,6 +225,7 @@ class Donor_Table extends Database {
         email_address varchar(254) NOT NULL,
         first_name text NOT NULL,
         last_name text NOT NULL,
+        full_name text NOT NULL,
         donation_value decimal(13,4) NOT NULL DEFAULT '0.00',
         donation_count bigint(20) NOT NULL DEFAULT 0,
         date datetime NOT NULL,
@@ -239,6 +254,7 @@ class Donor_Table extends Database {
 		$data = array(
 			'first_name'     => $donor->first_name,
 			'last_name'      => $donor->last_name,
+			'full_name'      => $donor->full_name,
 			'email_address'  => $donor->email_address,
 			'user_id'        => $donor->user_id,
 			'donation_value' => $donor->donation_value,
