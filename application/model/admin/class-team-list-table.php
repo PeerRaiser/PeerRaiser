@@ -239,4 +239,12 @@ class Team_List_Table extends WP_List_Table {
 	    return $team->get_total_teams();
     }
 
+	/**
+	 *
+	 * @return array
+	 */
+	protected function get_table_classes() {
+		return array( 'widefat', 'fixed', 'striped', 'teams', 'peerraiser-list-table' );
+	}
+
 }

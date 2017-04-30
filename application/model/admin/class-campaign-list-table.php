@@ -283,4 +283,12 @@ class Campaign_List_Table extends WP_List_Table {
         return $campaign->get_total_campaigns();
     }
 
+	/**
+	 *
+	 * @return array
+	 */
+	protected function get_table_classes() {
+		return array( 'widefat', 'fixed', 'striped', 'campaigns', 'peerraiser-list-table' );
+	}
+
 }
