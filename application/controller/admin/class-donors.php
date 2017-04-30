@@ -15,7 +15,10 @@ class Donors extends \PeerRaiser\Controller\Base {
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
         add_action( 'manage_pr_donor_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'peerraiser_add_donor',          	   array( $this, 'handle_add_donor' ) );
+        add_action( 'peerraiser_update_donor',             array( $this, 'handle_update_donor' ) );
 	    add_action( 'peerraiser_delete_donor',             array( $this, 'delete_donor' ) );
+	    add_action( 'peerraiser_donor_updated_first_name', array( $this, 'update_full_name' ), 10, 3 );
+	    add_action( 'peerraiser_donor_updated_last_name',  array( $this, 'update_full_name' ), 10, 3 );
     }
 
     /**
@@ -434,6 +437,25 @@ class Donors extends \PeerRaiser\Controller\Base {
 		wp_safe_redirect( $location );
 	}
 
+	public function handle_update_donor() {
+		$donor_id = intval( $_REQUEST['donor_id'] );
+
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_donor_' . $donor_id ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$donor = new \PeerRaiser\Model\Donor( (int) $_REQUEST['donor_id'] );
+
+		if ( isset( $_REQUEST['_peerraiser_donor_note'] ) ) {
+			$user = wp_get_current_user();
+
+			$donor->add_note( $_REQUEST['_peerraiser_donor_note'], $user->user_login );
+		}
+
+		$this->update_fields( $donor );
+		$donor->save();
+	}
+
 	/**
 	 * Handle "delete donor" action
 	 *
@@ -455,6 +477,23 @@ class Donors extends \PeerRaiser\Controller\Base {
 		), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
+	}
+
+	/**
+	 * If the first or last name was updated, update the full name
+	 *
+	 * @param $donor
+	 * @param $key
+	 * @param $value
+	 */
+	public function update_full_name( $donor, $key, $value ) {
+		if ( $key === 'first_name' ) {
+			$donor->full_name = trim( $value . ' ' . $donor->last_name );
+		} elseif ( $key === 'last_name' ) {
+			$donor->full_name = trim( $donor->first_name . ' ' . $value );
+		}
+
+		$donor->save();
 	}
 
 	/**
@@ -526,29 +565,20 @@ class Donors extends \PeerRaiser\Controller\Base {
 	}
 
 	private function update_fields( $donor ) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+		$donors_model = new \PeerRaiser\Model\Admin\Donors_Admin();
 
-		$field_ids   = $campaigns_model->get_field_ids();
+		$field_ids = $donors_model->get_field_ids();
 
-		// Add campaign status to field list, since its not a CMB2 field
-		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
-
-		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
-			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
+		// If the date is empty, set it to today's date
+		if ( ! isset( $_REQUEST['date'] ) || empty( $_REQUEST['date'] ) ) {
+			$_REQUEST['date'] = current_time( 'mysql' );
 		}
-
-		// If the start date is empty, set it to today's date
-		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
-		}
-
-		$current = $campaign->get_meta();
 
 		foreach ( $field_ids as $key => $value ) {
-			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $current[$value][0] ) {
-				$campaign->$key = $_REQUEST[$value];
-			} elseif ( ! isset( $_REQUEST[$value] ) ) {
-				$campaign->delete_meta($value);
+			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $donor->$key ) {
+				$donor->$key = $_REQUEST[$value];
+			} elseif ( ! isset( $_REQUEST[$value] ) || $_REQUEST[$value] === '' ) {
+				$donor->delete_meta($value);
 			}
 		}
 	}
