@@ -10,7 +10,7 @@ class Donor {
 	/**
 	 * The Donor ID
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var    integer
 	 */
 	public    $ID  = 0;
@@ -18,7 +18,7 @@ class Donor {
 	/**
 	 * The Protected Donor ID
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var    integer
 	 */
 	protected $_ID = 0;
@@ -26,7 +26,7 @@ class Donor {
 	/**
 	 * New or existing donor
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var boolean
 	 */
 	protected $new = false;
@@ -34,7 +34,7 @@ class Donor {
 	/**
 	 * The date the donor was created
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	protected $date = '';
@@ -42,7 +42,7 @@ class Donor {
 	/**
 	 * The User ID of the donor (if they have one)
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var integer
 	 */
 	protected $user_id = 0;
@@ -50,7 +50,7 @@ class Donor {
 	/**
 	 * The first name of the donor
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	protected $first_name = '';
@@ -58,10 +58,18 @@ class Donor {
 	/**
 	 * The last name of the donor
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var string
 	 */
 	protected $last_name = '';
+
+	/**
+	 * The donor's full name
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $full_name = '';
 
 	/**
 	 * The donor's primary email address
@@ -88,7 +96,7 @@ class Donor {
 	 * Array of items that have changed since the last save() was run
 	 * This is for internal use, to allow fewer update_donor_meta calls to be run
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @var array
 	 */
 	private $pending;
@@ -101,7 +109,7 @@ class Donor {
 	/**
 	 * Setup donor class
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  int|boolean $id Donor ID
 	 */
 	public function __construct( $id = false ) {
@@ -130,12 +138,11 @@ class Donor {
 	/**
 	 * Run when reading data from inaccessible properties.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  string $key  The property
 	 * @return mixed        The value
 	 */
 	public function __get( $key ) {
-		error_log( $key );
 		if ( method_exists( $this, 'get_' . $key ) ) {
 			$value = call_user_func( array( $this, 'get_' . $key ) );
 		} else {
@@ -148,7 +155,7 @@ class Donor {
 	/**
 	 * Run when writing data to inaccessible properties.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param string $key   The property name
 	 * @param mixed $value  The value of the property
 	 */
@@ -167,7 +174,7 @@ class Donor {
 	/**
 	 * Run when isset() or empty() is called on inaccessible properties.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  string  $name The attribute to get
 	 * @return boolean       If the item is set or not
 	 */
@@ -184,7 +191,7 @@ class Donor {
 	/**
 	 * Setup the donor properties
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  object $donor A donor object
 	 *
 	 * @return bool True if the setup worked, false if not
@@ -203,6 +210,7 @@ class Donor {
 
 		$this->first_name     = $donor->first_name;
 		$this->last_name      = $donor->last_name;
+		$this->full_name      = $donor->full_name;
 		$this->email_address  = $donor->email_address;
 		$this->date           = $donor->date;
 		$this->donation_count = $donor->donation_count;
@@ -254,16 +262,21 @@ class Donor {
 			$this->user_id = $this->maybe_connect_user();
 		}
 
-		$bulk_update = array();
+		$updated = array();
 
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
 				switch( $key ) {
 					case 'first_name' :
 					case 'last_name' :
+					case 'full_name' :
 					case 'email_address' :
 					case 'date' :
-						$bulk_update[$key] = $value;
+					case 'user_id' :
+						$this->update( array( $key => $value ) );
+						$updated[] = array( $key => $value );
+						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
+						break;
 					case 'street_address_1' :
 					case 'street_address_2' :
 					case 'city' :
@@ -271,8 +284,9 @@ class Donor {
 					case 'zip_postal' :
 					case 'country' :
 						$this->update_meta( $key, $value );
+						$updated[] = array( $key => $value );
+						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
 						break;
-
 					default :
 						do_action( 'peerraiser_donor_save', $this, $key );
 						break;
@@ -280,11 +294,7 @@ class Donor {
 			}
 		}
 
-		if ( ! empty( $bulk_update ) ) {
-			$this->update( $bulk_update );
-		}
-
-		do_action( 'peerraiser_donor_saved', $this->ID, $this );
+		do_action( 'peerraiser_donor_saved', $this, $updated );
 
 		$cache_key = md5( 'peerraiser_donor_' . $this->ID );
 		wp_cache_set( $cache_key, $this, 'donors' );
@@ -322,12 +332,10 @@ class Donor {
 		if ( $this->db->update( $this->ID, $data ) ) {
 
 			$donor = $this->db->get_donors( array( 'donor_id' => $this->ID ) );
-			$this->setup_donor( current( $donor ) );
+			$this->setup_donor( reset( $donor ) );
 
 			$updated = true;
 		}
-
-		do_action( 'peerraiser_donor_post_update', $updated, $this->ID, $data );
 
 		return $updated;
 	}
@@ -350,6 +358,38 @@ class Donor {
 	}
 
 	/**
+	 * Delete donor meta
+	 *
+	 * @since     1.0.0
+	 * @param     string    $meta_key      Meta key to update
+	 * @param     string    $meta_value    Meta value
+	 * @return    int|bool                 Optional. Metadata value.
+	 */
+	public function delete_meta( $meta_key = '', $meta_value = '' ) {
+		$meta_value = apply_filters( 'peerraiser_delete_donor_meta_' . $meta_key, $meta_value, $this->ID );
+
+		$donor_meta = new Donor_Meta_Table();
+
+		switch( $meta_key ) {
+			case 'first_name' :
+			case 'last_name' :
+			case 'full_name' :
+			case 'email_address' :
+			case 'user_id' :
+				$result = $this->db->update( $this->ID, array( $meta_key => '' ) );
+				break;
+			case 'date' :
+				$result = $this->db->update(  $this->ID, array( $meta_key => current_time() ) );
+				break;
+			default :
+				$result = $donor_meta->delete_meta( $this->ID, $meta_key, $meta_value );
+				break;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Get donor meta
 	 *
 	 * @param string $meta_key
@@ -367,7 +407,7 @@ class Donor {
 	/**
 	 * Increase the donation count of the donor
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  integer $count The number to increment by
 	 *
 	 * @return int The donation count
@@ -393,7 +433,7 @@ class Donor {
 	/**
 	 * Decrease the donor donation count
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  integer $count The amount to decrease by
 	 *
 	 * @return mixed If successful, the new count, otherwise false
@@ -425,7 +465,7 @@ class Donor {
 	/**
 	 * Increase the customer's lifetime value
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  float $value The value to increase by
 	 *
 	 * @return mixed If successful, the new value, otherwise false
@@ -449,7 +489,7 @@ class Donor {
 	/**
 	 * Decrease a customer's lifetime value
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  float  $value The value to decrease by
 	 *
 	 * @return mixed If successful, the new value, otherwise false
@@ -552,7 +592,7 @@ class Donor {
 	/**
 	 * Sanitize the data for update/create
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param  array $data The data to sanitize
 	 *
 	 * @return array The sanitized data, based off column defaults
@@ -602,10 +642,6 @@ class Donor {
 		}
 
 		return $data;
-	}
-
-	public function get_full_name() {
-		return trim( $this->first_name . ' ' . $this->last_name );
 	}
 
 	public function get_street_address_1() {
