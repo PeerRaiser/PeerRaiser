@@ -346,49 +346,57 @@ class Donors_Admin extends Admin {
                 'fields'   => array(
 	                'first_name' => array(
 		                'name'       => __( 'First Name', 'peerraiser' ),
-		                'id'         => '_peerraiser_first_name',
+		                'id'         => 'first_name',
 		                'type'       => 'text',
 		                'default_cb' => array( $this, 'get_field_value' ),
+		                'attributes'  => array(
+			                'data-rule-required' => 'true',
+			                'data-msg-required' => __( 'A first name is required', 'peerraiser' ),
+		                ),
 	                ),
 	                'last_name' => array(
 		                'name'       => __( 'Last Name', 'peerraiser' ),
-		                'id'         => '_peerraiser_last_name',
+		                'id'         => 'last_name',
 		                'type'       => 'text',
 		                'default_cb' => array( $this, 'get_field_value' ),
 	                ),
 	                'user_id' => array(
 		                'name'       => __( 'User Account', 'peerraiser' ),
-		                'id'         => '_peerraiser_user_id',
+		                'id'         => 'user_id',
 		                'type'       => 'select',
 		                'options_cb' => array( $this, 'get_participants_for_select_field' ),
 	                ),
 	                'email_address' => array(
 		                'name'       => __( 'Email Address', 'peerraiser' ),
-		                'id'         => '_peerraiser_email_address',
+		                'id'         => 'email_address',
 		                'type'       => 'text_email',
 		                'default_cb' => array( $this, 'get_field_value' ),
+		                'attributes'  => array(
+			                'data-rule-required' => 'true',
+			                'data-msg-required' => __( 'An email address is required', 'peerraiser' ),
+		                ),
 	                ),
 	                'street_address_1' => array(
 		                'name'       => __( 'Street Address Line 1', 'peerraiser' ),
-		                'id'         => '_peerraiser_street_address_1',
+		                'id'         => 'street_address_1',
 		                'type'       => 'text',
 		                'default_cb' => array( $this, 'get_field_value' ),
 	                ),
 	                'street_address_2' => array(
 		                'name'       => __( 'Street Address Line 2', 'peerraiser' ),
-		                'id'         => '_peerraiser_street_address_2',
+		                'id'         => 'street_address_2',
 		                'type'       => 'text',
 		                'default_cb' => array( $this, 'get_field_value' ),
 	                ),
 	                'city' => array(
 		                'name'       => __( 'City', 'peerraiser' ),
-		                'id'         => '_peerraiser_city',
+		                'id'         => 'city',
 		                'type'       => 'text',
 		                'default_cb' => array( $this, 'get_field_value' ),
 	                ),
                     'state_province' => array(
 	                    'name'             => __( 'State / Province', 'peerraiser' ),
-	                    'id'               => '_peerraiser_state_province',
+	                    'id'               => 'state_province',
 	                    'type'             => 'select',
 	                    'show_option_none' => true,
 	                    'options_cb'       => array( $this, 'get_select_options' ),
@@ -396,13 +404,13 @@ class Donors_Admin extends Admin {
                     ),
                     'zip_postal' => array(
                         'name'       => __( 'Zip / Postal Code', 'peerraiser' ),
-                        'id'         => '_peerraiser_zip_postal',
+                        'id'         => 'zip_postal',
                         'type'       => 'text_small',
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'country' => array(
                         'name'             => __( 'Country', 'peerraiser' ),
-                        'id'               => '_peerraiser_country',
+                        'id'               => 'country',
                         'type'             => 'select',
                         'show_option_none' => true,
                         'options_cb'       => array( $this, 'get_select_options' ),
@@ -444,11 +452,12 @@ class Donors_Admin extends Admin {
 			return;
 
 		$donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
-		$short_field = substr( $field['id'], 12 );
+
+		$field_id = $field['id'];
 
 		switch ( $field['id'] ) {
 			default:
-				$field_value = isset( $donor_model->$short_field ) ? $donor_model->$short_field : '';
+				$field_value = isset( $donor_model->$field_id ) ? $donor_model->$field_id : '';
 				break;
 		}
 
@@ -478,12 +487,12 @@ class Donors_Admin extends Admin {
         $results = array();
 
 	    $donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
-	    $short_field = substr( $field->args['id'], 12 );
+	    $field_id = $field->args['id'];
 
-	    if ( isset( $donor_model->$short_field ) && $donor_model->$short_field !== '' ) {
-		    $user_info = get_userdata( $donor_model->$short_field );
+	    if ( isset( $donor_model->$field_id ) && $donor_model->$field_id !== '' ) {
+		    $user_info = get_userdata( $donor_model->$field_id );
 		    if ( $user_info ) {
-			    $results[$donor_model->$short_field] = $user_info->display_name;
+			    $results[$donor_model->$field_id] = $user_info->display_name;
 		    }
 	    }
 
@@ -493,11 +502,11 @@ class Donors_Admin extends Admin {
     public function get_select_options( $field ) {
 
         switch ( $field->args['id'] ) {
-            case '_peerraiser_country':
+            case 'country':
                 return $this->countries;
                 break;
 
-            case '_peerraiser_state_province':
+            case 'state_province':
                 return $this->states;
 
             default:
