@@ -224,4 +224,12 @@ class Donor_List_Table extends WP_List_Table {
         return $wpdb->get_var( $sql );
     }
 
+	/**
+	 *
+	 * @return array
+	 */
+	protected function get_table_classes() {
+		return array( 'widefat', 'fixed', 'striped', 'donors', 'peerraiser-list-table' );
+	}
+
 }
