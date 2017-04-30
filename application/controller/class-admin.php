@@ -302,6 +302,19 @@ class Admin extends Base {
             '4.0.2',
             true
         );
+
+	    // Localize scripts
+	    wp_localize_script(
+		    'peerraiser-admin',
+		    'peerraiser_admin_object',
+		    array(
+			    'ajax_url' => admin_url( 'admin-ajax.php' ),
+			    'template_directory' => get_template_directory_uri(),
+			    'i10n' => array(
+			    	'confirm_delete' => __('Are you sure you want to delete this? This cannot be undone.', 'peerraiser' )
+			    )
+		    )
+	    );
     }
 
 
