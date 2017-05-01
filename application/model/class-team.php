@@ -305,11 +305,11 @@ class Team {
 	 * Delete the team
 	 */
 	public function delete() {
-        do_action( 'peerraiser_pre_delete_team', $this );
+        do_action( 'peerraiser_team_delete]', $this );
 
 		wp_delete_term( $this->ID, 'peerraiser_team' );
 
-        do_action( 'peerraiser_post_delete_team', $this );
+        do_action( 'peerraiser_team_deleted', $this );
 	}
 
 	/**
