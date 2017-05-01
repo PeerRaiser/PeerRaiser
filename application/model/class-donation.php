@@ -227,6 +227,14 @@ class Donation {
     protected $notes = array();
 
     /**
+     * Is test mode?
+     *
+     * @since 1.0.0
+     * @var bool
+     */
+    protected $is_test = false;
+
+    /**
      * Array of items that have changed since the last save() was run
      * This is for internal use, to allow fewer update_donation_meta calls to be run
      *
@@ -356,8 +364,9 @@ class Donation {
         $this->_ID = absint( $donation->donation_id);
 
         // Status and Dates
-        $this->date   = $donation->date;
-        $this->status = $donation->status;
+        $this->date    = $donation->date;
+        $this->status  = $donation->status;
+        $this->is_test = boolval( $donation->is_test );
 
         // Money related
         $this->total    = $donation->total;
@@ -411,10 +420,18 @@ class Donation {
             }
         }
 
-        $this->increase_donor_amounts();
-        $this->increase_campaign_amounts();
-        $this->increase_fundraiser_amounts();
-        $this->increase_team_amounts();
+	    $plugin_options  = get_option( 'peerraiser_options', array() );
+
+	    $this->is_test            = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN );
+	    $this->pending['is_test'] = $this->is_test;
+
+	    // If this wasn't in test mode, increase donation stats
+	    if ( ! $this->is_test ) {
+		    $this->increase_donor_amounts();
+		    $this->increase_campaign_amounts();
+		    $this->increase_fundraiser_amounts();
+		    $this->increase_team_amounts();
+	    }
 
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
@@ -449,21 +466,33 @@ class Donation {
             $this->ID = $this->_ID;
         }
 
+        $updated = array();
+
         if ( ! empty( $this->pending ) ) {
             foreach ( $this->pending as $key => $value ) {
                 switch( $key ) {
+	                case 'transaction_id' :
+	                case 'donor_id' :
+	                case 'campaign_id' :
+	                case 'team_id' :
+	                case 'fundraiser_id' :
+	                case 'total' :
+	                case 'subtotal' :
+	                case 'ip' :
+	                case 'status' :
+	                case 'date' :
+	                case 'is_test' :
+		                $this->update( array( $key => $value ) );
+		                $updated[] = array( $key => $value );
+		                do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
+		                break;
                     case 'donation_type' :
-                        $this->update_meta( 'donation_type', $this->donation_type );
+	                case 'gateway' :
+	                case 'notes' :
+                        $this->update_meta( $key, $value );
+		                $updated[] = array( $key => $value );
+		                do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
                         break;
-
-                    case 'gateway' :
-                        $this->update_meta( 'gateway', $this->gateway );
-                        break;
-
-                    case 'notes' :
-                        $this->update_meta( 'notes', $this->notes );
-                        break;
-
                     default :
                         do_action( 'peerraiser_donation_save', $this, $key );
                         break;
@@ -471,7 +500,7 @@ class Donation {
             }
         }
 
-        do_action( 'peerraiser_donation_saved', $this->ID, $this );
+        do_action( 'peerraiser_donation_saved', $this, $updated );
 
         $cache_key = md5( 'peerraiser_donation_' . $this->ID );
         wp_cache_set( $cache_key, $this, 'donations' );
@@ -494,6 +523,36 @@ class Donation {
         $this->decrease_team_amounts();
 
 		do_action( 'peerraiser_donation_deleted', $this );
+	}
+
+	/**
+	 * Update a donation record
+	 *
+	 * @since 1.0.0
+	 * @param array $data Array of data attributes for a donor
+	 *
+	 * @return bool If the update was successful or not
+	 */
+	public function update( $data = array() ) {
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		$data = $this->sanitize_columns( $data );
+
+		do_action( 'peerraiser_donation_pre_update', $this->ID, $data );
+
+		$updated = false;
+
+		if ( $this->db->update( $this->ID, $data ) ) {
+
+			$donation = $this->db->get_donations( array( 'donation_id' => $this->ID ) );
+			$this->setup_donation( reset( $donation ) );
+
+			$updated = true;
+		}
+
+		return $updated;
 	}
 
     /**
@@ -528,6 +587,58 @@ class Donation {
 
         return $this->notes;
     }
+
+	/**
+	 * Sanitize the data for update/create
+	 *
+	 * @since 1.0.0
+	 * @param array $data The data to sanitize
+	 *
+	 * @return array The sanitized data, based off column defaults
+	 */
+	private function sanitize_columns( $data ) {
+		$columns        = $this->db->get_columns();
+		$default_values = $this->db->get_column_defaults();
+
+		foreach ( $columns as $key => $type ) {
+			if ( ! array_key_exists( $key, $data ) ) {
+				continue;
+			}
+
+			switch( $type ) {
+				case '%s':
+					$data[$key] = sanitize_text_field( $data[$key] );
+					break;
+
+				case '%d':
+					if ( 'is_test' == $key ) {
+						$data[$key] = $data[$key] ? 1 : 0;
+					} elseif ( ! is_numeric( $data[$key] ) || (int) $data[$key] !== absint( $data[$key] ) ) {
+						$data[$key] = $default_values[$key];
+					} else {
+						$data[$key] = absint( $data[$key] );
+					}
+					break;
+
+				case '%f':
+					$value = floatval( $data[$key] );
+
+					if ( ! is_float( $value ) ) {
+						$data[$key] = $default_values[$key];
+					} else {
+						$data[$key] = $value;
+					}
+					break;
+
+				default:
+					$data[$key] = sanitize_text_field( $data[$key] );
+					break;
+			}
+
+		}
+
+		return $data;
+	}
 
     /**
      * Gets the IP address
