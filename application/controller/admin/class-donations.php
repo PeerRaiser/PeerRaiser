@@ -197,19 +197,19 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation = new \PeerRaiser\Model\Donation();
 
         // Required Fields
-        $donation->donor_id      = absint( $_REQUEST['_peerraiser_donor'] );
-        $donation->total         = $_REQUEST['_peerraiser_donation_amount'];
-        $donation->subtotal      = $_REQUEST['_peerraiser_donation_amount'];
-        $donation->campaign_id   = absint( $_REQUEST['_peerraiser_campaign'] );
-        $donation->status        = $_REQUEST['_peerraiser_donation_status'];
-        $donation->donation_type = $_REQUEST['_peerraiser_donation_type'];
+        $donation->donor_id      = absint( $_REQUEST['donor'] );
+        $donation->total         = $_REQUEST['donation_amount'];
+        $donation->subtotal      = $_REQUEST['donation_amount'];
+        $donation->campaign_id   = absint( $_REQUEST['campaign'] );
+        $donation->status        = $_REQUEST['donation_status'];
+        $donation->donation_type = $_REQUEST['donation_type'];
         $donation->gateway       = 'offline';
 
         // Optional Fields
-        $donation->fundraiser_id = isset( $_REQUEST['_peerraiser_fundraiser'] ) ? absint( $_REQUEST['_peerraiser_fundraiser'] ) : 0;
+        $donation->fundraiser_id = isset( $_REQUEST['fundraiser'] ) ? absint( $_REQUEST['fundraiser'] ) : 0;
 
-        if ( isset( $_REQUEST['_peerraiser_donation_note'] ) && ! empty( $_REQUEST['_peerraiser_donation_note'] ) ) {
-            $donation->add_note( $_REQUEST['_peerraiser_donation_note'] );
+        if ( isset( $_REQUEST['donation_note'] ) && ! empty( $_REQUEST['donation_note'] ) ) {
+            $donation->add_note( $_REQUEST['donation_note'] );
         }
 
         // Save to the database
@@ -235,10 +235,10 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
 
-        if ( isset( $_REQUEST['_peerraiser_donation_note'] ) ) {
+        if ( isset( $_REQUEST['donation_note'] ) ) {
             $user = wp_get_current_user();
 
-            $donation->add_note( $_REQUEST['_peerraiser_donation_note'], $user->user_login );
+            $donation->add_note( $_REQUEST['donation_note'], $user->user_login );
         }
 
         $donation->save();
@@ -275,7 +275,10 @@ class Donations extends \PeerRaiser\Controller\Base {
      * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
      */
     private function is_valid_donation() {
-        $required_fields = array( '_peerraiser_donor', '_peerraiser_donation_amount', '_peerraiser_campaign', '_peerraiser_donation_status', '_peerraiser_donation_type' );
+	    $donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
+	    $required_fields = $donations_model->get_required_field_ids();
+
+	    $required_fields['donation_status'] = 'donation_status';
 
         $data = array(
             'is_valid'     => true,
