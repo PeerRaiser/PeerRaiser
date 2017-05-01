@@ -12,6 +12,8 @@ class Activity_Feed extends Base {
         add_action( 'delete_post',                 array( $this, 'maybe_remove_post_from_feed' ) );
 	    add_action( 'peerraiser_campaign_added',   array( $this, 'add_campaign_to_feed' ) );
 	    add_action( 'peerraiser_campaign_deleted', array( $this, 'remove_campaign_from_feed', ) );
+	    add_action( 'peerraiser_donation_added',   array( $this, 'add_donation_to_feed' ) );
+	    add_action( 'peerraiser_donation_deleted', array( $this, 'remove_donation_from_feed', ) );
     }
 
     /**
@@ -71,5 +73,15 @@ class Activity_Feed extends Base {
 		$model = new \PeerRaiser\Model\Activity_Feed();
 		$model->remove_campaign_from_feed( $campaign );
     }
+
+	public function add_donation_to_feed( $donation ) {
+		$model = new \PeerRaiser\Model\Activity_Feed();
+		$model->add_donation_to_feed( $donation );
+	}
+
+	public function remove_donation_from_feed( $donation ) {
+		$model = new \PeerRaiser\Model\Activity_Feed();
+		$model->remove_donation_from_feed( $donation );
+	}
 
 }
