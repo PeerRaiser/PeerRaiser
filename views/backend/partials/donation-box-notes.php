@@ -1,7 +1,7 @@
 <div id="donation-options" class="postbox">
     <h2><span><?php _e( 'Donation Notes', 'peerraiser' ); ?></span></h2>
     <div class="inside">
-        <textarea name="_peerraiser_donation_note" id="donation-note" class="large-text" rows="5"></textarea>
+        <textarea name="donation_note" id="donation-note" class="large-text" rows="5"></textarea>
 
         <?php if ( ! empty( $peerraiser['donation']->notes ) ) : ?>
             <div id="donation-notes">
