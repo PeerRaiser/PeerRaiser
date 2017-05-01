@@ -155,8 +155,9 @@ class Fundraisers_Admin extends Admin {
         $results = array();
 
         if ( isset($field->value) && $field->value !== '' ) {
-            $term = get_term($field->value);
-            $results[$field->value] = $term->name;
+            if ( $term = get_term($field->value) ) {
+	            $results[$field->value] = $term->name;
+            }
         }
 
         return $results;
