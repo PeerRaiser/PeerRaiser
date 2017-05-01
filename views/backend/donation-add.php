@@ -29,8 +29,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php _e( 'Completed', 'peerraiser' ); ?></strong>
                                             <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                             <div id="donation-status-select" class="hide-if-js">
-                                                <input type="hidden" name="_peerraiser_donation_status_hidden" value="completed">
-                                                <select name="_peerraiser_donation_status" id="donation-status">
+                                                <input type="hidden" name="donation_status_hidden" value="completed">
+                                                <select name="donation_status" id="donation-status">
                                                     <option value="completed"><?php _e( 'Completed', 'peerraiser' ); ?></option>
                                                     <option value="pending"><?php _e( 'Pending', 'peerraiser' ); ?></option>
                                                 </select>
@@ -43,8 +43,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <?php _e( 'Type:', 'peerraiser' ); ?> <strong><?php _e( 'Check', 'peerraiser' ); ?></strong>
                                             <a href="#donation_type" class="edit-donation-type hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit', 'peerraiser' ); ?></span> <span class="screen-reader-text"><?php _e( 'Edit type', 'peerraiser' ); ?></span></a>
                                             <div id="donation-type-select" class="hide-if-js">
-                                                <input type="hidden" name="_peerraiser_donation_type_hidden" value="check">
-                                                <select name="_peerraiser_donation_type" id="donation-type">
+                                                <input type="hidden" name="donation_type_hidden" value="check">
+                                                <select name="donation_type" id="donation-type">
                                                     <option value="check"><?php _e( 'Check', 'peerraiser' ); ?></option>
                                                     <option value="cc"><?php _e( 'Credit Card', 'peerraiser' ); ?></option>
                                                     <option value="cash"><?php _e( 'Cash', 'peerraiser' );?></option>
