@@ -19,7 +19,7 @@ class Activity_Feed {
             'id'      => 'peerraiser_installed',
             'type'    => 'install',
             'message' => sprintf( __( 'PeerRaiser %s was installed', 'peerraiser' ), $version ),
-            'time'    => time()
+            'time'    => current_time('timestamp')
         );
 
         // If the activity feed already exists, say updated instead of installed
@@ -30,25 +30,25 @@ class Activity_Feed {
         $this->add_activity($notice);
     }
 
-    public function add_donation_to_feed( $post ) {
-        $donor            = $_POST['_donor'];
-        $donor_first_name = get_post_meta( $donor, '_donor_first_name', true );
-        $donor_last_name  = get_post_meta( $donor, '_donor_last_name', true );
-        $donor_full_name  = $donor_first_name . ' ' . $donor_last_name;
-        $donation_amount  = $_POST['_donation_amount'];
-        $designation      = isset( $_POST['_fundraiser'] ) ? $_POST['_fundraiser'] : $_POST['_campaign'];
+    public function add_donation_to_feed( $donation ) {
+    	$donor = new \PeerRaiser\Model\Donor( $donation->donor_id );
+    	$campaign = new \PeerRaiser\Model\Campaign( $donation->campaign_id );
 
-        $message = "<a href=\"post.php?action=edit&post=" . $donor . "\">" . $donor_full_name . "</a> donated $" . $donation_amount . " to " . "<a href=\"post.php?action=edit&post=" . $designation . "\">" . get_the_title( $designation ) . "</a>";
+	    $message = sprintf( __( '<a href="admin.php?page=peerraiser-donors&donor=%1$d&view=summary">%2$s</a> donated <a href="admin.php?page=peerraiser-donations&donation=%3$d&view=summary">%4$s</a> to the <a href="admin.php?page=peerraiser-campaigns&campaign=%5$d&view=summary">%6$s</a> campaign.', 'peerraiser' ), $donor->ID, $donor->full_name, $donation->ID, peerraiser_money_format( $donation->total ), $campaign->ID, $campaign->campaign_name );
 
         $this->add_activity(
             array(
-                'id'      => $post->ID,
+                'id'      => $donation->ID,
                 'type'    => 'donation',
                 'message' => $message,
-                'time'    => time()
+                'time'    => current_time('timestamp')
             )
         );
     }
+
+	public function remove_donation_from_feed( $donation ) {
+		$this->remove_activity( $donation->ID );
+	}
 
     public function add_campaign_to_feed( $campaign ) {
 	    $message = sprintf( __( '"<a href="admin.php?page=peerraiser-campaigns&campaign=%1$d&view=summary">%2$s</a>" campaign created.', 'peerraiser' ), $campaign->ID, $campaign->campaign_name );
@@ -58,7 +58,7 @@ class Activity_Feed {
                 'id'      => $campaign->ID,
                 'type'    => 'campaign',
                 'message' => $message,
-                'time'    => time()
+                'time'    => current_time('timestamp')
             )
         );
     }
@@ -82,7 +82,7 @@ class Activity_Feed {
                 'id'      => $post->ID,
                 'type'    => 'fundraiser',
                 'message' => $message,
-                'time'    => time()
+                'time'    => current_time('timestamp')
             )
         );
     }
