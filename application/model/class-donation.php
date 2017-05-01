@@ -429,6 +429,8 @@ class Donation {
         $this->ID  = $donation_id;
         $this->_ID = $donation_id;
 
+	    do_action( 'peerraiser_donation_added', $this );
+
         return $this->ID;
     }
 
@@ -481,7 +483,7 @@ class Donation {
      * Delete the donation record
      */
     public function delete() {
-        do_action( 'peerraiser_pre_delete_donation', $this );
+        do_action( 'peerraiser_donation_delete', $this );
 
 		$this->db->delete( $this->ID );
 
@@ -491,7 +493,7 @@ class Donation {
         $this->decrease_fundraiser_amounts();
         $this->decrease_team_amounts();
 
-		do_action( 'peerraiser_post_delete_donation', $this );
+		do_action( 'peerraiser_donation_deleted', $this );
 	}
 
     /**
