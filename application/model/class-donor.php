@@ -322,7 +322,6 @@ class Donor {
 	 * @return bool If the update was successful or not
 	 */
 	public function update( $data = array() ) {
-
 		if ( empty( $data ) ) {
 			return false;
 		}

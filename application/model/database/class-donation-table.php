@@ -40,6 +40,7 @@ class Donation_Table extends Database {
             'ip'             => '%s',
             'status'         => '%s',
             'date'           => '%s',
+	        'is_test'        => '%d',
         );
     }
 
@@ -61,6 +62,7 @@ class Donation_Table extends Database {
             'ip'             => '',
             'status'         => 'completed',
             'date'           => date( 'Y-m-d H:i:s' ),
+	        'is_test'        => 0,
         );
     }
 
@@ -196,7 +198,7 @@ class Donation_Table extends Database {
             $where .= " `fundraiser_id` IN( {$fundraiser_ids} ) ";
         }
 
-
+        // by donation status
         if ( ! empty( $args['status'] ) ) {
 
             if ( empty( $where ) ) {
@@ -213,6 +215,7 @@ class Donation_Table extends Database {
 
         }
 
+        // by date
         if ( ! empty( $args['date'] ) ) {
 
             if ( is_array( $args['date'] ) ) {
@@ -276,6 +279,20 @@ class Donation_Table extends Database {
                 $where .= " $year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date )";
             }
 
+        }
+
+	    // By test mode or not
+        if ( ! empty( $args['is_test'] ) ) {
+	        // Convert boolean to 1 for true and 0 for false
+	        $is_test = $args['is_test'] ? 1 : 0;
+
+	        if ( empty( $where ) ) {
+		        $where .= " WHERE";
+	        } else {
+		        $where .= " AND";
+	        }
+
+	        $where .= " `is_test` = '{$is_test}' ";
         }
 
         $args['orderby'] = ! array_key_exists( $args['orderby'], $this->get_columns() ) ? $this->primary_key : $args['orderby'];
@@ -348,6 +365,7 @@ class Donation_Table extends Database {
             'ip'             => $donation->ip,
             'status'         => $donation->status,
             'date'           => $donation->date,
+	        'is_test'        => $donation->is_test,
         );
 
         $this->insert( $data );
