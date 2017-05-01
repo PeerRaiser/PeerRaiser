@@ -306,7 +306,11 @@ class Donor {
 	 * Delete this donor
 	 */
 	public function delete() {
+		do_action( 'peerraiser_donor_delete', $this );
+
 		$this->db->delete( $this->ID );
+
+		do_action( 'peerraiser_donor_delete', $this );
 	}
 
 	/**
