@@ -199,7 +199,12 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
 
             case 'campaign':
                 $campaigns = wp_get_post_terms( $post_id, 'peerraiser_campaign' );
-                echo '<a href="admin.php?page=peerraiser-campaigns&campaign=' . $campaigns[0]->term_id . '&view=summary">' . $campaigns[0]->name . '</a>';
+                if ( ! empty( $campaigns ) ) {
+                	$campaign = new \PeerRaiser\Model\Campaign( $campaigns[0]->term_id );
+	                echo '<a href="admin.php?page=peerraiser-campaigns&campaign=' . $campaign->ID . '&view=summary">' . $campaign->campaign_name . '</a>';
+                } else {
+                	echo '&mdash;';
+                }
                 break;
 
             case 'participant':
