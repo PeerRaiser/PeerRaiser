@@ -255,11 +255,11 @@ class Fundraiser {
 	 * Delete the fundraiser
 	 */
 	public function delete() {
-	    do_action( 'peerraiser_pre_delete_fundraiser', $this );
+	    do_action( 'peerraiser_fundraiser_delete', $this );
 
         wp_delete_post( $this->ID );
 
-        do_action( 'peerraiser_post_delete_fundraiser', $this );
+        do_action( 'peerraiser_fundraiser_deleted', $this );
 	}
 
 	/**
