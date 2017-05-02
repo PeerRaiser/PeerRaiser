@@ -1,4 +1,18 @@
 <?php
+function peerraiser_get_option( $option = '' ) {
+	$plugin_options = get_option( 'peerraiser_options', array() );
+
+	if ( empty( $option ) ) {
+		return $plugin_options;
+	}
+
+	if ( ! isset( $plugin_options[$option] ) ) {
+		return new WP_Error( 'peerraiser-invalid-option', sprintf( __( 'Can\'t get option %s', 'peerraiser' ), $option ) );
+	}
+
+	return $plugin_options[$option];
+}
+
 function peerraiser_get_team( $id ) {
     if ( is_null( $id ) ) {
         return false;
