@@ -432,3 +432,12 @@ table th[class*="col-"] {
 .group {
     zoom: 1;
 }
+/* Admin Notice*/
+#wpadminbar .peerraiser-test-mode-active > .ab-item {
+    color: #fff;
+    background-color: #f44;
+}
+#wpadminbar .peerraiser-test-mode-active:hover > .ab-item {
+    color: #fff !important;
+    background-color: #843534 !important;
+}
