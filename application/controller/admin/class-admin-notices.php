@@ -35,7 +35,7 @@ class Admin_Notices extends \PeerRaiser\Controller\Base {
 		// Add the main siteadmin menu item.
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'peerraiser-test-notice',
-			'href'   => admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways' ),
+			'href'   => admin_url( 'admin.php?page=peerraiser-settings' ),
 			'parent' => 'top-secondary',
 			'title'  => esc_html__( 'PeerRaiser Test Mode Active', 'peerraiser' ),
 			'meta'   => array( 'class' => 'peerraiser-test-mode-active' ),

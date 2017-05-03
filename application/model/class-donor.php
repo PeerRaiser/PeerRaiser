@@ -124,7 +124,7 @@ class Donor {
 			'donor_id' => $id,
 		);
 
-		$donor = current( $this->db->get_donors( $args ) );
+		$donor = reset( $this->db->get_donors( $args ) );
 
 		if ( empty( $donor ) ) {
 			return false;
@@ -466,7 +466,7 @@ class Donor {
 	}
 
 	/**
-	 * Increase the customer's lifetime value
+	 * Increase the donor's lifetime value
 	 *
 	 * @since 1.0.0
 	 * @param  float $value The value to increase by
@@ -490,7 +490,7 @@ class Donor {
 	}
 
 	/**
-	 * Decrease a customer's lifetime value
+	 * Decrease a donor's lifetime value
 	 *
 	 * @since 1.0.0
 	 * @param  float  $value The value to decrease by
