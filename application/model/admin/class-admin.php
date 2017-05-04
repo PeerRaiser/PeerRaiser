@@ -38,6 +38,11 @@ class Admin {
                 'title' => __( 'Donors', 'peerraiser' ),
                 'cap'   => 'activate_plugins',
             ),
+            'participants' => array(
+	            'url'   => 'peerraiser-participants',
+	            'title' => __( 'Participants', 'peerraiser' ),
+	            'cap'   => 'activate_plugins',
+            ),
             'settings' => array(
                 'url'   => 'peerraiser-settings',
                 'title' => __( 'Settings', 'peerraiser' ),
