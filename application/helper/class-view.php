@@ -5,11 +5,6 @@ namespace PeerRaiser\Helper;
 class View {
 
     /**
-     * @var string
-     */
-    public static $pluginPage = 'peerraiser-dashboard';
-
-    /**
      * Helper function to render a plugin backend navigation tab link.
      *
      * @param array $page array(
