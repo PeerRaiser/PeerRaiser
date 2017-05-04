@@ -49,12 +49,11 @@ class Admin extends Base {
      * @return void
      */
     public function add_to_admin_panel() {
-        $plugin_page = View::$pluginPage;
         add_menu_page(
             __( 'PeerRaiser', 'peerraiser' ),
             'PeerRaiser',
             'moderate_comments', // allow Super Admin, Admin, and Editor to view the settings page
-            $plugin_page,
+	        'peerraiser-dashboard',
             array( $this, 'run' ),
             'dashicons-peerraiser-logo',
             81
@@ -68,7 +67,7 @@ class Admin extends Base {
 
             if ( strpos($slug, 'post_type') === false ) {
                 $page_id = add_submenu_page(
-                    $plugin_page,
+                    'peerraiser-dashboard',
                     $page['title'] . ' | ' . __( 'PeerRaiser', 'peerraiser' ),
                     $page['title'],
                     $page['cap'],
@@ -77,7 +76,7 @@ class Admin extends Base {
                 );
             } else {
                 $page_id = add_submenu_page(
-                    $plugin_page,
+                    'peerraiser-dashboard',
                     $page['title'] . ' | ' . __( 'PeerRaiser', 'peerraiser' ),
                     $page['title'],
                     $page['cap'],
@@ -179,6 +178,10 @@ class Admin extends Base {
                 $donors_controller = new DonorsController( Setup::get_plugin_config() );
                 $donors_controller->render_page();
                 break;
+	        case 'participants' :
+		        $participants_controller = new ParticipantsController( Setup::get_plugin_config() );
+		        $participants_controller->render_page();
+		        break;
             case 'settings' :
                 $settings_controller = new SettingsController( Setup::get_plugin_config() );
                 $settings_controller->render_page();
