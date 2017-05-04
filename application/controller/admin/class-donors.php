@@ -10,10 +10,7 @@ class Donors extends \PeerRaiser\Controller\Base {
     public function register_actions() {
         add_action( 'cmb2_admin_init',                     array( $this, 'register_meta_boxes' ) );
 		add_action( 'peerraiser_page_peerraiser-donors',   array( $this, 'load_assets' ) );
-        add_action( 'add_meta_boxes',                      array( $this, 'add_meta_boxes' ) );
-        add_action( 'admin_menu',                          array( $this, 'maybe_replace_submit_box' ) );
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
-        add_action( 'manage_pr_donor_posts_custom_column', array( $this, 'manage_columns' ) );
         add_action( 'peerraiser_add_donor',          	   array( $this, 'handle_add_donor' ) );
         add_action( 'peerraiser_update_donor',             array( $this, 'handle_update_donor' ) );
 	    add_action( 'peerraiser_delete_donor',             array( $this, 'delete_donor' ) );
@@ -47,7 +44,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		// Get the correct view
 		$view = isset( $_REQUEST['view'] ) ? $_REQUEST['view'] : 'list';
-		$view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donation_admin_view', 'list', $view );
+		$view = in_array( $view, $default_views ) ? $view : apply_filters( 'peerraiser_donor_admin_view', 'list', $view );
 
 	    $view_args = array(
 		    'currency_symbol'   => $currency_symbol,
@@ -131,61 +128,6 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     }
 
-
-    public function add_meta_boxes() {
-        if ( !$this->is_edit_page( 'edit' ) )
-            return;
-
-        add_meta_box(
-            'donor_info',
-            __('Donor Info', 'peerraiser'),
-            array( $this, 'display_donor_box' ),
-            'pr_donor',
-            'normal',
-            'high'
-        );
-
-        add_meta_box(
-            'donor_donations',
-            __('Donations', 'peerraiser'),
-            array( $this, 'display_donation_list' ),
-            'pr_donor'
-        );
-
-    }
-
-    public function maybe_replace_submit_box() {
-
-        if ( !$this->is_edit_page( 'edit' ) )
-            return;
-
-        remove_meta_box('submitdiv', 'pr_donor', 'core');
-        add_meta_box('submitdiv', __('Donor'), array( $this, 'get_submit_box'), 'pr_donor', 'side', 'low');
-    }
-
-    public function get_submit_box( $object ) {
-        $post_type_object = get_post_type_object($object->post_type);
-        $can_publish = current_user_can($post_type_object->cap->publish_posts);
-        $is_published = ( in_array( $object->post_status, array('publish', 'future', 'private') ) );
-
-        $view_args = array(
-            'object'             => $object,
-            'can_publish'        => $can_publish,
-            'is_published'       => $is_published,
-            'lifetime_donations' => $this->get_lifetime_donation_amount( $object->ID ),
-            'largest_donation'   => $this->get_largest_donation_amount( $object->ID ),
-            'latest_donation'    => $this->get_latest_donation_amount( $object->ID ),
-            'first_donation'     => $this->get_first_donation_amount( $object->ID ),
-        );
-
-        $this->assign( 'peerraiser', $view_args );
-
-        $view_file = ( $is_published ) ? 'backend/partials/donor-box-edit' : 'backend/partials/donor-box-add';
-
-        $this->render( $view_file );
-
-    }
-
     public function display_donor_box( $object ) {
         $donor_user_account = get_post_meta( $object->ID, '_donor_user_account', true);
         $donor_user_info = get_userdata($donor_user_account);
@@ -235,181 +177,15 @@ class Donors extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donor-donations' );
     }
 
-    public function maybe_connect_user_to_donor( $user_id ){
-        $user_info = get_userdata( $user_id );
-        $email_address = $user_info->user_email;
+    public function maybe_connect_user_to_donor( $user_id ) {
+	    $user_info     = get_userdata( $user_id );
+	    $email_address = $user_info->user_email;
 
-        $donor = $this->get_donor_by_email( $email_address );
-        update_post_meta( $donor->ID, '_donor_user_account', $user_id );
+	    $donor = $this->get_donor_by_email( $email_address );
+	    update_post_meta( $donor->ID, '_donor_user_account', $user_id );
     }
 
-    private function get_donor_by_email( $email ) {
-        $query_args = array(
-            'post_type'  => 'pr_donor',
-            'meta_query' => array(
-                array(
-                    'key' => '_donor_email',
-                    'value' => $email,
-                ),
-            )
-        );
-        $donor_query = new \WP_Query( $query_args );
-
-        if ( $donor_query->found_posts == 0 ) {
-            return false;
-        }
-
-        $donors = $donor_query->get_posts();
-        return $donors[0];
-
-    }
-
-    public static function get_lifetime_donation_amount( $donor_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'post_status'     => 'any',
-            'posts_per_page'  => -1,
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $donor_id,
-        );
-        $donations = get_posts( $args );
-
-        if ( empty($donations) ) {
-            return $currency_symbol. '0.00';
-        }
-
-        $donor_value = 0.00;
-
-        foreach ($donations as $donation) {
-            $donor_value += get_post_meta( $donation->ID, '_donation_amount', true );
-        }
-
-        return $currency_symbol . number_format_i18n( $donor_value, 2 );
-
-    }
-
-    public static function get_latest_donation_amount( $donor_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'post_status'     => 'any',
-            'order'           => 'DESC',
-            'orderby'         => 'date',
-            'posts_per_page'  => 1,
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $donor_id,
-        );
-        $donation = get_posts( $args );
-
-        if ( !empty($donation) ){
-            $amount = $currency_symbol . number_format_i18n( get_post_meta( $donation[0]->ID, '_donation_amount', true ), 2 );
-        } else {
-            $amount = $currency_symbol. '0.00';
-        }
-
-        return $amount;
-    }
-
-    public static function get_first_donation_amount( $donor_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'post_status'     => 'any',
-            'order'           => 'ASC',
-            'orderby'         => 'date',
-            'posts_per_page'  => 1,
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $donor_id,
-        );
-        $donation = get_posts( $args );
-
-        if ( !empty($donation) ){
-            $amount = $currency_symbol . number_format_i18n( get_post_meta( $donation[0]->ID, '_donation_amount', true ), 2 );
-        } else {
-            $amount = $currency_symbol. '0.00';
-        }
-
-        return $amount;
-    }
-
-    public static function get_largest_donation_amount( $donor_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'post_status'     => 'any',
-            'meta_key'        => '_donation_amount',
-            'order'           => 'DESC',
-            'orderby'         => 'meta_value_num',
-            'posts_per_page'  => 1,
-            'connected_type'  => 'donation_to_donor',
-            'connected_items' => $donor_id,
-        );
-        $donation = get_posts( $args );
-
-        if ( !empty($donation) ){
-            $amount = $currency_symbol . number_format_i18n( get_post_meta( $donation[0]->ID, '_donation_amount', true ), 2 );
-        } else {
-            $amount = $currency_symbol. '0.00';
-        }
-
-        return $amount;
-    }
-
-    public function manage_columns( $column_name, $post_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-
-        switch ( $column_name ) {
-
-            case 'id':
-                echo $post_id;
-                break;
-
-            case 'link':
-                echo '<a href="post.php?action=edit&post=' . $post_id . '">' . __( 'View Details', 'peerraiser' ) . '</a>';
-                break;
-
-            case 'first_name':
-                echo get_post_meta( $post_id, '_donor_first_name', true );
-                break;
-
-            case 'last_name':
-                echo get_post_meta( $post_id, '_donor_last_name', true );
-                break;
-
-            case 'email_address':
-                echo get_post_meta( $post_id, '_donor_email', true );
-                break;
-
-            case 'username':
-                $user_id = get_post_meta( $post_id, '_donor_user_account', true );
-                $user_info = get_userdata( $user_id );
-                echo ( $user_id ) ? '<a href="user-edit.php?user_id='.$user_id.'">' . $user_info->user_login  . '</a>' : '&mdash;';
-                break;
-
-            case 'total_donated':
-                echo $this->get_lifetime_donation_amount( $post_id );
-                break;
-
-        }
-
-    }
-
-	public function handle_add_donor() {
+    public function handle_add_donor() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_donor_nonce' ) ) {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
