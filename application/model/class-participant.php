@@ -2,8 +2,8 @@
 
 namespace PeerRaiser\Model;
 
-use WP_User_Query;
 use WP_User;
+use WP_User_Query;
 
 /**
  * Team Model
@@ -234,6 +234,9 @@ class Participant {
 
 		$user_id = wp_create_user( $this->username, $this->password, $this->email_address );
 
+		wp_set_object_terms( $user_id, array( 'participant' ), 'peerraiser_group', true );
+		clean_object_term_cache( $user_id, 'peerraiser_group' );
+
 		$this->ID  = $user_id;
 		$this->_ID = $user_id;
 
@@ -282,7 +285,12 @@ class Participant {
 	public function delete() {
 		do_action( 'peerraiser_participant_delete', $this );
 
-		wp_delete_user( $this->ID );
+		// Don't actually delete the user. Keeping this here for now though:
+		// wp_delete_user( $this->ID );
+
+		// Remove the user from the 'participant' peerraiser group taxonomy
+		wp_remove_object_terms( $this->ID, array( 'participant' ), 'peerraiser_group' );
+		clean_object_term_cache( $this->ID, 'peerraiser_group' );
 
 		do_action( 'peerraiser_participant_delete', $this );
 	}
@@ -323,6 +331,16 @@ class Participant {
 	 */
 	public function delete_meta( $meta_key = '', $meta_value = '' ) {
 		return delete_user_meta( $this->ID, $meta_key, $meta_value );
+	}
+
+	public function get_total_participants() {
+		$args = array(
+
+		);
+
+		$participants = new WP_User_Query($args);
+
+		return $participants->total_users;
 	}
 
 	/**
@@ -400,7 +418,7 @@ class Participant {
 
 
 		if ( $this->update_meta( '_peerraiser_donation_value', $new_value ) ) {
-			$this->donation_count = $new_total;
+			$this->donation_value = $new_value;
 		}
 
 		do_action( 'peerraiser_participant_post_increase_value', $this->donation_value, $value, $this->ID, $this );
@@ -427,7 +445,7 @@ class Participant {
 
 		do_action( 'peerraiser_participant_pre_decrease_value', $value, $this->ID, $this );
 
-		if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
+		if ( $this->update_meta( array( 'donation_value' => $new_value ) ) ) {
 			$this->donation_value = $new_value;
 		}
 
