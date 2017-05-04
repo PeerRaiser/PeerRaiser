@@ -14,8 +14,12 @@ class Taxonomy extends Base {
     public function register_taxonomies(){
         $this->register_campaign_taxonomy();
         $this->register_team_taxonomy();
+        $this->register_peerraiser_group_taxonomy();
     }
 
+	/**
+	 * Campaign Taxonomy
+	 */
     private function register_campaign_taxonomy() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -56,6 +60,9 @@ class Taxonomy extends Base {
         );
     }
 
+	/**
+	 * Team Taxonomy
+	 */
     private function register_team_taxonomy() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -94,6 +101,56 @@ class Taxonomy extends Base {
             apply_filters( 'peerraiser_team_objects', $objects ),
             apply_filters( 'peerraiser_team_taxonomy_args', $args )
         );
+    }
+
+	/**
+	 * PeerRaiser Group Taxonomy
+	 */
+    private function register_peerraiser_group_taxonomy() {
+	    register_taxonomy(
+		    'peerraiser_group',
+		    'user',
+		    array(
+			    'public' => false,
+			    'labels' => array(
+				    'name' => __( 'PeerRaiser Groups' ),
+				    'singular_name' => __( 'PeerRaiser Group' ),
+				    'menu_name' => __( 'PeerRaiser Groups' ),
+				    'search_items' => __( 'Search Groups' ),
+				    'popular_items' => __( 'Popular Groups' ),
+				    'all_items' => __( 'All Groups' ),
+				    'edit_item' => __( 'Edit Group' ),
+				    'update_item' => __( 'Update Group' ),
+				    'add_new_item' => __( 'Add New Group' ),
+				    'new_item_name' => __( 'New Group Name' ),
+				    'separate_items_with_commas' => __( 'Separate groups with commas' ),
+				    'add_or_remove_items' => __( 'Add or remove groups' ),
+				    'choose_from_most_used' => __( 'Choose from the most popular groups' ),
+			    ),
+			    'update_count_callback' => array( $this, 'update_peerraiser_group_count' )
+		    )
+	    );
+    }
+
+	/**
+	 * Function for updating the 'peerraiser_group' taxonomy count.
+	 *
+	 * See the _update_post_term_count() function in WordPress for more info.
+	 *
+	 * @param array  $terms    List of Term taxonomy IDs
+	 * @param object $taxonomy Current taxonomy object of terms
+	 */
+    public function update_peerraiser_group_count( $terms, $taxonomy ) {
+	    global $wpdb;
+
+	    foreach ( (array) $terms as $term ) {
+
+		    $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term ) );
+
+		    do_action( 'edit_term_taxonomy', $term, $taxonomy );
+		    $wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
+		    do_action( 'edited_term_taxonomy', $term, $taxonomy );
+	    }
     }
 
 }
