@@ -229,16 +229,21 @@ class Participant {
 	 */
 	private function insert_participant() {
 		if ( empty( $this->date ) ) {
-			$this->date = current_time( 'mysql' );
+			$this->date            = current_time( 'mysql' );
+			$this->pending['date'] = $this->date;
 		}
 
-		$user_id = wp_create_user( $this->username, $this->password, $this->email_address );
+		$exists = $this->maybe_attach_user();
 
-		wp_set_object_terms( $user_id, array( 'participant' ), 'peerraiser_group', true );
-		clean_object_term_cache( $user_id, 'peerraiser_group' );
+		if ( ! $exists ) {
+			$user_id = wp_create_user( $this->username, $this->password, $this->email_address );
 
-		$this->ID  = $user_id;
-		$this->_ID = $user_id;
+			$this->ID  = $user_id;
+			$this->_ID = $user_id;
+		}
+
+		wp_set_object_terms( $this->ID, array( 'participant' ), 'peerraiser_group', true );
+		clean_object_term_cache( $this->ID, 'peerraiser_group' );
 
 		return $this->ID;
 	}
@@ -333,14 +338,43 @@ class Participant {
 		return delete_user_meta( $this->ID, $meta_key, $meta_value );
 	}
 
-	public function get_total_participants() {
-		$args = array(
+	/**
+	 * Get Participants
+	 *
+	 * @param array $args  Optional set of arguments
+	 * @param bool  $total Get the total number of participants?
+	 *
+	 * @return array|int|\WP_Error|WP_User_Query
+	 */
+	public function get_participants( $args = array(), $total = false ) {
+		$participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
+		$participant_ids  = get_objects_in_term( $participant_term->term_id, 'peerraiser_group' );
 
+		if ( $total || empty( $participant_ids ) ) {
+			return $total ? count( $participant_ids ) : $participant_ids;
+		}
+
+		$defaults = array(
+			'include'     => $participant_ids,
+			'count_total' => false,
+			'number'      => -1,
+			'offset'      => 0,
 		);
 
-		$participants = new WP_User_Query($args);
+		$args = wp_parse_args( $args, $defaults );
 
-		return $participants->total_users;
+		$participants = new WP_User_Query( $args );
+
+		return $participants->results;
+	}
+
+	/**
+	 * Get the total number of participants
+	 *
+	 * @return int Number of participants
+	 */
+	public function get_total_participants() {
+		return (int) $this->get_participants( array(), true );
 	}
 
 	/**
@@ -452,6 +486,24 @@ class Participant {
 		do_action( 'peerraiser_participant_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
 
 		return $this->donation_value;
+	}
+
+	/**
+	 * Check if a user account exists with the participants email address
+	 *
+	 * @return bool|int False if user doesn't exist, user id if it does
+	 */
+	private function maybe_attach_user() {
+		$user = get_user_by( 'email', $this->email_address );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		$this->ID  = $user->ID;
+		$this->_ID = $user->ID;
+
+		return $this->ID;
 	}
 
 }
