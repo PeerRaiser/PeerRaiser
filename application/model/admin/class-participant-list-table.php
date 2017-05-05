@@ -28,21 +28,21 @@ class Participant_List_Table extends WP_List_Table {
 	/**
 	 * Method for name column
 	 *
-	 * @param array $item an array of DB data
+	 * @param \WP_User $user
 	 *
 	 * @return string
 	 */
-	function column_name( $item ) {
+	function column_name( $user ) {
+		$participant = new Participant( $user->ID );
+
 		// create a nonce
-		$delete_nonce = wp_create_nonce( 'peerraiser_delete_participant_' . $item->participant_id );
+		$delete_nonce = wp_create_nonce( 'peerraiser_delete_participant_' . $participant->ID );
 
-		$participant = new Participant( $item->participant_id );
-
-		$title = '<strong><a href="' . add_query_arg( array( 'participant' => $item->participant_id, 'view' => 'participant-details' ) ) . '">' . $participant->full_name . '</a></strong>';
+		$title = '<strong><a href="' . add_query_arg( array( 'participant' => $participant->ID, 'view' => 'participant-details' ) ) . '">' . $participant->full_name . '</a></strong>';
 
 		$actions = array(
-			'view' => sprintf( '<a href="?page=%s&view=%s&participant=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->participant_id ) ),
-			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&participant_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_participant', absint( $item->participant_id ), $delete_nonce ),
+			'view' => sprintf( '<a href="?page=%s&view=%s&participant=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $participant->ID ) ),
+			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&participant_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_participant', absint( $participant->ID ), $delete_nonce ),
 		);
 
 		return $title . $this->row_actions( apply_filters( 'peerraiser_participant_actions', $actions ) );
@@ -51,22 +51,23 @@ class Participant_List_Table extends WP_List_Table {
 	/**
 	 * Render a column when no column specific method exists.
 	 *
-	 * @param array $item
-	 * @param string $column_name
+	 * @param WP_User $user
+	 * @param string  $column_name
 	 *
 	 * @return mixed
 	 */
-	public function column_default( $item, $column_name ) {
-		$participant = new Participant( $item->participant_id );
+	public function column_default( $user, $column_name ) {
+		$participant = new Participant( $user->ID );
 
 		switch ( $column_name ) {
 			case 'email_address':
 				return  empty( $participant->email_address) ? '&mdash;' : $participant->email_address;
-			case 'donations' :
-				return $participant->donation_count;
+			case 'user_account':
+				return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s</a>', $user->data->ID, $user->data->user_login);
 			case 'amount':
 				return '$'. number_format( $participant->donation_value, 2 );
 			case 'date':
+				return $participant->date;
 				$date = strtotime( $participant->date );
 				return date('m-d-Y', $date);
 			default:
@@ -97,8 +98,8 @@ class Participant_List_Table extends WP_List_Table {
 			'cb'            => '<input type="checkbox" />',
 			'name'          => __( 'Name', 'peerraiser' ),
 			'email_address' => __( 'Email', 'peerraiser' ),
-			'donations'     => __( 'Donations', 'peerraiser' ),
-			'amount'        => __( 'Total Donated', 'peerraiser' ),
+			'user_account'  => __( 'User Account', 'peerraiser' ),
+			// 'amount'        => __( 'Total Raised', 'peerraiser' ),
 			'date'          => __( 'Date', 'peerraiser' ),
 		);
 
@@ -113,7 +114,6 @@ class Participant_List_Table extends WP_List_Table {
 	public function get_sortable_columns() {
 		$sortable_columns = array(
 			'name'   => array( 'name', true ),
-			'amount' => array( 'amount', false ),
 			'date'   => array( 'date', false ),
 		);
 
@@ -155,7 +155,7 @@ class Participant_List_Table extends WP_List_Table {
 			'per_page'    => $per_page
 		) );
 
-		$participants = new Participant_DB();
+		$participants = new Participant();
 		$participants = $participants->get_participants( array(
 			'number' => $per_page,
 			'offset' => ( $current_page - 1 ) * $per_page
