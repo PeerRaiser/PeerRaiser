@@ -13,6 +13,7 @@ use \PeerRaiser\Controller\Admin\Campaigns as CampaignsController;
 use \PeerRaiser\Controller\Admin\Teams as TeamsController;
 use \PeerRaiser\Controller\Admin\Donations as DonationsController;
 use \PeerRaiser\Controller\Admin\Donors as DonorsController;
+use \PeerRaiser\Controller\Admin\Participants as ParticipantsController;
 use \PeerRaiser\Controller\Admin\Settings as SettingsController;
 
 /**
