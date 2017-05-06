@@ -364,7 +364,7 @@ class Donors_Admin extends Admin {
 		                'name'       => __( 'User Account', 'peerraiser' ),
 		                'id'         => 'user_id',
 		                'type'       => 'select',
-		                'options_cb' => array( $this, 'get_participants_for_select_field' ),
+		                'options_cb' => array( $this, 'get_users_for_select_field' ),
 	                ),
 	                'email_address' => array(
 		                'name'       => __( 'Email Address', 'peerraiser' ),
@@ -479,7 +479,7 @@ class Donors_Admin extends Admin {
         return $this->fields;
     }
 
-    public function get_participants_for_select_field( $field ) {
+    public function get_users_for_select_field( $field ) {
 	    if ( ! isset( $_GET['donor'] ) )
 		    return;
 

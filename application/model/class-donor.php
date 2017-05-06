@@ -124,7 +124,8 @@ class Donor {
 			'donor_id' => $id,
 		);
 
-		$donor = reset( $this->db->get_donors( $args ) );
+		$donors = $this->db->get_donors( $args );
+		$donor = reset( $donors );
 
 		if ( empty( $donor ) ) {
 			return false;
