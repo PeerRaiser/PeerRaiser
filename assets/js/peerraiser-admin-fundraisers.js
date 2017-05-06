@@ -35,7 +35,8 @@
                         return {
                             action: 'peerraiser_get_users',
                             q: params.term,
-                            page: params.page
+                            page: params.page,
+                            peerraiser_group: 'participants',
                         };
                     },
                     processResults: function (data, params) {
