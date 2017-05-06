@@ -547,7 +547,7 @@ class Donor {
 		return $results;
     }
 
-    public function get_donor_image() {
+    public function get_profile_image() {
 	    $hash = md5( strtolower( trim( $this->email_address ) ) );
 	    $uri  = 'http://www.gravatar.com/avatar/' . $hash . '?d=404&s=192';
 
