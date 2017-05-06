@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model\Admin;
 
-class Donors_Admin extends Admin {
+class Participants_Admin extends Admin {
 
 	protected $fields = array();
 	protected $countries = array();
@@ -340,7 +340,7 @@ class Donors_Admin extends Admin {
 		$this->fields = array(
 			array(
 				'title'    => __('Participant Info', 'peerraiser'),
-				'id'       => 'peerraiser-donor-info',
+				'id'       => 'peerraiser-participant-info',
 				'context'  => 'normal',
 				'priority' => 'default',
 				'fields'   => array(
@@ -364,7 +364,7 @@ class Donors_Admin extends Admin {
 						'name'       => __( 'User Account', 'peerraiser' ),
 						'id'         => 'user_id',
 						'type'       => 'select',
-						'options_cb' => array( $this, 'get_participants_for_select_field' ),
+						'options_cb' => array( $this, 'get_users_for_select_field' ),
 					),
 					'email_address' => array(
 						'name'       => __( 'Email Address', 'peerraiser' ),
@@ -375,46 +375,6 @@ class Donors_Admin extends Admin {
 							'data-rule-required' => 'true',
 							'data-msg-required' => __( 'An email address is required', 'peerraiser' ),
 						),
-					),
-					'street_address_1' => array(
-						'name'       => __( 'Street Address Line 1', 'peerraiser' ),
-						'id'         => 'street_address_1',
-						'type'       => 'text',
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
-					'street_address_2' => array(
-						'name'       => __( 'Street Address Line 2', 'peerraiser' ),
-						'id'         => 'street_address_2',
-						'type'       => 'text',
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
-					'city' => array(
-						'name'       => __( 'City', 'peerraiser' ),
-						'id'         => 'city',
-						'type'       => 'text',
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
-					'state_province' => array(
-						'name'             => __( 'State / Province', 'peerraiser' ),
-						'id'               => 'state_province',
-						'type'             => 'select',
-						'show_option_none' => true,
-						'options_cb'       => array( $this, 'get_select_options' ),
-						'default_cb'       => array( $this, 'get_field_value' ),
-					),
-					'zip_postal' => array(
-						'name'       => __( 'Zip / Postal Code', 'peerraiser' ),
-						'id'         => 'zip_postal',
-						'type'       => 'text_small',
-						'default_cb' => array( $this, 'get_field_value'),
-					),
-					'country' => array(
-						'name'             => __( 'Country', 'peerraiser' ),
-						'id'               => 'country',
-						'type'             => 'select',
-						'show_option_none' => true,
-						'options_cb'       => array( $this, 'get_select_options' ),
-						'default_cb'       => array( $this, 'get_field_value'),
 					),
 				),
 			),
@@ -448,16 +408,16 @@ class Donors_Admin extends Admin {
 	}
 
 	public function get_field_value( $field ) {
-		if ( ! isset( $_GET['donor'] ) )
+		if ( ! isset( $_GET['participant'] ) )
 			return;
 
-		$donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
+		$participant_model = new \PeerRaiser\Model\Participant( $_GET['participant'] );
 
 		$field_id = $field['id'];
 
 		switch ( $field['id'] ) {
 			default:
-				$field_value = isset( $donor_model->$field_id ) ? $donor_model->$field_id : '';
+				$field_value = isset( $participant_model->$field_id ) ? $participant_model->$field_id : '';
 				break;
 		}
 
@@ -480,18 +440,18 @@ class Donors_Admin extends Admin {
 	}
 
 	public function get_users_for_select_field( $field ) {
-
-
 		// Empty array to fill with posts
 		$results = array();
 
-		$donor_model = new \PeerRaiser\Model\Donor( $_GET['donor'] );
+		$participant_model = new \PeerRaiser\Model\Participant( $_GET['participant'] );
 		$field_id = $field->args['id'];
 
-		if ( isset( $donor_model->$field_id ) && $donor_model->$field_id !== '' ) {
-			$user_info = get_userdata( $donor_model->$field_id );
+
+
+		if ( isset( $participant_model->$field_id ) && $participant_model->$field_id !== '' ) {
+			$user_info = get_userdata( $participant_model->$field_id );
 			if ( $user_info ) {
-				$results[$donor_model->$field_id] = $user_info->display_name;
+				$results[$participant_model->$field_id] = $user_info->display_name;
 			}
 		}
 
