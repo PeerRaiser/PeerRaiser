@@ -55,7 +55,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 	    if ( $view === 'summary' ) {
 		    $view_args['donor'] = new \PeerRaiser\Model\Donor( $_REQUEST['donor'] );
-		    $view_args['profile_image_url'] = $view_args['donor']->get_donor_image();
+		    $view_args['profile_image_url'] = $view_args['donor']->get_profile_image();
 	    }
 
         $this->assign( 'peerraiser', $view_args );
@@ -293,8 +293,8 @@ class Donors extends \PeerRaiser\Controller\Base {
 			}
 		}
 
-		if ( isset( $_REQUEST['_peerraiser_donor_email'] ) && ! empty( $_REQUEST['_peerraiser_donor_email'] ) && ! is_email( $_REQUEST['_peerraiser_donor_email'] ) ) {
-			$data['field_errors'][ '_peerraiser_donor_email' ] = __( 'Not a valid email address.', 'peerraiser' );
+		if ( isset( $_REQUEST['email_address'] ) && ! empty( $_REQUEST['email_address'] ) && ! is_email( $_REQUEST['email_address'] ) ) {
+			$data['field_errors'][ 'email_address' ] = __( 'Not a valid email address.', 'peerraiser' );
 		}
 
 		// TODO: Check if $_REQUEST['_peerraiser_donor_user_account'] is already tied to a donor account
