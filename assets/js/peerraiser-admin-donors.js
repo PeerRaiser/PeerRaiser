@@ -13,7 +13,7 @@
                         return {
                             action: 'peerraiser_get_users',
                             q: params.term,
-                            page: params.page
+                            page: params.page,
                         };
                     },
                     processResults: function (data, params) {
