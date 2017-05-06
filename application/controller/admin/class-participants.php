@@ -8,8 +8,13 @@ use \PeerRaiser\Model\Admin\Admin_Notices as Admin_Notices_Model;
 class Participants extends \PeerRaiser\Controller\Base {
 
 	public function register_actions() {
-		add_action( 'cmb2_admin_init',                         array( $this, 'register_meta_boxes' ) );
-		add_action( 'peerraiser_page_peerraiser-participants', array( $this, 'load_assets' ) );
+		add_action( 'cmb2_admin_init',                           array( $this, 'register_meta_boxes' ) );
+		add_action( 'peerraiser_page_peerraiser-participants',   array( $this, 'load_assets' ) );
+		add_action( 'peerraiser_add_participant',          	     array( $this, 'handle_add_participant' ) );
+		add_action( 'peerraiser_update_participant',             array( $this, 'handle_update_participant' ) );
+		add_action( 'peerraiser_delete_participant',             array( $this, 'delete_participant' ) );
+		add_action( 'peerraiser_participant_updated_first_name', array( $this, 'update_full_name' ), 10, 3 );
+		add_action( 'peerraiser_participant_updated_last_name',  array( $this, 'update_full_name' ), 10, 3 );
 	}
 
 	/**
@@ -40,10 +45,12 @@ class Participants extends \PeerRaiser\Controller\Base {
 		$view_args = array(
 			'admin_url'         => get_admin_url(),
 			'list_table'        => new \PeerRaiser\Model\Admin\Participant_List_Table(),
+			'profile_image_url' => ( !empty($donor_user_account) ) ? get_avatar_url( $donor_user_account ) : \PeerRaiser\Core\Setup::get_plugin_config()->get('images_url') . 'profile-mask.png',
 		);
 
 		if ( $view === 'summary' ) {
-			$view_args['participant'] = new \PeerRaiser\Model\Participant( $_REQUEST['participant'] );
+			$view_args['participant']       = new \PeerRaiser\Model\Participant( $_REQUEST['participant'] );
+			$view_args['profile_image_url'] = $view_args['profile_image_url'] = $view_args['participant']->get_profile_image();
 		}
 
 		$this->assign( 'peerraiser', $view_args );
@@ -113,6 +120,179 @@ class Participants extends \PeerRaiser\Controller\Base {
 				'template_directory' => get_template_directory_uri(),
 			)
 		);
+	}
 
+	public function handle_add_participant() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_participant_nonce' ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$validation = $this->is_valid_participant();
+		if ( ! $validation['is_valid'] ) {
+			return;
+		}
+
+		$participant = new Participant_Model();
+
+		$this->add_fields( $participant );
+
+		// Save to the database
+		$participant->save();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-participants',
+			'view' => 'summary',
+			'participant' => $participant->ID
+		), admin_url( 'admin.php' ) );
+
+		// Redirect to the edit screen for this new participant
+		wp_safe_redirect( $location );
+	}
+
+	public function handle_update_participant() {
+		$participant_id = intval( $_REQUEST['participant_id'] );
+
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_participant_' . $participant_id ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		$participant = new \PeerRaiser\Model\Participant( (int) $_REQUEST['participant_id'] );
+
+		if ( isset( $_REQUEST['_peerraiser_participant_note'] ) ) {
+			$user = wp_get_current_user();
+
+			$participant->add_note( $_REQUEST['_peerraiser_participant_note'], $user->user_login );
+		}
+
+		$this->update_fields( $participant );
+		$participant->save();
+	}
+
+	/**
+	 * Handle "delete participant" action
+	 *
+	 * @since 1.0.0
+	 */
+	public function delete_participant() {
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_participant_' . $_REQUEST['participant_id'] ) ) {
+			die( __('Security check failed.', 'peerraiser' ) );
+		}
+
+		// Delete the participant
+		$participant = new \PeerRaiser\Model\Participant( $_REQUEST['participant_id'] );
+
+		$participant->delete();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page' => 'peerraiser-participants'
+		), admin_url( 'admin.php' ) );
+
+		wp_safe_redirect( $location );
+	}
+
+	/**
+	 * If the first or last name was updated, update the full name
+	 *
+	 * @param $participant
+	 * @param $key
+	 * @param $value
+	 */
+	public function update_full_name( $participant, $key, $value ) {
+		if ( $key === 'first_name' ) {
+			$participant->full_name = trim( $value . ' ' . $participant->last_name );
+		} elseif ( $key === 'last_name' ) {
+			$participant->full_name = trim( $participant->first_name . ' ' . $value );
+		}
+
+		$participant->save();
+	}
+
+	/**
+	 * Checks if the fields are valid
+	 *
+	 * @since     1.0.0
+	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+	 */
+	private function is_valid_participant() {
+		$participants_model     = new \PeerRaiser\Model\Admin\Participants_Admin();
+		$required_fields = $participants_model->get_required_field_ids();
+
+		$data = array(
+			'is_valid'     => true,
+			'field_errors' => array(),
+		);
+
+		foreach ( $required_fields as $field ) {
+			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+				$data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
+			}
+		}
+
+		if ( isset( $_REQUEST['email_address'] ) && ! empty( $_REQUEST['email_address'] ) && ! is_email_address( $_REQUEST['email_address'] ) ) {
+			$data['field_errors'][ 'email_address' ] = __( 'Not a valid email address.', 'peerraiser' );
+		}
+
+		// TODO: Check if $_REQUEST['user_account'] is already tied to a participant account
+
+		if ( ! empty( $data['field_errors'] ) ) {
+			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
+			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
+
+			wp_localize_script(
+				'jquery',
+				'peerraiser_field_errors',
+				$data['field_errors']
+			);
+
+			$data['is_valid'] = false;
+		}
+
+		return $data;
+	}
+
+	private function add_fields( $participant) {
+		$participant_model = new \PeerRaiser\Model\Admin\Participants_Admin();
+
+		$field_ids = $participant_model->get_field_ids();
+
+		$field_ids['date'] = '_peerraiser_date';
+
+		foreach ( $field_ids as $key => $value ) {
+			switch ( $value ) {
+				case "_peerraiser_date" :
+					if ( isset( $_REQUEST['_peerraiser_date'] ) ) {
+						$participant->date = $_REQUEST['_peerraiser_date'];
+					} else {
+						$participant->date = current_time( 'mysql' );
+					}
+					break;
+				default :
+					if ( isset( $_REQUEST[$value] ) ) {
+						$participant->$key = $_REQUEST[$value];
+					}
+					break;
+			}
+		}
+	}
+
+	private function update_fields( $participant ) {
+		$participants_model = new \PeerRaiser\Model\Admin\Participants_Admin();
+
+		$field_ids = $participants_model->get_field_ids();
+
+		// If the date is empty, set it to today's date
+		if ( ! isset( $_REQUEST['date'] ) || empty( $_REQUEST['date'] ) ) {
+			$_REQUEST['date'] = current_time( 'mysql' );
+		}
+
+		foreach ( $field_ids as $key => $value ) {
+			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $participant->$key ) {
+				$participant->$key = $_REQUEST[$value];
+			} elseif ( ! isset( $_REQUEST[$value] ) || $_REQUEST[$value] === '' ) {
+				$participant->delete_meta($value);
+			}
+		}
 	}
 }
