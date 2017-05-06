@@ -488,6 +488,33 @@ class Participant {
 		return $this->donation_value;
 	}
 
+	public function get_user_id() {
+		return $this->ID;
+	}
+
+	public function get_profile_image() {
+		$hash = md5( strtolower( trim( $this->email_address ) ) );
+		$uri  = 'http://www.gravatar.com/avatar/' . $hash . '?d=404&s=192';
+
+		$data = wp_cache_get( $hash );
+
+		if ( false === $data ) {
+			$response = wp_remote_head( $uri );
+
+			if ( is_wp_error( $response ) ) {
+				$data = '404';
+			} else {
+				$data = $response['response']['code'];
+			}
+			wp_cache_set( $hash, $data, $group = '', $expire = 60 * 5 );
+		}
+		if ( $data == '200' ) {
+			return $uri . '.jpg';
+		} else {
+			return \PeerRaiser\Core\Setup::get_plugin_config()->get('images_url') . 'profile-mask.png';
+		}
+	}
+
 	/**
 	 * Check if a user account exists with the participants email address
 	 *
