@@ -93,7 +93,6 @@ class Admin extends Base {
         }
     }
 
-
     /**
      *
      * @param string $name
@@ -108,7 +107,6 @@ class Admin extends Base {
             return $this->help( strtolower( substr( $name, 5 ) ) );
         }
     }
-
 
     /**
      * @see \PeerRaiser\Core\View::load_assets()
@@ -214,7 +212,6 @@ class Admin extends Base {
         return $result;
     }
 
-
     /**
      * Load PeerRaiser stylesheet with PeerRaiser vector logo on all pages where the admin menu is visible.
      *
@@ -229,7 +226,6 @@ class Admin extends Base {
         );
         wp_enqueue_style( 'peerraiser-admin' );
     }
-
 
     /**
      * Hint at the newly installed plugin using WordPress pointers.
@@ -247,7 +243,6 @@ class Admin extends Base {
         wp_enqueue_script( 'wp-pointer' );
         wp_enqueue_style( 'wp-pointer' );
     }
-
 
     /**
      * Return all pointer constants from current class.
@@ -269,7 +264,6 @@ class Admin extends Base {
 
         return $pointers;
     }
-
 
     /**
      * Registers the main admin script so it can be enqueued on the other PeerRaiser pages
@@ -321,7 +315,6 @@ class Admin extends Base {
 	    );
     }
 
-
     public function register_admin_styles() {
         wp_register_style(
             'peerraiser-select2',
@@ -337,7 +330,6 @@ class Admin extends Base {
         );
     }
 
-
     public function on_campaigns_view() {
         $current_screen = get_current_screen();
         $campaigns_count = wp_count_posts( 'pr_campaign' );
@@ -347,7 +339,6 @@ class Admin extends Base {
             $admin_notices::add_notice( $message );
         }
     }
-
 
     /**
      * Customize the "Enter title here" placeholder in the Title field based on post type
@@ -375,7 +366,6 @@ class Admin extends Base {
 
         return $title;
     }
-
 
     /**
      * Retrieve posts and creates <option> for select lists
