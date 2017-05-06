@@ -22,20 +22,20 @@ use \PeerRaiser\Controller\Admin\Settings as SettingsController;
 class Admin extends Base {
 
     public function register_actions() {
-        add_action( 'admin_init',                        array( $this, 'handle_peerraiser_actions' ) );
-        add_action( 'admin_menu',                        array( $this, 'add_to_admin_panel' ) );
-        add_action( 'admin_head',                        array( $this, 'on_campaigns_view' ) );
-        add_action( 'admin_print_footer_scripts',        array( $this, 'modify_footer' ) );
-        add_action( 'admin_enqueue_scripts',             array( $this, 'add_plugin_admin_assets' ) );
-        add_action( 'admin_enqueue_scripts',             array( $this, 'add_admin_pointers_script' ) );
-        add_action( 'admin_enqueue_scripts',             array( $this, 'register_admin_scripts' ) );
-        add_action( 'admin_enqueue_scripts',             array( $this, 'register_admin_styles' ) );
-        add_action( 'wp_ajax_peerraiser_get_posts',      array( $this, 'ajax_get_posts' ) );
-        add_action( 'wp_ajax_peerraiser_get_donors',     array( $this, 'ajax_get_donors' ) );
-        add_action( 'wp_ajax_peerraiser_get_campaigns',  array( $this, 'ajax_get_campaigns' ) );
-        add_action( 'wp_ajax_peerraiser_get_teams',      array( $this, 'ajax_get_teams' ) );
-        add_action( 'wp_ajax_peerraiser_get_users',      array( $this, 'ajax_get_users' ) );
-        add_filter( 'enter_title_here',                  array( $this, 'customize_title' ), 1 );
+        add_action( 'admin_init',                       array( $this, 'handle_peerraiser_actions' ) );
+        add_action( 'admin_menu',                       array( $this, 'add_to_admin_panel' ) );
+        add_action( 'admin_head',                       array( $this, 'on_campaigns_view' ) );
+        add_action( 'admin_print_footer_scripts',       array( $this, 'modify_footer' ) );
+        add_action( 'admin_enqueue_scripts',            array( $this, 'add_plugin_admin_assets' ) );
+        add_action( 'admin_enqueue_scripts',            array( $this, 'add_admin_pointers_script' ) );
+        add_action( 'admin_enqueue_scripts',            array( $this, 'register_admin_scripts' ) );
+        add_action( 'admin_enqueue_scripts',            array( $this, 'register_admin_styles' ) );
+        add_action( 'wp_ajax_peerraiser_get_posts',     array( $this, 'ajax_get_posts' ) );
+        add_action( 'wp_ajax_peerraiser_get_donors',    array( $this, 'ajax_get_donors' ) );
+        add_action( 'wp_ajax_peerraiser_get_campaigns', array( $this, 'ajax_get_campaigns' ) );
+        add_action( 'wp_ajax_peerraiser_get_teams',     array( $this, 'ajax_get_teams' ) );
+        add_action( 'wp_ajax_peerraiser_get_users',     array( $this, 'ajax_get_users' ) );
+        add_filter( 'enter_title_here',                 array( $this, 'customize_title' ), 1 );
     }
 
     public function handle_peerraiser_actions() {
@@ -437,7 +437,7 @@ class Admin extends Base {
         wp_die();
     }
 
-    public function ajax_get_users() {
+    public function ajax_get_users( $participants = false ) {
         $count_args  = array(
             'number'    => 999999
         );
@@ -472,6 +472,15 @@ class Admin extends Base {
             'offset'    => $offset
         );
 
+        if ( isset( $_POST['peerraiser_group'] ) && $_POST['peerraiser_group'] === 'participants' ) {
+	        $participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
+	        $participant_ids  = get_objects_in_term( $participant_term->term_id, 'peerraiser_group' );
+
+        	if ( ! empty( $participant_ids ) ) {
+		        $args['include'] = $participant_ids;
+	        }
+        }
+
         if ( isset($_POST['q'] ) ){
             $args['search'] = '*'.sanitize_text_field($_POST['q']).'*';
             $args['search_columns'] = array( 'display_name', 'user_email' );
@@ -500,5 +509,4 @@ class Admin extends Base {
 
 		wp_die();
     }
-
 }
