@@ -188,6 +188,10 @@ class Bootstrap {
         $donors_controller = self::get_controller( 'Admin\Donors' );
         $donors_controller->register_actions();
 
+	    // participants controller
+	    $participants_controller = self::get_controller( 'Admin\Participants' );
+	    $participants_controller->register_actions();
+
     }
 
     private function register_activity_log() {
