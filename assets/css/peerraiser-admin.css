@@ -86,6 +86,11 @@
 .peerraiser-form .cmb-th label {
     position: relative;
 }
+.peerraiser-form .cmb2-metabox > .cmb-row.last-of-type-visible {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
 /* Tooltip */
 .pr_tooltip {
     position: absolute;
