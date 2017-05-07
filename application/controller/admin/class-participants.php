@@ -8,11 +8,12 @@ use \PeerRaiser\Model\Admin\Admin_Notices as Admin_Notices_Model;
 class Participants extends \PeerRaiser\Controller\Base {
 
 	public function register_actions() {
-		add_action( 'cmb2_admin_init',                           array( $this, 'register_meta_boxes' ) );
-		add_action( 'peerraiser_page_peerraiser-participants',   array( $this, 'load_assets' ) );
-		add_action( 'peerraiser_add_participant',          	     array( $this, 'handle_add_participant' ) );
-		add_action( 'peerraiser_update_participant',             array( $this, 'handle_update_participant' ) );
-		add_action( 'peerraiser_delete_participant',             array( $this, 'delete_participant' ) );
+		add_action( 'cmb2_admin_init',                         array( $this, 'register_meta_boxes' ) );
+		add_action( 'peerraiser_after_participant_metaboxes',  array( $this, 'participant_notes_metabox' ), 50, 1 );
+		add_action( 'peerraiser_page_peerraiser-participants', array( $this, 'load_assets' ) );
+		add_action( 'peerraiser_add_participant',          	   array( $this, 'handle_add_participant' ) );
+		add_action( 'peerraiser_update_participant',           array( $this, 'handle_update_participant' ) );
+		add_action( 'peerraiser_delete_participant',           array( $this, 'delete_participant' ) );
 	}
 
 	/**
@@ -120,6 +121,15 @@ class Participants extends \PeerRaiser\Controller\Base {
 		);
 	}
 
+	public function participant_notes_metabox( $peerraiser ) {
+		if ( ! apply_filters( 'peerraiser_show_participant_notes_metabox', true ) )
+			return;
+
+		$this->assign( 'peerraiser', $peerraiser );
+
+		$this->render( 'backend/partials/participant-box-notes' );
+	}
+
 	public function handle_add_participant() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_participant_nonce' ) ) {
 			die( __('Security check failed.', 'peerraiser' ) );
@@ -131,6 +141,11 @@ class Participants extends \PeerRaiser\Controller\Base {
 		}
 
 		$participant = new Participant_Model();
+
+		if ( isset( $_REQUEST['participant_note'] ) ) {
+			$user = wp_get_current_user();
+			$participant->add_note( $_REQUEST['participant_note'], $user->user_login );
+		}
 
 		$this->add_fields( $participant );
 
@@ -157,10 +172,9 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		$participant = new \PeerRaiser\Model\Participant( (int) $_REQUEST['participant_id'] );
 
-		if ( isset( $_REQUEST['_peerraiser_participant_note'] ) ) {
+		if ( isset( $_REQUEST['participant_note'] ) ) {
 			$user = wp_get_current_user();
-
-			$participant->add_note( $_REQUEST['_peerraiser_participant_note'], $user->user_login );
+			$participant->add_note( $_REQUEST['participant_note'], $user->user_login );
 		}
 
 		$this->update_fields( $participant );
@@ -200,6 +214,7 @@ class Participants extends \PeerRaiser\Controller\Base {
 		$participants_model     = new \PeerRaiser\Model\Admin\Participants_Admin();
 		$required_fields = $participants_model->get_required_field_ids();
 
+		// Unset required fields based on account type
 		if ( isset( $_REQUEST['_account_type'] ) ) {
 			if ( 'new' === $_REQUEST['_account_type'] ) {
 				unset( $required_fields[array_search('user_id', $required_fields)] );
@@ -212,6 +227,13 @@ class Participants extends \PeerRaiser\Controller\Base {
 			'is_valid'     => true,
 			'field_errors' => array(),
 		);
+
+		// Make sure username isn't already taken
+		if ( isset( $_REQUEST['username'] ) && ! empty( $_REQUEST['username'] ) ) {
+			if ( username_exists( $_REQUEST['username'] ) ) {
+				$data['field_errors']['username'] = __( 'This username already exists', 'peerraiser' );
+			}
+		}
 
 		foreach ( $required_fields as $field ) {
 			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
