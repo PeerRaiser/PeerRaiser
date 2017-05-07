@@ -4,11 +4,11 @@
     function peerRaiserAdminDonors(){
         var $o = {
             select2Fields : {
-                donor_user_acount      : $("#user_id"),
+                donor_user_account : $("#user_id"),
             },
 
             select2Options : {
-                donor_user_acount : {
+                donor_user_account : {
                     data : function (params) {
                         return {
                             action: 'peerraiser_get_users',
