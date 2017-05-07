@@ -41,7 +41,7 @@ class Participant_List_Table extends WP_List_Table {
 		$title = '<strong><a href="' . add_query_arg( array( 'participant' => $participant->ID, 'view' => 'participant-details' ) ) . '">' . $participant->full_name . '</a></strong>';
 
 		$actions = array(
-			'view' => sprintf( '<a href="?page=%s&view=%s&participant=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $participant->ID ) ),
+			'edit' => sprintf( '<a href="?page=%s&view=%s&participant=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $participant->ID ) ),
 			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&participant_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_participant', absint( $participant->ID ), $delete_nonce ),
 		);
 
