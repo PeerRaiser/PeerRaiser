@@ -180,3 +180,9 @@ table.donations-list .times:before {
 .text-center {
     text-align: center;
 }
+/* Fields */
+.peerraiser-form .cmb2-id-user-id,
+.peerraiser-form .cmb2-id-username,
+.peerraiser-form .cmb2-id-password {
+    display: none;
+}
