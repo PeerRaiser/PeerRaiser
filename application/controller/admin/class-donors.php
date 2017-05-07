@@ -178,11 +178,18 @@ class Donors extends \PeerRaiser\Controller\Base {
     }
 
     public function maybe_connect_user_to_donor( $user_id ) {
-	    $user_info     = get_userdata( $user_id );
+    	$user_info     = get_userdata( $user_id );
 	    $email_address = $user_info->user_email;
 
-	    $donor = $this->get_donor_by_email( $email_address );
-	    update_post_meta( $donor->ID, '_donor_user_account', $user_id );
+	    if ( ! is_email( $email_address ) ) {
+	    	return;
+	    }
+
+	    $donor = new \PeerRaiser\Model\Donor( $email_address );
+
+	    if ( $donor ) {
+		    update_post_meta( $donor->ID, '_donor_user_account', $user_id );
+	    }
     }
 
     public function handle_add_donor() {
