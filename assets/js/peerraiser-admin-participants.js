@@ -4,11 +4,11 @@
     function peerRaiserAdminParticipants(){
         var $o = {
             select2Fields : {
-                donor_user_acount      : $("#user_id"),
+                participant_user_account : $("#user_id"),
             },
 
             select2Options : {
-                donor_user_acount : {
+                participant_user_account : {
                     data : function (params) {
                         return {
                             action: 'peerraiser_get_users',
@@ -47,6 +47,7 @@
         },
 
         bindEvents = function() {
+            $('.cmb2-id--account-type select').on('change', showAccountTypeFields);
         },
 
         renderSelect = function() {
@@ -64,6 +65,20 @@
                     $(this).parents('.cmb-row').find('.cmb-th').append('<span class="pr_tooltip"><i class="pr_icon fa fa-question-circle"></i><span class="pr_tip">'+tooltip+'</span></span>');
                 }
             });
+        },
+
+        showAccountTypeFields = function( event ) {
+            var account_type = $(event.target).val();
+
+            $("#cmb2-metabox-peerraiser-account-info > .cmb-row").not('.cmb2-id--account-type').hide();
+            $("#cmb2-metabox-peerraiser-account-info [data-account-type='"+account_type+"']").parents('.cmb-row').show();
+
+            redoLastOfType();
+        },
+
+        redoLastOfType = function() {
+            $('.cmb2-metabox > .cmb-row').removeClass('last-of-type-visible');
+            $('.cmb2-metabox > .cmb-row:visible:last').addClass('last-of-type-visible');
         }
 
         init();
