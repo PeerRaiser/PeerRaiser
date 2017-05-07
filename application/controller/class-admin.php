@@ -35,7 +35,10 @@ class Admin extends Base {
         add_action( 'wp_ajax_peerraiser_get_campaigns', array( $this, 'ajax_get_campaigns' ) );
         add_action( 'wp_ajax_peerraiser_get_teams',     array( $this, 'ajax_get_teams' ) );
         add_action( 'wp_ajax_peerraiser_get_users',     array( $this, 'ajax_get_users' ) );
-        add_filter( 'enter_title_here',                 array( $this, 'customize_title' ), 1 );
+
+        add_filter( 'enter_title_here',           array( $this, 'customize_title' ), 1 );
+	    add_filter( 'manage_users_columns',       array( $this, 'add_peerraiser_group_column' ) );
+	    add_filter( 'manage_users_custom_column', array( $this, 'manage_peerraiser_group_column'), 10, 3 );
     }
 
     public function handle_peerraiser_actions() {
@@ -367,7 +370,40 @@ class Admin extends Base {
         return $title;
     }
 
-    /**
+	/**
+	 * Add a 'PeerRaiser Group' column to the Users list table
+	 *
+	 * @param $column
+	 *
+	 * @return mixed
+	 */
+    public function add_peerraiser_group_column( $column ) {
+	    $column['peerraiser_group'] = __( 'PeerRaiser Group', 'peerraiser' );
+
+    	return $column;
+    }
+
+	/**
+	 * Manage the display output of 'PeerRaiser Group' columns in the Users list table.
+	 *
+	 * @param string $output      Custom column output. Default empty.
+	 * @param string $column_name Column name.
+	 * @param int    $user_id     ID of the currently-listed user.
+	 *
+	 * @return string
+	 */
+	public function manage_peerraiser_group_column( $output, $column_name, $user_id ) {
+		switch ($column_name) {
+			case 'peerraiser_group' :
+				$peerraiser_groups = wp_get_object_terms( $user_id, array( 'peerraiser_group' ), array( 'fields' => 'names' ) );
+				return implode( ', ', $peerraiser_groups );
+				break;
+			default:
+		}
+		return $output;
+	}
+
+	/**
      * Retrieve posts and creates <option> for select lists
      *
      * @since     1.0.0
