@@ -22,6 +22,9 @@
 				if ( window.peerraiser_field_errors !== undefined ) {
 					displayErrors( window.peerraiser_field_errors );
 				}
+
+                // Add 'last-of-type-visible' class to cmb2 rows
+				$('.cmb2-metabox > .cmb-row:visible:last').addClass('last-of-type-visible');
 			},
 
 			bindEvents = function() {
