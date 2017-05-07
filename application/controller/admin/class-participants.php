@@ -13,8 +13,6 @@ class Participants extends \PeerRaiser\Controller\Base {
 		add_action( 'peerraiser_add_participant',          	     array( $this, 'handle_add_participant' ) );
 		add_action( 'peerraiser_update_participant',             array( $this, 'handle_update_participant' ) );
 		add_action( 'peerraiser_delete_participant',             array( $this, 'delete_participant' ) );
-		add_action( 'peerraiser_participant_updated_first_name', array( $this, 'update_full_name' ), 10, 3 );
-		add_action( 'peerraiser_participant_updated_last_name',  array( $this, 'update_full_name' ), 10, 3 );
 	}
 
 	/**
@@ -193,23 +191,6 @@ class Participants extends \PeerRaiser\Controller\Base {
 	}
 
 	/**
-	 * If the first or last name was updated, update the full name
-	 *
-	 * @param $participant
-	 * @param $key
-	 * @param $value
-	 */
-	public function update_full_name( $participant, $key, $value ) {
-		if ( $key === 'first_name' ) {
-			$participant->full_name = trim( $value . ' ' . $participant->last_name );
-		} elseif ( $key === 'last_name' ) {
-			$participant->full_name = trim( $participant->first_name . ' ' . $value );
-		}
-
-		$participant->save();
-	}
-
-	/**
 	 * Checks if the fields are valid
 	 *
 	 * @since     1.0.0
@@ -218,6 +199,14 @@ class Participants extends \PeerRaiser\Controller\Base {
 	private function is_valid_participant() {
 		$participants_model     = new \PeerRaiser\Model\Admin\Participants_Admin();
 		$required_fields = $participants_model->get_required_field_ids();
+
+		if ( isset( $_REQUEST['_account_type'] ) ) {
+			if ( 'new' === $_REQUEST['_account_type'] ) {
+				unset( $required_fields[array_search('user_id', $required_fields)] );
+			} elseif ( 'existing' === $_REQUEST['_account_type'] ) {
+				unset( $required_fields[array_search('username', $required_fields)] );
+			}
+		}
 
 		$data = array(
 			'is_valid'     => true,
@@ -230,7 +219,7 @@ class Participants extends \PeerRaiser\Controller\Base {
 			}
 		}
 
-		if ( isset( $_REQUEST['email_address'] ) && ! empty( $_REQUEST['email_address'] ) && ! is_email_address( $_REQUEST['email_address'] ) ) {
+		if ( isset( $_REQUEST['email_address'] ) && ! empty( $_REQUEST['email_address'] ) && ! is_email( $_REQUEST['email_address'] ) ) {
 			$data['field_errors'][ 'email_address' ] = __( 'Not a valid email address.', 'peerraiser' );
 		}
 
@@ -266,6 +255,11 @@ class Participants extends \PeerRaiser\Controller\Base {
 						$participant->date = $_REQUEST['_peerraiser_date'];
 					} else {
 						$participant->date = current_time( 'mysql' );
+					}
+					break;
+				case "user_id" :
+					if ( isset( $_REQUEST['user_id'] ) && ! empty( $_REQUEST['user_id'] ) ) {
+						$participant->ID = $_REQUEST['user_id'];
 					}
 					break;
 				default :
