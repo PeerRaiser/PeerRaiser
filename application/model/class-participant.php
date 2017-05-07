@@ -99,6 +99,14 @@ class Participant {
 	protected $date = '';
 
 	/**
+	 * Participant notes
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	protected $notes = array();
+
+	/**
 	 * Array of items that have changed since the last save() was run
 	 *
 	 * @since 1.0.0
@@ -215,6 +223,10 @@ class Participant {
 		$this->donation_count = get_user_meta( $user->ID, '_peerraiser_donation_count', true );
 		$this->donation_value = get_user_meta( $user->ID, '_peerraiser_donation_value', true );
 
+		// Participant Notes
+		$participant_notes = $this->get_meta( '_peerraiser_participant_notes', true );
+		$this->notes = ! empty( $participant_notes ) ? $participant_notes : array();
+
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_participant', $this, $user );
 
@@ -292,6 +304,11 @@ class Participant {
 					case 'last_name' :
 						$this->update_user( array( $key => $value ) );
 						$updated[$key] = $value;
+						break;
+					case 'notes' :
+						$this->update_meta( '_peerraiser_participant_notes', $value );
+						$updated[] = array( '_peerraiser_participant_notes' => $value );
+						do_action( "peerraiser_participant_updated_{$key}", $this, $key, $value );
 						break;
 					default :
 						$this->update_meta( '_peerraiser_' . $key, $value );
@@ -380,6 +397,39 @@ class Participant {
 	 */
 	public function delete_meta( $meta_key = '', $meta_value = '' ) {
 		return delete_user_meta( $this->ID, $meta_key, $meta_value );
+	}
+
+	/**
+	 * Add a note to a participant
+	 *
+	 * @param string $what The participant note content
+	 * @param string $when When the note was added
+	 * @param string $who  Who added the note
+	 *
+	 * @return array
+	 */
+	public function add_note( $what = '', $who = 'bot', $when = 'now' ) {
+		$notes = $this->notes;
+
+		if ( 'now' === $when ) {
+			$when = current_time( 'mysql' );
+		}
+
+		if ( 'bot' === $who ) {
+			$who = __( 'PeerRaiser Bot', 'peerraiser' );
+		}
+
+		$notes[] = array(
+			'id'   => md5( $what . time() ),
+			'when' => esc_attr( $when ),
+			'who'  => esc_attr( $who ),
+			'what' => wp_strip_all_tags( $what )
+		);
+
+		$this->notes = $notes;
+		$this->pending['notes'] = $this->notes;
+
+		return $this->notes;
 	}
 
 	/**
