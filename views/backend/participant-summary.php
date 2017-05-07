@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p></p>
 	</div>
 
-	<h1 class="wp-heading-inline"><?php printf( esc_html__( 'Participant #%d', 'peerraiser' ), $peerraiser['participant']->ID ); ?></h1>
+	<h1 class="wp-heading-inline"><?php _e('Edit Participant', 'peerraiser'); ?></h1>
 	<a href="<?php echo admin_url( 'admin.php?page=peerraiser-participants&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
 	<hr class="wp-header-end">
 
