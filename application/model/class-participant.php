@@ -18,7 +18,7 @@ class Participant {
 	 * @since  1.0.0
 	 * @var    integer
 	 */
-	public    $ID  = 0;
+	protected    $ID  = 0;
 
 	/**
 	 * The Protected User ID
@@ -236,7 +236,14 @@ class Participant {
 		$exists = $this->maybe_attach_user();
 
 		if ( ! $exists ) {
-			$user_id = wp_create_user( $this->username, $this->password, $this->email_address );
+			$username = ! empty( $this->username ) ? $this->username : $this->email_address;
+			$password = ! empty( $this->password ) ? $this->password : wp_generate_password();
+
+			$user_id = wp_create_user( $username, $password, $this->email_address );
+
+			if ( is_wp_error( $user_id ) ) {
+				wp_die( __('Error creating user: ' . $user_id->get_error_message(), 'peerraiser' ) );
+			}
 
 			$this->ID  = $user_id;
 			$this->_ID = $user_id;
@@ -259,7 +266,7 @@ class Participant {
 			$this->insert_participant();
 		}
 
-		if ( $this->ID !== $this->_ID ) {
+		if ( $this->ID !== $this->_ID && ! empty( $this->_ID ) ) {
 			$this->ID = $this->_ID;
 		}
 
@@ -267,11 +274,28 @@ class Participant {
 
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
-				if ( property_exists( $this, $key ) ) {
-					$this->update_meta( '_peerraiser_' . $key, $value );
-					$updated[$key] = $value;
-				} else {
-					do_action( 'peerraiser_participant_save', $this, $key );
+				switch ( $key ) {
+					case '_account_type' :
+					case 'username' :
+					case 'password' :
+						break;
+					case 'ID' :
+						wp_set_object_terms( $this->ID, array( 'participant' ), 'peerraiser_group', true );
+						clean_object_term_cache( $this->ID, 'peerraiser_group' );
+						break;
+					case 'email_address' :
+					case 'user_email' :
+						$this->update_user( array( 'user_email' => $value ) );
+						$updated[$key] = $value;
+						break;
+					case 'first_name' :
+					case 'last_name' :
+						$this->update_user( array( $key => $value ) );
+						$updated[$key] = $value;
+						break;
+					default :
+						$this->update_meta( '_peerraiser_' . $key, $value );
+						$updated[$key] = $value;
 				}
 			}
 		}
@@ -310,6 +334,26 @@ class Participant {
 	 */
 	public function get_meta( $meta_key= '', $single = false ) {
 		return get_user_meta( $this->ID, $meta_key, $single );
+	}
+
+	/**
+	 * Update a user record
+	 *
+	 * @since 1.0.0
+	 * @param array $data Array of data attributes for a donor
+	 *
+	 * @return mixed User_id if successful, false if empty, otherwise returns a WP_Error object.
+	 */
+	public function update_user( $data = array() ) {
+		if ( empty( $data ) ) {
+			return false;
+		}
+		do_action( 'peerraiser_donor_pre_update', $this->ID, $data );
+
+		// ID needs to be added to the user data
+		$data['ID'] = $this->ID;
+
+		return wp_update_user( $data );
 	}
 
 	/**
@@ -486,6 +530,10 @@ class Participant {
 		do_action( 'peerraiser_participant_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
 
 		return $this->donation_value;
+	}
+
+	public function get_id() {
+		return $this->ID;
 	}
 
 	public function get_user_id() {
