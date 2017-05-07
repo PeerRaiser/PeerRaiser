@@ -93,6 +93,14 @@ class Donor {
 	protected $donation_count = 0;
 
 	/**
+	 * Donor notes
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	protected $notes = array();
+
+	/**
 	 * Array of items that have changed since the last save() was run
 	 * This is for internal use, to allow fewer update_donor_meta calls to be run
 	 *
@@ -223,6 +231,10 @@ class Donor {
 		$this->donation_value = $donor->donation_value;
 		$this->user_id        = $donor->user_id;
 
+		// Donor Notes
+		$donor_notes = $this->get_meta( '_peerraiser_donor_notes', true );
+		$this->notes = ! empty( $donor_notes ) ? $donor_notes : array();
+
 		// Add your own items to this object via this hook:
 		do_action( 'peerraiser_after_setup_donor', $this, $donor );
 
@@ -291,6 +303,11 @@ class Donor {
 					case 'country' :
 						$this->update_meta( $key, $value );
 						$updated[] = array( $key => $value );
+						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
+						break;
+					case 'notes' :
+						$this->update_meta( '_peerraiser_donor_notes', $value );
+						$updated[] = array( '_peerraiser_donor_notes' => $value );
 						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
 						break;
 					default :
@@ -411,6 +428,39 @@ class Donor {
 		$result = $donor_meta->get_meta( $this->ID, $meta_key, $single );
 
 		return $result;
+	}
+
+	/**
+	 * Add a note to a donor
+	 *
+	 * @param string $what The donor note content
+	 * @param string $when When the note was added
+	 * @param string $who  Who added the note
+	 *
+	 * @return array
+	 */
+	public function add_note( $what = '', $who = 'bot', $when = 'now' ) {
+		$notes = $this->notes;
+
+		if ( 'now' === $when ) {
+			$when = current_time( 'mysql' );
+		}
+
+		if ( 'bot' === $who ) {
+			$who = __( 'PeerRaiser Bot', 'peerraiser' );
+		}
+
+		$notes[] = array(
+			'id'   => md5( $what . time() ),
+			'when' => esc_attr( $when ),
+			'who'  => esc_attr( $who ),
+			'what' => wp_strip_all_tags( $what )
+		);
+
+		$this->notes = $notes;
+		$this->pending['notes'] = $this->notes;
+
+		return $this->notes;
 	}
 
 	/**
