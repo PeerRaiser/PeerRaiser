@@ -9,6 +9,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'cmb2_admin_init',                     array( $this, 'register_meta_boxes' ) );
+	    add_action( 'peerraiser_after_donor_metaboxes',    array( $this, 'donor_notes_metabox' ), 50, 1 );
 		add_action( 'peerraiser_page_peerraiser-donors',   array( $this, 'load_assets' ) );
         add_action( 'user_register',                       array( $this, 'maybe_connect_user_to_donor' ) );
         add_action( 'peerraiser_add_donor',          	   array( $this, 'handle_add_donor' ) );
@@ -192,6 +193,15 @@ class Donors extends \PeerRaiser\Controller\Base {
 	    }
     }
 
+	public function donor_notes_metabox( $peerraiser ) {
+		if ( ! apply_filters( 'peerraiser_show_donor_notes_metabox', true ) )
+			return;
+
+		$this->assign( 'peerraiser', $peerraiser );
+
+		$this->render( 'backend/partials/donor-box-notes' );
+	}
+
     public function handle_add_donor() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_donor_nonce' ) ) {
 			die( __('Security check failed.', 'peerraiser' ) );
@@ -203,6 +213,11 @@ class Donors extends \PeerRaiser\Controller\Base {
 		}
 
 		$donor = new Donor_Model();
+
+	    if ( isset( $_REQUEST['donor_note'] ) ) {
+		    $user = wp_get_current_user();
+		    $donor->add_note( $_REQUEST['donor_note'], $user->user_login );
+	    }
 
 		$this->add_fields( $donor );
 
@@ -229,10 +244,9 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		$donor = new \PeerRaiser\Model\Donor( (int) $_REQUEST['donor_id'] );
 
-		if ( isset( $_REQUEST['_peerraiser_donor_note'] ) ) {
+		if ( isset( $_REQUEST['donor_note'] ) ) {
 			$user = wp_get_current_user();
-
-			$donor->add_note( $_REQUEST['_peerraiser_donor_note'], $user->user_login );
+			$donor->add_note( $_REQUEST['donor_note'], $user->user_login );
 		}
 
 		$this->update_fields( $donor );
