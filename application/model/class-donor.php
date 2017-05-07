@@ -110,19 +110,24 @@ class Donor {
 	 * Setup donor class
 	 *
 	 * @since 1.0.0
-	 * @param  int|boolean $id Donor ID
+	 * @param  int|boolean $id_or_email Donor ID or email address
 	 */
-	public function __construct( $id = false ) {
+	public function __construct( $id_or_email = false ) {
 		$this->db = new Donor_Database();
 
-		if ( empty( $id ) ) {
+		if ( empty( $id_or_email ) ) {
 			return false;
 		}
 
 		$args = array(
 			'number'   => 1,
-			'donor_id' => $id,
 		);
+
+		if ( is_email( $id_or_email ) ) {
+			$args['email_address'] = $id_or_email;
+		} else {
+			$args['donor_id'] = $id_or_email;
+		}
 
 		$donors = $this->db->get_donors( $args );
 		$donor = reset( $donors );
