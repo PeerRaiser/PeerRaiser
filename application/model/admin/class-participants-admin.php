@@ -360,12 +360,6 @@ class Participants_Admin extends Admin {
 						'type'       => 'text',
 						'default_cb' => array( $this, 'get_field_value' ),
 					),
-					'user_id' => array(
-						'name'       => __( 'User Account', 'peerraiser' ),
-						'id'         => 'user_id',
-						'type'       => 'select',
-						'options_cb' => array( $this, 'get_users_for_select_field' ),
-					),
 					'email_address' => array(
 						'name'       => __( 'Email Address', 'peerraiser' ),
 						'id'         => 'email_address',
@@ -374,6 +368,56 @@ class Participants_Admin extends Admin {
 						'attributes'  => array(
 							'data-rule-required' => 'true',
 							'data-msg-required' => __( 'An email address is required', 'peerraiser' ),
+						),
+					),
+				),
+			),
+			array(
+				'title'    => __('Account Info', 'peerraiser'),
+				'id'       => 'peerraiser-account-info',
+				'context'  => 'normal',
+				'priority' => 'default',
+				'fields'   => array(
+					'account_type' => array(
+						'name' => __( 'Account Type', 'peerraiser'),
+						'id'   => '_account_type',
+						'type' => 'select',
+						'options' => array(
+							'new' => __( 'New', 'peerraiser' ),
+							'existing' => __( 'Existing', 'peerraiser' ),
+						),
+						'show_option_none' => __( 'Please select one', 'peerraiser' ),
+						'attributes'  => array(
+							'data-rule-required' => 'true',
+							'data-msg-required' => __( 'Select an account type', 'peerraiser' ),
+						),
+					),
+					'user_id' => array(
+						'name'       => __( 'User Account', 'peerraiser' ),
+						'id'         => 'user_id',
+						'type'       => 'select',
+						'attributes' => array(
+							'data-account-type' => 'existing',
+							'data-rule-required' => 'true',
+							'data-msg-required' => __( 'A user account is required if "Existing" is selected', 'peerraiser' ),
+						),
+					),
+					'username' => array(
+						'name'       => __( 'Username', 'peerraiser' ),
+						'id'         => 'username',
+						'type'       => 'text',
+						'attributes' => array(
+							'data-account-type' => 'new',
+							'data-rule-required' => 'true',
+							'data-msg-required' => __( 'A username is required if "New" is selected', 'peerraiser' ),
+						),
+					),
+					'password' => array(
+						'name'       => __( 'Password', 'peerraiser' ),
+						'id'         => 'password',
+						'type'       => 'text',
+						'attributes' => array(
+							'data-account-type' => 'new',
 						),
 					),
 				),
@@ -440,13 +484,15 @@ class Participants_Admin extends Admin {
 	}
 
 	public function get_users_for_select_field( $field ) {
+		if ( ! isset( $_GET['participant'] ) ) {
+			return;
+		}
+
 		// Empty array to fill with posts
 		$results = array();
 
 		$participant_model = new \PeerRaiser\Model\Participant( $_GET['participant'] );
 		$field_id = $field->args['id'];
-
-
 
 		if ( isset( $participant_model->$field_id ) && $participant_model->$field_id !== '' ) {
 			$user_info = get_userdata( $participant_model->$field_id );
@@ -474,5 +520,4 @@ class Participants_Admin extends Admin {
 		}
 
 	}
-
 }
