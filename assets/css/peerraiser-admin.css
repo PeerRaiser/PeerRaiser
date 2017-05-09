@@ -44,6 +44,9 @@
 .peerraiser-error  .cmb2-metabox-description + label.peerraiser-error {
     padding-top: 0;
 }
+.peerraiser-title-div {
+    margin-bottom: 20px;
+}
 /* Button Styles */
 .ladd-button {
     line-height: 1em;
