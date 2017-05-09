@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <a href="<?php echo admin_url( 'admin.php?page=peerraiser-campaigns&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
 	<hr class="wp-header-end">
 
-	<form id="peerraiser-add-campaign" class="peerraiser-form" action="" method="post">
+	<form id="peerraiser-add-campaign" class="peerraiser-form" action="" method="post" data-object-id="<?php echo $peerraiser['campaign']->ID; ?>" data-object-type="campaign">
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<div id="postbox-container-1" class="postbox-container">
@@ -58,11 +58,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<input type="text" name="_peerraiser_campaign_name" size="30" value="<?php echo $peerraiser['campaign']->campaign_name; ?>" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter campaign name here', 'peerraiser' ); ?>" data-rule-required="true" data-msg-required="<?php _e( 'Campaign Name is required', 'peerraiser' ); ?>">
 						</div>
                         <div class="inside">
-                            <div id="edit-slug-box" class="hide-if-no-js">
+                            <div id="edit-slug-box" class="hide-if-no-js" data-edit-slug-nonce="<?php echo wp_create_nonce( 'edit-slug-' . $peerraiser['campaign']->ID ); ?>">
                                 <strong><?php _e('Permalink:'); ?></strong>
-                                <span id="sample-permalink"><a href="http://test.dev/campaigns/campaign-name/">http://test.dev/campaigns/<span id="editable-post-name">campaign-name</span>/</a></span>
+
+                                <span id="sample-permalink"><a href="http://test.dev/campaigns/<?php echo $peerraiser['campaign']->campaign_slug; ?>/"><?php echo $peerraiser['campaign']->get_display_link(); ?></a></span>
                                 ‎<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink"><?php _e( 'Edit' ); ?></button></span>
-                                <span id="editable-post-name-full">campaign-name</span>
+                                <span id="editable-post-name-full"><?php echo $peerraiser['campaign']->campaign_slug; ?></span>
                                 <input name="slug" type="hidden" id="slug" value="">
                             </div>
                         </div>
