@@ -23,6 +23,14 @@
 					displayErrors( window.peerraiser_field_errors );
 				}
 
+				if ( $o.peerraiserForm.find( '#editable-post-name' ).length ) {
+                    $o.editable_post_name = $o.peerraiserForm.find('#editable-post-name');
+                    $o.real_slug          = $o.peerraiserForm.find('#post_name');
+                    $o.permalink          = $o.peerraiserForm.find('#sample-permalink');
+                    $o.buttons            = $o.peerraiserForm.find('#edit-slug-buttons');
+                    $o.post_name_full     = $o.peerraiserForm.find('#editable-post-name-full');
+				}
+
                 // Add 'last-of-type-visible' class to cmb2 rows
 				$('.cmb2-metabox > .cmb-row:visible:last').addClass('last-of-type-visible');
 			},
@@ -49,6 +57,10 @@
 						$(".select2-drop ul").removeClass("peerraiser-error");
 					}
 				});
+
+				$(document).on( 'click', '.peerraiser-form .edit-slug', editPermalink );
+				$(document).on( 'click', '.peerraiser-form #edit-slug-buttons .cancel', cancelEditPermalink );
+				$(document).on( 'click', '.peerraiser-form #edit-slug-buttons .save', saveEditPermalink );
             },
 
 			validationSetup = function() {
@@ -92,6 +104,60 @@
                 $('[data-rule-required="true"]').each(function(){
                     $(this).parents('.cmb-row').find('.cmb-th label').append('<span class="required"></span>');
                 });
+			},
+
+            editPermalink = function() {
+				// Remove the anchor tag
+                $o.peerraiserForm.find('#sample-permalink a').contents().unwrap();
+
+                // Change the buttons
+                $o.buttons.html( '<button type="button" class="save button button-small">' + window.peerraiser_admin_object.i10n.ok + '</button> <button type="button" class="cancel button-link">' + window.peerraiser_admin_object.i10n.cancel + '</button>' );
+
+                // Insert the input box
+                $o.peerraiserForm.find('#editable-post-name').html( '<input type="text" id="new-post-slug" value="' + $o.post_name_full.text() + '" autocomplete="off">' ).children( 'input' ).keydown( function( e ) {
+                    var key = e.which;
+                    // On [enter], just save the new slug, don't save the post.
+                    if ( 13 === key ) {
+                        e.preventDefault();
+                        $o.buttons.children( '.save' ).click();
+                    }
+                    // On [esc] cancel the editing.
+                    if ( 27 === key ) {
+                        $o.buttons.children( '.cancel' ).click();
+                    }
+                } ).keyup( function() {
+                    real_slug.val( this.value );
+                }).focus();
+			},
+
+            cancelEditPermalink = function() {
+                // Remove the input box
+				$o.peerraiserForm.find('#editable-post-name').html($o.post_name_full.text());
+
+				// Wrap permalink in an anchor tag
+                $o.peerraiserForm.find('#sample-permalink').contents().wrapAll('<a href="'+$o.permalink.text()+'"></a>');
+
+                // Change the buttons back
+                $o.buttons.html('<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">'+window.peerraiser_admin_object.i10n.edit+'</button>');
+			},
+
+            saveEditPermalink = function() {
+                var new_slug = $o.editable_post_name.find('input').val();
+
+                if ( new_slug == $o.post_name_full.text() ) {
+                    $o.buttons.children('.cancel').click();
+                    return;
+                }
+
+                $o.post_name_full.text( new_slug );
+
+                $o.peerraiserForm.find('#editable-post-name').html(new_slug);
+
+                // Wrap permalink in an anchor tag
+                $o.peerraiserForm.find('#sample-permalink').contents().wrapAll('<a href="'+$o.permalink.text()+'"></a>');
+
+                // Change the buttons back
+                $o.buttons.html('<button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink">'+window.peerraiser_admin_object.i10n.edit+'</button>');
 			},
 
             displayErrors = function( errors ) {
