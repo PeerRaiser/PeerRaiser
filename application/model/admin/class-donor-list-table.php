@@ -166,8 +166,7 @@ class Donor_List_Table extends WP_List_Table {
     }
 
     public function process_bulk_action() {
-
-        //Detect when a bulk action is being triggered...
+        // Detect when a bulk action is being triggered...
         if ( 'delete' === $this->current_action() ) {
 
             // In our file that handles the request, verify the nonce.
