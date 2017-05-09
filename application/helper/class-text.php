@@ -207,4 +207,14 @@ class Text {
         return call_user_func_array( 'json_encode', $args );
     }
 
+    public static function str_replace_last( $search, $replace, $subject ) {
+	    $pos = strrpos($subject, $search);
+
+	    if ( $pos !== false ) {
+		    $subject = substr_replace($subject, $replace, $pos, strlen( $search ) );
+	    }
+
+	    return $subject;
+    }
+
 }
