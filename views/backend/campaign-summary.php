@@ -53,13 +53,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</div>
 				</div>
 				<div id="postbox-container-2" class="postbox-container">
-					<div id="titlediv">
+					<div id="titlediv" class="peerraiser-title-div">
 						<div id="titlewrap">
 							<input type="text" name="_peerraiser_campaign_name" size="30" value="<?php echo $peerraiser['campaign']->campaign_name; ?>" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter campaign name here', 'peerraiser' ); ?>" data-rule-required="true" data-msg-required="<?php _e( 'Campaign Name is required', 'peerraiser' ); ?>">
 						</div>
-						<div class="inside">
-							<div id="edit-slug-box" class="hide-if-no-js"></div>
-						</div>
+                        <div class="inside">
+                            <div id="edit-slug-box" class="hide-if-no-js">
+                                <strong><?php _e('Permalink:'); ?></strong>
+                                <span id="sample-permalink"><a href="http://test.dev/campaigns/campaign-name/">http://test.dev/campaigns/<span id="editable-post-name">campaign-name</span>/</a></span>
+                                ‎<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink"><?php _e( 'Edit' ); ?></button></span>
+                                <span id="editable-post-name-full">campaign-name</span>
+                                <input name="slug" type="hidden" id="slug" value="">
+                            </div>
+                        </div>
 					</div>
 
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
