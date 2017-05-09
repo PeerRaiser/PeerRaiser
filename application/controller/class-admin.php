@@ -312,6 +312,9 @@ class Admin extends Base {
 			    'ajax_url' => admin_url( 'admin-ajax.php' ),
 			    'template_directory' => get_template_directory_uri(),
 			    'i10n' => array(
+			    	'edit'           => __('Edit', 'peerraiser'),
+			    	'ok'             => __('OK', 'peerraiser'),
+			    	'cancel'         => __('Cancel'),
 			    	'confirm_delete' => __('Are you sure you want to delete this? This cannot be undone.', 'peerraiser' )
 			    )
 		    )
