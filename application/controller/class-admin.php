@@ -35,6 +35,7 @@ class Admin extends Base {
         add_action( 'wp_ajax_peerraiser_get_campaigns', array( $this, 'ajax_get_campaigns' ) );
         add_action( 'wp_ajax_peerraiser_get_teams',     array( $this, 'ajax_get_teams' ) );
         add_action( 'wp_ajax_peerraiser_get_users',     array( $this, 'ajax_get_users' ) );
+	    add_action( 'wp_ajax_peerraiser_get_slug',      array( $this, 'ajax_get_slug' ) );
 
         add_filter( 'enter_title_here',           array( $this, 'customize_title' ), 1 );
 	    add_filter( 'manage_users_columns',       array( $this, 'add_peerraiser_group_column' ) );
@@ -466,7 +467,7 @@ class Admin extends Base {
         wp_die();
     }
 
-    public function ajax_get_users( $participants = false ) {
+    public function ajax_get_users() {
         $count_args  = array(
             'number'    => 999999
         );
@@ -538,4 +539,53 @@ class Admin extends Base {
 
 		wp_die();
     }
+
+	public function ajax_get_slug() {
+	    // Remove special characters
+	    $sanitized = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $_POST['new_slug'] ) ) );
+
+	    // Replace whitespaces with dashes.
+	    $sanitized = sanitize_title_with_dashes( $sanitized, null, 'save' );
+
+		switch ( $_POST['object_type'] ) {
+			case 'campaign' :
+				$term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_campaign' );
+				if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
+					$_POST['new_slug'] = $this->increment_slug( $sanitized );
+					$this->ajax_get_slug();
+				} else {
+					$new_slug = $sanitized;
+				}
+				break;
+			default :
+				break;
+		}
+
+		if ( mb_strlen( $new_slug ) > 34 ) {
+			$new_slug_abridged = mb_substr( $new_slug, 0, 16 ) . '&hellip;' . mb_substr( $new_slug, -16 );
+		} else {
+			$new_slug_abridged = $new_slug;
+		}
+
+		echo Text::peerraiser_json_encode( array(
+			'new_slug' => $new_slug,
+			'slug_abridged' => $new_slug_abridged,
+		) );
+
+		wp_die();
+	}
+
+	function increment_slug( $slug ) {
+		preg_match("/(.*?)-(\d+)$/", $slug, $matches );
+
+		if ( isset( $matches[2] ) ) {
+			$new_slug = $matches[1] . '-' . ( intval($matches[2]) + 1 );
+		} else {
+			$new_slug = $slug . '-1';
+		}
+
+		error_log( $new_slug );
+
+		return $new_slug;
+	}
 }
