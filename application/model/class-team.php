@@ -519,6 +519,23 @@ class Team {
 	    return $term->count;
     }
 
+	public function get_display_link() {
+		$permalink = get_term_link( (int) $this->ID, 'peerraiser_team' );
+
+		$post_name_html = '<span id="editable-post-name">' . esc_html( $this->get_name_abridged() ) . '</span>';
+		return \PeerRaiser\Helper\Text::str_replace_last( $this->team_slug, $post_name_html, $permalink );
+	}
+
+	public function get_name_abridged() {
+		if ( mb_strlen( $this->team_slug ) > 34 ) {
+			$post_name_abridged = mb_substr( $this->team_slug, 0, 16 ) . '&hellip;' . mb_substr( $this->team_slug, -16 );
+		} else {
+			$post_name_abridged = $this->team_slug;
+		}
+
+		return $post_name_abridged;
+	}
+
 	/**
 	 * Generate a safe team slug
 	 *

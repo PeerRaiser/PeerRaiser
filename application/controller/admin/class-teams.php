@@ -322,6 +322,13 @@ class Teams extends \PeerRaiser\Controller\Base {
 			$team->update_team_name( $_REQUEST['_peerraiser_team_name'] );
 		}
 
+		if ( ! empty( $_REQUEST['_peerraiser_team_name'] ) && $team->team_name !== $_REQUEST['_peerraiser_team_name'] ) {
+			$slug = ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) ) ? $_REQUEST['slug'] : $team->team_slug;
+			$team->update_team_name( $_REQUEST['_peerraiser_team_name'], $slug );
+		} elseif ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) && $_REQUEST['slug'] !== $team->team_slug ) {
+			$team->update_team_name( $team->team_name, $_REQUEST['slug'] );
+		}
+
 		$current = $team->get_meta();
 
 		foreach ( $field_ids as $key => $value ) {
