@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<a href="<?php echo admin_url( 'admin.php?page=peerraiser-teams&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
 	<hr class="wp-header-end">
 
-	<form id="peerraiser-add-team" class="peerraiser-form" action="" method="post">
+	<form id="peerraiser-add-team" class="peerraiser-form" action="" method="post" data-object-id="<?php echo $peerraiser['team']->ID; ?>" data-object-type="team">
 		<div id="poststuff">
 			<div id="post-body" class="metabox-holder columns-2">
 				<div id="postbox-container-1" class="postbox-container">
@@ -48,13 +48,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</div>
 				</div>
 				<div id="postbox-container-2" class="postbox-container">
-					<div id="titlediv">
+					<div id="titlediv" class="peerraiser-title-div">
 						<div id="titlewrap">
 							<input type="text" name="_peerraiser_team_name" size="30" value="<?php echo $peerraiser['team']->team_name; ?>" id="title" spellcheck="true" autocomplete="off" placeholder="<?php _e( 'Enter team name here', 'peerraiser' ); ?>" data-rule-required="true" data-msg-required="<?php _e( 'Team Name is required', 'peerraiser' ); ?>">
 						</div>
-						<div class="inside">
-							<div id="edit-slug-box" class="hide-if-no-js"></div>
-						</div>
+                        <div class="inside">
+                            <div id="edit-slug-box" class="hide-if-no-js" data-edit-slug-nonce="<?php echo wp_create_nonce( 'edit-slug-' . $peerraiser['team']->ID ); ?>">
+                                <strong><?php _e('Permalink:'); ?></strong>
+
+                                <span id="sample-permalink"><a href="http://test.dev/teams/<?php echo $peerraiser['team']->team_slug; ?>/"><?php echo $peerraiser['team']->get_display_link(); ?></a></span>
+                                ‎<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink"><?php _e( 'Edit' ); ?></button></span>
+                                <span id="editable-post-name-full"><?php echo $peerraiser['team']->team_slug; ?></span>
+                                <input name="slug" type="hidden" id="slug" value="">
+                            </div>
+                        </div>
 					</div>
 
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
