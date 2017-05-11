@@ -636,11 +636,13 @@ class Campaign {
 	    return $results;
     }
 
-	public function get_display_link() {
-		$permalink = get_term_link( (int) $this->ID, 'peerraiser_campaign' );
+    public function get_permalink() {
+    	return get_term_link( (int) $this->ID, 'peerraiser_campaign' );
+    }
 
+	public function get_display_link() {
 		$post_name_html = '<span id="editable-post-name">' . esc_html( $this->get_name_abridged() ) . '</span>';
-		return \PeerRaiser\Helper\Text::str_replace_last( $this->campaign_slug, $post_name_html, $permalink );
+		return \PeerRaiser\Helper\Text::str_replace_last( $this->campaign_slug, $post_name_html, $this->get_permalink() );
 	}
 
 	public function get_name_abridged() {
