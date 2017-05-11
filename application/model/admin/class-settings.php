@@ -35,6 +35,12 @@ class Settings extends Admin {
                         'type'       => 'text_small',
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
+                    'team_slug' => array(
+	                    'name'       => __( 'Team Slug', 'peerraiser' ),
+	                    'id'         => 'team_slug',
+	                    'type'       => 'text_small',
+	                    'default_cb' => array( $this, 'get_field_value'),
+                    ),
                     'show_welcome_message' => array(
                         'name'       => __( 'Show Welcome Message on Dashboard?', 'peerraiser' ),
                         'id'         => 'show_welcome_message',
@@ -437,8 +443,12 @@ class Settings extends Admin {
                 break;
 
             case 'campaign_slug':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaign';
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaigns';
                 break;
+
+	        case 'team_slug':
+		        $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'teams';
+		        break;
 
             // True or False questions
             case 'show_welcome_message':
