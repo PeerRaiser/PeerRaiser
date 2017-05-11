@@ -48,7 +48,10 @@ class Taxonomy extends Base {
             'show_ui'               => false,
             'show_admin_column'     => false,
             'update_count_callback' => '_update_post_term_count',
-            'query_var'             => true
+            'query_var'             => true,
+	        'rewrite'               => array(
+	        	'slug' => isset( $plugin_options['campaign_slug'] ) ? $plugin_options['campaign_slug'] : 'campaigns'
+	        ),
         );
 
         $objects = array( 'fundraiser', 'donation', 'donor' );
@@ -91,7 +94,10 @@ class Taxonomy extends Base {
             'show_ui'               => false,
             'show_admin_column'     => false,
             'update_count_callback' => '_update_post_term_count',
-            'query_var'             => true
+            'query_var'             => true,
+            'rewrite'               => array(
+	            'slug' => isset( $plugin_options['team_slug'] ) ? $plugin_options['team_slug'] : 'teams'
+            ),
         );
 
         $objects = array( 'fundraiser' );
