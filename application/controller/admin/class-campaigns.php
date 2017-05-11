@@ -408,8 +408,11 @@ class Campaigns extends Base {
 		// Add campaign status to field list, since its not a CMB2 field
 		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
-		if ( isset( $_REQUEST['_peerraiser_campaign_name'] ) ) {
-			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'] );
+		if ( ! empty( $_REQUEST['_peerraiser_campaign_name'] ) && $campaign->campaign_name !== $_REQUEST['_peerraiser_campaign_name'] ) {
+			$slug = ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) ) ? $_REQUEST['slug'] : $campaign->campaign_slug;
+			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'], $slug );
+		} elseif ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) && $_REQUEST['slug'] !== $campaign->campaign_slug ) {
+			$campaign->update_campaign_name( $campaign->campaign_name, $_REQUEST['slug'] );
 		}
 
 		// If the start date is empty, set it to today's date
