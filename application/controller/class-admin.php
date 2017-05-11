@@ -557,6 +557,15 @@ class Admin extends Base {
 					$new_slug = $sanitized;
 				}
 				break;
+			case 'team' :
+				$term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_team' );
+				if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
+					$_POST['new_slug'] = $this->increment_slug( $sanitized );
+					$this->ajax_get_slug();
+				} else {
+					$new_slug = $sanitized;
+				}
+				break;
 			default :
 				break;
 		}
@@ -581,7 +590,7 @@ class Admin extends Base {
 		if ( isset( $matches[2] ) ) {
 			$new_slug = $matches[1] . '-' . ( intval($matches[2]) + 1 );
 		} else {
-			$new_slug = $slug . '-1';
+			$new_slug = $slug . '-2';
 		}
 
 		error_log( $new_slug );
