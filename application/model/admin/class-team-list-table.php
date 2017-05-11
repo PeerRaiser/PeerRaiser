@@ -39,8 +39,9 @@ class Team_List_Table extends WP_List_Table {
 	    $title = '<strong><a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a></strong>';
 
 	    $actions = array(
-		    'edit' => sprintf( '<a href="?page=%s&view=%s&team=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ) ),
-		    'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&team_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_team', absint( $team->ID ), $delete_nonce ),
+		    'view'   => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $team->get_permalink() ), __( 'View', 'peerraiser' ) ),
+		    'edit'   => sprintf( '<a href="?page=%1$s&view=%2$s&team=%3$s">%4$s</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ), __( 'Edit', 'peerraiser') ),
+		    'delete' => sprintf( '<a href="?page=%1$s&peerraiser_action=%2$s&team_id=%3$s&_wpnonce=%4$s">%5$s</a>', esc_attr( $_REQUEST['page'] ), 'delete_team', absint( $team->ID ), $delete_nonce, __( 'Delete', 'peerraiser' ) ),
 	    );
 
 	    return $title . $this->row_actions( apply_filters( 'peerraiser_team_actions', $actions ) );
