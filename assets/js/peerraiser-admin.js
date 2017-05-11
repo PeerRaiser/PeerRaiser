@@ -6,6 +6,7 @@
 		var $o = {
 				peerraiserForm : $('form.peerraiser-form'),
 			},
+			tempData = {},
 			validationObject = {},
 
 			init = function(){
@@ -24,6 +25,7 @@
 				}
 
 				if ( $o.peerraiserForm.find( '#editable-post-name' ).length ) {
+					$o.edit_slug_box      = $o.peerraiserForm.find('#edit-slug-box');
                     $o.editable_post_name = $o.peerraiserForm.find('#editable-post-name');
                     $o.real_slug          = $o.peerraiserForm.find('#post_name');
                     $o.permalink          = $o.peerraiserForm.find('#sample-permalink');
@@ -107,6 +109,9 @@
 			},
 
             editPermalink = function() {
+				// Save the current slug so it can be reverted if canceled
+				tempData.slug_revert = $o.peerraiserForm.find('#editable-post-name').text();
+
 				// Remove the anchor tag
                 $o.peerraiserForm.find('#sample-permalink a').contents().unwrap();
 
@@ -126,13 +131,13 @@
                         $o.buttons.children( '.cancel' ).click();
                     }
                 } ).keyup( function() {
-                    real_slug.val( this.value );
+                    $o.real_slug.val( this.value );
                 }).focus();
 			},
 
             cancelEditPermalink = function() {
                 // Remove the input box
-				$o.peerraiserForm.find('#editable-post-name').html($o.post_name_full.text());
+				$o.peerraiserForm.find('#editable-post-name').html(tempData.slug_revert);
 
 				// Wrap permalink in an anchor tag
                 $o.peerraiserForm.find('#sample-permalink').contents().wrapAll('<a href="'+$o.permalink.text()+'"></a>');
@@ -144,14 +149,29 @@
             saveEditPermalink = function() {
                 var new_slug = $o.editable_post_name.find('input').val();
 
-                if ( new_slug == $o.post_name_full.text() ) {
+                if ( new_slug == $o.post_name_full.text() || new_slug == '' ) {
                     $o.buttons.children('.cancel').click();
                     return;
                 }
 
                 $o.post_name_full.text( new_slug );
 
-                $o.peerraiserForm.find('#editable-post-name').html(new_slug);
+                $.post(
+                    window.peerraiser_admin_object.ajax_url,
+                    {
+                        action:      'peerraiser_get_slug',
+                        new_slug:    new_slug,
+                        object_id:   $o.peerraiserForm.data('object-id'),
+                        object_type: $o.peerraiserForm.data('object-type'),
+                        nonce: 		 $o.edit_slug_box.data('edit-slug-nonce')
+                    },
+                    function(data) {
+                    	data = JSON.parse(data);
+                        $o.peerraiserForm.find('#editable-post-name').html( data.slug_abridged );
+                        $o.peerraiserForm.find('#slug').val( data.new_slug );
+                        $o.post_name_full.text( data.new_slug );
+                    }
+                );
 
                 // Wrap permalink in an anchor tag
                 $o.peerraiserForm.find('#sample-permalink').contents().wrapAll('<a href="'+$o.permalink.text()+'"></a>');
