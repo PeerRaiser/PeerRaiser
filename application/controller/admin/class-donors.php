@@ -214,7 +214,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		$donor = new Donor_Model();
 
-	    if ( isset( $_REQUEST['donor_note'] ) ) {
+	    if ( isset( $_REQUEST['donor_note'] ) && ! empty( trim( $_REQUEST['donor_note'] ) ) ) {
 		    $user = wp_get_current_user();
 		    $donor->add_note( $_REQUEST['donor_note'], $user->user_login );
 	    }
@@ -245,7 +245,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 
 		$donor = new \PeerRaiser\Model\Donor( (int) $_REQUEST['donor_id'] );
 
-		if ( isset( $_REQUEST['donor_note'] ) ) {
+		if ( isset( $_REQUEST['donor_note'] ) && ! empty( trim( $_REQUEST['donor_note'] ) ) ) {
 			$user = wp_get_current_user();
 			$donor->add_note( $_REQUEST['donor_note'], $user->user_login );
 		}

@@ -142,7 +142,7 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		$participant = new Participant_Model();
 
-		if ( isset( $_REQUEST['participant_note'] ) ) {
+		if ( isset( $_REQUEST['participant_note'] ) && ! empty( trim( $_REQUEST['participant_note'] ) ) ) {
 			$user = wp_get_current_user();
 			$participant->add_note( $_REQUEST['participant_note'], $user->user_login );
 		}
@@ -173,7 +173,7 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		$participant = new \PeerRaiser\Model\Participant( (int) $_REQUEST['participant_id'] );
 
-		if ( isset( $_REQUEST['participant_note'] ) ) {
+		if ( isset( $_REQUEST['participant_note'] ) && ! empty( trim( $_REQUEST['participant_note'] ) ) ) {
 			$user = wp_get_current_user();
 			$participant->add_note( $_REQUEST['participant_note'], $user->user_login );
 		}
