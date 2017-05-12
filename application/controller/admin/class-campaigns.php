@@ -262,12 +262,13 @@ class Campaigns extends Base {
 
 	    $campaign->save();
 
-		// Create redirect URL
-		$location = add_query_arg( array(
-			'page' => 'peerraiser-campaigns',
-			'view' => 'summary',
-			'campaign' => $campaign->ID
-		), admin_url( 'admin.php' ) );
+	    // Create redirect URL
+	    $location = add_query_arg( array(
+		    'page'               => 'peerraiser-campaigns',
+		    'view'               => 'summary',
+		    'campaign'           => $campaign->ID,
+		    'peerraiser_message' => 'campaign_added',
+	    ), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
 		wp_safe_redirect( $location );
@@ -275,7 +276,7 @@ class Campaigns extends Base {
 
 	public function handle_update_campaign() {
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_campaign_' . $_REQUEST['campaign_id'] ) ) {
-			die( __('Security check failed.', 'peerraiser' ) );
+			die( __( 'Security check failed.', 'peerraiser' ) );
 		}
 
 		$validation = $this->is_valid_campaign();
@@ -290,9 +291,10 @@ class Campaigns extends Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-campaigns',
-			'view' => 'summary',
-			'campaign' => $campaign->ID
+			'page'               => 'peerraiser-campaigns',
+			'view'               => 'summary',
+			'campaign'           => $campaign->ID,
+			'peerraiser_message' => 'campaign_updated',
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
@@ -316,7 +318,8 @@ class Campaigns extends Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-campaigns'
+			'page'               => 'peerraiser-campaigns',
+			'peerraiser_message' => 'campaign_deleted',
 		), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
