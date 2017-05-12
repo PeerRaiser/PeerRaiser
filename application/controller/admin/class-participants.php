@@ -154,9 +154,10 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-participants',
-			'view' => 'summary',
-			'participant' => $participant->ID
+			'page'               => 'peerraiser-participants',
+			'view'               => 'summary',
+			'participant'        => $participant->ID,
+			'peerraiser_message' => 'participant_added'
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new participant
@@ -179,6 +180,17 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		$this->update_fields( $participant );
 		$participant->save();
+
+		// Create redirect URL
+		$location = add_query_arg( array(
+			'page'               => 'peerraiser-participants',
+			'view'               => 'summary',
+			'team'               => $participant->ID,
+			'peerraiser_message' => 'participant_updated',
+		), admin_url( 'admin.php' ) );
+
+		// Redirect to the edit screen for this new donation
+		wp_safe_redirect( $location );
 	}
 
 	/**
@@ -198,7 +210,8 @@ class Participants extends \PeerRaiser\Controller\Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-participants'
+			'page'               => 'peerraiser-participants',
+			'peerraiser_message' => 'participant_deleted',
 		), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
