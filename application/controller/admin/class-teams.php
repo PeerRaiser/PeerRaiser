@@ -169,9 +169,10 @@ class Teams extends \PeerRaiser\Controller\Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-teams',
-			'view' => 'summary',
-			'team' => $team->ID
+			'page'               => 'peerraiser-teams',
+			'view'               => 'summary',
+			'team'               => $team->ID,
+			'peerraiser_message' => 'team_added',
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
@@ -195,9 +196,10 @@ class Teams extends \PeerRaiser\Controller\Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-teams',
-			'view' => 'summary',
-			'team' => $team->ID
+			'page'               => 'peerraiser-teams',
+			'view'               => 'summary',
+			'team'               => $team->ID,
+			'peerraiser_message' => 'team_updated',
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donation
@@ -269,7 +271,8 @@ class Teams extends \PeerRaiser\Controller\Base {
 
 		// Create redirect URL
 		$location = add_query_arg( array(
-			'page' => 'peerraiser-teams'
+			'page'               => 'peerraiser-teams',
+			'peerraiser_message' => 'team_deleted',
 		), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
