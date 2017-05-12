@@ -185,7 +185,7 @@ class Participants extends \PeerRaiser\Controller\Base {
 		$location = add_query_arg( array(
 			'page'               => 'peerraiser-participants',
 			'view'               => 'summary',
-			'team'               => $participant->ID,
+			'participant'        => $participant->ID,
 			'peerraiser_message' => 'participant_updated',
 		), admin_url( 'admin.php' ) );
 
