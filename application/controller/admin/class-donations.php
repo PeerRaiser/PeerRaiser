@@ -216,12 +216,13 @@ class Donations extends \PeerRaiser\Controller\Base {
         // Save to the database
         $donation->save();
 
-        // Create redirect URL
-        $location = add_query_arg( array(
-            'page' => 'peerraiser-donations',
-            'view' => 'summary',
-            'donation' => $donation->ID
-        ), admin_url( 'admin.php' ) );
+	    // Create redirect URL
+	    $location = add_query_arg( array(
+		    'page'               => 'peerraiser-donations',
+		    'view'               => 'summary',
+		    'donation'           => $donation->ID,
+		    'peerraiser_message' => 'donation_added',
+	    ), admin_url( 'admin.php' ) );
 
         // Redirect to the edit screen for this new donation
         wp_safe_redirect( $location );
@@ -242,6 +243,17 @@ class Donations extends \PeerRaiser\Controller\Base {
         }
 
         $donation->save();
+
+	    // Create redirect URL
+	    $location = add_query_arg( array(
+		    'page'               => 'peerraiser-donations',
+		    'view'               => 'summary',
+		    'donation'           => $donation->ID,
+		    'peerraiser_message' => 'donation_updated',
+	    ), admin_url( 'admin.php' ) );
+
+	    // Redirect to the edit screen for this new donation
+	    wp_safe_redirect( $location );
     }
 
 	/**
@@ -261,9 +273,10 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->delete();
 
         // Create redirect URL
-		$location = add_query_arg( array(
-			'page' => 'peerraiser-donations'
-		), admin_url( 'admin.php' ) );
+	    $location = add_query_arg( array(
+		    'page'               => 'peerraiser-donations',
+		    'peerraiser_message' => 'donation_deleted'
+	    ), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
 	}
