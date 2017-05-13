@@ -66,7 +66,8 @@ class Donor_List_Table extends WP_List_Table {
 			case 'donations' :
 				return $donor->donation_count;
             case 'amount':
-                return '$'. number_format( $donor->donation_value, 2 );
+            	$amount = $donor->donation_value ? $donor->donation_value : 0;
+                return peerraiser_money_format( $amount );
             case 'date':
                 $date = strtotime( $donor->date );
                 return date('m-d-Y', $date);
@@ -113,9 +114,10 @@ class Donor_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'name'   => array( 'name', true ),
-            'amount' => array( 'amount', false ),
-            'date'   => array( 'date', false ),
+	        'name'      => array( 'name', true ),
+	        'donations' => array( 'donations', true ),
+	        'amount'    => array( 'amount', false ),
+	        'date'      => array( 'date', false ),
         );
 
         return $sortable_columns;
