@@ -192,6 +192,9 @@
                 l.stop();
                 $o.submitButton.$element.addClass('success');
                 $o.submitButton.$element.find('.ladda-label').text('Settings Saved').append('<i class="fa fa-check" aria-hidden="true"></i>');
+
+                displayNotice();
+
                 $o.submitButton.$element.timeout = setTimeout(function(){
                     $o.submitButton.$element.removeClass('success').find('.ladda-label').text('Save Settings');
                 }, 1500);
@@ -199,6 +202,12 @@
             });
 
             return jqxhr;
+        },
+
+        displayNotice = function() {
+            var $message_container = $('#peerraiser-js-message');
+            $message_container.attr('class', 'pr_flash-message notice notice-info').find('p').text('Settings updated successfully.');
+            $message_container.slideDown().delay(3000).slideUp();
         };
 
         init();

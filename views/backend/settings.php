@@ -16,6 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <h2><?php _e('PeerRaiser Settings', 'peerraiser') ?></h2>
 
+    <div id="peerraiser-js-message" class="pr_flash-message" style="display:none;">
+        <p></p>
+    </div>
+
     <?php do_action( 'peerraiser_before_settings_tabs', $peerraiser ); ?>
 
     <h2 class="nav-tab-wrapper">

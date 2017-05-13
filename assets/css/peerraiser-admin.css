@@ -67,6 +67,15 @@
     display: inline;
     padding-left: 9px;
 }
+#peerraiser-js-message {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.55);
+    margin: 0;
+    opacity: .9;
+    position: fixed;
+    top: 2.5rem;
+    width: 96%;
+    z-index: 100;
+}
 /* CMB2 */
 .peerraiser-form .cmb-th label {
     display: inline-block;
