@@ -65,9 +65,9 @@ class Participant_List_Table extends WP_List_Table {
 			case 'user_account':
 				return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s</a>', $user->data->ID, $user->data->user_login);
 			case 'amount':
-				return '$'. number_format( $participant->donation_value, 2 );
+				$amount = $participant->donation_value ? $participant->donation_value : 0;
+				return peerraiser_money_format( $amount );
 			case 'date':
-				return $participant->date;
 				$date = strtotime( $participant->date );
 				return date('m-d-Y', $date);
 			default:
@@ -99,8 +99,8 @@ class Participant_List_Table extends WP_List_Table {
 			'name'          => __( 'Name', 'peerraiser' ),
 			'email_address' => __( 'Email', 'peerraiser' ),
 			'user_account'  => __( 'User Account', 'peerraiser' ),
-			// 'amount'        => __( 'Total Raised', 'peerraiser' ),
-			'date'          => __( 'Date', 'peerraiser' ),
+			'amount'        => __( 'Total Raised', 'peerraiser' ),
+			'date'          => __( 'Date Joined', 'peerraiser' ),
 		);
 
 		return $columns;
@@ -114,6 +114,7 @@ class Participant_List_Table extends WP_List_Table {
 	public function get_sortable_columns() {
 		$sortable_columns = array(
 			'name'   => array( 'name', true ),
+			'amount' => array( 'amount', false ),
 			'date'   => array( 'date', false ),
 		);
 
