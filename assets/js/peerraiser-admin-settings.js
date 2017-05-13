@@ -205,9 +205,14 @@
         },
 
         displayNotice = function() {
-            var $message_container = $('#peerraiser-js-message');
-            $message_container.attr('class', 'pr_flash-message notice notice-info').find('p').text('Settings updated successfully.');
-            $message_container.slideDown().delay(3000).slideUp();
+            var $message_container = $('#peerraiser-js-message'),
+                revert_classes = $message_container.attr('class');
+
+            $message_container.attr('class', 'notice notice-info').find('p').text('Settings updated successfully.');
+
+            $message_container.slideDown('fast').delay(3000).slideUp( 'fast', function(){
+                $(this).attr('class', revert_classes );
+            });
         };
 
         init();

@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     <h2><?php _e('PeerRaiser Settings', 'peerraiser') ?></h2>
 
-    <div id="peerraiser-js-message" class="pr_flash-message" style="display:none;">
+    <div id="peerraiser-js-message" class="notice" style="display:none;">
         <p></p>
     </div>
 
