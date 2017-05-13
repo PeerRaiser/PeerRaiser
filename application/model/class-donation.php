@@ -6,6 +6,7 @@ use \PeerRaiser\Model\Donor as Donor_Model;
 use \PeerRaiser\Model\Campaign as Campaign_Model;
 use \PeerRaiser\Model\Fundraiser as Fundraiser_Model;
 use \PeerRaiser\Model\Team as Team_Model;
+use \PeerRaiser\Model\Participant as Participant_Model;
 use \PeerRaiser\Model\Database\Donation_Table;
 use \PeerRaiser\Model\Database\Donation_Meta_Table;
 
@@ -145,6 +146,14 @@ class Donation {
      * @var integer
      */
     protected $team_id = 0;
+
+	/**
+	 * The Participant ID this donation was made to (if applicable)
+	 *
+	 * @since  1.0.0
+	 * @var integer
+	 */
+	protected $participant_id = 0;
 
     /**
      * The first name of the donor
@@ -383,6 +392,7 @@ class Donation {
         $this->campaign_id    = $donation->campaign_id;
         $this->fundraiser_id  = $donation->fundraiser_id;
         $this->team_id        = $donation->team_id;
+	    $this->participant_id = $donation->participant_id;
 
         // Donation Notes
         $donation_notes = $this->get_meta( 'notes', true );
@@ -420,6 +430,14 @@ class Donation {
             }
         }
 
+        // If the participant isn't set, but the fundraiser is, get the participant for that fundraiser
+	    if ( ! $this->participant_id && $this->fundraiser_id ) {
+        	$fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
+
+        	$this->participant_id = $fundraiser->participant;
+        	$this->pending['participant_id'] = $fundraiser->participant;
+	    }
+
 	    $plugin_options  = get_option( 'peerraiser_options', array() );
 
 	    $this->is_test            = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN );
@@ -431,6 +449,7 @@ class Donation {
 		    $this->increase_campaign_amounts();
 		    $this->increase_fundraiser_amounts();
 		    $this->increase_team_amounts();
+		    $this->increase_participant_amounts();
 	    }
 
         if ( empty( $this->ip ) ) {
@@ -521,6 +540,7 @@ class Donation {
         $this->decrease_fundraiser_amounts();
         $this->decrease_fundraiser_amounts();
         $this->decrease_team_amounts();
+        $this->decrease_participant_amounts();
 
 		do_action( 'peerraiser_donation_deleted', $this );
 	}
@@ -787,4 +807,26 @@ class Donation {
         $campaign->decrease_donation_count( 1 );
         $campaign->decrease_value( abs( $this->total ) );
     }
+
+	private function increase_participant_amounts() {
+		if ( empty( $this->participant_id ) ) {
+			return;
+		}
+
+		$participant = new Participant_Model( $this->participant_id );
+
+		$participant->increase_donation_count( 1 );
+		$participant->increase_value( $this->total );
+	}
+
+	private function decrease_participant_amounts() {
+		if ( empty( $this->participant_id ) ) {
+			return;
+		}
+
+		$participant = new Participant_Model( $this->participant_id );
+
+		$participant->decrease_donation_count( 1 );
+		$participant->decrease_value( abs( $this->total ) );
+	}
 }
