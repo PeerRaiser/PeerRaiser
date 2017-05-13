@@ -43,7 +43,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										</div>
 										<div id="publishing-action">
 											<span class="spinner"></span>
-											<input type="submit" name="publish" id="publish" class="button button-primary button-large" value="<?php _e( 'Publish', 'peerraiser'); ?>">
+											<input type="submit" name="update" id="update" class="button button-primary button-large" value="<?php _e( 'Update', 'peerraiser'); ?>">
 										</div>
 										<div class="clear"></div>
 									</div>
