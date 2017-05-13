@@ -423,14 +423,32 @@ class Campaigns extends Base {
 			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
 		}
 
+		// Get the current values from the database to see if things changes
 		$current = $campaign->get_meta();
 
 		foreach ( $field_ids as $key => $value ) {
-			if ( isset( $_REQUEST[$value] ) && $_REQUEST[$value] !== $current[$value][0] ) {
-				$campaign->$key = $_REQUEST[$value];
-			} elseif ( ! isset( $_REQUEST[$value] ) ) {
-				$campaign->delete_meta($value);
+			// Skip field if it isn't set
+			if ( ! isset( $_REQUEST[$value] ) ) {
+				continue;
 			}
+
+			// Delete field from database if its empty
+			if ( trim( $_REQUEST[$value] ) === '' ) {
+				if ( ! isset( $current[$value][0] ) ) {
+					continue;
+				}
+
+				$campaign->delete_meta($value);
+				continue;
+			}
+
+			// Skip field if data didn't change
+			if ( isset( $current[$value][0] ) && $_REQUEST[$value] === $current[$value][0] ) {
+				continue;
+			}
+
+			// Update the data. It changed and isn't empty
+			$campaign->$key = $_REQUEST[$value];
 		}
 	}
 
