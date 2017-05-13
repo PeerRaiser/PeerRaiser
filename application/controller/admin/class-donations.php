@@ -116,7 +116,8 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function on_donations_view() {
         if ( isset( $_REQUEST['page'], $_REQUEST['view'] ) && $_REQUEST['page'] === 'peerraiser-donations' && $_REQUEST['view'] === 'add' ) {
-            $message = __("A donor record is required. <a href=\"admin.php?page=peerraiser-donors&view=add\">Create one now</a> if it doesn't already exist");
+        	// TODO: Make this easier to translate
+            $message = __( 'donor record is required. <a href="admin.php?page=peerraiser-donors&view=add">Create one now</a> if it does not already exist', 'peerraiser' );
             \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
     }
@@ -221,7 +222,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 		    'page'               => 'peerraiser-donations',
 		    'view'               => 'summary',
 		    'donation'           => $donation->ID,
-		    'peerraiser_message' => 'donation_added',
+		    'peerraiser_notice' => 'donation_added',
 	    ), admin_url( 'admin.php' ) );
 
         // Redirect to the edit screen for this new donation
@@ -249,7 +250,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 		    'page'               => 'peerraiser-donations',
 		    'view'               => 'summary',
 		    'donation'           => $donation->ID,
-		    'peerraiser_message' => 'donation_updated',
+		    'peerraiser_notice' => 'donation_updated',
 	    ), admin_url( 'admin.php' ) );
 
 	    // Redirect to the edit screen for this new donation
@@ -275,7 +276,7 @@ class Donations extends \PeerRaiser\Controller\Base {
         // Create redirect URL
 	    $location = add_query_arg( array(
 		    'page'               => 'peerraiser-donations',
-		    'peerraiser_message' => 'donation_deleted'
+		    'peerraiser_notice' => 'donation_deleted'
 	    ), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );

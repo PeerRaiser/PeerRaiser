@@ -229,7 +229,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 		    'page'               => 'peerraiser-donors',
 		    'view'               => 'summary',
 		    'donor'              => $donor->ID,
-		    'peerraiser_message' => 'donor_added',
+		    'peerraiser_notice' => 'donor_added',
 	    ), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donor
@@ -258,7 +258,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 			'page'               => 'peerraiser-donors',
 			'view'               => 'summary',
 			'donor'              => $donor->ID,
-			'peerraiser_message' => 'donor_updated',
+			'peerraiser_notice' => 'donor_updated',
 		), admin_url( 'admin.php' ) );
 
 		// Redirect to the edit screen for this new donor
@@ -283,7 +283,7 @@ class Donors extends \PeerRaiser\Controller\Base {
 		// Create redirect URL
 		$location = add_query_arg( array(
 			'page'               => 'peerraiser-donors',
-			'peerraiser_message' => 'donor_deleted'
+			'peerraiser_notice' => 'donor_deleted'
 		), admin_url( 'admin.php' ) );
 
 		wp_safe_redirect( $location );
