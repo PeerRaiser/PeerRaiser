@@ -4,8 +4,20 @@ namespace PeerRaiser\Controller\Admin;
 class Admin_Notices extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
+        add_action( 'admin_notices',  array( $this, 'add_peerraiser_notices' ) );
         add_action( 'admin_notices',  array( $this, 'display_notices' ) );
 	    add_action( 'admin_bar_menu', array( $this, 'maybe_display_test_mode_notice' ), 1000, 1 );
+    }
+
+    public function add_peerraiser_notices() {
+        if ( ! isset( $_GET['peerraiser_notice'] ) ) {
+            return;
+        }
+
+	    $admin_notice_model = new \PeerRaiser\Model\Admin\Admin_Notices();
+        $notice = $admin_notice_model->get_notice_message( $_GET['peerraiser_notice'] );
+
+	    \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $notice['message'], $notice['class'], $notice['dismissible'] );
     }
 
     public function display_notices() {
