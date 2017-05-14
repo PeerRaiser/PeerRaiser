@@ -10,6 +10,8 @@ use \PeerRaiser\Model\Admin\Campaign_List_Table;
 use \PeerRaiser\Core\Setup;
 use \PeerRaiser\Helper\Stats;
 use \PeerRaiser\Helper\View;
+use \DateTime;
+use \DateTimeZone;
 
 class Campaigns extends Base {
 
@@ -19,6 +21,8 @@ class Campaigns extends Base {
 		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
 		add_action( 'peerraiser_update_campaign',           array( $this, 'handle_update_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
+		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_schedule_cron' ), 10, 3 );
+		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_clear_cron' ), 10, 2 );
     }
 
     /**
@@ -326,6 +330,46 @@ class Campaigns extends Base {
 	}
 
 	/**
+	 * Maybe set cron for campaign end date
+	 *
+	 * Checks if the updated field is the end date, and handles setting the cron
+	 *
+	 * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
+	 * @param string                     $meta_key   Meta key
+	 * @param string                     $meta_value Meta value
+	 */
+	public function maybe_schedule_cron( $campaign, $meta_key, $meta_value ) {
+		if ( $meta_key !== '_peerraiser_end_date' ) {
+			return;
+		}
+
+		// Clear existing cron, if there is one
+		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+
+		$timezone   = new DateTimeZone( get_option( 'timezone_string' ) );
+		$time       = new DateTime( $meta_value, $timezone );
+		$timestamp  = (int) $time->format('U');
+
+		wp_schedule_single_event( $timestamp, 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+	}
+
+	/**
+	 * Maybe unset the cron for campaign end date
+	 *
+	 * Checks if the deleted field is the end date, and handles removing the cron
+	 *
+	 * @param \PeerRaiser\Model\Campaign $campaign Campaign object
+	 * @param string                     $meta_key Meta key
+	 */
+	public function maybe_clear_cron( $campaign, $meta_key ) {
+		if ( $meta_key !== '_peerraiser_end_date') {
+			return;
+		}
+
+		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+	}
+
+	/**
 	 * Checks if the fields are valid
 	 *
 	 * @todo Check formatting of goal amounts
@@ -388,12 +432,9 @@ class Campaigns extends Base {
 					$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
 					break;
 				case "_peerraiser_start_date" :
-					if ( isset( $_REQUEST['_peerraiser_start_date'] ) ) {
-						$campaign->start_date = $_REQUEST['_peerraiser_start_date'];
-					} else {
-						$campaign->start_date = current_time( 'mysql' );
+					if ( empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+						$_REQUEST['_peerraiser_start_date'] = current_time( 'mysql' );
 					}
-					break;
 				default :
 					if ( isset( $_REQUEST[$value] ) ) {
 						$campaign->$key = $_REQUEST[$value];
