@@ -23,6 +23,7 @@ class Campaigns extends Base {
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
 		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_schedule_cron' ), 10, 3 );
 		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_clear_cron' ), 10, 2 );
+		add_action( 'peerraiser_end_campaign',              array( $this, 'end_campaign' ) );
     }
 
     /**
@@ -367,6 +368,22 @@ class Campaigns extends Base {
 		}
 
 		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+	}
+
+	/**
+	 * Set campaign status to 'ended' when the campaign ends
+	 *
+	 * @param $campaign_id
+	 */
+	public function end_campaign( $campaign_id ) {
+		$campaign = new Campaign( $campaign_id );
+
+		if ( $campaign->campaign_status !== 'active' ) {
+			return;
+		}
+
+		$campaign->campaign_status = 'ended';
+		$campaign->save();
 	}
 
 	/**
