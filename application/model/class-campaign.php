@@ -409,7 +409,7 @@ class Campaign {
 		do_action( 'peerraiser_update_campaign_meta', $this, $meta_key, $meta_value );
 
         if ( $results = update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value ) ) {
-	        do_action( 'peerraiser_updated_campaign_meta', $this, $meta_key, $meta_value, $this );
+	        do_action( 'peerraiser_updated_campaign_meta', $this, $meta_key, $meta_value );
         }
 
         return $results;
