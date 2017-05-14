@@ -104,7 +104,7 @@ class Campaign_List_Table extends WP_List_Table {
             case 'raised' :
                 return peerraiser_money_format( $campaign->donation_value );
 	        case 'status' :
-		        return $admin_campaigns_model->get_campaign_status_by_key( $campaign->status );
+		        return $admin_campaigns_model->get_campaign_status_by_key( $campaign->campaign_status );
             default:
                 return print_r( $campaign, true ); //Show the whole array for troubleshooting purposes
         }

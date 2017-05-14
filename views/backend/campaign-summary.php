@@ -22,15 +22,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<h2><span><?php _e( 'Campaign Details', 'peerraiser' ); ?></span></h2>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
-									<?php $campaign_status = $peerraiser['campaign']->get_meta( '_peerraiser_campaign_status', true ); ?>
-                                    <div class="misc-pub-section campaign-status <?php echo $campaign_status; ?>">
-										<?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php echo $peerraiser['campaign_admin']->get_campaign_status_by_key( $campaign_status ); ?></strong>
+                                    <div class="misc-pub-section campaign-status <?php echo $peerraiser['campaign']->campaign_status; ?>">
+										<?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php echo $peerraiser['campaign_admin']->get_campaign_status_by_key( $peerraiser['campaign']->campaign_status ); ?></strong>
                                         <a href="#campaign_status" class="edit-campaign-status hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit', 'peerraiser') ?></span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                         <div id="campaign-status-select" class="hide-if-js">
-                                            <input type="hidden" name="_peerraiser_campaign_status_hidden" value="<?php echo $campaign_status ?>">
+                                            <input type="hidden" name="_peerraiser_campaign_status_hidden" value="<?php echo $peerraiser['campaign']->campaign_status ?>">
                                             <select name="_peerraiser_campaign_status" id="campaign-status">
                                                 <?php foreach ( $peerraiser['campaign_admin']->get_campaign_statuses() as $key => $value ) : ?>
-                                                    <option value="<?php echo $key ?>" <?php selected( $campaign_status, $key, true ); ?>><?php echo $value ?></option>
+                                                    <option value="<?php echo $key ?>" <?php selected( $peerraiser['campaign']->campaign_status, $key, true ); ?>><?php echo $value ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                             <a href="#campaign_status" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>

@@ -166,7 +166,7 @@ class Campaign {
 	 *
 	 * @var string
 	 */
-    protected $status = 'active';
+    protected $campaign_status = 'active';
 
 	/**
 	 * Array of items that have changed since the last save() was run
@@ -280,9 +280,9 @@ class Campaign {
 		$this->campaign_slug = $campaign->slug;
 
 		// Dates / Status
-		$this->start_date  = get_term_meta( $this->ID, '_peerraiser_start_date', true );
-		$this->end_date    = get_term_meta( $this->ID, '_peerraiser_end_date', true );
-		$this->status      = get_term_meta( $this->ID, '_peerraiser_campaign_status', true );
+		$this->start_date      = get_term_meta( $this->ID, '_peerraiser_start_date', true );
+		$this->end_date        = get_term_meta( $this->ID, '_peerraiser_end_date', true );
+		$this->campaign_status = get_term_meta( $this->ID, '_peerraiser_campaign_status', true );
 
 		// Campaign content
 		$this->campaign_description = get_term_meta( $this->ID, '_peerraiser_campaign_description', true );
