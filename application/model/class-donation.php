@@ -709,11 +709,15 @@ class Donation {
      * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
      */
     public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-        $meta_value = apply_filters( 'peerraiser_update_donation_meta_' . $meta_key, $meta_value, $this->ID );
-
         $donation_meta = new Donation_Meta_Table();
 
-        return $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value);
+	    do_action( 'peerraiser_update_donation_meta', $this, $meta_key, $meta_value );
+
+	    if ( $results = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value) ) {
+		    do_action( 'peerraiser_updated_donation_meta', $this, $meta_key, $meta_value );
+	    }
+
+	    return $results;
     }
 
     /**
