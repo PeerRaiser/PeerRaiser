@@ -335,11 +335,28 @@ class Teams extends \PeerRaiser\Controller\Base {
 		$current = $team->get_meta();
 
 		foreach ( $field_ids as $key => $value ) {
-			if ( isset( $_REQUEST[ $value ] ) && $_REQUEST[ $value ] !== $current[ $value ][0] ) {
-				$team->$key = $_REQUEST[ $value ];
-			} elseif ( ! isset( $_REQUEST[ $value ] ) ) {
-				$team->delete_meta( $value );
+			// Skip field if it isn't set
+			if ( ! isset( $_REQUEST[$value] ) ) {
+				continue;
 			}
+
+			// Delete field from database if its empty
+			if ( trim( $_REQUEST[$value] ) === '' ) {
+				if ( ! isset( $current[$value][0] ) ) {
+					continue;
+				}
+
+				$team->delete_meta($value);
+				continue;
+			}
+
+			// Skip field if data didn't change
+			if ( isset( $current[$value][0] ) && $_REQUEST[$value] === $current[$value][0] ) {
+				continue;
+			}
+
+			// Update the data. It changed and isn't empty
+			$team->$key = $_REQUEST[$value];
 		}
 	}
 
