@@ -406,7 +406,13 @@ class Campaign {
 	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
 	 */
 	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-        return update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value );
+		do_action( 'peerraiser_update_campaign_meta', $this, $meta_key, $meta_value );
+
+        if ( $results = update_term_meta( $this->ID, $meta_key, $meta_value, $prev_value ) ) {
+	        do_action( 'peerraiser_updated_campaign_meta', $this, $meta_key, $meta_value, $this );
+        }
+
+        return $results;
 	}
 
 	/**
@@ -431,7 +437,13 @@ class Campaign {
 	 * @return bool True on success, false on failure.
 	 */
 	function delete_meta( $meta_key, $meta_value = '' ) {
-		return delete_term_meta( $this->ID, $meta_key, $meta_value );
+		do_action( 'peerraiser_delete_campaign_meta', $this, $meta_key );
+
+		if ( $results = delete_term_meta( $this->ID, $meta_key, $meta_value ) ) {
+			do_action( 'peerraiser_deleted_campaign_meta', $this, $meta_key );
+		}
+
+		return $results;
 	}
 
 	/**
@@ -448,6 +460,8 @@ class Campaign {
 		);
 
 		wp_update_term( $this->ID, 'peerraiser_campaign', $args );
+
+		do_action( 'peerraiser_campaign_name_updated', $this );
 	}
 
     /**
@@ -565,6 +579,13 @@ class Campaign {
         return wp_count_terms( 'peerraiser_campaign', array( 'hide_empty' => false ) );
     }
 
+	/**
+	 * Get the fundraisers associated with this campaign
+	 *
+	 * @param bool $count
+	 *
+	 * @return int|\WP_Query
+	 */
     public function get_fundraisers( $count = false ) {
 	    $args = array(
 		    'post_type' => 'fundraiser',
@@ -592,7 +613,7 @@ class Campaign {
     }
 
 	/**
-	 * Get the total number of teams for this campaign
+	 * Get the teams for this campaign
 	 *
 	 * @param  bool  $count Just return the total number of teams
 	 * @return int
@@ -609,11 +630,23 @@ class Campaign {
 	    return $count ? count( $terms ) : $terms;
 	}
 
+	/**
+	 * Get the total number of teams for this campaign
+	 *
+	 * @return int
+	 */
 	public function get_total_teams() {
     	return $this->get_teams(true);
 	}
 
-    public function get_campaigns( $args = array()) {
+	/**
+	 * Get campaigns
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public function get_campaigns( $args = array()) {
     	$defaults = array(
     		'count'      => 20,
 		    'offset'     => 0,
@@ -636,15 +669,30 @@ class Campaign {
 	    return $results;
     }
 
+	/**
+	 * Get the permalink URL for this campaign
+	 *
+	 * @return string|\WP_Error
+	 */
     public function get_permalink() {
     	return get_term_link( (int) $this->ID, 'peerraiser_campaign' );
     }
 
-	public function get_display_link() {
+	/**
+	 * Get the display link for the permalink of this campaign
+	 *
+	 * @return mixed
+	 */
+    public function get_display_link() {
 		$post_name_html = '<span id="editable-post-name">' . esc_html( $this->get_name_abridged() ) . '</span>';
 		return \PeerRaiser\Helper\Text::str_replace_last( $this->campaign_slug, $post_name_html, $this->get_permalink() );
 	}
 
+	/**
+	 * Get the campaign slug, abridged if its more than 34 characters
+	 *
+	 * @return string
+	 */
 	public function get_name_abridged() {
 		if ( mb_strlen( $this->campaign_slug ) > 34 ) {
 			$post_name_abridged = mb_substr( $this->campaign_slug, 0, 16 ) . '&hellip;' . mb_substr( $this->campaign_slug, -16 );
