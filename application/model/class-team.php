@@ -259,6 +259,10 @@ class Team {
 		$this->ID  = $team['term_id'];
 		$this->_ID = $team['term_id'];
 
+		// Set stats to 0
+		$this->update_meta( '_peerraiser_donation_count', 0 );
+		$this->update_meta( '_peerraiser_donation_value', 0.00 );
+
 		if ( empty( $this->created ) ) {
 			$this->created            = current_time( 'mysql' );
 			$this->pending['created'] = $this->created;
@@ -376,6 +380,17 @@ class Team {
 			'hide_empty' => false,
 			'taxonomy'   => array( 'peerraiser_team' ),
 		);
+
+		if ( isset( $args['orderby'] ) ) {
+			switch ( $args['orderby'] ) {
+				case 'raised' :
+					$args['meta_key'] = '_peerraiser_donation_value';
+					$args['orderby'] = 'meta_value_num';
+					break;
+				default :
+					// do nothing
+			}
+		}
 
 		$args = wp_parse_args( $args, $defaults );
 
