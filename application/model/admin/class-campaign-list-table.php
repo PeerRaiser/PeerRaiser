@@ -149,8 +149,10 @@ class Campaign_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-            'name'  => array( 'name', true ),
-            'count' => array( 'count', false ),
+            'name'  => array( 'title', true ),
+            'donations' => array( 'donations', true ),
+            'raised' => array( 'raised', true ),
+            'count' => array( 'count', true ),
         );
 
         return apply_filters( 'peerraiser_campaign_sortable_columns', $sortable_columns);

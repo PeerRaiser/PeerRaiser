@@ -593,8 +593,6 @@ class Admin extends Base {
 			$new_slug = $slug . '-2';
 		}
 
-		error_log( $new_slug );
-
 		return $new_slug;
 	}
 }
