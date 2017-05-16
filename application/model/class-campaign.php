@@ -345,6 +345,10 @@ class Campaign {
 		$this->ID  = $campaign['term_id'];
 		$this->_ID = $campaign['term_id'];
 
+		// Set stats to 0
+		$this->update_meta( '_peerraiser_donation_count', 0 );
+		$this->update_meta( '_peerraiser_donation_value', 0.00 );
+
 		do_action( 'peerraiser_campaign_added', $this );
 
 		return $this->ID;
@@ -535,7 +539,6 @@ class Campaign {
 
         do_action( 'peerraiser_campaign_pre_increase_value', $value, $this->ID, $this );
 
-        $this->update_meta( '_peerraiser_donation_value', $new_value );
         $this->donation_value = $new_value;
 
         do_action( 'peerraiser_campaign_post_increase_value', $this->donation_value, $value, $this->ID, $this );
@@ -655,6 +658,21 @@ class Campaign {
 	    );
 
 	    $args = wp_parse_args( $args, $defaults );
+
+	    if ( isset( $args['orderby'] ) ) {
+			switch ( $args['orderby'] ) {
+				case 'donations' :
+					$args['meta_key'] = '_peerraiser_donation_count';
+					$args['orderby'] = 'meta_value_num';
+					break;
+				case 'raised' :
+					$args['meta_key'] = '_peerraiser_donation_value';
+					$args['orderby'] = 'meta_value_num';
+					break;
+				default :
+					// do nothing
+			}
+	    }
 
 	    $term_query = new WP_Term_Query( $args );
 
