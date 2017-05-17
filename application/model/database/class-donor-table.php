@@ -79,9 +79,10 @@ class Donor_Table extends Database {
             'number'        => 20,
             'offset'        => 0,
             'donor_id'      => 0,
+            'user_id'       => 0,
             'first_name'    => '',
             'last_name'     => '',
-            'full_name'    => '',
+            'full_name'     => '',
 			'email_address' => '',
             'orderby'       => 'donor_id',
             'order'         => 'ASC',
@@ -105,6 +106,17 @@ class Donor_Table extends Database {
 
             $where .= "WHERE `donor_id` IN( {$donor_ids} ) ";
         }
+
+	    // by user id
+	    if ( ! empty( $args['user_id'] ) ) {
+		    if ( is_array( $args['user_id'] ) ) {
+			    $user_ids = implode( ',', $args['user_id'] );
+		    } else {
+			    $user_ids = intval( $args['user_id'] );
+		    }
+
+		    $where .= "WHERE `user_id` IN( {$user_ids} ) ";
+	    }
 
         // By donor first name
         if ( ! empty( $args['first_name'] ) ) {
