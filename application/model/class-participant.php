@@ -457,6 +457,17 @@ class Participant {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		if ( isset( $args['orderby'] ) ) {
+			switch ( $args['orderby'] ) {
+				case 'raised' :
+					$args['meta_key'] = '_peerraiser_donation_value';
+					$args['orderby'] = 'meta_value_num';
+					break;
+				default :
+					// do nothing
+			}
+		}
+
 		$participants = new WP_User_Query( $args );
 
 		return $participants->results;
