@@ -331,7 +331,12 @@ class Donors extends \PeerRaiser\Controller\Base {
 			$data['field_errors'][ 'email_address' ] = __( 'Not a valid email address.', 'peerraiser' );
 		}
 
-		// TODO: Check if $_REQUEST['_peerraiser_donor_user_account'] is already tied to a donor account
+		$donor_model = new \PeerRaiser\Model\Donor( $_REQUEST['user_id'] );
+		$donor = $donor_model->get_donors( array( 'user_id' => $_REQUEST['user_id'] ) );
+
+		if ( ! empty( $donor ) ) {
+			$data['field_errors'][ 'user_id' ] = __( 'This user is already associated with a donor.', 'peerraiser' );
+		}
 
 		if ( ! empty( $data['field_errors'] ) ) {
 			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
