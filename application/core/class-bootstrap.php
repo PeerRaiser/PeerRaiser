@@ -74,7 +74,6 @@ class Bootstrap {
         $this->register_admin_actions();
         $this->register_frontend_actions();
         $this->register_shortcodes();
-        $this->register_connections();
         $this->register_activity_log();
         $this->register_tables();
 
@@ -133,17 +132,6 @@ class Bootstrap {
     private function register_shortcodes() {
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $shortcode_controller->register_actions();
-    }
-
-    /**
-     * Internal function to register P2P connections
-     *
-     * @since     1.0.0
-     * @return    void
-     */
-    private function register_connections() {
-        $connections_controller = self::get_controller( 'Connections' );
-        $connections_controller->register_actions();
     }
 
     /**
