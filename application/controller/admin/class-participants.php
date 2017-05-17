@@ -258,7 +258,9 @@ class Participants extends \PeerRaiser\Controller\Base {
 			$data['field_errors'][ 'email_address' ] = __( 'Not a valid email address.', 'peerraiser' );
 		}
 
-		// TODO: Check if $_REQUEST['user_account'] is already tied to a participant account
+		if ( ! empty( $_REQUEST['user_id'] ) && $this->is_user_a_participant( $_REQUEST['user_id'] ) ) {
+			$data['field_errors'][ 'user_id' ] = __( 'This user is already associated with a participant.', 'peerraiser' );
+		}
 
 		if ( ! empty( $data['field_errors'] ) ) {
 			$message = __( 'One or more of the required fields was empty, please fix them and try again.', 'peerraiser' );
@@ -323,5 +325,13 @@ class Participants extends \PeerRaiser\Controller\Base {
 				$participant->delete_meta($value);
 			}
 		}
+	}
+
+	private function is_user_a_participant( $user_id ) {
+		$participant_model = new \PeerRaiser\Model\Participant( $_REQUEST['user_id'] );
+
+		$participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
+
+		return is_object_in_term( $user_id, 'peerraiser_group', $participant_term->term_id );
 	}
 }
