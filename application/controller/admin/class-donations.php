@@ -116,8 +116,7 @@ class Donations extends \PeerRaiser\Controller\Base {
 
     public function on_donations_view() {
         if ( isset( $_REQUEST['page'], $_REQUEST['view'] ) && $_REQUEST['page'] === 'peerraiser-donations' && $_REQUEST['view'] === 'add' ) {
-        	// TODO: Make this easier to translate
-            $message = __( 'donor record is required. <a href="admin.php?page=peerraiser-donors&view=add">Create one now</a> if it does not already exist', 'peerraiser' );
+            $message = __( 'A donor record is required. <a href="admin.php?page=peerraiser-donors&view=add">Create one now</a> if it does not already exist', 'peerraiser' );
             \PeerRaiser\Model\Admin\Admin_Notices::add_notice( $message, 'notice-info', true );
         }
     }

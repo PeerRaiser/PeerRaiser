@@ -10,8 +10,6 @@ use \PeerRaiser\Model\Participant as Participant_Model;
 use \PeerRaiser\Model\Database\Donation_Table;
 use \PeerRaiser\Model\Database\Donation_Meta_Table;
 
-//TODO: 1. Set the team when a donation is made
-
 /**
  * Donation Model
  *
@@ -421,17 +419,17 @@ class Donation {
         }
 
         // If no team is currently set, try to see if the fundraiser is part of one
-        if ( ! $this->team_id && $this->fundraiser_id ) {
+        if ( empty ( $this->team_id ) && ! empty( $this->fundraiser_id ) ) {
             $fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
 
-            if ( $team_id = $fundraiser->team_id ) {
-                $this->team_id = $team_id;
-                $this->pending['team_id'] = $team_id;
+            if ( ! empty( $fundraiser->team_id ) ) {
+                $this->team_id = $fundraiser->team_id;
+                $this->pending['team_id'] = $fundraiser->team_id;
             }
         }
 
         // If the participant isn't set, but the fundraiser is, get the participant for that fundraiser
-	    if ( ! $this->participant_id && $this->fundraiser_id ) {
+	    if ( empty( $this->participant_id ) && ! empty( $this->fundraiser_id ) ) {
         	$fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
 
         	$this->participant_id = $fundraiser->participant;
