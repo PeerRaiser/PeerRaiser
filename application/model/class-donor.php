@@ -138,6 +138,7 @@ class Donor {
 		}
 
 		$donors = $this->db->get_donors( $args );
+
 		$donor = reset( $donors );
 
 		if ( empty( $donor ) ) {
@@ -428,6 +429,10 @@ class Donor {
 		$result = $donor_meta->get_meta( $this->ID, $meta_key, $single );
 
 		return $result;
+	}
+
+	public function get_donors( $args ) {
+		return $this->db->get_donors( $args );
 	}
 
 	/**
