@@ -14,6 +14,9 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ), 10, 2 );
         add_action( 'meta_boxes',                            array( $this, 'add_meta_boxes' ) );
         add_action( 'post_edit_form_tag',                    array( $this, 'add_peerraiser_class' ) );
+	    add_action( 'pre_get_posts',                         array( $this, 'orderby_donation_value' ) );
+
+	    add_filter( 'manage_edit-fundraiser_sortable_columns', array( $this, 'sortable_columns' ) );
     }
 
     public function register_meta_boxes() {
@@ -196,7 +199,6 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 
         switch ( $column_name ) {
-
             case 'campaign':
                 $campaigns = wp_get_post_terms( $post_id, 'peerraiser_campaign' );
                 if ( ! empty( $campaigns ) ) {
@@ -206,31 +208,43 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 	echo '&mdash;';
                 }
                 break;
-
             case 'participant':
                 $participant_id = get_post_meta( $post_id, '_peerraiser_fundraiser_participant', true );
                 $user_info = get_userdata( $participant_id );
                 echo '<a href="user-edit.php?user_id='.$participant_id.'">' . $user_info->user_login  . '</a>';
                 break;
-
             case 'team':
                 $teams = wp_get_post_terms( $post_id, 'peerraiser_team' );
                 echo ( ! empty($teams) ) ? '<a href="admin.php?page=peerraiser-teams&view=team-details&team='.$teams[0]->term_id.'">' . $teams[0]->name . '</a>' : '&mdash;';
                 break;
-
             case 'goal_amount':
                 $goal_amount = get_post_meta( $post_id, '_peerraiser_fundraiser_goal', true);
                 echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? peerraiser_money_format( $goal_amount ) : '&mdash;';
                 break;
-
             case 'amount_raised':
                 $amount_raised = get_post_meta( $post_id, '_peerraiser_donation_value', true);
                 echo  $amount_raised ? peerraiser_money_format( $amount_raised ) : peerraiser_money_format( 0.00 );
                 break;
-
         }
-
     }
+
+	public function sortable_columns( $columns ) {
+		$columns['amount_raised'] = 'donation_value';
+
+		return $columns;
+	}
+
+	function orderby_donation_value( $query ) {
+		if( ! is_admin() )
+			return;
+
+		$orderby = $query->get( 'orderby');
+
+		if( 'donation_value' == $orderby ) {
+			$query->set( 'meta_key', '_peerraiser_donation_value' );
+			$query->set( 'orderby', 'meta_value_num' );
+		}
+	}
 
     public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )
