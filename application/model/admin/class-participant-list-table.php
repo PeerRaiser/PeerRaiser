@@ -64,14 +64,14 @@ class Participant_List_Table extends WP_List_Table {
 				return  empty( $participant->email_address) ? '&mdash;' : $participant->email_address;
 			case 'user_account':
 				return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s</a>', $user->data->ID, $user->data->user_login);
-			case 'amount':
-				$amount = $participant->donation_value ? $participant->donation_value : 0;
-				return peerraiser_money_format( $amount );
+			case 'raised':
+				$raised = $participant->donation_value ? $participant->donation_value : 0;
+				return peerraiser_money_format( $raised );
 			case 'date':
 				$date = strtotime( $participant->date );
 				return date('m-d-Y', $date);
 			default:
-				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
+				return print_r( $participant, true ); //Show the whole array for troubleshooting purposes
 		}
 	}
 
@@ -99,7 +99,7 @@ class Participant_List_Table extends WP_List_Table {
 			'name'          => __( 'Name', 'peerraiser' ),
 			'email_address' => __( 'Email', 'peerraiser' ),
 			'user_account'  => __( 'User Account', 'peerraiser' ),
-			'amount'        => __( 'Total Raised', 'peerraiser' ),
+			'raised'        => __( 'Total Raised', 'peerraiser' ),
 			'date'          => __( 'Date Joined', 'peerraiser' ),
 		);
 
@@ -114,7 +114,7 @@ class Participant_List_Table extends WP_List_Table {
 	public function get_sortable_columns() {
 		$sortable_columns = array(
 			'name'   => array( 'name', true ),
-			'amount' => array( 'amount', false ),
+			'raised' => array( 'raised', false ),
 			'date'   => array( 'date', false ),
 		);
 
@@ -138,7 +138,6 @@ class Participant_List_Table extends WP_List_Table {
 	 * Handles data query and filter, sorting, and pagination.
 	 */
 	public function prepare_items() {
-
 		$columns = $this->get_columns();
 		$hidden = array( 'participant_id' );
 		$sortable = $this->get_sortable_columns();
@@ -156,13 +155,7 @@ class Participant_List_Table extends WP_List_Table {
 			'per_page'    => $per_page
 		) );
 
-		$participants = new Participant();
-		$participants = $participants->get_participants( array(
-			'number' => $per_page,
-			'offset' => ( $current_page - 1 ) * $per_page
-		) );
-
-		$this->items = $participants;
+		$this->items = $this->get_participants( $per_page, $current_page );
 	}
 
 	public function process_bulk_action() {
@@ -194,6 +187,22 @@ class Participant_List_Table extends WP_List_Table {
 				self::delete_participant( $id );
 			}
 		}
+	}
+
+	public function get_participants( $per_page = 10, $page_number = 1 ) {
+		$participants = new Participant();
+
+		$args = array(
+			'number' => $per_page,
+			'offset' => ( $page_number - 1 ) * $per_page
+		);
+
+		if ( ! empty( $_REQUEST['orderby'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+		}
+
+		return $participants->get_participants( $args );
 	}
 
 	/** Text displayed when no participant data is available */
