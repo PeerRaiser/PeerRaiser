@@ -40,11 +40,6 @@ if ( file_exists(  plugin_dir_path( __FILE__ ) . 'library/CMB2/init.php' ) ) {
     // CMB2
     require_once( plugin_dir_path( __FILE__ ) . 'library/CMB2/init.php' );
 }
-if ( file_exists(  plugin_dir_path( __FILE__ ) . 'library/class-peerraiser-p2p.php' ) ) {
-    // Posts 2 Posts
-    require_once( plugin_dir_path( __FILE__ ) . 'library/class-peerraiser-p2p.php');
-    $peerraiser_posts_to_posts = new PeerRaiser_P2P();
-}
 
 // Kick everything off
 add_action( 'plugins_loaded', 'peerraiser_init' );
