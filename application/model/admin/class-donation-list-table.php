@@ -28,19 +28,19 @@ class Donation_List_Table extends WP_List_Table {
     /**
      * Method for name column
      *
-     * @param array $item an array of DB data
+     * @param array $donation an array of DB data
      *
      * @return string
      */
-    function column_name( $item ) {
+    function column_name( $donation ) {
         // create a nonce
-        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation_' . $item['donation_id'] );
+        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donation_' . $donation->donation_id );
 
-        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $item['donation_id'], 'view' => 'summary' ) ) . '">Donation #' . $item['donation_id'] . '</a></strong>';
+        $title = '<strong><a href="' . add_query_arg( array( 'donation' => $donation->donation_id, 'view' => 'summary' ) ) . '">Donation #' . $donation->donation_id . '</a></strong>';
 
         $actions = array(
-            'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item['donation_id'] ) ),
-            'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donation_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donation', absint( $item['donation_id'] ), $delete_nonce ),
+            'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $donation->donation_id ) ),
+            'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donation_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donation', absint( $donation->donation_id ), $delete_nonce ),
         );
 
         return $title . $this->row_actions( apply_filters( 'peerraiser_donation_actions', $actions ) );
@@ -82,38 +82,38 @@ class Donation_List_Table extends WP_List_Table {
     /**
      * Render a column when no column specific method exists.
      *
-     * @param array $item
+     * @param array $donation
      * @param string $column_name
      *
      * @return mixed
      */
-    public function column_default( $item, $column_name ) {
+    public function column_default( $donation, $column_name ) {
         switch ( $column_name ) {
             case 'donor':
-                $donor = new Donor( $item['donor_id'] );
-                return '<a href="' . add_query_arg( array( 'donor' => $item['donor_id'], 'view' => 'summary' ), 'admin.php?page=peerraiser-donors' ) . '">' . $donor->full_name . '</a>';
+                $donor = new Donor( $donation->donor_id );
+                return '<a href="' . add_query_arg( array( 'donor' => $donation->donor_id, 'view' => 'summary' ), 'admin.php?page=peerraiser-donors' ) . '">' . $donor->full_name . '</a>';
             case 'amount':
-                return empty( $item[ 'total' ] ) ? '$0.00' : '$'. number_format( $item[ 'total' ], 2 );
+                return empty( $donation->total ) ? '$0.00' : '$'. number_format( $donation->total, 2 );
             case 'date':
-                $date = strtotime( $item[ $column_name ] );
+                $date = strtotime( $donation->$column_name );
                 return date('m-d-Y', $date);
             case 'status':
-                return ucfirst( $item[ $column_name ] );
+                return ucfirst( $donation->$column_name );
             default:
-                return print_r( $item, true ); //Show the whole array for troubleshooting purposes
+                return print_r( $donation, true ); //Show the whole array for troubleshooting purposes
         }
     }
 
     /**
      * Render the bulk edit checkbox
      *
-     * @param array $item
+     * @param array $donation
      *
      * @return string
      */
-    function column_cb( $item ) {
+    function column_cb( $donation ) {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['donation_id']
+            '<input type="checkbox" name="bulk-delete[]" value="%s" />', $donation->donation_id
         );
     }
 
@@ -157,7 +157,7 @@ class Donation_List_Table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = array(
-//            'bulk-delete' => 'Delete'
+           'bulk-delete' => 'Delete'
         );
 
         return $actions;
@@ -203,9 +203,6 @@ class Donation_List_Table extends WP_List_Table {
             }
             else {
                 self::delete_donation( absint( $_GET['donation'] ) );
-
-                wp_redirect( esc_url( add_query_arg() ) );
-                exit;
             }
 
         }
@@ -221,9 +218,6 @@ class Donation_List_Table extends WP_List_Table {
           foreach ( $delete_ids as $id ) {
             self::delete_donation( $id );
           }
-
-          wp_redirect( esc_url( add_query_arg() ) );
-          exit;
         }
     }
 
@@ -241,24 +235,23 @@ class Donation_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_donations( $per_page = 10, $page_number = 1 ) {
+	    $donations = new \PeerRaiser\Model\Database\Donation_Table();
 
-        global $wpdb;
+	    $args = array(
+		    'number' => $per_page,
+		    'offset' => ( $page_number - 1 ) * $per_page
+	    );
 
-        $sql = "SELECT * FROM {$wpdb->prefix}pr_donations";
+	    if ( ! empty( $_REQUEST['orderby'] ) ) {
+		    $args['orderby'] = $_REQUEST['orderby'];
+		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+	    }
 
-        if ( ! empty( $_REQUEST['orderby'] ) ) {
-            $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
-            $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
-        }
+	    if ( ! empty( $_REQUEST['status'] ) ) {
+		    $args['status'] = $_REQUEST['status'];
+	    }
 
-        $sql .= " LIMIT $per_page";
-
-        $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
-
-        $results = $wpdb->get_results( $sql, 'ARRAY_A' );
-
-        return $results;
-
+		return $donations->get_donations( $args );
     }
 
     /**
