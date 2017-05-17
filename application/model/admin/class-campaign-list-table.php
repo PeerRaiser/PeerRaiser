@@ -175,7 +175,6 @@ class Campaign_List_Table extends WP_List_Table {
      * Handles data query and filter, sorting, and pagination.
      */
     public function prepare_items() {
-
         $columns = $this->get_columns();
         $hidden = array( 'campaign_id' );
         $sortable = $this->get_sortable_columns();

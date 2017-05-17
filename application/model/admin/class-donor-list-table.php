@@ -115,8 +115,8 @@ class Donor_List_Table extends WP_List_Table {
     public function get_sortable_columns() {
         $sortable_columns = array(
 	        'name'      => array( 'name', true ),
-	        'donations' => array( 'donations', true ),
-	        'amount'    => array( 'amount', false ),
+	        'donations' => array( 'donation_count', true ),
+	        'amount'    => array( 'donation_value', false ),
 	        'date'      => array( 'date', false ),
         );
 
@@ -158,13 +158,7 @@ class Donor_List_Table extends WP_List_Table {
             'per_page'    => $per_page
         ) );
 
-        $donors = new Donor_DB();
-        $donors = $donors->get_donors( array(
-        	'number' => $per_page,
-			'offset' => ( $current_page - 1 ) * $per_page
-		) );
-
-        $this->items = $donors;
+        $this->items = $this->get_donors( $per_page, $current_page );
     }
 
     public function process_bulk_action() {
@@ -200,6 +194,22 @@ class Donor_List_Table extends WP_List_Table {
     /** Text displayed when no donor data is available */
     public function no_items() {
         _e( 'No donors found.', 'peerraiser' );
+    }
+
+    public function get_donors( $per_page = 10, $page_number = 1 ) {
+	    $donors = new Donor_DB();
+
+	    $args = array(
+		    'number' => $per_page,
+		    'offset' => ( $page_number - 1 ) * $per_page
+	    );
+
+	    if ( ! empty( $_REQUEST['orderby'] ) ) {
+		    $args['orderby'] = $_REQUEST['orderby'];
+		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+	    }
+
+	    return $donors->get_donors( $args );
     }
 
     /**
