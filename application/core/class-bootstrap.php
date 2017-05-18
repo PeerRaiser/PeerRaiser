@@ -99,6 +99,9 @@ class Bootstrap {
 
         $dashboard_controller = self::get_controller( 'Frontend\Participant_Dashboard' );
         $dashboard_controller->register_actions();
+
+	    $template_controller = self::get_controller( 'Frontend\Template' );
+	    $template_controller->register_actions();
     }
 
     /**
