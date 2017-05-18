@@ -91,9 +91,6 @@ class Bootstrap {
         $post_controller = self::get_controller( 'Frontend\Post' );
         $post_controller->register_actions();
 
-        $listener_controller = self::get_controller( 'Frontend\Listener' );
-        $listener_controller->register_actions();
-
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $shortcode_controller->register_actions();
 
