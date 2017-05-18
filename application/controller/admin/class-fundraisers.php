@@ -211,7 +211,7 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
             case 'participant':
                 $participant_id = get_post_meta( $post_id, '_peerraiser_fundraiser_participant', true );
                 $user_info = get_userdata( $participant_id );
-                echo '<a href="user-edit.php?user_id='.$participant_id.'">' . $user_info->user_login  . '</a>';
+                echo $user_info ? '<a href="user-edit.php?user_id='.$participant_id.'">' . $user_info->user_login  . '</a>' : '&mdash;';
                 break;
             case 'team':
                 $teams = wp_get_post_terms( $post_id, 'peerraiser_team' );
