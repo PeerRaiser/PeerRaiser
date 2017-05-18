@@ -75,17 +75,17 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         $navigation_links = apply_filters( 'peerraiser_participant_dashboard_navigation', $dashboard_model->get_navigation() );
 
         $view_args = array(
-            'navigation'                 => $navigation_links,
-            'donations'                  => $dashboard_model->get_donations(),
-            'fundraisers'                => $dashboard_model->get_fundraisers(),
-            'teams'                      => $dashboard_model->get_teams(),
-            'user_id'                    => get_current_user_id(),
-            'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
-            'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
-            'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
-            'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', get_current_user_id() ),
-            'profile_photo'              => \PeerRaiser\Helper\View::get_avatar(),
-            'password_form'              => $this->get_password_form(),
+	        'navigation'                 => $navigation_links,
+	        'donations'                  => $dashboard_model->get_donations(),
+	        'fundraisers'                => $dashboard_model->get_fundraisers(),
+	        'teams'                      => $dashboard_model->get_teams(),
+	        'user_id'                    => get_current_user_id(),
+	        'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
+	        'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
+	        'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
+	        'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', get_current_user_id() ),
+	        'profile_photo'              => \PeerRaiser\Helper\View::get_avatar(),
+	        'password_form'              => $this->get_password_form(),
         );
         $this->assign( 'peerraiser', $view_args );
 
@@ -98,11 +98,12 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         $dashboard_model = new \PeerRaiser\Model\Frontend\Dashboard();
 
         $default_fields    = $dashboard_model->get_fields();
-        $additional_fields = $this->get_additional_fields();
-        $fields            = array_merge( $default_fields, $additional_fields );
+        $fields            = apply_filters( 'peerraiser_participant_dashboard_fields', $default_fields );
 
         // Fields that come with WordPress by default
-        $wordpress_fields = array( 'user_pass', 'user_login', 'user_nicename', 'user_url', 'user_email', 'display_name', 'nickname', 'first_name', 'last_name', 'description', 'rich_editing', 'user_registered', 'role', 'jabber', 'aim', 'yim', 'show_admin_bar_front' );
+        $wordpress_fields = array( 'user_pass', 'user_login', 'user_nicename', 'user_url', 'user_email', 'display_name',
+	        'nickname', 'first_name', 'last_name', 'description', 'rich_editing', 'user_registered', 'role', 'jabber',
+	        'aim', 'yim', 'show_admin_bar_front' );
 
         $cmb = new_cmb2_box( array(
             'id'               => 'dashboard_settings',
@@ -116,14 +117,6 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
             $cmb->add_field( $field );
         }
-    }
-
-    private function get_additional_fields() {
-        $event = new \PeerRaiser\Core\Event();
-        $event->set_echo( false );
-        $dispatcher = \PeerRaiser\Core\Event\Dispatcher::get_dispatcher();
-        $dispatcher->dispatch( 'peerraiser_participant_dashboard_fields', $event );
-        return (array) $event->get_result();
     }
 
     private function get_password_form() {
