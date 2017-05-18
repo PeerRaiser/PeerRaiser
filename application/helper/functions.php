@@ -73,3 +73,14 @@ function peerraiser_get_top_donors( $count ) {
     $donor = new PeerRaiser\Model\Donor();
     return $donor->get_top_donors( $count );
 }
+
+function peerraiser_get_current_campaign() {
+	$queried_object = get_queried_object();
+
+	// Make sure the current queried object is a peerraiser campaign
+	if ( ! is_a( $queried_object, 'WP_Term' ) || $queried_object->taxonomy !== 'peerraiser_campaign' ) {
+		return false;
+	}
+
+	return new \PeerRaiser\Model\Campaign( $queried_object->term_id );
+}
