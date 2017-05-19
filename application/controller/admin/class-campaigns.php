@@ -418,6 +418,23 @@ class Campaigns extends Base {
 			}
 		}
 
+		// Check currency format
+		$currency_fields = array(
+			'_peerraiser_campaign_goal',
+			'_peerraiser_suggested_individual_goal',
+			'_peerraiser_suggested_team_goal',
+		);
+
+		foreach ( $currency_fields as $currency_field ) {
+			if ( ! isset( $_REQUEST[ $currency_field ] ) ) {
+				continue;
+			}
+
+			if ( ! \PeerRaiser\Helper\Text::is_currency( $_REQUEST[ $currency_field ] ) ) {
+				$data['field_errors'][ $currency_field ] = __( 'Please use the valid currency format', 'peerraiser' );
+			}
+		}
+
 		if ( ! empty( $data['field_errors'] ) ) {
 			$message = __( 'There was an issue creating this campaign. Please fix the errors below.', 'peerraiser' );
 			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
