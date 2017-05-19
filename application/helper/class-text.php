@@ -217,4 +217,8 @@ class Text {
 	    return $subject;
     }
 
+    public static function is_currency($number) {
+	    return preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number);
+    }
+
 }
