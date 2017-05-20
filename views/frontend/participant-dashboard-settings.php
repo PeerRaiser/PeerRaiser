@@ -2,7 +2,7 @@
     <nav class="peerraiser-nav">
         <ul>
             <?php foreach ( $peerraiser['navigation'] as $key => $value ) : ?>
-                <li class="<?= sanitize_title( $key ) ?>"><a href="?page=<?= $key ?>"><?= $value ?></a></li>
+                <li class="<?php echo sanitize_title( $key ) ?>"><a href="?page=<?php echo $key ?>"><?php echo $value ?></a></li>
             <?php endforeach; ?>
         </ul>
     </nav>
@@ -14,8 +14,8 @@
     <form id="fileupload" enctype="multipart/form-data">
         <div class="peerraiser-image-upload">
             <div class="profile-image-preview">
-                <img src="<?= plugin_dir_url( PEERRAISER_FILE ) . 'assets/images/loading.gif' ?>" alt="" class="loading" style="display:none;">
-                <img src="<?= $peerraiser['profile_photo'] ?>" alt="<?php _e( 'Default user thumbnail', 'peerraiser' ) ?>" class="avatar">
+                <img src="<?php echo plugin_dir_url( PEERRAISER_FILE ) . 'assets/images/loading.gif' ?>" alt="" class="loading" style="display:none;">
+                <img src="<?php echo $peerraiser['profile_photo'] ?>" alt="<?php _e( 'Default user thumbnail', 'peerraiser' ) ?>" class="avatar">
             </div>
             <div class="profile-image-upload">
                 <p class="info-top">You can upload an avatar here or change it at <a href="http://gravatar.com" target="_blank">gravatar.com</a></p>
@@ -29,10 +29,10 @@
         <?php wp_nonce_field( 'peerraiser_avatar_'.get_current_user_id(), 'peerraiser_upload_avatar_nonce', false, true ); ?>
     </form>
 
-    <?= $peerraiser['settings_form']; ?>
+    <?php echo $peerraiser['settings_form']; ?>
 
     <h2><?php _e( 'Change Password', 'peerraiser' ); ?></h2>
 
-    <?= $peerraiser['password_form']; ?>
+    <?php echo $peerraiser['password_form']; ?>
 
 </div>
