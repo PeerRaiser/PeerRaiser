@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Controller\Frontend;
 
+use \PeerRaiser\Helper\Text;
+
 class Participant_Dashboard extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
@@ -47,13 +49,13 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
         $attachment_id = media_handle_sideload( $_FILES['files'], 0 );
         update_user_meta( $user_id, '_peerraiser_custom_avatar', $attachment_id );
 
-        $event->set_result(
-            array(
-                'avatar_id' => $attachment_id,
-                'success'   => true,
-                'image_url' => wp_get_attachment_image_url( $attachment_id, 'peerraiser_campaign_thumbnail' )
-            )
-        );
+	    echo Text::peerraiser_json_encode( array(
+		    'avatar_id' => $attachment_id,
+		    'success'   => true,
+		    'image_url' => wp_get_attachment_image_url( $attachment_id, 'peerraiser_campaign_thumbnail' )
+	    ) );
+
+	    wp_die();
     }
 
     /**
@@ -111,7 +113,6 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
 
         wp_safe_redirect( add_query_arg( $args, $login_page_url ) );
         exit;
-
     }
 
 }
