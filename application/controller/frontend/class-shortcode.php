@@ -10,7 +10,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         add_shortcode( 'peerraiser_signup',                array( $this, 'render_signup_form' ) );
         add_shortcode( 'peerraiser_participant_dashboard', array( $this, 'render_participant_dashboard' ) );
 
-        add_action( 'peerraiser_cmb2_init', array( $this, 'register_settings_fields' ) );
+        add_action( 'cmb2_init', array( $this, 'register_settings_fields' ) );
     }
 
     public function render_donation_receipt( $atts, $content = '' ) {
@@ -59,8 +59,6 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public function render_participant_dashboard( $atts, $content = '' ) {
         // Plugin options
         $plugin_options = get_option( 'peerraiser_options', array() );
-
-        $results = do_action( 'peerraiser_render_participant_dashboard' );
 
         // provide default values for empty shortcode attributes
         $a = shortcode_atts( array(
@@ -120,7 +118,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     }
 
     private function get_password_form() {
-        return $this->get_text_view( 'frontend\partials\change-password-form' );
+        return $this->get_text_view( 'frontend/partials/change-password-form' );
     }
 
 }
