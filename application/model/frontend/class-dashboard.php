@@ -2,63 +2,49 @@
 
 namespace PeerRaiser\Model\Frontend;
 
-class Dashboard extends \PeerRaiser\Model\Admin {
+class Dashboard extends \PeerRaiser\Model\Admin\Admin {
 
-    private static $instance   = null;
-    private static $navigation = array();
-    private static $fields     = array();
+    private $navigation = array();
+    private $fields     = array();
 
-    public function __construct() {}
+    public function __construct() {
+    	$this->navigation = array(
+		    "profile"   => __( "My Profile", 'peerraiser' ),
+		    "donations" => __( "Donations", 'peerraiser' ),
+		    "settings"  => __( "Settings", 'peerraiser' ),
+	    );
 
-    /**
-     * Singleton to get only one Dashboard model
-     *
-     * @return    \PeerRaiser\Model\Admin\Dashboard
-     */
-    public static function get_instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance   = new self();
-            self::$navigation = array(
-                "profile"   => __( "My Profile", 'peerraiser' ),
-                "donations" => __( "Donations", 'peerraiser' ),
-                "settings"  => __( "Settings", 'peerraiser' ),
-            );
-            self::$fields = array(
-                array(
-                    'name' => __( 'First Name', 'peerraiser' ),
-                    'id'   => 'first_name',
-                    'type' => 'text',
-                ),
-                array(
-                    'name' => __( 'Last Name', 'peerraiser' ),
-                    'id'   => 'last_name',
-                    'type' => 'text',
-                ),
-                array(
-                    'name' => __( 'Email', 'peerraiser' ),
-                    'id'   => 'user_email',
-                    'type' => 'text',
-                ),
-                array(
-                    'name' => __( 'Bio', 'peerraiser' ),
-                    'id'   => 'description',
-                    'type' => 'textarea',
-                ),
-            );
-        }
-        return self::$instance;
+    	$this->fields = array(
+		    array(
+			    'name' => __( 'First Name', 'peerraiser' ),
+			    'id'   => 'first_name',
+			    'type' => 'text',
+		    ),
+		    array(
+			    'name' => __( 'Last Name', 'peerraiser' ),
+			    'id'   => 'last_name',
+			    'type' => 'text',
+		    ),
+		    array(
+			    'name' => __( 'Email', 'peerraiser' ),
+			    'id'   => 'user_email',
+			    'type' => 'text',
+		    ),
+		    array(
+			    'name' => __( 'Bio', 'peerraiser' ),
+			    'id'   => 'description',
+			    'type' => 'textarea',
+		    ),
+	    );
     }
-
 
     public function get_navigation() {
-        return self::$navigation;
+        return $this->navigation;
     }
-
 
     public function get_fields() {
-        return self::$fields;
+        return $this->fields;
     }
-
 
     public function get_donations() {
         $args = array(
@@ -71,7 +57,6 @@ class Dashboard extends \PeerRaiser\Model\Admin {
         return new \WP_Query( $args );
     }
 
-
     public function get_fundraisers() {
         $args = array(
             'post_type'       => 'fundraiser',
@@ -82,7 +67,6 @@ class Dashboard extends \PeerRaiser\Model\Admin {
         );
         return new \WP_Query( $args );
     }
-
 
     /**
      * Get teams where the current user is the leader
