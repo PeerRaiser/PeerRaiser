@@ -40,8 +40,8 @@ class Campaign_List_Table extends WP_List_Table {
 		$title = '<strong><a href="' . add_query_arg( array( 'campaign' => $campaign->ID, 'view' => 'summary' ) ) . '">' . $campaign->campaign_name . '</a></strong>';
 
 		$actions = array(
-			'view' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $campaign->get_permalink() ), __( 'View', 'peerraiser') ),
 			'edit' => sprintf( '<a href="?page=%1$s&view=%2$s&campaign=%3$s">%4$s</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $campaign->ID ), __('Edit', 'peerraiser') ),
+			'view' => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $campaign->get_permalink() ), __( 'View', 'peerraiser') ),
 			'delete' => sprintf( '<a href="?page=%1$s&peerraiser_action=%2$s&campaign_id=%3$s&_wpnonce=%4$s">%5$s</a>', esc_attr( $_REQUEST['page'] ), 'delete_campaign', absint( $campaign->ID ), $delete_nonce, __('Delete', 'peerraiser') ),
 		);
 
