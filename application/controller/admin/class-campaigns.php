@@ -99,10 +99,16 @@ class Campaigns extends Base {
         wp_localize_script(
             'peerraiser-admin-campaigns',
             'peerraiser_object',
-            array(
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
-                'template_directory' => get_template_directory_uri(),
-            )
+	        array(
+		        'ajax_url'           => admin_url( 'admin-ajax.php' ),
+		        'template_directory' => get_template_directory_uri(),
+		        'timezone_string'    => get_option( 'timezone_string' ),
+		        'i18n'               => array(
+			        'date'            => __( 'Date', 'peerraiser' ),
+			        'time'            => __( 'Time', 'peerraiser' ),
+			        'select_timezone' => __( 'Select a Timezone', 'peerraiser' ),
+		        )
+	        )
         );
 
     }
@@ -256,6 +262,8 @@ class Campaigns extends Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
+		die( print_r( $_REQUEST, 1 ) );
+
 		$validation = $this->is_valid_campaign();
 		if ( ! $validation['is_valid'] ) {
 			return;
@@ -389,7 +397,6 @@ class Campaigns extends Base {
 	/**
 	 * Checks if the fields are valid
 	 *
-	 * @todo Check formatting of goal amounts
 	 * @since     1.0.0
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
