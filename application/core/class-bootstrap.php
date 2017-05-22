@@ -77,6 +77,8 @@ class Bootstrap {
         $this->register_activity_log();
         $this->register_tables();
 
+        add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
         include_once( PEERRAISER_PATH . 'application/helper/functions.php' );
 
         do_action( 'peerraiser_ready', $this );
@@ -102,6 +104,9 @@ class Bootstrap {
 
 	    $template_controller = self::get_controller( 'Frontend\Template' );
 	    $template_controller->register_actions();
+
+	    $donation_controller = self::get_controller( 'Frontend\Donation' );
+	    $donation_controller->register_actions();
     }
 
     /**
@@ -179,7 +184,6 @@ class Bootstrap {
 	    // participants controller
 	    $participants_controller = self::get_controller( 'Admin\Participants' );
 	    $participants_controller->register_actions();
-
     }
 
     private function register_activity_log() {
@@ -224,6 +228,11 @@ class Bootstrap {
         global $wpdb;
         $wpdb->donormeta    = $wpdb->prefix . 'pr_donormeta';
         $wpdb->donationmeta = $wpdb->prefix . 'pr_donationmeta';
+    }
+
+    public function register_routes() {
+	    $donation_rest_controller = self::get_controller( 'Api\Donation_Rest_Controller' );
+	    $donation_rest_controller->register_routes();
     }
 
 }
