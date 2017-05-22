@@ -13,23 +13,45 @@ class Campaigns_Admin extends Admin {
                 'id'       => 'peerraiser-campaign',
                 'fields'   => array(
                     'start_date' => array(
-                        'name'     => __( 'Start Date', 'peerraiser' ),
-                        'id'       => '_peerraiser_start_date',
-                        'type'     => 'text_date_timestamp',
-                        'attributes'        => array(
-                            'data-tooltip' => __('Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
-                        ),
-                        'default_cb' => array( $this, 'get_field_value'),
+	                    'name'        => __( 'Start Date', 'peerraiser' ),
+	                    'id'          => '_peerraiser_start_date',
+	                    'type'        => 'text_date',
+	                    'attributes'  => array(
+		                    'data-tooltip' => __( 'When people can start raising money for this campaign. Leave blank if the campaign starts when you click the Publish button.', 'peerraiser' ),
+	                    ),
+	                    'default_cb'  => array( $this, 'get_field_value' ),
+	                    'date_format' => apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ),
+                    ),
+                    'start_time' => array(
+                    	'name' => __( 'Start Time', 'peerraiser' ),
+	                    'id' => '_peerraiser_start_time',
+	                    'type' => 'text_time',
+	                    'time_format' => apply_filters( 'peerraiser_time_field_format', 'g:i a' ),
                     ),
                     'end_date' =>   array(
-                        'name' => __( 'End Date', 'peerraiser' ),
-                        'id'   => '_peerraiser_end_date',
-                        'type' => 'text_date_timestamp',
-                        'attributes'        => array(
-                            'data-tooltip' => __('Leave blank if the campaign is ongoing.', 'peerraiser' ),
-                            'placeholder' => '&infin;',
-                        ),
-                        'default_cb' => array( $this, 'get_field_value'),
+	                    'name'        => __( 'End Date', 'peerraiser' ),
+	                    'id'          => '_peerraiser_end_date',
+	                    'type'        => 'text_date',
+	                    'attributes'  => array(
+		                    'data-tooltip' => __( 'The fundraising deadline. Leave blank if the campaign is ongoing.', 'peerraiser' ),
+		                    'placeholder'  => '&infin;',
+	                    ),
+	                    'default_cb'  => array( $this, 'get_field_value' ),
+	                    'date_format' => apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ),
+                    ),
+                    'end_time' => array(
+	                    'name' => __( 'End Time', 'peerraiser' ),
+	                    'id' => '_peerraiser_end_time',
+	                    'type' => 'text_time',
+	                    'attributes'  => array(
+		                    'placeholder'  => '&infin;',
+	                    ),
+	                    'time_format' => apply_filters( 'peerraiser_time_field_format', 'g:i a' ),
+                    ),
+                    'timezone' => array(
+                    	'name' => __( 'Timezone', 'peerraiser' ),
+	                    'id'   => '_peerraiser_timezone',
+	                    'type' => 'select_timezone',
                     ),
                     'campaign_description' => array(
                         'name'    => __('Campaign Description', 'peerraiser'),
