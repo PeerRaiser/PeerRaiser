@@ -10,7 +10,9 @@
     opacity: 0.5;
 }
 .cmb2-id--peerraiser-start-date,
-.cmb2-id--peerraiser-end-date {
+.cmb2-id--peerraiser-start-time,
+.cmb2-id--peerraiser-end-date,
+.cmb2-id--peerraiser-end-time {
     float: left;
     width: 50%;
     height: 90px;
@@ -18,11 +20,15 @@
 }
 
 .cmb2-postbox .cmb2-id--peerraiser-start-date .cmb-th,
-.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th{
+.cmb2-postbox .cmb2-id--peerraiser-start-time .cmb-th,
+.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th,
+.cmb2-postbox .cmb2-id--peerraiser-end-time .cmb-th{
     width: 21%;
 }
 .cmb2-postbox .cmb2-id--peerraiser-start-date .cmb-th + .cmb-td,
-.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th + .cmb-td{
+.cmb2-postbox .cmb2-id--peerraiser-start-time .cmb-th + .cmb-td,
+.cmb2-postbox .cmb2-id--peerraiser-end-date .cmb-th + .cmb-td,
+.cmb2-postbox .cmb2-id--peerraiser-end-time .cmb-th + .cmb-td {
     width: 77%;
 }
 /* Misc */
