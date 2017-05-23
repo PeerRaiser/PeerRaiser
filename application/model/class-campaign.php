@@ -316,7 +316,12 @@ class Campaign {
 
 		// Dates / Status
 		$this->start_date      = get_term_meta( $this->ID, '_peerraiser_start_date', true );
+		$this->start_time      = get_term_meta( $this->ID, '_peerraiser_start_time', true );
+		$this->start_date_utc  = get_term_meta( $this->ID, '_peerraiser_start_date_utc', true );
 		$this->end_date        = get_term_meta( $this->ID, '_peerraiser_end_date', true );
+		$this->end_time        = get_term_meta( $this->ID, '_peerraiser_end_time', true );
+		$this->end_date_utc    = get_term_meta( $this->ID, '_peerraiser_end_date_utc', true );
+		$this->timezone        = get_term_meta( $this->ID, '_peerraiser_timezone', true );
 		$this->campaign_status = get_term_meta( $this->ID, '_peerraiser_campaign_status', true );
 
 		// Campaign content
@@ -754,6 +759,25 @@ class Campaign {
 		}
 
 		return $post_name_abridged;
+	}
+
+	/**
+	 * Returns the timezone in a format that can be used with DateTime
+	 *
+	 * @return string
+	 */
+	public function get_timezone_string() {
+		// If there's no timezone, or the timezone is UTC, return UTC
+		if ( empty( $this->timezone ) || $this->timezone === 'UTC' ) {
+			return 'UTC';
+		}
+
+		// If the timezone is UTC offset, return just the offset amount
+		if ( substr( $this->timezone, 0, 3 ) === "UTC" ) {
+			return substr( $this->timezone, 3 );
+		}
+
+		return $this->timezone;
 	}
 
     /**
