@@ -74,22 +74,21 @@ class Text {
         } elseif ( ! empty( $options['html'] ) ) {
             $default['ellipsis'] = "\xe2\x80\xa6";
         }
-        $options = array_merge( $default, $options );
-        extract( $options );
+        $options = wp_parse_args( $options, $default );
 
         if ( ! function_exists( 'mb_strlen' ) ) {
             class_exists( 'Multibyte' );
         }
 
-        if ( $html ) {
+        if ( $options['html'] ) {
             $text = preg_replace( '/<! --(.*?)-->/i', '', $text );
-            if ( $words ) {
+            if ( $options['words'] ) {
                 $length = mb_strlen( self::limit_words( preg_replace( '/<.*?>/', '', $text ), $length ) );
             }
             if ( mb_strlen( preg_replace( '/<.*?>/', '', $text ) ) <= $length ) {
                 return $text;
             }
-            $totalLength    = mb_strlen( strip_tags( $ellipsis ) );
+            $totalLength    = mb_strlen( strip_tags( $options['ellipsis'] ) );
             $openTags       = array();
             $truncate       = '';
 
@@ -133,17 +132,17 @@ class Text {
                 }
             }
         } else {
-            if ( $words ) {
+            if ( $options['words'] ) {
                 $length = mb_strlen( self::limit_words( $text, $length ) );
             }
             if ( mb_strlen( $text ) <= $length ) {
                 return $text;
             }
-            $truncate = mb_substr( $text, 0, $length - mb_strlen( $ellipsis ) );
+            $truncate = mb_substr( $text, 0, $length - mb_strlen( $options['ellipsis'] ) );
         }
-        if ( ! $exact ) {
+        if ( ! $options['exact'] ) {
             $spacepos = mb_strrpos( $truncate, ' ' );
-            if ( $html ) {
+            if ( $options['html'] ) {
                 $truncateCheck  = mb_substr( $truncate, 0, $spacepos );
                 $lastOpenTag    = mb_strrpos( $truncateCheck, '<' );
                 $lastCloseTag   = mb_strrpos( $truncateCheck, '>' );
@@ -170,9 +169,9 @@ class Text {
             }
             $truncate = mb_substr( $truncate, 0, $spacepos );
         }
-        $truncate .= $ellipsis;
+        $truncate .= $options['ellipsis'];
 
-        if ( $html ) {
+        if ( $options['html'] ) {
             foreach ( $openTags as $tag ) {
                 $truncate .= '</' . $tag . '>';
             }
@@ -220,5 +219,4 @@ class Text {
     public static function is_currency($number) {
 	    return preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number);
     }
-
 }
