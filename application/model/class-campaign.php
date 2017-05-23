@@ -57,11 +57,46 @@ class Campaign {
 	protected $start_date = '';
 
 	/**
+	 * Start Time
+	 *
+	 * @var string
+	 */
+	protected $start_time = '';
+
+	/**
+	 * Start date in UTC format
+	 *
+	 * @var string
+	 */
+	protected $start_date_utc = '';
+
+	/**
 	 * End date
 	 *
 	 * @var string
 	 */
 	protected $end_date = '';
+
+	/**
+	 * End Time
+	 *
+	 * @var string
+	 */
+	protected $end_time = '';
+
+	/**
+	 * End date in UTC format
+	 *
+	 * @var string
+	 */
+	protected $end_date_utc = '';
+
+	/**
+	 * Timezone for the start/end date
+	 *
+	 * @var string
+	 */
+	protected $timezone = '';
 
 	/**
 	 * Campaign Description
