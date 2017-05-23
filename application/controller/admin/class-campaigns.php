@@ -22,7 +22,9 @@ class Campaigns extends Base {
 		add_action( 'peerraiser_update_campaign',           array( $this, 'handle_update_campaign' ) );
 		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
 		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_schedule_cron' ), 10, 3 );
+		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_update_date_utc' ), 10, 3 );
 		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_clear_cron' ), 10, 2 );
+		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_delete_end_date_utc' ), 10, 2 );
 		add_action( 'peerraiser_end_campaign',              array( $this, 'end_campaign' ) );
     }
 
@@ -262,8 +264,6 @@ class Campaigns extends Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
-		die( print_r( $_REQUEST, 1 ) );
-
 		$validation = $this->is_valid_campaign();
 		if ( ! $validation['is_valid'] ) {
 			return;
@@ -348,18 +348,14 @@ class Campaigns extends Base {
 	 * @param string                     $meta_value Meta value
 	 */
 	public function maybe_schedule_cron( $campaign, $meta_key, $meta_value ) {
-		if ( $meta_key !== '_peerraiser_end_date' ) {
+		if ( $meta_key !== '_peerraiser_end_date_utc' ) {
 			return;
 		}
 
 		// Clear existing cron, if there is one
 		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
 
-		$timezone   = new DateTimeZone( get_option( 'timezone_string' ) );
-		$time       = new DateTime( $meta_value, $timezone );
-		$timestamp  = (int) $time->format('U');
-
-		wp_schedule_single_event( $timestamp, 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+		wp_schedule_single_event( $meta_value, 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
 	}
 
 	/**
@@ -371,11 +367,67 @@ class Campaigns extends Base {
 	 * @param string                     $meta_key Meta key
 	 */
 	public function maybe_clear_cron( $campaign, $meta_key ) {
-		if ( $meta_key !== '_peerraiser_end_date') {
+		if ( $meta_key !== '_peerraiser_end_date_utc') {
 			return;
 		}
 
 		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+	}
+
+	/**
+	 * Maybe Update the Date UTC
+	 *
+	 * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
+	 * @param string                     $meta_key   Meta key
+	 * @param string                     $meta_value Meta value
+	 */
+	public function maybe_update_date_utc( $campaign, $meta_key, $meta_value ) {
+		$date_fields = array(
+			'_peerraiser_start_date',
+			'_peerraiser_start_time',
+			'_peerraiser_end_date',
+			'_peerraiser_end_time',
+			'_peerraiser_timezone',
+		);
+
+		// If the updated field isn't one of the date fields, return
+		if ( ! in_array( $meta_key, $date_fields ) ) {
+			return;
+		}
+
+		// Update start_date_utc if the timezone or start date/time fields changed
+		if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'start') !== false ) {
+			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
+			$time       = new DateTime( $campaign->start_date . ' ' . $campaign->start_time, $timezone );
+			$timestamp  = (int) $time->format('U');
+
+			$campaign->start_date_utc = $timestamp;
+		}
+
+		// Update end_date_utc if the timezone or start date/time fields changed
+		if (  $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'end') !== false ) {
+			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
+			$time       = new DateTime( $campaign->end_date . ' ' . $campaign->end_time, $timezone );
+			$timestamp  = (int) $time->format('U');
+
+			$campaign->end_date_utc = $timestamp;
+		}
+
+		$campaign->save();
+	}
+
+	/**
+	 * Maybe delete the End Date UTC meta if the deleted field is the end date
+	 *
+	 * @param \PeerRaiser\Model\Campaign $campaign Campaign object
+	 * @param string                     $meta_key Meta key
+	 */
+	public function maybe_delete_end_date_utc( $campaign, $meta_key ) {
+		if ( $meta_key !== '_peerraiser_end_date' ) {
+			return;
+		}
+
+		$campaign->delete_meta( '_peerraiser_end_date_utc' );
 	}
 
 	/**
@@ -474,7 +526,15 @@ class Campaigns extends Base {
 					break;
 				case "_peerraiser_start_date" :
 					if ( empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-						$_REQUEST['_peerraiser_start_date'] = current_time( 'mysql' );
+						$_REQUEST['_peerraiser_start_date'] = current_time( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+					}
+				case "_peerraiser_start_time" :
+					if ( empty( $_REQUEST['_peerraiser_start_time'] ) ) {
+						$_REQUEST['_peerraiser_start_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+					}
+				case "_peerraiser_end_time" :
+					if ( empty( $_REQUEST['_peerraiser_end_time'] ) && ! empty( $_REQUEST['_peerraiser_end_date'] ) ) {
+						$_REQUEST['_peerraiser_end_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
 					}
 				default :
 					if ( isset( $_REQUEST[$value] ) ) {
@@ -502,7 +562,20 @@ class Campaigns extends Base {
 
 		// If the start date is empty, set it to today's date
 		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			$_REQUEST['_peerraiser_start_date'] = current_time( 'timestamp' );
+			$_REQUEST['_peerraiser_start_date'] = current_time( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+		}
+
+		// If the start time is empty, set it to the current time
+		if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
+			$_REQUEST['_peerraiser_start_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+		}
+
+		// If the end date is empty, make sure the end time is also empty
+		if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
+			$_REQUEST['_peerraiser_end_time'] = '';
+		// If it's not empty, but the time is empty, set it to the current time
+		} elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
+			$_REQUEST['_peerraiser_end_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
 		}
 
 		// Get the current values from the database to see if things changes
