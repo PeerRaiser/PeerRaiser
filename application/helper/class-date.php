@@ -13,7 +13,6 @@ class Date {
 	 * @return string valid PHP timezone string
 	 */
 	public static function get_timezone_string() {
-
 		// if site timezone string exists, return it
 		if ( $timezone = get_option( 'timezone_string' ) ) {
 			return $timezone;
