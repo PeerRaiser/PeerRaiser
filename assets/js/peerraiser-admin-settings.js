@@ -17,6 +17,7 @@
                 login_page            : $("#login_page"),
                 signup_page           : $("#signup_page"),
                 participant_dashboard : $("#participant_dashboard"),
+                donation_page         : $("#donation_page"),
             },
 
             select2Options : {
@@ -87,6 +88,28 @@
                     allowClear: false
                 },
                 participant_dashboard : {
+                    data : function ( params ) {
+                        return {
+                            action: 'peerraiser_get_posts',
+                            s: params.term,
+                            page: params.page,
+                            post_type  : ['page']
+                        };
+                    },
+                    templateResult : function(data) {
+                        var html = '<span class="pr_name">' + data.text + '</span>';
+                        return $('<span>').html(html);
+                    },
+                    templateSelection: function(data) {
+                        var text = data.text;
+                        if ( typeof text === 'string' ) {
+                            text = text.replace(/^(- )*/g, '');
+                        }
+                        return text;
+                    },
+                    allowClear: false
+                },
+                donation_page : {
                     data : function ( params ) {
                         return {
                             action: 'peerraiser_get_posts',
