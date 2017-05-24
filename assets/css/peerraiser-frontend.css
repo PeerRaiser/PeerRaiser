@@ -67,7 +67,7 @@
 .signup-form-wrapper .forgot-password a {
     text-decoration: none;
     background: 0 0;
-    $font-size: 11.2px;
+    font-size: 11.2px;
     line-height: 16px;
     display: block;
     border: 0;
@@ -770,4 +770,66 @@ table th[class*="col-"] {
 }
 form#dashboard_settings {
     margin-bottom: 2em;
+}
+/* Campaigns */
+#peerraiser-campaign {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+#peerraiser-campaign:before,
+#peerraiser-campaign:after {
+    content: " ";
+    display: table;
+}
+#peerraiser-campaign:after {
+    clear: both;
+}
+.peerraiser-campaign-content {
+    padding: .75rem 15px;
+}
+.peerraiser-campaign-content.has-sidebar {
+    width: 75%;
+    float: left;
+}
+.peerraiser-campaign-sidebar {
+    padding: .75rem 15px;
+    width: 25%;
+    float: right;
+}
+.peerraiser-campaign-banner img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+.peerraiser-campaign-donate-button a {
+    display: block;
+    color: #fff;
+    background-color: #d9534f;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid #d9534f;
+    padding: .5rem 1rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+    -webkit-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    text-align: center;
+    width: 100%;
+}
+.peerraiser-campaign-donate-button a:hover {
+    color: #fff;
+    background-color: #c9302c;
+    border-color: #c12e2a;
 }
