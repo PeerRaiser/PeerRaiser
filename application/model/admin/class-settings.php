@@ -115,7 +115,12 @@ class Settings extends Admin {
                         'type'              => 'select',
                         'options_cb'        => array( $this, 'get_selected_post'),
                     ),
-
+                    'donation_page' => array(
+	                    'name'              => __('Donation Page', 'peerraiser'),
+	                    'id'                => 'donation_page',
+	                    'type'              => 'select',
+	                    'options_cb'        => array( $this, 'get_selected_post'),
+                    ),
                 ),
             ),
             array(
