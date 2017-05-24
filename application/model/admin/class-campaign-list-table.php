@@ -105,6 +105,10 @@ class Campaign_List_Table extends WP_List_Table {
                 return peerraiser_money_format( $campaign->donation_value );
 	        case 'status' :
 		        return $admin_campaigns_model->get_campaign_status_by_key( $campaign->campaign_status );
+	        case 'start_date' :
+	        	return $campaign->start_date;
+	        case 'end_date' :
+	        	return $campaign->end_date ? $campaign->end_date : '&infin;';
             default:
                 return print_r( $campaign, true ); //Show the whole array for troubleshooting purposes
         }
@@ -137,6 +141,8 @@ class Campaign_List_Table extends WP_List_Table {
             'teams'       => __( 'Teams', 'peerraiser' ),
             'raised'      => __( 'Raised', 'peerraiser' ),
             'status'      => __( 'Status', 'peerraiser' ),
+	        'start_date'  => __( 'Start Date', 'peerraiser' ),
+	        'end_date'    => __( 'End Date', 'peerraiser' ),
         );
 
       return apply_filters( 'peerraiser_campaign_columns', $columns );
@@ -153,6 +159,8 @@ class Campaign_List_Table extends WP_List_Table {
             'donations' => array( 'donations', true ),
             'raised' => array( 'raised', true ),
             'count' => array( 'count', true ),
+	        'start_date' => array( 'start_date', true ),
+	        'end_date' => array( 'end_date', true ),
         );
 
         return apply_filters( 'peerraiser_campaign_sortable_columns', $sortable_columns);
@@ -248,7 +256,19 @@ class Campaign_List_Table extends WP_List_Table {
         );
 
 	    if ( ! empty( $_REQUEST['orderby'] ) ) {
-		    $args['orderby'] = $_REQUEST['orderby'];
+		    switch( $_REQUEST['orderby'] ) {
+			    case 'start_date' :
+			    	$args['meta_key'] = '_peerraiser_start_date_utc';
+			    	$args['orderby'] = 'meta_value_num';
+			    	break;
+			    case 'end_date' :
+			    	$args['meta_key'] = '_peerraiser_end_date_utc';
+			    	$args['orderby'] = 'meta_value_num';
+			    	break;
+			    default :
+				    $args['orderby'] = $_REQUEST['orderby'];
+		    }
+
 		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
 	    }
 
