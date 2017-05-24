@@ -3,6 +3,7 @@
 namespace PeerRaiser\Model;
 
 use WP_Term_Query;
+use \DateTime;;
 
 /**
  * Campaign Model
@@ -366,7 +367,8 @@ class Campaign {
         }
 
 	    if ( empty( $this->start_date ) ) {
-			$this->start_date = current_time( 'timestamp' );
+		    $time = new DateTime();
+			$this->start_date = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
 			$this->pending['start_date'] = $this->start_date;
 		}
 
@@ -767,17 +769,23 @@ class Campaign {
 	 * @return string
 	 */
 	public function get_timezone_string() {
-		// If there's no timezone, or the timezone is UTC, return UTC
-		if ( empty( $this->timezone ) || $this->timezone === 'UTC' ) {
+		$timezone = $this->timezone;
+
+		// If there's no timezone, get the site's timezone
+		if ( empty( $timezone ) ) {
+			$timezone = \PeerRaiser\Helper\Date::get_timezone_string();
+		}
+
+		if ( $timezone === 'UTC' ) {
 			return 'UTC';
 		}
 
 		// If the timezone is UTC offset, return just the offset amount
-		if ( substr( $this->timezone, 0, 3 ) === "UTC" ) {
-			return substr( $this->timezone, 3 );
+		if ( substr( $timezone, 0, 3 ) === "UTC" ) {
+			return substr( $timezone, 3 );
 		}
 
-		return $this->timezone;
+		return $timezone;
 	}
 
     /**
