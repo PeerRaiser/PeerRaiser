@@ -107,6 +107,9 @@ class Bootstrap {
 
 	    $donation_controller = self::get_controller( 'Frontend\Donation' );
 	    $donation_controller->register_actions();
+
+	    $widget_controller = self::get_controller( 'Frontend\Widget' );
+	    $widget_controller->register_actions();
     }
 
     /**
