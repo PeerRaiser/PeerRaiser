@@ -7,7 +7,8 @@ namespace PeerRaiser\Controller;
  */
 class Install extends Base {
 
-    private $default_pages = array();
+	// TODO: Move this to the model
+	private $default_pages = array();
 
     public function __construct() {
         $this->default_pages = array(
@@ -26,6 +27,10 @@ class Install extends Base {
             'participant_dashboard' => array(
                 'post_title'     => __( 'Participant Dashboard', 'peerraiser' ),
                 'post_content'   => __( '[peerraiser_participant_dashboard]', 'peerraiser' )
+            ),
+            'donation_page' => array(
+	            'post_title'     => __( 'Donate ', 'peerraiser' ),
+	            'post_content'   => __( '[peerraiser_donation_page]', 'peerraiser' )
             ),
         );
         parent::__construct();
@@ -256,12 +261,14 @@ class Install extends Base {
         $login_page            = $this->create_page( 'login' );
         $signup_page           = $this->create_page( 'signup' );
         $participant_dashboard = $this->create_page( 'participant_dashboard' );
+        $donation_page         = $this->create_page( 'donate' );
 
         $default_options = array(
             'thank_you_page'        => $thank_you_page,
             'login_page'            => $login_page,
             'signup_page'           => $signup_page,
             'participant_dashboard' => $participant_dashboard,
+            'donation_page'         => $donation_page,
         );
 
         update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
