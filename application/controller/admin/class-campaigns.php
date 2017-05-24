@@ -348,7 +348,7 @@ class Campaigns extends Base {
 	 * @param string                     $meta_value Meta value
 	 */
 	public function maybe_schedule_cron( $campaign, $meta_key, $meta_value ) {
-		if ( $meta_key !== '_peerraiser_end_date_utc' ) {
+		if ( $meta_key !== '_peerraiser_end_date_utc' || empty( $meta_value ) ) {
 			return;
 		}
 
@@ -397,6 +397,10 @@ class Campaigns extends Base {
 
 		// Update start_date_utc if the timezone or start date/time fields changed
 		if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'start') !== false ) {
+			if ( empty( $campaign->start_date ) || empty( $campaign->start_time ) ) {
+				return;
+			}
+
 			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
 			$time       = new DateTime( $campaign->start_date . ' ' . $campaign->start_time, $timezone );
 			$timestamp  = (int) $time->format('U');
@@ -404,8 +408,12 @@ class Campaigns extends Base {
 			$campaign->start_date_utc = $timestamp;
 		}
 
-		// Update end_date_utc if the timezone or start date/time fields changed
-		if (  $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'end') !== false ) {
+		// Update end_date_utc if the timezone or end date/time fields changed
+		if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'end') !== false ) {
+			if ( empty( $campaign->end_date ) || empty( $campaign->end_time ) ) {
+				return;
+			}
+
 			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
 			$time       = new DateTime( $campaign->end_date . ' ' . $campaign->end_time, $timezone );
 			$timestamp  = (int) $time->format('U');
@@ -519,28 +527,32 @@ class Campaigns extends Base {
 		$field_ids['campaign_name']   = '_peerraiser_campaign_name';
 		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
+		// If the start date is empty, set it to today's date
+		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
+			$time     = new DateTime( '', $timezone );
+			$_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+		}
+
+		// If the start time is empty, set it to the current time
+		if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
+			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
+			$time     = new DateTime( '', $timezone );
+			$_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+		}
+
+		// If the end date is empty, make sure the end time is also empty
+		if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
+			$_REQUEST['_peerraiser_end_time'] = '';
+			// If it's not empty, but the time is empty, set it to the current time
+		} elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
+			$time = new DateTime();
+			$_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+		}
+
 		foreach ( $field_ids as $key => $value ) {
-			switch ( $value ) {
-				case "_peerraiser_campaign_name" :
-					$campaign->campaign_name = $_REQUEST['_peerraiser_campaign_name'];
-					break;
-				case "_peerraiser_start_date" :
-					if ( empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-						$_REQUEST['_peerraiser_start_date'] = current_time( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
-					}
-				case "_peerraiser_start_time" :
-					if ( empty( $_REQUEST['_peerraiser_start_time'] ) ) {
-						$_REQUEST['_peerraiser_start_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-					}
-				case "_peerraiser_end_time" :
-					if ( empty( $_REQUEST['_peerraiser_end_time'] ) && ! empty( $_REQUEST['_peerraiser_end_date'] ) ) {
-						$_REQUEST['_peerraiser_end_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-					}
-				default :
-					if ( isset( $_REQUEST[$value] ) ) {
-						$campaign->$key = $_REQUEST[$value];
-					}
-					break;
+			if ( isset( $_REQUEST[$value] ) ) {
+				$campaign->$key = $_REQUEST[$value];
 			}
 		}
 	}
@@ -562,12 +574,16 @@ class Campaigns extends Base {
 
 		// If the start date is empty, set it to today's date
 		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			$_REQUEST['_peerraiser_start_date'] = current_time( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
+			$time     = new DateTime( '', $timezone );
+			$_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
 		}
 
 		// If the start time is empty, set it to the current time
 		if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
-			$_REQUEST['_peerraiser_start_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
+			$time     = new DateTime( '', $timezone );
+			$_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
 		}
 
 		// If the end date is empty, make sure the end time is also empty
@@ -575,7 +591,9 @@ class Campaigns extends Base {
 			$_REQUEST['_peerraiser_end_time'] = '';
 		// If it's not empty, but the time is empty, set it to the current time
 		} elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
-			$_REQUEST['_peerraiser_end_time'] = current_time( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
+			$time     = new DateTime( '', $timezone );
+			$_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
 		}
 
 		// Get the current values from the database to see if things changes
