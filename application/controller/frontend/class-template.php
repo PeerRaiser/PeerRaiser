@@ -16,12 +16,15 @@ class Template extends \PeerRaiser\Controller\Base {
 			return $template;
 		}
 
-		$template_file = 'template-peerraiser-campaign.php';
+		$specific_template_file = 'template-peerraiser-campaign-' . $term->slug . '.php';
+		$general_template_file  = 'template-peerraiser-campaign.php';
 
-		if ( $theme_file = locate_template( array ( $template_file ) ) ) {
-			$template = $theme_file;
+		if ( $specific_theme_file = locate_template( array( $specific_template_file ) ) ) {
+			$template = $specific_theme_file;
+		} elseif ( $general_theme_file = locate_template( array ( $general_template_file ) ) ) {
+			$template = $general_theme_file;
 		} else {
-			$template = PEERRAISER_PATH . 'views/frontend/' . $template_file;
+			$template = PEERRAISER_PATH . 'views/frontend/' . $general_template_file;
 		}
 
 		return $template;
