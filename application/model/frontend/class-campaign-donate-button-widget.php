@@ -15,7 +15,10 @@ class Campaign_Donate_Button_Widget extends PeerRaiser_Widget {
 	}
 
 	public function widget( $args, $instance ) {
+		$plugin_options        = get_option( 'peerraiser_options', array() );
+
 		$view_args = array(
+			'donation_page' => get_permalink( $plugin_options[ 'donation_page' ] ),
 			'button_label' => ! empty( $instance['button_label'] ) ? $instance['button_label'] : wp_kses_post( 'Donate to this campaign', 'peerraiser' ),
 		);
 		$this->assign( 'peerraiser', $view_args );
