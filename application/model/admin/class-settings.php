@@ -109,6 +109,12 @@ class Settings extends Admin {
                         'type'              => 'select',
                         'options_cb'        => array( $this, 'get_selected_post'),
                     ),
+                    'registration_page' => array(
+	                    'name'              => __('Registration Page', 'peerraiser'),
+	                    'id'                => 'registration_page',
+	                    'type'              => 'select',
+	                    'options_cb'        => array( $this, 'get_selected_post'),
+                    ),
                     'participant_dashboard' => array(
                         'name'              => __('Participant Dashboard', 'peerraiser'),
                         'id'                => 'participant_dashboard',
