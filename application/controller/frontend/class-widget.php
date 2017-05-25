@@ -23,6 +23,8 @@ class Widget extends \PeerRaiser\Controller\Base {
 
 	public function register_widgets() {
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Donate_Button_Widget' );
+		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Register_Button_Widget' );
+		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Total_Raised_Widget' );
 	}
 
 }
