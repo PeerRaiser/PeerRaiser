@@ -11,11 +11,11 @@ class Campaign_Donate_Button_Widget extends PeerRaiser_Widget {
 		    'description' => __( 'Renders a donation button for campaigns', 'peerraiser' ),
         ) );
 
-		parent::__construct('peerraiser_campaign_donate', $widget_title, $widget_options );
+		parent::__construct('peerraiser_campaign_donate_button', $widget_title, $widget_options );
 	}
 
 	public function widget( $args, $instance ) {
-		$plugin_options        = get_option( 'peerraiser_options', array() );
+		$plugin_options = get_option( 'peerraiser_options', array() );
 
 		$view_args = array(
 			'donation_page' => get_permalink( $plugin_options[ 'donation_page' ] ),
