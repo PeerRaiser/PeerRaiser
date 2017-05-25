@@ -24,13 +24,17 @@ class Install extends Base {
                 'post_title'     => __( 'Signup', 'peerraiser' ),
                 'post_content'   => __( '[peerraiser_signup]', 'peerraiser' )
             ),
+            'register' => array(
+	            'post_title'     => __( 'Register', 'peerraiser' ),
+	            'post_content'   => __( '[peerraiser_registration]', 'peerraiser' )
+            ),
             'participant_dashboard' => array(
                 'post_title'     => __( 'Participant Dashboard', 'peerraiser' ),
                 'post_content'   => __( '[peerraiser_participant_dashboard]', 'peerraiser' )
             ),
-            'donation_page' => array(
-	            'post_title'     => __( 'Donate ', 'peerraiser' ),
-	            'post_content'   => __( '[peerraiser_donation_page]', 'peerraiser' )
+            'donate' => array(
+	            'post_title'     => __( 'Donate', 'peerraiser' ),
+	            'post_content'   => __( '[peerraiser_donation]', 'peerraiser' )
             ),
         );
         parent::__construct();
@@ -260,6 +264,7 @@ class Install extends Base {
         $thank_you_page        = $this->create_page( 'thank_you' );
         $login_page            = $this->create_page( 'login' );
         $signup_page           = $this->create_page( 'signup' );
+        $registration_page     = $this->create_page( 'register' );
         $participant_dashboard = $this->create_page( 'participant_dashboard' );
         $donation_page         = $this->create_page( 'donate' );
 
@@ -267,6 +272,7 @@ class Install extends Base {
             'thank_you_page'        => $thank_you_page,
             'login_page'            => $login_page,
             'signup_page'           => $signup_page,
+            'registration_page'     => $registration_page,
             'participant_dashboard' => $participant_dashboard,
             'donation_page'         => $donation_page,
         );
