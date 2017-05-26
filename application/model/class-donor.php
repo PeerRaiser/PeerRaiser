@@ -581,18 +581,21 @@ class Donor {
     /**
      * Get the top donors, based on donation value
      *
-     * @param int $count
+     * @param int   $count
+     * @param array $args
      *
      * @return array Donors listed by value
      */
-	public function get_top_donors( $count = 20 ) {
+	public function get_top_donors( $count = 20, $args = array() ) {
         $donation_table = new Donor_Database();
 
-        $args = array(
+        $defaults = array(
             'orderby' => 'donation_value',
             'order'   => 'DESC',
             'number'  => $count
         );
+
+		$args = wp_parse_args( $args, $defaults );
 
         $donors = $donation_table->get_donors( $args );
 
