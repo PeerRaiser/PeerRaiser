@@ -18,7 +18,7 @@ class Campaign_Register_Button_Widget extends PeerRaiser_Widget {
 		$plugin_options = get_option( 'peerraiser_options', array() );
 
 		$view_args = array(
-			'donation_page' => get_permalink( $plugin_options[ 'donation_page' ] ),
+			'registration_page' => get_permalink( $plugin_options[ 'registration_page' ] ),
 			'button_label' => ! empty( $instance['button_label'] ) ? $instance['button_label'] : wp_kses_post( 'Register Now', 'peerraiser' ),
 		);
 		$this->assign( 'peerraiser', $view_args );
