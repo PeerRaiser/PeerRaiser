@@ -102,6 +102,24 @@ function peerraiser_get_top_fundraisers( $count = 20, $args = array() ) {
 	return $fundraiser->get_top_fundraisers( $count, $args );
 }
 
+function peerraiser_get_top_teams( $count = 20, $args = array() ) {
+	$team = new PeerRaiser\Model\Team();
+
+	if ( isset( $args['campaign_id'] ) ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'peerraiser_campaign',
+				'field'    => 'id',
+				'terms'    => $args['campaign_id'],
+			),
+		);
+
+		unset( $args['campaign_id'] );
+	}
+
+	return $team->get_top_teams( $count, $args );
+}
+
 function peerraiser_get_current_campaign() {
 	$queried_object = get_queried_object();
 
