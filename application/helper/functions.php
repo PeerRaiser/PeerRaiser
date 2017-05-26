@@ -69,9 +69,37 @@ function peerraiser_money_format( $amount, $with_symbol = true  ) {
 
 }
 
-function peerraiser_get_top_donors( $count ) {
+function peerraiser_get_top_donors( $count = 20, $args = array() ) {
     $donor = new PeerRaiser\Model\Donor();
-    return $donor->get_top_donors( $count );
+    return $donor->get_top_donors( $count, $args );
+}
+
+function peerraiser_get_top_fundraisers( $count = 20, $args = array() ) {
+	$fundraiser = new PeerRaiser\Model\Fundraiser();
+
+	if ( isset( $args['campaign_id'] ) ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'peerraiser_campaign',
+				'field'    => 'id',
+				'terms'    => $args['campaign_id'],
+			),
+		);
+
+		unset( $args['campaign_id'] );
+	} elseif ( isset( $args['team_id'] ) ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'peerraiser_team',
+				'field'    => 'id',
+				'terms'    => $args['team_id'],
+			),
+		);
+
+		unset( $args['team_id'] );
+	}
+
+	return $fundraiser->get_top_fundraisers( $count, $args );
 }
 
 function peerraiser_get_current_campaign() {
