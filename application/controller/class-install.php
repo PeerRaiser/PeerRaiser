@@ -34,7 +34,7 @@ class Install extends Base {
             ),
             'donate' => array(
 	            'post_title'     => __( 'Donate', 'peerraiser' ),
-	            'post_content'   => __( '[peerraiser_donation]', 'peerraiser' )
+	            'post_content'   => __( '[peerraiser_donation_form]', 'peerraiser' )
             ),
         );
         parent::__construct();
