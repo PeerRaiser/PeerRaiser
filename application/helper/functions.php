@@ -106,13 +106,8 @@ function peerraiser_get_top_teams( $count = 20, $args = array() ) {
 	$team = new PeerRaiser\Model\Team();
 
 	if ( isset( $args['campaign_id'] ) ) {
-		$args['tax_query'] = array(
-			array(
-				'taxonomy' => 'peerraiser_campaign',
-				'field'    => 'id',
-				'terms'    => $args['campaign_id'],
-			),
-		);
+		$args['meta_key']= '_peerraiser_campaign_id';
+		$args['meta_value']= $args['campaign_id'];
 
 		unset( $args['campaign_id'] );
 	}
