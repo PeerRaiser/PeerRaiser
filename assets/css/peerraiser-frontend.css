@@ -862,3 +862,10 @@ form#dashboard_settings {
     font-weight: normal;
     letter-spacing: 1.25px;
 }
+.peerraiser-top-fundraisers a {
+    text-decoration: underline;
+}
+.peerraiser-top-teams ol,
+.peerraiser-top-fundraisers ol {
+    margin-left: 1rem;
+}
