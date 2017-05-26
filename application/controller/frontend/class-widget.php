@@ -16,7 +16,7 @@ class Widget extends \PeerRaiser\Controller\Base {
 			'description' => __( 'Widgets in this area will be shown on side of campaign pages.', 'peerraiser' ),
 			'before_widget' => '<div id="%1$s" class="peerraiser-widget %2$s">',
 			'after_widget'  => '</div>',
-			'before_title'  => '<h2 class="peerraiser-widget-title">',
+			'before_title'  => '<h2 class="widget-title">',
 			'after_title'   => '</h2>',
 		) );
 	}
@@ -25,6 +25,7 @@ class Widget extends \PeerRaiser\Controller\Base {
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Donate_Button_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Register_Button_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Total_Raised_Widget' );
+		register_widget( 'PeerRaiser\Model\Frontend\Top_Fundraisers_Widget' );
 	}
 
 }
