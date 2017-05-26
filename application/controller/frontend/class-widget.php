@@ -25,6 +25,7 @@ class Widget extends \PeerRaiser\Controller\Base {
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Donate_Button_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Register_Button_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Total_Raised_Widget' );
+		register_widget( 'PeerRaiser\Model\Frontend\Campaign_Thermometer_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Top_Fundraisers_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Top_Teams_Widget' );
 	}
