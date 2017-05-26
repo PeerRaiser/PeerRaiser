@@ -5,12 +5,24 @@ namespace PeerRaiser\Controller\Frontend;
 class Shortcode extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
-        add_shortcode( 'peerraiser_receipt',               array( $this, 'render_donation_receipt' ) );
-        add_shortcode( 'peerraiser_login',                 array( $this, 'render_login_form' ) );
-        add_shortcode( 'peerraiser_signup',                array( $this, 'render_signup_form' ) );
-        add_shortcode( 'peerraiser_participant_dashboard', array( $this, 'render_participant_dashboard' ) );
+	    add_shortcode( 'peerraiser_donation_form',         array( $this, 'render_donation_form' ) );
+	    add_shortcode( 'peerraiser_receipt',               array( $this, 'render_donation_receipt' ) );
+	    add_shortcode( 'peerraiser_login',                 array( $this, 'render_login_form' ) );
+	    add_shortcode( 'peerraiser_signup',                array( $this, 'render_signup_form' ) );
+	    add_shortcode( 'peerraiser_participant_dashboard', array( $this, 'render_participant_dashboard' ) );
 
         add_action( 'cmb2_init', array( $this, 'register_settings_fields' ) );
+    }
+
+    public function render_donation_form( $atts, $content = '' ) {
+    	$a = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
+
+	    $view_args = array(
+		    'test' => 'test result'
+	    );
+	    $this->assign( 'peerraiser', $view_args );
+
+	    return $this->get_text_view( 'frontend/donation-form' );
     }
 
     public function render_donation_receipt( $atts, $content = '' ) {
@@ -20,9 +32,12 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'description_text' => '',
         ), $atts );
 
-        $html = '<p><strong>Testing</strong> 123</p>';
+	    $view_args = array(
+		    'test' => 'test result'
+	    );
+	    $this->assign( 'peerraiser', $view_args );
 
-        return $html;
+	    return $this->get_text_view( 'frontend/donation-receipt' );
     }
 
     public function render_login_form( $atts, $content ='' ) {
