@@ -869,3 +869,29 @@ form#dashboard_settings {
 .peerraiser-top-fundraisers ol {
     margin-left: 1rem;
 }
+.peerraiser-thermometer-container {
+    text-align: center;
+    font-size: .85rem;
+}
+.peerraiser-thermometer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    width: 100%;
+    background-color: #eee;
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.2);
+    margin-bottom: .25rem;
+}
+.peerraiser-thermometer-bar {
+    height: 20px;
+    display: block;
+    float: left;
+    width: 0%;
+    background: #3798d9;
+    box-shadow: inset 0px -1px 2px rgba(0,0,0,0.1);
+    -webkit-transition: width 0.8s ease-in-out;
+    transition: width 0.8s ease-in-out;
+    background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+    background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+    background-size: 35px 35px;
+}
