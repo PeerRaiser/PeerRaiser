@@ -408,6 +408,42 @@ class Team {
 	}
 
 	/**
+	 * Get the top teams sort by value
+	 *
+	 * @param int   $count Number of top fundraisers to get
+	 * @param array $args
+	 *
+	 * @return array Fundraisers
+	 */
+	public function get_top_teams( $count = 20, $args = array() ) {
+		$defaults = array(
+			'offset'     => 0,
+			'hide_empty' => false,
+			'taxonomy'   => array( 'peerraiser_team' ),
+			'count'      => $count,
+			'meta_key'   => '_peerraiser_donation_value',
+			'orderby'    => 'meta_value_num',
+			'order'      => 'DESC'
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$term_query = new WP_Term_Query( $args );
+
+		$results = array();
+		if ( ! empty( $term_query->terms ) ) {
+			foreach ( $term_query->terms as $term ) {
+				$team = new self( $term->term_id );
+				if ( $team->donation_value > 0 ){
+					$results[] = new self( $term->term_id );
+				}
+			}
+		}
+
+		return $results;
+	}
+
+	/**
 	 * Update the team name
 	 *
 	 * @since  1.0.0
