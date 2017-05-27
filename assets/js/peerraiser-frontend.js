@@ -38,8 +38,22 @@
             });
 
             $('.peerraiser-donation-amounts .peerraiser-donation-input').on( 'focus', function(){
-                $('.peerraiser-donation-amounts .peerraiser-donation-amount-buttons input[type=radio]' ).prop('checked', false);
-            })
+                $('.peerraiser-donation-amounts .peerraiser-donation-amount-buttons input[type=radio]').prop('checked', false);
+            });
+
+            $('.peerraiser-donation-amounts .peerraiser-donation-amount-buttons input[type=radio]').on( 'change', function(){
+                if ( this.checked ) {
+                    $('.peerraiser-donation-amounts .peerraiser-donation-input').val('');
+                }
+            });
+
+            $('.peerraiser-donation-form #peerraiser_field_anonymous input[type=checkbox]').on( 'change', function() {
+                if ( this.checked ) {
+                    $('.peerraiser-donation-form #peerraiser_field_public_name input').val('').prop( 'disabled', true );
+                } else {
+                    $('.peerraiser-donation-form #peerraiser_field_public_name input').prop( 'disabled', false );
+                }
+            });
         },
 
         handleFile = function( file ) {
