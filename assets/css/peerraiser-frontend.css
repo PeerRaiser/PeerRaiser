@@ -896,6 +896,35 @@ form#dashboard_settings {
     background-size: 35px 35px;
 }
 /* Donation Form */
+.peerraiser-donation-form section {
+    margin-bottom: 2rem;
+}
+.peerraiser-donation-form label {
+    font-size: 1rem;
+}
+.peerraiser-donation-form  input[type="text"]:disabled {
+    background: #dddddd;
+}
+.peerraiser-donation-form .peerraiser-field {
+    margin-bottom: 1rem;
+}
+.peerraiser-donation-form #peerraiser_field_first_name {
+    float: left;
+    width: 50%;
+    padding-right: .5rem;
+}
+.peerraiser-donation-form #peerraiser_field_last_name {
+    float: left;
+    width: 50%;
+    padding-left: .5rem;
+}
+.peerraiser-donation-form #peerraiser_field_public_name {
+    margin-bottom: 0;
+}
+.peerraiser-donation-form #peerraiser_field_anonymous label {
+    font-weight: normal;
+    font-size: .85rem;
+}
 .peerraiser-donation-amount-buttons {
     list-style: none;
     margin: 0;
@@ -932,6 +961,11 @@ form#dashboard_settings {
     -ms-transition:     all 0.1s ease-in-out;
     -o-transition:      all 0.1s ease-in-out;
     transition:         all 0.1s ease-in-out;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .peerraiser-donation-amount-buttons label:hover {
     cursor: pointer;
@@ -1033,4 +1067,29 @@ form#dashboard_settings {
 .peerraiser-donation-amount-other .peerraiser-donation-input:not(:last-child) {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
+}
+.peerraiser-submit-button {
+    color: #fff;
+    background-color: #5cb85c;
+    font-weight: 600;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    text-align: center;
+    padding: 6px 14px;
+    border: 1px solid #4cae4c;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.peerraiser-submit-button:hover {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
 }
