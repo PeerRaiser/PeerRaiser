@@ -36,6 +36,10 @@
                     $o.dashboard.find('.profile-image-upload .file-label span').text( '' );
                 }
             });
+
+            $('.peerraiser-donation-amounts .peerraiser-donation-input').on( 'focus', function(){
+                $('.peerraiser-donation-amounts .peerraiser-donation-amount-buttons input[type=radio]' ).prop('checked', false);
+            })
         },
 
         handleFile = function( file ) {
