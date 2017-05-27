@@ -895,3 +895,145 @@ form#dashboard_settings {
     background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
     background-size: 35px 35px;
 }
+/* Donation Form */
+.peerraiser-donation-amount-buttons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.peerraiser-donation-amount-buttons li {
+    display: inline-block;
+    margin: 0 0.5rem;
+}
+.peerraiser-donation-amount-buttons li:first-child {
+    margin-left: 0;
+}
+.peerraiser-donation-amount-buttons li:last-child {
+    margin-right: 0;
+}
+.peerraiser-donation-amount-buttons input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}
+.peerraiser-donation-amount-buttons label {
+    float: left;
+    display: inline-block;
+    color: #fff;
+    background-color: #5cb85c;
+    font-weight: 600;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    text-align: center;
+    padding: 6px 14px;
+    border: 1px solid #4cae4c;
+    -webkit-transition: all 0.1s ease-in-out;
+    -moz-transition:    all 0.1s ease-in-out;
+    -ms-transition:     all 0.1s ease-in-out;
+    -o-transition:      all 0.1s ease-in-out;
+    transition:         all 0.1s ease-in-out;
+}
+.peerraiser-donation-amount-buttons label:hover {
+    cursor: pointer;
+}
+.peerraiser-donation-amount-buttons input:checked + label {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+}
+.peerraiser-donation-amount-other {
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+}
+.peerraiser-donation-amount-other .peerraiser-currency-symbol {
+    padding: .5rem .75rem;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.25;
+    color: #464a4c;
+    text-align: center;
+    background-color: #eceeef;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    white-space: nowrap;
+    vertical-align: middle;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:last-child) {
+    border-right: 0;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:first-child) {
+    border-left: 0;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.peerraiser-donation-amount-other .peerraiser-donation-input {
+    height: 55px;
+    position: relative;
+    z-index: 2;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: #464a4c;
+    background-color: #f7f7f7;
+    background-image: none;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    border-color: rgba(0, 0, 0, 0.15);
+}
+.peerraiser-donation-amount-other .peerraiser-donation-input:focus {
+    border-color: rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+.peerraiser-donation-amount-other .peerraiser-donation-input:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+.peerraiser-donation-amount-other .peerraiser-donation-input:not(:last-child) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
