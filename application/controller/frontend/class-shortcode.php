@@ -16,9 +16,11 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
     public function render_donation_form( $atts, $content = '' ) {
     	$a = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
+	    $plugin_options = get_option( 'peerraiser_options', array() );
 
 	    $view_args = array(
-		    'test' => 'test result'
+		    'currency_symbol' => peerraiser_get_currency_symbol(),
+		    'currency_position' => $plugin_options['currency_position'],
 	    );
 	    $this->assign( 'peerraiser', $view_args );
 
