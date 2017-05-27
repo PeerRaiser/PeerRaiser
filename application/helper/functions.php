@@ -42,7 +42,7 @@ function peerraiser_get_fundraiser( $id ) {
     return $fundraiser_model;
 }
 
-function peerraiser_money_format( $amount, $with_symbol = true  ) {
+function peerraiser_money_format( $amount, $with_symbol = true, $decimal = true  ) {
     $currency_model  = new \PeerRaiser\Model\Currency();
     $plugin_options  = get_option( 'peerraiser_options', array() );
 
@@ -50,7 +50,7 @@ function peerraiser_money_format( $amount, $with_symbol = true  ) {
     $thousands_sep     = $plugin_options['thousands_separator'];
     $currency_position = $plugin_options['currency_position'];
     $decimal_sep       = $plugin_options['decimal_separator'];
-    $number_decimals   = $plugin_options['number_decimals'];
+    $number_decimals   = $decimal ? $plugin_options['number_decimals'] : 0;
     $currency_symbol   = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
 
     $amount = ! empty( $amount ) ? $amount : 0;
@@ -124,4 +124,11 @@ function peerraiser_get_current_campaign() {
 	}
 
 	return new \PeerRaiser\Model\Campaign( $queried_object->term_id );
+}
+
+function peerraiser_get_currency_symbol() {
+	$plugin_options = get_option( 'peerraiser_options', array() );
+
+	$currency        = new \PeerRaiser\Model\Currency();
+	return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 }
