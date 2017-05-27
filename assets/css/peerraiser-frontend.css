@@ -903,10 +903,7 @@ form#dashboard_settings {
 }
 .peerraiser-donation-amount-buttons li {
     display: inline-block;
-    margin: 0 0.5rem;
-}
-.peerraiser-donation-amount-buttons li:first-child {
-    margin-left: 0;
+    margin: 0 1rem 0 0;
 }
 .peerraiser-donation-amount-buttons li:last-child {
     margin-right: 0;
