@@ -23,6 +23,7 @@ class Campaign_Donate_Button_Widget extends PeerRaiser_Widget {
 		);
 		$this->assign( 'peerraiser', $view_args );
 		$this->assign( 'campaign', peerraiser_get_current_campaign() );
+		$this->assign( 'donate_url', $this->get_donate_url() );
 		$this->assign( 'args', $args );
 
 		echo $this->get_text_view( 'frontend/widget/peerraiser-campaign-donate-button' );
@@ -42,5 +43,13 @@ class Campaign_Donate_Button_Widget extends PeerRaiser_Widget {
 		$instance['button_label'] = ( ! empty( $new_instance['button_label'] ) ) ? strip_tags( $new_instance['button_label'] ) : '';
 
 		return $instance;
+	}
+
+	private function get_donate_url() {
+		$plugin_options = get_option( 'peerraiser_options', array() );
+		$campaign       = peerraiser_get_current_campaign();
+		$donation_page  = get_permalink( $plugin_options['donation_page'] );
+
+		return trailingslashit( $donation_page ) . $campaign->campaign_slug;
 	}
 }
