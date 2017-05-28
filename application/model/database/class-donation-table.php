@@ -40,6 +40,7 @@ class Donation_Table extends Database {
             'ip'             => '%s',
             'status'         => '%s',
             'date'           => '%s',
+	        'is_anonymous'   => '%d',
 	        'is_test'        => '%d',
         );
     }
@@ -62,6 +63,7 @@ class Donation_Table extends Database {
             'ip'             => '',
             'status'         => 'completed',
             'date'           => date( 'Y-m-d H:i:s' ),
+	        'is_anonymous'   => 0,
 	        'is_test'        => 0,
         );
     }
@@ -281,6 +283,20 @@ class Donation_Table extends Database {
 
         }
 
+	    // By anonymous donation or not
+	    if ( ! empty( $args['is_anonymous'] ) ) {
+		    // Convert boolean to 1 for true and 0 for false
+		    $is_anonymous = $args['is_anonymous'] ? 1 : 0;
+
+		    if ( empty( $where ) ) {
+			    $where .= " WHERE";
+		    } else {
+			    $where .= " AND";
+		    }
+
+		    $where .= " `is_anonymous` = '{$is_anonymous}' ";
+	    }
+
 	    // By test mode or not
         if ( ! empty( $args['is_test'] ) ) {
 	        // Convert boolean to 1 for true and 0 for false
@@ -365,6 +381,7 @@ class Donation_Table extends Database {
             'ip'             => $donation->ip,
             'status'         => $donation->status,
             'date'           => $donation->date,
+	        'is_anonymous'   => $donation->is_anonymous,
 	        'is_test'        => $donation->is_test,
         );
 
@@ -405,6 +422,7 @@ class Donation_Table extends Database {
         ip tinytext NOT NULL,
         status varchar(30) NOT NULL,
         date datetime NOT NULL,
+        is_anonymous tinyint(1) NOT NULL DEFAULT '0',
         is_test tinyint(1) NOT NULL DEFAULT '0',
         PRIMARY KEY  (donation_id)
         ) CHARACTER SET utf8 COLLATE utf8_general_ci;";
