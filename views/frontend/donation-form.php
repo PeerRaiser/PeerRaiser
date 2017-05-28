@@ -1,14 +1,23 @@
 <form class="peerraiser-donation-form" method="post" enctype="multipart/form-data">
-    <?php if ( ! isset( $_GET['campaign'] ) ) : ?>
-        <section class="peerraiser-campaign-selection">
-            <select name="peerraiser_campaign">
-                <option><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
-                <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
-                    <option value="<?php echo $campaign->campaign_slug; ?>"><?php echo $campaign->campaign_name; ?></option>
-                <?php endforeach; ?>
-            </select>
-        </section>
-    <?php endif; ?>
+
+    <section class="peerraiser-campaign-selection <?php echo $peerraiser['campaign_select_class']; ?>">
+        <select name="peerraiser_campaign" id="peerraiser_campaign">
+            <option><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
+            <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
+                <option value="<?php echo $campaign->campaign_slug; ?>"><?php echo $campaign->campaign_name; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </section>
+
+    <section class="peerraiser-fundraiser-selection <?php echo $peerraiser['fundraiser_select_class']; ?>"<?php if ( isset( $_GET['campaign']) && empty( $peerraiser['fundraisers'] ) ) echo ' style="display:none;"'; ?>>
+        <select name="peerraiser_fundraiser" id="fundraiser_select">
+            <option><?php _e( 'Select a Fundraiser to Support (optional)', 'peerraiser' ); ?></option>
+            <?php foreach( $peerraiser['fundraisers'] as $fundraiser ) : ?>
+                <option value="<?php echo $fundraiser->fundraiser_slug; ?>"><?php echo $fundraiser->fundraiser_name; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </section>
+
 	<section class="peerraiser-donation-amounts">
 		<label><h3><?php _e( 'Choose a Donation Amount', 'peerraiser' ); ?> </h3></label>
 		<?php // TODO: Add setting for donation amounts instead of hard coding them ?>
