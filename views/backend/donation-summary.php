@@ -83,7 +83,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div id="donation-summary" class="postbox">
                             <h2><span><?php _e( 'Donation Summary', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
-                                <p class="summary"><?php printf( '%s made a donation of <strong>$%.2F</strong> on <strong>%s</strong>', $peerraiser['donor']->full_name, number_format( $peerraiser['donation']->total, 2 ), mysql2date( get_option('date_format'), $peerraiser['donation']->date ) ); ?></p>
+                                <p class="summary"><?php printf( '%1$s made a donation of <strong>%2$s</strong> on <strong>%3$s</strong>', $peerraiser['donor']->full_name, peerraiser_money_format( $peerraiser['donation']->total ), mysql2date( get_option('date_format'), $peerraiser['donation']->date ) ); ?></p>
                                 <table class="transaction-info table table-striped">
                                     <thead>
                                         <tr>
@@ -123,7 +123,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </tr>
                                         <tr>
                                             <td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>:</strong></td>
-                                            <td><strong>$<?php echo number_format( $peerraiser['donation']->total, 2 ); ?></strong></td>
+                                            <td><strong><?php echo peerraiser_money_format( $peerraiser['donation']->total ); ?></strong></td>
                                         </tr>
                                     </tbody>
                                 </table>
