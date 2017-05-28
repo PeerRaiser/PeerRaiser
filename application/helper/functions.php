@@ -132,3 +132,9 @@ function peerraiser_get_currency_symbol() {
 	$currency        = new \PeerRaiser\Model\Currency();
 	return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 }
+
+function peerraiser_get_campaign_by_slug( $slug ) {
+	$term = get_term_by( 'slug', $slug, 'peerraiser_campaign' );
+
+	return new \PeerRaiser\Model\Campaign( $term->term_id );
+}
