@@ -1,4 +1,14 @@
-<form class="peerraiser-donation-form">
+<form class="peerraiser-donation-form" method="post" enctype="multipart/form-data">
+    <?php if ( ! isset( $_GET['campaign'] ) ) : ?>
+        <section class="peerraiser-campaign-selection">
+            <select name="peerraiser_campaign">
+                <option><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
+                <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
+                    <option value="<?php echo $campaign->campaign_slug; ?>"><?php echo $campaign->campaign_name; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </section>
+    <?php endif; ?>
 	<section class="peerraiser-donation-amounts">
 		<label><h3><?php _e( 'Choose a Donation Amount', 'peerraiser' ); ?> </h3></label>
 		<?php // TODO: Add setting for donation amounts instead of hard coding them ?>
@@ -22,7 +32,7 @@
 				<?php /* translators: 1: Donation amount 2: Currency symbol  */ ?>
 				<?php $field_placeholder = sprintf( __( 'Other Amount (%1$s%2$s Min)', 'peerraiser' ), '10', $peerraiser['currency_symbol'] ); ?>
 			<?php endif; ?>
-			<input class="peerraiser-donation-input" value="" maxlength="8" type="number" autocomplete="off" placeholder="<?php echo $field_placeholder; ?>" data-minimum="10" aria-label="Enter Donation Amount USD Min. $10">
+			<input name="other_amount" class="peerraiser-donation-input" value="" maxlength="8" type="number" autocomplete="off" placeholder="<?php echo $field_placeholder; ?>" data-minimum="10" aria-label="Enter Donation Amount USD Min. $10">
 
 			<?php if ( $peerraiser['currency_position'] === 'after' ) : ?>
 				<span class="peerraiser-currency-symbol"><?php echo $peerraiser['currency_symbol']; ?></span>
@@ -33,19 +43,21 @@
 	<section class="donor-about">
 		<h3><?php apply_filters( 'peerraiser_donation_form_about_title', _e( 'Tell us a little about yourself', 'peerraiser' ) ); ?> </h3>
 
-		<div id="peerraiser_field_first_name" class="peerraiser-field peerraiser-field-text required">
-			<label for="peerraiser_first_name">
-				<?php _e( 'First Name', 'peerraiser' ); ?> <span class="required">*</span>
-			</label>
-			<input type="text" name="first_name" id="peerraiser_first_name" value="">
-		</div>
+        <div class="peerraiser-name-fields">
+            <div id="peerraiser_field_first_name" class="peerraiser-field peerraiser-field-text required">
+                <label for="peerraiser_first_name">
+                    <?php _e( 'First Name', 'peerraiser' ); ?> <span class="required">*</span>
+                </label>
+                <input type="text" name="first_name" id="peerraiser_first_name" value="">
+            </div>
 
-		<div id="peerraiser_field_last_name" class="peerraiser-field peerraiser-field-text">
-			<label for="peerraiser_last_name">
-				<?php _e( 'Last Name', 'peerraiser' ); ?>
-			</label>
-			<input type="text" name="last_name" id="peerraiser_last_name" value="">
-		</div>
+            <div id="peerraiser_field_last_name" class="peerraiser-field peerraiser-field-text required">
+                <label for="peerraiser_last_name">
+                    <?php _e( 'Last Name', 'peerraiser' ); ?> <span class="required">*</span>
+                </label>
+                <input type="text" name="last_name" id="peerraiser_last_name" value="">
+            </div>
+        </div>
 
 		<div id="peerraiser_field_email_address" class="peerraiser-field peerraiser-field-text required">
 			<label for="peerraiser_email_address">
@@ -54,21 +66,15 @@
 			<input type="email" name="email_address" id="peerraiser_email_address" value="">
 		</div>
 
-		<div id="peerraiser_field_public_name" class="peerraiser-field peerraiser-field-text">
-			<label for="peerraiser_public_name">
-				<?php _e( 'Display my name publicly as...', 'peerraiser' ); ?>
-			</label>
-			<input type="text" name="public_name" id="peerraiser_public_name" value="">
-		</div>
-
-		<div id="peerraiser_field_anonymous" class="peerraiser-field peerraiser-field-checkbox">
-			<label for="peerraiser_anonymous">
-				<input type="checkbox" name="anonymous" id="peerraiser_anonymous" value="true"><?php _e( "Don't display my name", 'peerraiser' ); ?>
-			</label>
-		</div>
+        <div id="peerraiser_field_anonymous" class="peerraiser-field peerraiser-field-checkbox">
+            <label for="peerraiser_anonymous">
+                <input type="checkbox" name="is_anonymous" id="peerraiser_anonymous" value="true"><?php _e( "I would like my donation to remain anonymous", 'peerraiser' ); ?>
+            </label>
+        </div>
 	</section>
 
 	<button type="submit" class="peerraiser-donate-submit peerraiser-submit-button"><?php _e( 'Donate','peerraiser' ); ?></button>
 
 	<input type="hidden" name="peerraiser_action" value="add_pending_donation">
+	<?php wp_nonce_field( 'add_pending_donation', '_wpnonce', false ); ?>
 </form>
