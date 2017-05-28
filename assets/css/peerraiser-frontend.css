@@ -1088,7 +1088,9 @@ form#dashboard_settings {
     -o-user-select: none;
     user-select: none;
 }
-.peerraiser-submit-button:hover {
+.peerraiser-submit-button:hover,
+.peerraiser-submit-button:active,
+.peerraiser-submit-button:focus {
     color: #fff;
     background-color: #449d44;
     border-color: #398439;
