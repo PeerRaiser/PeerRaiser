@@ -39,10 +39,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <span class="label"><?php _e( 'Payment Method', 'peerraiser' ); ?></span>
                                                 <strong><?php echo ucwords( $peerraiser['donation']->donation_type ); ?></strong>
                                             </div>
-                                            <div class="donation-gateway">
-                                                <span class="label"><?php _e( 'Gateway', 'peerraiser' ); ?></span>
-                                                <strong><?php echo ucwords( $peerraiser['donation']->gateway ); ?></strong>
-                                            </div>
+                                            <?php if ( ! empty( $peerraiser['donation']->gateway ) ) : ?>
+                                                <div class="donation-gateway">
+                                                    <span class="label"><?php _e( 'Gateway', 'peerraiser' ); ?></span>
+                                                    <strong><?php echo ucwords( $peerraiser['donation']->gateway ); ?></strong>
+                                                </div>
+                                            <?php endif; ?>
                                             <div class="donation-key">
                                                 <span class="label"><?php _e( 'Transaction Key', 'peerraiser' ); ?></span>
                                                 <strong><?php echo $peerraiser['donation']->transaction_id; ?></strong>
