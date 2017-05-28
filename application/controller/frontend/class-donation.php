@@ -5,7 +5,21 @@ namespace PeerRaiser\Controller\Frontend;
 class Donation extends \PeerRaiser\Controller\Base {
 
 	public function register_actions() {
+		add_action( 'init',                            array( $this, 'add_rewrite_rules' ) );
 		add_action( 'peerraiser_add_pending_donation', array( $this, 'handle_add_pending_donation' ) );
+
+		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+	}
+
+	public function add_rewrite_rules() {
+		add_rewrite_rule( '^donate/([^/]*)/?$', 'index.php?pagename=donate&peerraiser_campaign=$matches[1]', 'top' );
+		add_rewrite_rule( '^donate/([^/]*)/([^/]*)/?$', 'index.php?pagename=donate&peerraiser_campaign=$matches[1]&peerraiser_fundraiser=$matches[2]', 'top' );
+	}
+
+	public function register_query_vars( $vars ) {
+		$vars[] = 'peerraiser_campaign';
+		$vars[] = 'peerraiser_fundraiser';
+		return $vars;
 	}
 
 	/**
@@ -49,7 +63,7 @@ class Donation extends \PeerRaiser\Controller\Base {
 		$donation->donor_id      = $donor->ID;
 		$donation->total         = $donation_amount;
 		$donation->subtotal      = $donation_amount;
-		$donation->campaign_id   = 44; // TODO: Fix this
+		$donation->campaign_id   = $_POST['campaign'];
 		$donation->status        = 'pending';
 		$donation->donation_type = 'cc';
 		$donation->is_anonymous  = ( isset( $_POST['is_anonymous'] ) && $_POST['is_anonymous'] === 'true' );
@@ -68,7 +82,7 @@ class Donation extends \PeerRaiser\Controller\Base {
 	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
 	 */
 	private function is_valid_donation() {
-		$required_fields = apply_filters( 'peerraiser_donation_required_fields', array('first_name', 'email_address') );
+		$required_fields = apply_filters( 'peerraiser_donation_required_fields', array('first_name', 'last_name', 'email_address', 'campaign' ) );
 
 		if ( empty( $_POST['donation_amount'] ) ) {
 			$required_fields[] = 'other_amount';
