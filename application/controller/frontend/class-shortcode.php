@@ -15,17 +15,16 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     }
 
     public function render_donation_form( $atts, $content = '' ) {
-    	$a = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
+    	$atts = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
 	    $plugin_options = get_option( 'peerraiser_options', array() );
-	    $campaign_model = isset( $_GET['campaign'] ) ? new \PeerRaiser\Model\Campaign( $_GET['campaign'] ) : new \PeerRaiser\Model\Campaign();
 
 	    $view_args = array(
-	    	'campaigns' => $campaign_model->get_campaigns( array( 'campaign_status' => apply_filters( 'peerraiser_campaign_statuses_that_allow_donations', array( 'active', 'ended' ) ) ) ),
-		    'fundraisers' => isset( $_GET['campaign'] ) ? $campaign_model->get_fundraisers() : array(),
+	    	'campaigns' => $this->get_campaigns_accepting_donations(),
+		    'fundraisers' => $this->get_fundraisers_for_current_campaign(),
 		    'currency_symbol' => peerraiser_get_currency_symbol(),
 		    'currency_position' => $plugin_options['currency_position'],
-		    'campaign_select_class' => ! isset( $_GET['campaign'] ) || apply_filters( 'peerraiser_donation_show_campaign_select', false ) ? 'show' : 'hide',
-		    'fundraiser_select_class' => ( isset( $_GET['campaign'] ) && ! isset( $_GET['fundraiser'] ) ) || apply_filters( 'peerraiser_donation_show_fundraiser_select', false ) ? 'show' : 'hide',
+		    'campaign_select_class' => $this->get_campaign_select_class(),
+		    'fundraiser_select_class' => $this->get_fundraiser_select_class(),
 	    );
 	    $this->assign( 'peerraiser', $view_args );
 
@@ -141,6 +140,46 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
     private function get_password_form() {
         return $this->get_text_view( 'frontend/partials/change-password-form' );
+    }
+
+    private function get_campaigns_accepting_donations() {
+    	$campaign_model = new \PeerRaiser\Model\Campaign();
+    	$campaign_statuses = apply_filters( 'peerraiser_campaign_statuses_that_allow_donations', array( 'active', 'ended' ) );
+
+    	return $campaign_model->get_campaigns( array( 'campaign_status' => $campaign_statuses ) );
+    }
+
+    private function get_fundraisers_for_current_campaign() {
+    	$campaign_slug = get_query_var( 'peerraiser_campaign', false );
+
+    	if ( ! $campaign_slug ) {
+    		return array();
+	    }
+
+	    $campaign = peerraiser_get_campaign_by_slug( $campaign_slug );
+
+	    return $campaign->get_fundraisers();
+    }
+
+    private function get_campaign_select_class() {
+	    $campaign_slug = get_query_var( 'peerraiser_campaign', false );
+
+	    if ( ! $campaign_slug || apply_filters( 'peerraiser_donation_show_campaign_select', false ) ) {
+	    	return 'show';
+	    } else {
+	    	return 'hide';
+	    }
+    }
+
+    private function get_fundraiser_select_class() {
+	    $campaign_slug = get_query_var( 'peerraiser_campaign', false );
+    	$fundraiser_slug = get_query_var( 'peerraiser_fundraiser', false );
+
+    	if ( ( $campaign_slug && ! $fundraiser_slug ) || apply_filters( 'peerraiser_donation_show_fundraiser_select', false ) ) {
+    		return 'show';
+	    } else {
+    		return 'hide';
+	    }
     }
 
 }
