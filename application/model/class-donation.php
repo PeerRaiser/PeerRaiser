@@ -233,6 +233,14 @@ class Donation {
      */
     protected $notes = array();
 
+	/**
+	 * Is this an anonymous donation?
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	protected $is_anonymous = false;
+
     /**
      * Is test mode?
      *
@@ -371,9 +379,10 @@ class Donation {
         $this->_ID = absint( $donation->donation_id);
 
         // Status and Dates
-        $this->date    = $donation->date;
-        $this->status  = $donation->status;
-        $this->is_test = boolval( $donation->is_test );
+	    $this->date         = $donation->date;
+	    $this->status       = $donation->status;
+	    $this->is_anonymous = boolval( $donation->is_anonymous );
+	    $this->is_test      = boolval( $donation->is_test );
 
         // Money related
         $this->total    = $donation->total;
@@ -498,6 +507,7 @@ class Donation {
 	                case 'ip' :
 	                case 'status' :
 	                case 'date' :
+	                case 'is_anonymous' :
 	                case 'is_test' :
 		                $this->update( array( $key => $value ) );
 		                $updated[] = array( $key => $value );
@@ -629,7 +639,7 @@ class Donation {
 					break;
 
 				case '%d':
-					if ( 'is_test' == $key ) {
+					if ( 'is_anonymous' == $key || 'is_test' == $key ) {
 						$data[$key] = $data[$key] ? 1 : 0;
 					} elseif ( ! is_numeric( $data[$key] ) || (int) $data[$key] !== absint( $data[$key] ) ) {
 						$data[$key] = $default_values[$key];
