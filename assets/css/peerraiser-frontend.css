@@ -896,6 +896,9 @@ form#dashboard_settings {
     background-size: 35px 35px;
 }
 /* Donation Form */
+.peerraiser-donation-form .hide {
+    display: none;
+}
 .peerraiser-donation-form section {
     margin-bottom: 2rem;
 }
@@ -905,7 +908,8 @@ form#dashboard_settings {
 .peerraiser-donation-form  input[type="text"]:disabled {
     background: #dddddd;
 }
-.peerraiser-donation-form .peerraiser-campaign-selection select {
+.peerraiser-donation-form .peerraiser-campaign-selection select,
+.peerraiser-donation-form .peerraiser-fundraiser-selection select {
     width: 100%;
 }
 .peerraiser-donation-form .peerraiser-field {
