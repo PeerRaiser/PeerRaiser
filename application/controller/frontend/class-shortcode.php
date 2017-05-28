@@ -17,8 +17,10 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public function render_donation_form( $atts, $content = '' ) {
     	$a = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
 	    $plugin_options = get_option( 'peerraiser_options', array() );
+	    $campaign_model = new \PeerRaiser\Model\Campaign();
 
 	    $view_args = array(
+	    	'campaigns' => $campaign_model->get_campaigns( array( 'campaign_status' => apply_filters( 'peerraiser_campaign_statuses_that_allow_donations', array( 'active', 'ended' ) ) ) ),
 		    'currency_symbol' => peerraiser_get_currency_symbol(),
 		    'currency_position' => $plugin_options['currency_position'],
 	    );
