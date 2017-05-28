@@ -716,6 +716,26 @@ class Campaign {
 			}
 	    }
 
+	    if ( isset( $args['campaign_status'] ) ) {
+	    	if ( is_array( $args['campaign_status'] ) ) {
+			    $args['meta_query'] = array(
+				    'relation' => 'OR',
+			    );
+	    		foreach ( $args['campaign_status'] as $status ) {
+				    $args['meta_query'][] = array(
+	    				'key' => '_peerraiser_campaign_status',
+					    'value' => $status,
+					    'compare' => '='
+				    );
+			    }
+		    } else {
+	    		$args['meta_key'] = '_peerraiser_campaign_status';
+	    		$args['meta_value'] = $args['campaign_status'];
+		    }
+		    unset( $args['campaign_status'] );
+	    }
+
+
 	    $term_query = new WP_Term_Query( $args );
 
 	    $results = array();
