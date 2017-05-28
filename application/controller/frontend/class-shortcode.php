@@ -17,12 +17,15 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     public function render_donation_form( $atts, $content = '' ) {
     	$a = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
 	    $plugin_options = get_option( 'peerraiser_options', array() );
-	    $campaign_model = new \PeerRaiser\Model\Campaign();
+	    $campaign_model = isset( $_GET['campaign'] ) ? new \PeerRaiser\Model\Campaign( $_GET['campaign'] ) : new \PeerRaiser\Model\Campaign();
 
 	    $view_args = array(
 	    	'campaigns' => $campaign_model->get_campaigns( array( 'campaign_status' => apply_filters( 'peerraiser_campaign_statuses_that_allow_donations', array( 'active', 'ended' ) ) ) ),
+		    'fundraisers' => isset( $_GET['campaign'] ) ? $campaign_model->get_fundraisers() : array(),
 		    'currency_symbol' => peerraiser_get_currency_symbol(),
 		    'currency_position' => $plugin_options['currency_position'],
+		    'campaign_select_class' => ! isset( $_GET['campaign'] ) || apply_filters( 'peerraiser_donation_show_campaign_select', false ) ? 'show' : 'hide',
+		    'fundraiser_select_class' => ( isset( $_GET['campaign'] ) && ! isset( $_GET['fundraiser'] ) ) || apply_filters( 'peerraiser_donation_show_fundraiser_select', false ) ? 'show' : 'hide',
 	    );
 	    $this->assign( 'peerraiser', $view_args );
 
