@@ -905,8 +905,14 @@ form#dashboard_settings {
 .peerraiser-donation-form  input[type="text"]:disabled {
     background: #dddddd;
 }
+.peerraiser-donation-form .peerraiser-campaign-selection select {
+    width: 100%;
+}
 .peerraiser-donation-form .peerraiser-field {
     margin-bottom: 1rem;
+}
+.peerraiser-donation-form .peerraiser-name-fields {
+    overflow: auto;
 }
 .peerraiser-donation-form #peerraiser_field_first_name {
     float: left;
@@ -917,9 +923,6 @@ form#dashboard_settings {
     float: left;
     width: 50%;
     padding-left: .5rem;
-}
-.peerraiser-donation-form #peerraiser_field_public_name {
-    margin-bottom: 0;
 }
 .peerraiser-donation-form #peerraiser_field_anonymous label {
     font-weight: normal;
