@@ -1,19 +1,19 @@
 <form class="peerraiser-donation-form" method="post" enctype="multipart/form-data">
 
     <section class="peerraiser-campaign-selection <?php echo $peerraiser['campaign_select_class']; ?>">
-        <select name="peerraiser_campaign" id="peerraiser_campaign">
+        <select name="campaign" id="peerraiser_campaign">
             <option><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
             <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
-                <option value="<?php echo $campaign->campaign_slug; ?>"><?php echo $campaign->campaign_name; ?></option>
+                <option value="<?php echo $campaign->campaign_slug; ?>" <?php selected( get_query_var( 'peerraiser_campaign' ), $campaign->campaign_slug ) ?>><?php echo $campaign->campaign_name; ?></option>
             <?php endforeach; ?>
         </select>
     </section>
 
     <section class="peerraiser-fundraiser-selection <?php echo $peerraiser['fundraiser_select_class']; ?>"<?php if ( isset( $_GET['campaign']) && empty( $peerraiser['fundraisers'] ) ) echo ' style="display:none;"'; ?>>
-        <select name="peerraiser_fundraiser" id="fundraiser_select">
+        <select name="fundraiser" id="fundraiser_select">
             <option><?php _e( 'Select a Fundraiser to Support (optional)', 'peerraiser' ); ?></option>
             <?php foreach( $peerraiser['fundraisers'] as $fundraiser ) : ?>
-                <option value="<?php echo $fundraiser->fundraiser_slug; ?>"><?php echo $fundraiser->fundraiser_name; ?></option>
+                <option value="<?php echo $fundraiser->fundraiser_slug; ?>" <?php selected( get_query_var( 'peerraiser_fundraiser' ), $fundraiser->fundraiser_slug ) ?>><?php echo $fundraiser->fundraiser_name; ?></option>
             <?php endforeach; ?>
         </select>
     </section>

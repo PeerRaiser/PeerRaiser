@@ -757,7 +757,6 @@ class Campaign {
 		    unset( $args['campaign_status'] );
 	    }
 
-
 	    $term_query = new WP_Term_Query( $args );
 
 	    $results = array();
