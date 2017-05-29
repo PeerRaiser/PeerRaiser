@@ -40,9 +40,6 @@ class Settings extends Base {
 
     }
 
-    /**
-     * @see PeerRaiser\Core\View::load_assets()
-     */
     public function load_assets() {
         parent::load_assets();
 
@@ -123,11 +120,6 @@ class Settings extends Base {
 
         $model = new \PeerRaiser\Model\Admin\Settings();
         $default_fields = $model->get_field_names();
-
-        $result =  array(
-			'success' => false,
-			'message' => __( 'An error occurred when trying to retrieve the information. Please try again.', 'peerraiser' ),
-		);
 
         $formData         = $_POST['formData'];
         $plugin_options   = get_option( 'peerraiser_options', array() );
