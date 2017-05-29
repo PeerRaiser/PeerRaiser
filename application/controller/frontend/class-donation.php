@@ -32,24 +32,20 @@ class Donation extends \PeerRaiser\Controller\Base {
 			die( __('Security check failed.', 'peerraiser' ) );
 		}
 
+		$plugin_options = get_option( 'peerraiser_options', array() );
+
 		$validation = $this->is_valid_donation();
 		if ( ! $validation['is_valid'] ) {
 			return;
 		}
 
-		// TODO: Check if donor exists first before creating a new one
-
-		$donor    = new \PeerRaiser\Model\Donor();
+		$donor    = new \PeerRaiser\Model\Donor( trim( $_POST['email_address'] ) );
 
 		// Donor fields
 		$donor->first_name = trim( esc_attr( $_POST['first_name'] ) );
 
 		if ( ! empty( $_POST['last_name'] ) ) {
 			$donor->last_name = trim( esc_attr( $_POST['last_name'] ) );
-		}
-
-		if ( ! empty( $_POST['public_name'] ) ) {
-			$donor->public_name = trim( esc_attr( $_POST['public_name'] ) );
 		}
 
 		$donor->email_address = trim( esc_attr( $_POST['email_address'] ) );
@@ -77,8 +73,14 @@ class Donation extends \PeerRaiser\Controller\Base {
 
 		$donation->save();
 
+		if ( filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN ) ) {
+			$redirect_url = sprintf( \PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.sandbox'), urlencode( trim( $plugin_options['peerraiser_username'] ) ), $donation->transaction_id );
+		} else {
+			$redirect_url = sprintf(\PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.live'), urlencode( trim( $plugin_options['peerraiser_username'] ) ), $donation->transaction_id );
+		}
+
 		// Send to PeerRaiser.com to finish the transaction
-		wp_redirect( 'http://peerraiser.com/donate/'.$donation->transaction_id );
+		wp_redirect( $redirect_url );
 		exit;
 	}
 
