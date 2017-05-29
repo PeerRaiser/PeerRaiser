@@ -2,16 +2,17 @@
 
     <section class="peerraiser-campaign-selection <?php echo $peerraiser['campaign_select_class']; ?>">
         <select name="campaign" id="peerraiser_campaign">
-            <option><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
+            <option value=""><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
             <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
                 <option value="<?php echo $campaign->campaign_slug; ?>" <?php selected( get_query_var( 'peerraiser_campaign' ), $campaign->campaign_slug ) ?>><?php echo $campaign->campaign_name; ?></option>
             <?php endforeach; ?>
         </select>
+	    <?php wp_nonce_field( 'ajax_get_fundraisers', 'get_fundraisers_nonce', false ); ?>
     </section>
 
     <section class="peerraiser-fundraiser-selection <?php echo $peerraiser['fundraiser_select_class']; ?>"<?php if ( isset( $_GET['campaign']) && empty( $peerraiser['fundraisers'] ) ) echo ' style="display:none;"'; ?>>
         <select name="fundraiser" id="fundraiser_select">
-            <option><?php _e( 'Select a Fundraiser to Support (optional)', 'peerraiser' ); ?></option>
+            <option value=""><?php _e( 'Select a Fundraiser to Support (optional)', 'peerraiser' ); ?></option>
             <?php foreach( $peerraiser['fundraisers'] as $fundraiser ) : ?>
                 <option value="<?php echo $fundraiser->fundraiser_slug; ?>" <?php selected( get_query_var( 'peerraiser_fundraiser' ), $fundraiser->fundraiser_slug ) ?>><?php echo $fundraiser->fundraiser_name; ?></option>
             <?php endforeach; ?>
