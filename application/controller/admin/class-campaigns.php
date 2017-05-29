@@ -10,22 +10,25 @@ use \PeerRaiser\Model\Admin\Campaign_List_Table;
 use \PeerRaiser\Core\Setup;
 use \PeerRaiser\Helper\Stats;
 use \PeerRaiser\Helper\View;
+use \PeerRaiser\Helper\Text;
 use \DateTime;
 use \DateTimeZone;
 
 class Campaigns extends Base {
 
     public function register_actions() {
-		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
-        add_action( 'peerraiser_page_peerraiser-campaigns', array( $this, 'load_assets' ) );
-		add_action( 'peerraiser_add_campaign',	            array( $this, 'handle_add_campaign' ) );
-		add_action( 'peerraiser_update_campaign',           array( $this, 'handle_update_campaign' ) );
-		add_action( 'peerraiser_delete_campaign',           array( $this, 'delete_campaign' ) );
-		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_schedule_cron' ), 10, 3 );
-		add_action( 'peerraiser_updated_campaign_meta',     array( $this, 'maybe_update_date_utc' ), 10, 3 );
-		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_clear_cron' ), 10, 2 );
-		add_action( 'peerraiser_deleted_campaign_meta',     array( $this, 'maybe_delete_end_date_utc' ), 10, 2 );
-		add_action( 'peerraiser_end_campaign',              array( $this, 'end_campaign' ) );
+		add_action( 'cmb2_admin_init',                           array( $this, 'register_meta_boxes' ) );
+        add_action( 'peerraiser_page_peerraiser-campaigns',      array( $this, 'load_assets' ) );
+		add_action( 'peerraiser_add_campaign',	                 array( $this, 'handle_add_campaign' ) );
+		add_action( 'peerraiser_update_campaign',                array( $this, 'handle_update_campaign' ) );
+		add_action( 'peerraiser_delete_campaign',                array( $this, 'delete_campaign' ) );
+		add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_schedule_cron' ), 10, 3 );
+		add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_update_date_utc' ), 10, 3 );
+		add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_clear_cron' ), 10, 2 );
+		add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_delete_end_date_utc' ), 10, 2 );
+		add_action( 'peerraiser_end_campaign',                   array( $this, 'end_campaign' ) );
+	    add_action( 'wp_ajax_peerraiser_get_fundraisers',        array( $this, 'ajax_get_fundraisers' ) );
+	    add_action( 'wp_ajax_nopriv_peerraiser_get_fundraisers', array( $this, 'ajax_get_fundraisers' ) );
     }
 
     /**
@@ -452,6 +455,43 @@ class Campaigns extends Base {
 
 		$campaign->campaign_status = 'ended';
 		$campaign->save();
+	}
+
+	/**
+	 * Get fundraisers for a campaign via ajax
+	 */
+	public function ajax_get_fundraisers() {
+		if ( ! wp_verify_nonce( $_POST['nonce'], 'ajax_get_fundraisers' ) ) {
+			$data = array(
+				'success'     => false,
+				'fundraisers' => array(),
+				'message'     => 'Security check failed'
+			);
+
+			echo Text::peerraiser_json_encode( $data );
+			wp_die();
+		}
+
+		$campaign = peerraiser_get_campaign_by_slug( $_POST['campaign_slug'] );
+		$fundraisers = $campaign->get_fundraisers();
+
+		$fundraiser_info = array();
+
+		foreach( $fundraisers as $fundraiser ) {
+			$fundraiser_info[] = array(
+				'name' => $fundraiser->fundraiser_name,
+				'slug' => $fundraiser->fundraiser_slug,
+			);
+		}
+
+		$data = array(
+			'success'     => true,
+			'fundraisers' => $fundraiser_info,
+		);
+
+		echo Text::peerraiser_json_encode( $data );
+
+		wp_die();
 	}
 
 	/**
