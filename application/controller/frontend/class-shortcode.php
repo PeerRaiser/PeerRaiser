@@ -18,6 +18,11 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     	$atts = shortcode_atts( array(), $atts, 'peerraiser_donation_form' );
 	    $plugin_options = get_option( 'peerraiser_options', array() );
 
+	    // Donations can't be processed if the PeerRaiser account isn't setup :(
+	    if ( empty( $plugin_options['peerraiser_username'] ) ) {
+	    	return sprintf( __( 'Error: PeerRaiser account not connected. Please <a href="mailto:%s">contact the site owner</a>.', 'peerraiser'), get_option( 'admin_email' ) );
+	    }
+
 	    $view_args = array(
 	    	'campaigns' => $this->get_campaigns_accepting_donations(),
 		    'fundraisers' => $this->get_fundraisers_for_current_campaign(),
