@@ -206,7 +206,7 @@
             var postData = {
                 'action'     : 'peerraiser_update_settings',
                 '_wpnonce'   : $o.nonce.val(),
-                'none_name'  : $o.nonce.attr('id'),
+                'nonce_name'  : $o.nonce.attr('id'),
                 'formData'   : $o.$form.serializeArray(),
             },
             jqxhr;

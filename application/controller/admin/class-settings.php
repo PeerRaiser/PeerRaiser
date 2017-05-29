@@ -119,7 +119,7 @@ class Settings extends Base {
     }
 
     public function ajax_update_settings() {
-        check_ajax_referer($_POST['none_name']);
+        check_ajax_referer($_POST['nonce_name']);
 
         $model = new \PeerRaiser\Model\Admin\Settings();
         $default_fields = $model->get_field_names();
