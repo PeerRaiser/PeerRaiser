@@ -46,6 +46,12 @@
                     $('.peerraiser-donation-amounts .peerraiser-donation-input').val('');
                 }
             });
+
+            $('.peerraiser-donation-form #peerraiser_campaign').on('change', function(){
+                if ( $(this).val() !== '' ) {
+                    getFundraiserOptions( $(this).val() );
+                }
+            });
         },
 
         handleFile = function( file ) {
@@ -143,6 +149,43 @@
                 }
             });
 
+        },
+
+        getFundraiserOptions = function( campaign_slug ){
+            $.ajax({
+                url : window.peerraiser_variables.ajaxUrl,
+                type : 'post',
+                dataType: 'json',
+                data : {
+                    nonce         : $('#get_fundraisers_nonce').val(),
+                    action        : 'peerraiser_get_fundraisers',
+                    campaign_slug : campaign_slug
+                },
+                success : function( response ) {
+                    if ( ! response.success ) {
+                        return;
+                    }
+
+                    // Unselect any previously selected fundraisers
+                    $('.peerraiser-donation-form #fundraiser_select option:selected').prop("selected", false)
+
+                    if ( response.fundraisers.length < 1) {
+                        $('.peerraiser-donation-form .peerraiser-fundraiser-selection').addClass('hide');
+                        $('.peerraiser-donation-form #fundraiser_select').find("option:gt(0)").remove();
+                        return;
+                    }
+
+                    $.each(response.fundraisers, function(key, value) {
+                        $('.peerraiser-donation-form #fundraiser_select')
+                            .append($("<option></option>")
+                                .attr("value",response.fundraisers[key].slug)
+                                .text(response.fundraisers[key].name));
+                    });
+
+                    $('.peerraiser-donation-form .peerraiser-fundraiser-selection').removeClass('hide');
+
+                }
+            });
         };
 
         init();
