@@ -40,7 +40,6 @@ class Donation extends \PeerRaiser\Controller\Base {
 		// TODO: Check if donor exists first before creating a new one
 
 		$donor    = new \PeerRaiser\Model\Donor();
-		$donation = new \PeerRaiser\Model\Donation();
 
 		// Donor fields
 		$donor->first_name = trim( esc_attr( $_POST['first_name'] ) );
@@ -57,16 +56,24 @@ class Donation extends \PeerRaiser\Controller\Base {
 
 		$donor->save();
 
+		$donation = new \PeerRaiser\Model\Donation();
+
 		$donation_amount  = empty( $_POST['other_amount'] ) ? $_POST['donation_amount'] : $_POST['other_amount'];
 
 		// Donation Fields
 		$donation->donor_id      = $donor->ID;
 		$donation->total         = $donation_amount;
 		$donation->subtotal      = $donation_amount;
-		$donation->campaign_id   = $_POST['campaign'];
+		$donation->campaign_id   = peerraiser_get_campaign_by_slug( $_POST['campaign'] )->ID;
 		$donation->status        = 'pending';
 		$donation->donation_type = 'cc';
 		$donation->is_anonymous  = ( isset( $_POST['is_anonymous'] ) && $_POST['is_anonymous'] === 'true' );
+
+		if ( isset( $_POST['fundraiser'] ) ) {
+			$donation->fundraiser_id = peerraiser_get_fundraiser_by_slug( $_POST['fundraiser'] )->ID;
+		}
+
+		$donation->add_note( __( 'Donation started and is currently pending.', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
 
 		$donation->save();
 
