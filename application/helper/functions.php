@@ -138,3 +138,11 @@ function peerraiser_get_campaign_by_slug( $slug ) {
 
 	return new \PeerRaiser\Model\Campaign( $term->term_id );
 }
+
+function peerraiser_get_fundraiser_by_slug( $slug ) {
+	$fundraiser = get_page_by_path( $slug, OBJECT, 'fundraiser' );
+
+	error_log(print_r($fundraiser,1));
+
+	return new \PeerRaiser\Model\Fundraiser( $fundraiser->ID );
+}
