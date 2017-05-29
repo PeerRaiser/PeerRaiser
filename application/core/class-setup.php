@@ -25,8 +25,8 @@ class Setup {
         $config->set( 'peerraiser_live_url', 'https://peerraiser.com/api/live' );
 
         $peerraiser_urls = array(
-            'peerraiser_url.live'    => 'https://peerraiser.com/api/live',
-            'peerraiser_url.sandbox' => 'https://peerraiser.com/api/sandbox'
+            'peerraiser_url.live'    => 'https://peerraiser.com/donate/%s/%s',
+            'peerraiser_url.sandbox' => 'https://peerraiser.com/sandbox/%s/%s'
         );
         $config->import( $peerraiser_urls );
 
