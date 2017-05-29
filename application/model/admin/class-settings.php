@@ -551,7 +551,7 @@ class Settings extends Admin {
         foreach ($this->fields as $field_group) {
             $field_names = array_merge($field_names, array_keys($field_group['fields']) );
         }
-        return $field_names;
+        return apply_filters( 'peerraiser_setting_fields', $field_names );
     }
 
     public function get_settings_tabs() {
