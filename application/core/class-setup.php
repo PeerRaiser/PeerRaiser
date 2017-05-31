@@ -10,7 +10,7 @@ class Setup {
     public static function get_plugin_config() {
 
         $config = wp_cache_get( 'config', 'peerraiser' );
-        if ( is_a( $config, 'Model\Config' ) ) {
+        if ( is_a( $config, '\PeerRaiser\Model\Config' ) ) {
             return $config;
         }
 
