@@ -107,7 +107,7 @@ class Install extends Base {
         if ( count( $notices ) > 0 ) {
             // suppress 'Plugin activated' notice
             unset( $_GET['activate'] );
-            deactivate_plugins( $this->config->plugin_base_name );
+            deactivate_plugins( $this->config->get( 'plugin_base_name' ) );
             $notices[] = __( 'The PeerRaiser plugin could not be installed. Please fix the reported issues and try again.', 'peerraiser' );
         }
 
@@ -125,7 +125,8 @@ class Install extends Base {
     public function check_for_updates() {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
-        if ( version_compare( $current_version, $this->config->version, '!=' ) ) {
+
+        if ( version_compare( $current_version, $this->config->get( 'version' ), '!=' ) ) {
             $this->install();
         }
     }
@@ -141,7 +142,7 @@ class Install extends Base {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
-        if ( version_compare( $current_version, $this->config->version, '==' ) )
+        if ( version_compare( $current_version, $this->config->get( 'version' ), '==' ) )
             return;
 
         global $wpdb;
@@ -173,7 +174,7 @@ class Install extends Base {
 
         // Add install/update notice to activity feed
         $model = new \PeerRaiser\Model\Activity_Feed();
-        $model->add_install_notice_to_feed( $this->config->version );
+        $model->add_install_notice_to_feed( $this->config->get( 'version' ) );
 
         // clear opcode cache
         \PeerRaiser\Helper\Cache::reset_opcode_cache();
