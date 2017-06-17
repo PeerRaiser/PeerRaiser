@@ -399,7 +399,9 @@ class Donation {
         $this->campaign_id    = $donation->campaign_id;
         $this->fundraiser_id  = $donation->fundraiser_id;
         $this->team_id        = $donation->team_id;
-	    $this->participant_id = $donation->participant_id;
+
+        // TODO: Add participant ID column to pr_donation table
+        // $this->participant_id = $donation->participant_id;
 
         // Donation Notes
         $donation_notes = $this->get_meta( 'notes', true );
@@ -741,6 +743,18 @@ class Donation {
 
         return $result;
     }
+
+	public function get_donations( $args ) {
+		$donation_rows = $this->db->get_donations( $args );
+
+		$donations = array();
+
+		foreach( $donation_rows as $row ) {
+			$donations[] = new self( $row->donation_id );
+		}
+
+		return $donations;
+	}
 
     public function get_donations_total() {
         $total = $this->db->get_donations_total();
