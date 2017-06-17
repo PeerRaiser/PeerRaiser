@@ -432,7 +432,15 @@ class Donor {
 	}
 
 	public function get_donors( $args ) {
-		return $this->db->get_donors( $args );
+		$donor_rows = $this->db->get_donors( $args );
+
+		$donors = array();
+
+		foreach( $donor_rows as $row ) {
+			$donors[] = new self( $row->donor_id );
+		}
+
+		return $donors;
 	}
 
 	/**
