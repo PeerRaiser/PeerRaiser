@@ -76,16 +76,17 @@ class Donor_Table extends Database {
         global $wpdb;
 
         $defaults = array(
-            'number'        => 20,
-            'offset'        => 0,
-            'donor_id'      => 0,
-            'user_id'       => 0,
-            'first_name'    => '',
-            'last_name'     => '',
-            'full_name'     => '',
-			'email_address' => '',
-            'orderby'       => 'donor_id',
-            'order'         => 'ASC',
+            'number'         => 20,
+            'offset'         => 0,
+            'donor_id'       => 0,
+            'user_id'        => 0,
+            'first_name'     => '',
+            'last_name'      => '',
+            'full_name'      => '',
+			'email_address'  => '',
+            'donation_count' => '',
+            'orderby'        => 'donor_id',
+            'order'          => 'ASC',
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -161,6 +162,17 @@ class Donor_Table extends Database {
 
 			$where .= sprintf(" `email_address` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['email_address']) . "%%" );
 		}
+
+	    // By number of donations
+	    if ( ! empty( $args['donation_count'] ) ) {
+		    if ( empty( $where ) ) {
+			    $where .= " WHERE";
+		    } else {
+			    $where .= " AND";
+		    }
+
+		    $where .= sprintf(" `donation_count` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donation_count']) . "%%" );
+	    }
 
         // By date
 		if ( ! empty( $args['date'] ) ) {
