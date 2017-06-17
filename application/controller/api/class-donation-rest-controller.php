@@ -2,6 +2,9 @@
 
 namespace PeerRaiser\Controller\Api;
 
+use PeerRaiser\Model\Campaign;
+use PeerRaiser\Model\Donation;
+use PeerRaiser\Model\Donor;
 use \WP_REST_Controller;
 use \WP_REST_Server;
 use \WP_REST_Response;
@@ -32,21 +35,29 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	public function register_routes() {
 		register_rest_route( $this->namespace, '/' . $this->base, array(
 			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'create_item' ),
-				'permission_callback' => array( $this, 'create_item_permissions_check' ),
-				'args'            => $this->get_endpoint_args_for_item_schema( true ),
+				'methods'              => WP_REST_Server::CREATABLE,
+				'callback'             => array( $this, 'create_item' ),
+				'permission_callback'  => array( $this, 'create_item_permissions_check' ),
+				'args'                 => $this->get_endpoint_args_for_item_schema( true ),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
 		register_rest_route( $this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
 			array(
-				'methods'         => WP_REST_Server::EDITABLE,
-				'callback'        => array( $this, 'update_item' ),
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'update_item' ),
 				'permission_callback' => array( $this, 'update_item_permissions_check' ),
-				'args'            => $this->get_endpoint_args_for_item_schema( false ),
+				'args'                => $this->get_endpoint_args_for_item_schema( false ),
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
+		) );
+		register_rest_route( $this->namespace, '/' . $this->base . '/(?P<key>\S{32})', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_item' ),
+				'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				'args'                => array(),
+			)
 		) );
 		register_rest_route( $this->namespace, '/' . $this->base . '/schema', array(
 			'methods'         => WP_REST_Server::READABLE,
@@ -78,15 +89,32 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function get_item( $request ) {
-		//get parameters from request
-		$params = $request->get_params();
-		$item = array();//do a query, call another class, etc
+		$params   = $request->get_params();
+		$item     = array();
+		$donation = new Donation();
+
+		$donations = $donation->get_donations( array( 'transaction_id' => $params['key'] ) );
+
+		if ( ! empty( $donations ) ) {
+			$donation = $donations[0];
+			$donor    = new Donor( $donation->donor_id );
+			$campaign = new Campaign( $donation->campaign_id );
+
+			$item['total']           = $donation->total;
+			$item['first_name']      = $donor->first_name;
+			$item['last_name']       = $donor->last_name;
+			$item['email_address']   = $donor->email_address;
+			$item['allow_comments']  = $campaign->allow_comments;
+			$item['allow_fees_paid'] = $campaign->allow_fees_covered;
+			$item['thank_you_page']  = get_permalink( $campaign->thank_you_page );
+		}
+
 		$data = $this->prepare_item_for_response( $item, $request );
 
 		//return a response or error based on some conditional
 		if ( 1 == 1 ) {
 			return new WP_REST_Response( $data, 200 );
-		}else{
+		} else{
 			return new WP_Error( 'code', __( 'message', 'peerraiser' ) );
 		}
 	}
@@ -171,7 +199,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_items_permissions_check( $request ) {
-		return current_user_can( 'manage_donations' );
+		return true;
 	}
 
 	/**
@@ -181,7 +209,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_Error|bool
 	 */
 	public function get_item_permissions_check( $request ) {
-		return $this->get_items_permissions_check( $request );
+		return true;
 	}
 
 	/**
@@ -233,7 +261,17 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return mixed
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		return array();
+		$whitelist = array(
+			'total',
+			'first_name',
+			'last_name',
+			'email_address',
+			'allow_comments',
+			'allow_fees_paid',
+			'thank_you_page'
+		);
+
+		return array_intersect_key( $item, array_flip( $whitelist ) );
 	}
 
 	/**
