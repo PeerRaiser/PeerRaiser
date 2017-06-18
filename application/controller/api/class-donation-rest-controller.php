@@ -107,6 +107,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			$item['allow_comments']  = $campaign->allow_comments;
 			$item['allow_fees_paid'] = $campaign->allow_fees_covered;
 			$item['thank_you_page']  = get_permalink( $campaign->thank_you_page );
+			$item['test_mode']       = filter_var( peerraiser_get_option( 'test_mode' ), FILTER_VALIDATE_BOOLEAN );
 		}
 
 		$data = $this->prepare_item_for_response( $item, $request );
@@ -268,7 +269,8 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			'email_address',
 			'allow_comments',
 			'allow_fees_paid',
-			'thank_you_page'
+			'thank_you_page',
+			'test_mode',
 		);
 
 		return array_intersect_key( $item, array_flip( $whitelist ) );
