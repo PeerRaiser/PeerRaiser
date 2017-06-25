@@ -101,6 +101,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			$campaign = new Campaign( $donation->campaign_id );
 
 			$item['total']           = $donation->total;
+			$item['total_formatted'] = peerraiser_money_format( $donation->total );
 			$item['first_name']      = $donor->first_name;
 			$item['last_name']       = $donor->last_name;
 			$item['email_address']   = $donor->email_address;
@@ -264,6 +265,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		$whitelist = array(
 			'total',
+			'total_formatted',
 			'first_name',
 			'last_name',
 			'email_address',
@@ -301,6 +303,11 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 				'total' => array(
 					'description' => __( 'The total amount of the donation.', 'peerraiser' ),
 					'type'        => 'number',
+					'context'     => array( 'view', 'edit', 'embed' ),
+				),
+				'total_formatted' => array(
+					'description' => __( 'The total amount of the donation, formatted with currency symbol.', 'peerraiser' ),
+					'type'        => 'string',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
 				'subtotal' => array(
