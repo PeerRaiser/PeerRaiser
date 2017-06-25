@@ -3,6 +3,7 @@
 namespace PeerRaiser\Controller\Api;
 
 use PeerRaiser\Model\Campaign;
+use PeerRaiser\Model\Currency;
 use PeerRaiser\Model\Donation;
 use PeerRaiser\Model\Donor;
 use \WP_REST_Controller;
@@ -96,19 +97,28 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 		$donations = $donation->get_donations( array( 'transaction_id' => $params['key'] ) );
 
 		if ( ! empty( $donations ) ) {
-			$donation = $donations[0];
-			$donor    = new Donor( $donation->donor_id );
-			$campaign = new Campaign( $donation->campaign_id );
+			$donation       = $donations[0];
+			$plugin_options = get_option( 'peerraiser_options', array() );
+			$donor          = new Donor( $donation->donor_id );
+			$campaign       = new Campaign( $donation->campaign_id );
+			$currency_model = new Currency();
+			$currency       = $plugin_options['currency'];
 
-			$item['total']           = $donation->total;
-			$item['total_formatted'] = peerraiser_money_format( $donation->total );
-			$item['first_name']      = $donor->first_name;
-			$item['last_name']       = $donor->last_name;
-			$item['email_address']   = $donor->email_address;
-			$item['allow_comments']  = $campaign->allow_comments;
-			$item['allow_fees_paid'] = $campaign->allow_fees_covered;
-			$item['thank_you_page']  = get_permalink( $campaign->thank_you_page );
-			$item['test_mode']       = filter_var( peerraiser_get_option( 'test_mode' ), FILTER_VALIDATE_BOOLEAN );
+			$item['total']             = $donation->total;
+			$item['total_formatted']   = peerraiser_money_format( $donation->total );
+			$item['first_name']        = $donor->first_name;
+			$item['last_name']         = $donor->last_name;
+			$item['email_address']     = $donor->email_address;
+			$item['allow_comments']    = $campaign->allow_comments;
+			$item['allow_fees_paid']   = $campaign->allow_fees_covered;
+			$item['thank_you_page']    = get_permalink( $campaign->thank_you_page );
+			$item['test_mode']         = filter_var( peerraiser_get_option( 'test_mode' ), FILTER_VALIDATE_BOOLEAN );
+			$item['thousands_sep']     = $plugin_options['thousands_separator'];
+			$item['currency_position'] = $plugin_options['currency_position'];
+			$item['decimal_sep']       = $plugin_options['decimal_separator'];
+			$item['number_decimals']   = $plugin_options['number_decimals'];
+			$item['currency']          = $currency;
+			$item['currency_symbol']   = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
 		}
 
 		$data = $this->prepare_item_for_response( $item, $request );
@@ -273,6 +283,12 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			'allow_fees_paid',
 			'thank_you_page',
 			'test_mode',
+			'currency',
+			'currency_symbol',
+			'thousands_sep',
+			'currency_position',
+			'decimal_sep',
+			'number_decimals',
 		);
 
 		return array_intersect_key( $item, array_flip( $whitelist ) );
