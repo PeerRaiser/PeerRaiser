@@ -34,16 +34,16 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
-		register_rest_route( $this->namespace, '/' . $this->base, array(
-			array(
-				'methods'              => WP_REST_Server::CREATABLE,
-				'callback'             => array( $this, 'create_item' ),
-				'permission_callback'  => array( $this, 'create_item_permissions_check' ),
-				'args'                 => $this->get_endpoint_args_for_item_schema( true ),
-			),
-			'schema' => array( $this, 'get_public_item_schema' ),
-		) );
-		register_rest_route( $this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
+		// register_rest_route( $this->namespace, '/' . $this->base, array(
+		// 	array(
+		// 		'methods'              => WP_REST_Server::CREATABLE,
+		// 		'callback'             => array( $this, 'create_item' ),
+		// 		'permission_callback'  => array( $this, 'create_item_permissions_check' ),
+		// 		'args'                 => $this->get_endpoint_args_for_item_schema( true ),
+		// 	),
+		// 	'schema' => array( $this, 'get_public_item_schema' ),
+		// ) );
+		register_rest_route( $this->namespace, '/' . $this->base . '/(?P<key>\S{32})', array(
 			array(
 				'methods'             => WP_REST_Server::EDITABLE,
 				'callback'            => array( $this, 'update_item' ),
@@ -108,8 +108,6 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			$item['total_formatted']   = peerraiser_money_format( $donation->total );
 			$item['first_name']        = $donor->first_name;
 			$item['last_name']         = $donor->last_name;
-			$item['email_address']     = $donor->email_address;
-			$item['allow_comments']    = $campaign->allow_comments;
 			$item['allow_fees_paid']   = $campaign->allow_fees_covered;
 			$item['thank_you_page']    = get_permalink( $campaign->thank_you_page );
 			$item['test_mode']         = filter_var( peerraiser_get_option( 'test_mode' ), FILTER_VALIDATE_BOOLEAN );
@@ -119,6 +117,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			$item['number_decimals']   = $plugin_options['number_decimals'];
 			$item['currency']          = $currency;
 			$item['currency_symbol']   = $currency_model->get_currency_symbol_by_iso4217_code( $currency );
+			$item['donor_id'] 		   = $donation->donor_id;
 		}
 
 		$data = $this->prepare_item_for_response( $item, $request );
@@ -173,16 +172,25 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public function update_item( $request ) {
-		$item = $this->prepare_item_for_database( $request );
+		$params = $request->get_params();
+		$item   = $this->prepare_item_for_database( $request );
 
-		if ( function_exists( 'slug_some_function_to_update_item')  ) {
-			$data = slug_some_function_to_update_item( $item );
-			if ( is_array( $data ) ) {
-				return new WP_REST_Response( $data, 200 );
-			}
+		if ( empty( $item ) ) {
+			return new WP_Error( 'cant-update', __( 'Donation not found', 'peerraiser'), array( 'status' => 500 ) );
 		}
 
-		return new WP_Error( 'cant-update', __( 'message', 'peerraiser'), array( 'status' => 500 ) );
+		$item->transaction_id = $params['transaction_id'];
+		$item->status         = $params['status'];
+		$item->subtotal       = $params['subtotal'];
+		$item->total          = $params['total'];
+
+		$item->save();
+
+		$data = array(
+			'success' => true
+		);
+
+		return new WP_REST_Response( $data, 200 );
 	}
 
 	/**
@@ -262,7 +270,16 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 	 * @return WP_Error|object $prepared_item
 	 */
 	protected function prepare_item_for_database( $request ) {
-		return array();
+		$params   = $request->get_params();
+		$donation = new Donation();
+
+		$donations = $donation->get_donations( array( 'transaction_id' => $params['key'] ) );
+
+		if ( empty( $donations ) ) {
+			return array();
+		}
+
+		return $donations[0];
 	}
 
 	/**
@@ -278,8 +295,6 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			'total_formatted',
 			'first_name',
 			'last_name',
-			'email_address',
-			'allow_comments',
 			'allow_fees_paid',
 			'thank_you_page',
 			'test_mode',
@@ -289,6 +304,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 			'currency_position',
 			'decimal_sep',
 			'number_decimals',
+			'donor_id',
 		);
 
 		return array_intersect_key( $item, array_flip( $whitelist ) );
