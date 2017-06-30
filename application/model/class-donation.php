@@ -293,7 +293,8 @@ class Donation {
                 break;
         }
 
-        $donation = reset( $this->db->get_donations( $args ) );
+        $donations = $this->db->get_donations( $args );
+        $donation  = reset( $donations );
 
         if ( empty( $donation ) ) {
             return false;
