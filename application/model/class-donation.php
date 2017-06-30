@@ -63,7 +63,7 @@ class Donation {
      * @since  1.0.0
      * @var float
      */
-    protected $subtotal = 0;
+    protected $subtotal = 0.00;
 
     /**
      * Fees for this donation
@@ -71,7 +71,7 @@ class Donation {
      * @since  1.0.0
      * @var float
      */
-    protected $fees = 0;
+    protected $fees = 0.00;
 
     /**
      * The date the donation was created
@@ -293,7 +293,7 @@ class Donation {
                 break;
         }
 
-        $donation = current( $this->db->get_donations( $args ) );
+        $donation = reset( $this->db->get_donations( $args ) );
 
         if ( empty( $donation ) ) {
             return false;
