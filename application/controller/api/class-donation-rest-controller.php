@@ -2,6 +2,7 @@
 
 namespace PeerRaiser\Controller\Api;
 
+use PeerRaiser\Controller\Activity_Feed;
 use PeerRaiser\Model\Campaign;
 use PeerRaiser\Model\Currency;
 use PeerRaiser\Model\Donation;
@@ -183,8 +184,14 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 		$item->status         = $params['status'];
 		$item->subtotal       = $params['subtotal'];
 		$item->total          = $params['total'];
+		$item->add_note( __( 'Donation completed!', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
 
 		$item->save();
+
+		if ( $item->status === 'completed' ) {
+			$activity_feed = new Activity_Feed();
+			$activity_feed->add_donation_to_feed( $item );
+		}
 
 		$data = array(
 			'success' => true
