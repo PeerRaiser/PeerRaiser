@@ -54,7 +54,7 @@ class Donation extends \PeerRaiser\Controller\Base {
 
 		$donation = new \PeerRaiser\Model\Donation();
 
-		$donation_amount  = empty( $_POST['other_amount'] ) ? $_POST['donation_amount'] : $_POST['other_amount'];
+		$donation_amount = empty( $_POST['other_amount'] ) ? $_POST['donation_amount'] : $_POST['other_amount'];
 
 		// Donation Fields
 		$donation->donor_id      = $donor->ID;
