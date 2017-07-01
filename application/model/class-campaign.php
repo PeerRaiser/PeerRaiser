@@ -581,6 +581,7 @@ class Campaign {
 
         do_action( 'peerraiser_campaign_pre_increase_value', $value, $this->ID, $this );
 
+	    $this->update_meta( '_peerraiser_donation_value', $new_value );
         $this->donation_value = $new_value;
 
         do_action( 'peerraiser_campaign_post_increase_value', $this->donation_value, $value, $this->ID, $this );
