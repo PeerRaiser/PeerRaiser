@@ -342,7 +342,7 @@ class Admin extends Base {
         $campaigns_count = wp_count_posts( 'pr_campaign' );
         if ( $current_screen->id == 'edit-pr_campaign' && $campaigns_count->publish == 0) {
             $admin_notices = Admin_Notices::get_instance();
-            $message = __( 'Create your first campaign to get started. <a href="post-new.php?post_type=pr_campaign">Create Campaign</a>' , 'peerraiser' );
+            $message = __( 'Create your first campaign to get started. <a href="/admin.php?page=peerraiser-campaigns&view=add">Create Campaign</a>' , 'peerraiser' );
             $admin_notices::add_notice( $message );
         }
     }
