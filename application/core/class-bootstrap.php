@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Core;
 
+use PeerRaiser\Model\Config;
+
 class Bootstrap {
 
     /**
@@ -22,7 +24,7 @@ class Bootstrap {
      *
      * @return    \PeerRaiser\Core\Bootstrap
      */
-    public function __construct( \PeerRaiser\Model\Config $config ) {
+    public function __construct( Config $config ) {
         $this->config = $config;
 
         // Load the textdomain for 'plugins_loaded', 'register_activation_hook', and 'register_deactivation_hook'
