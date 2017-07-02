@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div id="edit-slug-box" class="hide-if-no-js" data-edit-slug-nonce="<?php echo wp_create_nonce( 'edit-slug-' . $peerraiser['team']->ID ); ?>">
                                 <strong><?php _e('Permalink:'); ?></strong>
 
-                                <span id="sample-permalink"><a href="http://test.dev/teams/<?php echo $peerraiser['team']->team_slug; ?>/"><?php echo $peerraiser['team']->get_display_link(); ?></a></span>
+                                <span id="sample-permalink"><a href="<?php echo $peerraiser['team']->get_permalink; ?>"><?php echo $peerraiser['team']->get_display_link(); ?></a></span>
                                 ‎<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="Edit permalink"><?php _e( 'Edit' ); ?></button></span>
                                 <span id="editable-post-name-full"><?php echo $peerraiser['team']->team_slug; ?></span>
                                 <input name="slug" type="hidden" id="slug" value="">
