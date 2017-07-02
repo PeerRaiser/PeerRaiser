@@ -5,10 +5,7 @@ namespace PeerRaiser\Controller\Frontend;
 class Donation extends \PeerRaiser\Controller\Base {
 
 	public function register_actions() {
-		add_action( 'init',                            array( $this, 'add_rewrite_rules' ) );
 		add_action( 'peerraiser_add_pending_donation', array( $this, 'handle_add_pending_donation' ) );
-
-		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
 	}
 
 	public function add_rewrite_rules() {
