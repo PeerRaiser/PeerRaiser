@@ -10,6 +10,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    add_shortcode( 'peerraiser_login',                 array( $this, 'render_login_form' ) );
 	    add_shortcode( 'peerraiser_signup',                array( $this, 'render_signup_form' ) );
 	    add_shortcode( 'peerraiser_participant_dashboard', array( $this, 'render_participant_dashboard' ) );
+	    add_shortcode( 'peerraiser_registration',          array( $this, 'render_registration_form' ) );
 
         add_action( 'cmb2_init', array( $this, 'register_settings_fields' ) );
     }
@@ -143,6 +144,22 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         }
     }
 
+    public function render_registration_form( $atts, $content = '' ) {
+	    $valid_choices       = array( 'individual', 'start_team', 'join_team' );
+    	$registration_choice = get_query_var( 'registration_choice', false );
+
+    	if ( ! $registration_choice  || ! in_array( $registration_choice, $valid_choices ) ) {
+    		$this->assign( 'headline', apply_filters( 'peerraiser_registration_choice_headline', 'Start fundraising') );
+    		$this->assign( 'choices', $this->get_registration_choices() );
+
+		    return $this->get_text_view( 'frontend/partials/registration-choices' );
+	    }
+
+	    $this->assign( 'choice', $registration_choice );
+
+    	return $this->get_text_view( 'frontend/registration-form' );
+    }
+
     private function get_password_form() {
         return $this->get_text_view( 'frontend/partials/change-password-form' );
     }
@@ -185,6 +202,14 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    } else {
     		return 'hide';
 	    }
+    }
+
+    private function get_registration_choices() {
+    	return array(
+		    'individual' => __('Individual', 'peerraiser' ),
+		    'join_team' => __('Join a Team', 'peerraiser' ),
+		    'start_team' => __('Start a Team', 'peerraiser' ),
+	    );
     }
 
 }
