@@ -119,8 +119,9 @@ class Admin {
 	protected function get_currency_symbol(){
 		$plugin_options = get_option( 'peerraiser_options', array() );
 		$currency       = new \PeerRaiser\Model\Currency();
+		$iso4217_code   = isset( $plugin_options['currency'] ) ? $plugin_options['currency'] : 'USD';
 
-		return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+		return $currency->get_currency_symbol_by_iso4217_code( $iso4217_code );
 	}
 
 }
