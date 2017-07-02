@@ -92,6 +92,9 @@ class Bootstrap {
      * @return    void
      */
     private function register_frontend_actions() {
+	    $frontend_controller = self::get_controller( 'Frontend\Frontend' );
+	    $frontend_controller->register_actions();
+
         $post_controller = self::get_controller( 'Frontend\Post' );
         $post_controller->register_actions();
 
