@@ -6,7 +6,7 @@ use PeerRaiser\Model\Admin\Admin;
 
 class Registration extends Admin {
 
-	public $fields = array();
+	private $fields = array();
 
 	public function __construct() {
 		$this->fields = array(
@@ -25,9 +25,17 @@ class Registration extends Admin {
 					'name' => __( 'Your Story', 'peerraiser' ),
 					'id' => 'body',
 					'type' => 'wysiwyg',
+					'options' => array(
+						'media_buttons' => false,
+						'teeny' => false,
+						'tinymce' => array(
+							'toolbar1' => 'bold,italic,bullist,numlist,hr,alignleft,aligncenter,alignright,alignjustify,wp_adv',
+							'toolbar2' => 'formatselect,underline,strikethrough,forecolor,pastetext,removeformat',
+						),
+					)
 				),
 			),
-			'add-team' => array(
+			'start-team' => array(
 				'team_name' => array(
 					'name' => __( 'Your Team Name', 'peerraiser' ),
 					'id'   => 'team_name',
@@ -57,12 +65,8 @@ class Registration extends Admin {
 		return $all_choices;
 	}
 
-	public function get_fields( $type = 'all' ) {
-		if ( isset( $this->fields[$type] ) ) {
-			return $this->fields[$type];
-		} else {
-			return $this->fields;
-		}
+	public function get_fields() {
+		return apply_filters( 'peerraiser_registration_fields', $this->fields );
 	}
 
 }
