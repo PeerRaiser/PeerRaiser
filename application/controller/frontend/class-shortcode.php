@@ -183,7 +183,11 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 		    return $this->get_text_view( 'frontend/partials/registration-choices' );
 	    }
 
-	    $this->assign( 'choice', $registration_choice );
+	    if ( in_array( $registration_choice, array( 'individual', 'start-team' ) ) ) {
+	    	$cmb    = cmb2_get_metabox( 'peerraiser-'.$registration_choice, $registration_choice );
+	    	$fields = cmb2_get_metabox_form( $cmb, $registration_choice, array( 'save_button' => __( 'Submit', 'peerraiser' ) ) );
+	    	$this->assign( 'fields', $fields );
+	    }
 
     	return $this->get_text_view( 'frontend/registration-form-' . $registration_choice );
     }
