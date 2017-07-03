@@ -1,1 +1,1 @@
-Join team form
+<h1><?php echo apply_filters( 'peerraiser_registration_start_team_heading', __( 'Join a Team', 'peerraiser' ) ); ?></h1>
