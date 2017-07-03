@@ -23,6 +23,10 @@
 
         init = function(){
             bindEvents();
+
+            if ( $('.peerraiser-registration-select-campaign select').length > 0 ) {
+                $('.peerraiser-registration-select-campaign select').val('');
+            }
         },
 
         bindEvents = function() {
@@ -52,6 +56,16 @@
                     getFundraiserOptions( $(this).val() );
                 }
             });
+
+            $('.peerraiser-registration-select-campaign select').on('change', function() {
+                var campaign_slug = $(this).val();
+
+                if ( campaign_slug === '' ) {
+                    return;
+                }
+
+                window.location.href = './' + campaign_slug;
+            })
         },
 
         handleFile = function( file ) {
