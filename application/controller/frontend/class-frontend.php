@@ -2,7 +2,9 @@
 
 namespace PeerRaiser\Controller\Frontend;
 
-class Frontend extends \PeerRaiser\Controller\Base {
+use PeerRaiser\Controller\Base;
+
+class Frontend extends Base {
 
 	public function register_actions() {
 		add_action( 'init', array( $this, 'add_rewrite_rules' ) );
