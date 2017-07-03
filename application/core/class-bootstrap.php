@@ -101,6 +101,9 @@ class Bootstrap {
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $shortcode_controller->register_actions();
 
+	    $registration_controller = self::get_controller( 'Frontend\Registration' );
+	    $registration_controller->register_actions();
+
         $account_controller = self::get_controller( 'Frontend\Account' );
         $account_controller->register_actions();
 
