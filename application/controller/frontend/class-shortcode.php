@@ -177,7 +177,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    }
 
     	if ( ! $registration_choice ) {
-    		$this->assign( 'headline', apply_filters( 'peerraiser_registration_choice_headline', 'Start fundraising') );
+    		$this->assign( 'headline', apply_filters( 'peerraiser_registration_choice_headline', __( 'Start fundraising', 'peerraiser' ) ) );
     		$this->assign( 'choices', $registration_choices );
 
 		    return $this->get_text_view( 'frontend/partials/registration-choices' );
@@ -185,7 +185,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
 	    $this->assign( 'choice', $registration_choice );
 
-    	return $this->get_text_view( 'frontend/registration-form' );
+    	return $this->get_text_view( 'frontend/registration-form-' . $registration_choice );
     }
 
     private function get_password_form() {
