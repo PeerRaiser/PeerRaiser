@@ -1102,3 +1102,7 @@ form#dashboard_settings {
     background-color: #449d44;
     border-color: #398439;
 }
+/* Registration */
+.peerraiser-registration-select-campaign select {
+    min-width: 300px;
+}
