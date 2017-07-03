@@ -2,6 +2,9 @@
 
 namespace PeerRaiser\Controller\Frontend;
 
+use PeerRaiser\Model\Campaign;
+use PeerRaiser\Model\Frontend\Registration;
+
 class Shortcode extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
@@ -145,12 +148,37 @@ class Shortcode extends \PeerRaiser\Controller\Base {
     }
 
     public function render_registration_form( $atts, $content = '' ) {
-	    $valid_choices       = array( 'individual', 'start_team', 'join_team' );
-    	$registration_choice = get_query_var( 'registration_choice', false );
+	    $plugin_options      = get_option( 'peerraiser_options', array() );
+	    $registration_choice = get_query_var( 'peerraiser_registration_choice', false );
+	    $campaign_slug       = get_query_var( 'peerraiser_campaign', false );
+	    $registration_model  = new Registration();
+	    $campaign_model      = new Campaign();
 
-    	if ( ! $registration_choice  || ! in_array( $registration_choice, $valid_choices ) ) {
+	    if ( ! $campaign_slug ) {
+	    	$this->assign( 'campaigns', $campaign_model->get_campaigns( array( 'campaign_status' => 'active' ) ) );
+
+	    	return $this->get_text_view( 'frontend/partials/registration-select-campaign' );
+	    }
+
+	    $campaign = $campaign_model->get_campaigns( array( 'slug' => $campaign_slug ) );
+
+	    if ( empty( $campaign ) ) {
+		    return $this->get_text_view( 'frontend/partials/registration-invalid-campaign' );
+	    } else {
+	    	$campaign = $campaign[0];
+	    }
+
+	    $registration_choices = $registration_model->get_registration_choices( $campaign );
+
+	    if ( $registration_choice && ! isset( $registration_choices[$registration_choice] ) ) {
+		    $this->assign( 'campaign', $campaign );
+
+	    	return $this->get_text_view( 'frontend/partials/registration-invalid-choice' );
+	    }
+
+    	if ( ! $registration_choice ) {
     		$this->assign( 'headline', apply_filters( 'peerraiser_registration_choice_headline', 'Start fundraising') );
-    		$this->assign( 'choices', $this->get_registration_choices() );
+    		$this->assign( 'choices', $registration_choices );
 
 		    return $this->get_text_view( 'frontend/partials/registration-choices' );
 	    }
@@ -202,14 +230,6 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    } else {
     		return 'hide';
 	    }
-    }
-
-    private function get_registration_choices() {
-    	return array(
-		    'individual' => __('Individual', 'peerraiser' ),
-		    'join_team' => __('Join a Team', 'peerraiser' ),
-		    'start_team' => __('Start a Team', 'peerraiser' ),
-	    );
     }
 
 }
