@@ -62,10 +62,14 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'description_text' => '',
         ), $atts );
 
-        $view_args = array(
-            'test' => 'test result'
-        );
-        $this->assign( 'peerraiser', $view_args );
+	    $plugin_options = get_option( 'peerraiser_options', array() );
+	    $signup_page    = $plugin_options[ 'signup_page' ];
+
+	    $signup_page_url = isset( $_GET['next_url'] )
+		    ? add_query_arg( 'next_url', $_GET['next_url'], get_permalink( $signup_page ) )
+		    : get_permalink( $signup_page );
+
+	    $this->assign( 'signup_page', $signup_page_url );
 
         return $this->get_text_view( 'frontend/partials/login-form' );
     }
@@ -77,13 +81,16 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'description_text' => '',
         ), $atts );
 
-        $view_args = array(
-            'test' => 'test result'
-        );
-        $this->assign( 'peerraiser', $view_args );
+	    $plugin_options = get_option( 'peerraiser_options', array() );
+	    $login_page     = $plugin_options[ 'login_page' ];
+
+	    $login_page_url = isset( $_GET['next_url'] )
+		    ? add_query_arg( 'next_url', $_GET['next_url'], get_permalink( $login_page ) )
+		    : get_permalink( $login_page );
+
+        $this->assign( 'login_page', $login_page_url );
 
         return $this->get_text_view( 'frontend/partials/signup-form' );
-
     }
 
     public function render_participant_dashboard( $atts, $content = '' ) {
