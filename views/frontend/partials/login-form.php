@@ -38,7 +38,7 @@
             <button type="submit" class="login-submit"><?php _e( 'Sign in', 'peerraiser' ) ?></button>
 
             <div class="login-form-bottom">
-                <?php _e( 'Don\'t have an account?', 'peerraiser') ?> <a href="#"><?php _e( 'Sign Up Here', 'peerraiser' ) ?></a>
+                <?php _e( "Don't have an account?", 'peerraiser') ?> <a href="<?php echo esc_url( $signup_page ); ?>"><?php _e( 'Sign Up Here', 'peerraiser' ) ?></a>
             </div>
 
             <input type="hidden" name="action" value="peerraiser_login">
