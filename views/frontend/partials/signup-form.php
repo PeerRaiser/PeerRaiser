@@ -43,7 +43,7 @@
             <p class="terms-of-use">By creating an account, you agree to our <a href="#">Terms of Use</a>.</p>
 
             <div class="signup-form-bottom">
-                <?php _e( 'Already have an account?', 'peerraiser') ?> <a href="#"><?php _e( 'Sign in', 'peerraiser' ) ?></a>
+                <?php _e( 'Already have an account?', 'peerraiser') ?> <a href="<?php echo esc_url( $login_page ); ?>"><?php _e( 'Sign in', 'peerraiser' ) ?></a>
             </div>
 
             <input type="hidden" name="action" value="peerraiser_signup">
