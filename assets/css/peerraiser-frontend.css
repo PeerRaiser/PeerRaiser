@@ -1106,3 +1106,28 @@ form#dashboard_settings {
 .peerraiser-registration-select-campaign select {
     min-width: 300px;
 }
+.peerraiser-fundraising-choices {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.peerraiser-fundraising-choices li {
+    display: block;
+    width: 33.33%;
+    float: left;
+    text-align: center;
+    padding: .5rem;
+}
+.peerraiser-fundraising-choices li:first-child {
+    padding-left: 0;
+}
+.peerraiser-fundraising-choices li:last-child {
+    padding-right: 0;
+}
+.peerraiser-fundraising-choices li a {
+    display: block;
+    background-color: lightgrey;
+    padding: 1rem;
+    width:100%;
+    text-decoration: none;
+}
