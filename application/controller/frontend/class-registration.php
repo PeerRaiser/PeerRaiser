@@ -7,8 +7,9 @@ use PeerRaiser\Controller\Base;
 class Registration extends Base {
 
 	public function register_actions() {
-		add_action( 'template_redirect', array( $this, 'registration_redirect' ) );
-		add_action( 'cmb2_init',         array( $this, 'register_fields') );
+		add_action( 'template_redirect',              array( $this, 'registration_redirect' ) );
+		add_action( 'cmb2_init',                      array( $this, 'register_fields') );
+		add_action( 'peerraiser_register_individual', array( $this, 'register_individual' ) );
 	}
 
 	public function registration_redirect() {
@@ -47,5 +48,24 @@ class Registration extends Base {
 				$metabox->add_field( $field );
 			}
 		}
+	}
+
+	public function register_individual() {
+		// If no form submission, bail
+		if ( empty( $_POST ) || ! isset( $_POST['submit-cmb'], $_POST['object_id'] ) ) {
+			return false;
+		}
+
+		// Get CMB2 metabox object
+		$cmb = cmb2_get_metabox( 'peerraiser-individual', 'fundraiser' );
+
+		// Check security nonce
+		if ( ! isset( $_POST[ $cmb->nonce() ] ) || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() ) ) {
+			return $cmb->prop( 'submission_error', new WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
+		}
+
+		$post_data = array();
+
+		die('test');
 	}
 }
