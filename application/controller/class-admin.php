@@ -22,7 +22,7 @@ use \PeerRaiser\Controller\Admin\Settings as SettingsController;
 class Admin extends Base {
 
     public function register_actions() {
-        add_action( 'init',                             array( $this, 'handle_peerraiser_actions' ) );
+        add_action( 'cmb2_init',                        array( $this, 'handle_peerraiser_actions' ), 99 );
         add_action( 'admin_menu',                       array( $this, 'add_to_admin_panel' ) );
         add_action( 'admin_head',                       array( $this, 'on_campaigns_view' ) );
         add_action( 'admin_print_footer_scripts',       array( $this, 'modify_footer' ) );
