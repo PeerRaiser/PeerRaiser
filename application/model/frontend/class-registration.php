@@ -13,17 +13,17 @@ class Registration extends Admin {
 			'individual' => array(
 				'fundraising_goal' => array(
 					'name' => __( 'Your Fundraising Goal', 'peerraiser' ),
-					'id'   => 'fundraising_goal',
+					'id'   => '_peerraiser_fundraising_goal',
 					'type' => 'text',
 				),
 				'headline' => array(
 					'name' => __( "Your Page's Headline", 'peerraiser' ),
-					'id' => 'headline',
+					'id' => '_peerraiser_headline',
 					'type' => 'text',
 				),
 				'body' => array(
 					'name' => __( 'Your Story', 'peerraiser' ),
-					'id' => 'body',
+					'id' => '_peerraiser_body',
 					'type' => 'wysiwyg',
 					'options' => array(
 						'media_buttons' => false,
@@ -34,23 +34,33 @@ class Registration extends Admin {
 						),
 					)
 				),
+				'peerraiser_action' => array(
+					'id' => 'peerraiser_action',
+					'type' => 'hidden',
+					'default' => 'register_individual',
+				)
 			),
 			'start-team' => array(
 				'team_name' => array(
 					'name' => __( 'Your Team Name', 'peerraiser' ),
-					'id'   => 'team_name',
+					'id'   => '_peerraiser_team_name',
 					'type' => 'text',
 				),
 				'team_goal' => array(
 					'name' => __( 'Team Fundraising Goal', 'peerraiser' ),
-					'id'   => 'team_goal',
+					'id'   => '_peerraiser_team_goal',
 					'type' => 'text',
 				),
 				'headline' => array(
 					'name' => __( "Team's Page Headline", 'peerraiser' ),
-					'id' => 'headline',
+					'id' => '_peerraiser_headline',
 					'type' => 'text',
 				),
+				'peerraiser_action' => array(
+					'id' => 'peerraiser_action',
+					'type' => 'hidden',
+					'default' => 'register_team',
+				)
 			)
 		);
 	}
