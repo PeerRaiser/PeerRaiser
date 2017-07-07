@@ -196,6 +196,13 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    	$this->assign( 'fields', $fields );
 	    }
 
+	    // Get any submission errors
+	    if ( ( $error = $cmb->prop( 'submission_error' ) ) && is_wp_error( $error ) ) {
+		    $this->assign( 'errors', $error->get_error_message() );
+	    }
+
+	    wp_enqueue_script( 'jquery-validate');
+
     	return $this->get_text_view( 'frontend/registration-form-' . $registration_choice );
     }
 
