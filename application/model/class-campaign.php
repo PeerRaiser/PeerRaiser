@@ -135,6 +135,20 @@ class Campaign {
 	protected $suggested_individual_goal = 0.00;
 
 	/**
+	 * Default fundraising title
+	 *
+	 * @var string
+	 */
+	protected $default_fundraiser_title = '';
+
+	/**
+	 * Default fundraising content
+	 *
+	 * @var string
+	 */
+	protected $default_fundraiser_content = '';
+
+	/**
 	 * Suggested team goal
 	 *
 	 * @var float
@@ -332,7 +346,6 @@ class Campaign {
 
 		// Money
 		$this->campaign_goal			 = get_term_meta( $this->ID, '_peerraiser_campaign_goal', true );
-		$this->suggested_individual_goal = get_term_meta( $this->ID, '_peerraiser_suggested_individual_goal', true );
 		$this->suggested_team_goal       = get_term_meta( $this->ID, '_peerraiser_suggested_team_goal', true );
 		$donation_value                  = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
 		$this->donation_value            = $donation_value ? floatval( $donation_value ) : 0.00;
@@ -345,6 +358,11 @@ class Campaign {
 		$this->allow_anonymous_donations = get_term_meta( $this->ID, '_peerraiser_allow_anonymous_donations', true );
 		$this->allow_comments            = get_term_meta( $this->ID, '_peerraiser_allow_comments', true );
 		$this->allow_fees_covered        = get_term_meta( $this->ID, '_peerraiser_allow_fees_covered', true );
+
+		// Fundraiser Page Options
+		$this->suggested_individual_goal  = get_term_meta( $this->ID, '_peerraiser_suggested_individual_goal', true );
+		$this->default_fundraiser_title   = get_term_meta( $this->ID, '_default_fundraiser_title', true );
+		$this->default_fundraiser_content = get_term_meta( $this->ID, '_default_fundraiser_content', true );
 
 		// Thank you page
 		$this->thank_you_page = get_term_meta( $this->ID, '_peerraiser_thank_you_page', true );
