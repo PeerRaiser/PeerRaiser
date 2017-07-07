@@ -9,7 +9,8 @@ class Frontend extends Base {
 	public function register_actions() {
 		add_action( 'init', array( $this, 'add_rewrite_rules' ) );
 
-		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+		add_filter( 'query_vars',        array( $this, 'register_query_vars' ) );
+		add_filter( 'cmb2_wrap_classes', array( $this, 'add_form_class' ), 10, 2 );
 	}
 
 	public function add_rewrite_rules() {
@@ -29,5 +30,18 @@ class Frontend extends Base {
 		$vars[] = 'peerraiser_registration_choice';
 
 		return $vars;
+	}
+
+	function add_form_class( $classes, $box ) {
+
+		foreach ( $box as $key => $value ) {
+			if ( isset( $box->meta_box['attributes'] ) && isset( $box->meta_box['attributes']['classes'] ) ) {
+				if ( ! empty( $box->meta_box['attributes']['classes'] ) ) {
+					$classes[] = $box->meta_box['attributes']['classes'];
+				}
+			}
+		}
+
+		return array_unique( $classes );
 	}
 }
