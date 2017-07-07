@@ -24,12 +24,15 @@ class File {
 		) {
 			return;
 		}
+
 		// Filter out empty array values
 		$files = array_filter( $_FILES['submitted_post_thumbnail'] );
+
 		// Make sure files were submitted at all
 		if ( empty( $files ) ) {
 			return;
 		}
+
 		// Make sure to include the WordPress media uploader API if it's not (front-end)
 		if ( ! function_exists( 'media_handle_upload' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/image.php' );
