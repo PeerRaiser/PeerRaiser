@@ -3,12 +3,15 @@
 
     function peerRaiserFrontend(){
         var $o = {
+            peerraiserForm : $('.peerraiser-form').parent(),
             dashboard : $('.peerraiser-dashboard'),
             alertBox  : $('.peerraiser-dashboard .alert'),
             nonces    : {
                 avatarUpload : $('#peerraiser_upload_avatar_nonce').val()
-            }
+            },
         },
+
+        validationObject = {},
 
         settings = {
             allowed : {
@@ -23,6 +26,11 @@
 
         init = function(){
             bindEvents();
+
+            // If a PeerRaiser form is present, use jQuery validate
+            if ( $o.peerraiserForm.length ) {
+                validationSetup();
+            }
 
             if ( $('.peerraiser-registration-select-campaign select').length > 0 ) {
                 $('.peerraiser-registration-select-campaign select').val('');
@@ -198,6 +206,34 @@
 
                     $('.peerraiser-donation-form .peerraiser-fundraiser-selection').removeClass('hide');
 
+                }
+            });
+        },
+
+        validationSetup = function() {
+            validationObject = $o.peerraiserForm.validate({
+                errorClass: "peerraiser-error",
+                errorPlacement: function (error, element) {
+                    var elem             = $(element);
+                    var desc_box         = elem.parent().find('.cmb2-metabox-description'),
+                        select2Container = elem.parent().find('.select2-container');
+                    if ( desc_box.length ) {
+                        desc_box.after( error );
+                    } else {
+                        if ( select2Container.length ) {
+                            select2Container.after( error );
+                        } else {
+                            elem.parents('.cmb-td').append( error );
+                        }
+                    }
+                },
+                highlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    elem.parents('.cmb-row').addClass(errorClass);
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    var elem = $(element);
+                    elem.parents('.cmb-row').removeClass(errorClass);
                 }
             });
         };
