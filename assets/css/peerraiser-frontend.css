@@ -212,7 +212,8 @@
     border-bottom: 0;
 }
 .login-form-wrapper .error-message,
-.signup-form-wrapper .error-message {
+.signup-form-wrapper .error-message,
+.peerraiser-registration-form .error-message {
     background-color: #f2dede;
     border-color: #ebccd1;
     color: #a94442;
@@ -895,6 +896,24 @@ form#dashboard_settings {
     background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
     background-size: 35px 35px;
 }
+/* Forms / Fields */
+.peerraiser-error,
+.peerraiser-error label,
+.peerraiser-error p.cmb2-metabox-description{
+    color: #a94442;
+}
+.peerraiser-error input {
+    border: 1px solid #a94442;
+}
+.peerraiser-error label.peerraiser-error {
+    font-weight: bold;
+    font-size: 13px;
+    display: block;
+    padding-top: .5em;
+}
+.peerraiser-error  .cmb2-metabox-description + label.peerraiser-error {
+    padding-top: 0;
+}
 /* Donation Form */
 .peerraiser-donation-form .hide {
     display: none;
@@ -982,7 +1001,8 @@ form#dashboard_settings {
     background-color: #449d44;
     border-color: #398439;
 }
-.peerraiser-donation-amount-other {
+.peerraiser-donation-amount-other,
+.peerraiser-fundraising-goal {
     position: relative;
     display: -webkit-box;
     display: -webkit-flex;
@@ -991,7 +1011,8 @@ form#dashboard_settings {
     width: 100%;
     max-width: 300px;
 }
-.peerraiser-donation-amount-other .peerraiser-currency-symbol {
+.peerraiser-donation-amount-other .peerraiser-currency-symbol,
+.peerraiser-fundraising-goal .peerraiser-currency-symbol {
     padding: .5rem .75rem;
     margin-bottom: 0;
     font-size: 1rem;
@@ -1018,12 +1039,14 @@ form#dashboard_settings {
     -ms-flex-pack: center;
     justify-content: center;
 }
-.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:last-child) {
+.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:last-child),
+.peerraiser-fundraising-goal .peerraiser-currency-symbol:not(:last-child) {
     border-right: 0;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
-.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:first-child) {
+.peerraiser-donation-amount-other .peerraiser-currency-symbol:not(:first-child),
+.peerraiser-fundraising-goal .peerraiser-currency-symbol:not(:first-child) {
     border-left: 0;
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
@@ -1067,11 +1090,13 @@ form#dashboard_settings {
     border-color: rgba(0, 0, 0, 0.15);
     background-color: #fff;
 }
-.peerraiser-donation-amount-other .peerraiser-donation-input:not(:first-child) {
+.peerraiser-donation-amount-other .peerraiser-donation-input:not(:first-child),
+.peerraiser-fundraising-goal input:not(:first-child) {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }
-.peerraiser-donation-amount-other .peerraiser-donation-input:not(:last-child) {
+.peerraiser-donation-amount-other .peerraiser-donation-input:not(:last-child),
+.peerraiser-donation-amount-other input:not(:last-child) {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
@@ -1130,4 +1155,27 @@ form#dashboard_settings {
     padding: 1rem;
     width:100%;
     text-decoration: none;
+}
+.peerraiser-registration-form .cmb2-id--peerraiser-body .cmb-th {
+    padding-bottom: 0;
+}
+.peerraiser-registration-form .cmb2-id--peerraiser-body .cmb-td {
+    padding-top: 0;
+    width: 100%;
+}
+.peerraiser-registration-form .cmb2-id--peerraiser-body .wp-editor-tabs {
+    float: left;
+}
+.peerraiser-registration-form .cmb2-wrap .cmb-row {
+    margin-bottom: 1rem;
+}
+.peerraiser-registration-form .cmb-th {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.peerraiser-registration-form .cmb-td {
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
