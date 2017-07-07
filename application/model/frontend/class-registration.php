@@ -113,7 +113,7 @@ class Registration extends Admin {
 		return apply_filters( 'peerraiser_registration_fields', $this->fields );
 	}
 
-	public function get_required_field_ids( $group ) {
+	public function get_required_field_ids( $group = false ) {
 		$required_fields = array();
 
 		if ( ! isset( $this->fields[$group] ) ) {
