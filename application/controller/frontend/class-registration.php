@@ -42,6 +42,7 @@ class Registration extends Base {
 				'object_types' => array( 'fundraiser' ),
 				'hookup'       => false,
 				'save_fields'  => false,
+				'attributes'   => array( 'classes' => 'peerraiser-form' ),
 			) );
 
 			foreach ( $fields[$key] as $field ) {
@@ -51,6 +52,8 @@ class Registration extends Base {
 	}
 
 	public function register_individual() {
+		$registration_model = new \PeerRaiser\Model\Frontend\Registration();
+
 		// If no form submission, bail
 		if ( empty( $_POST ) || ! isset( $_POST['submit-cmb'], $_POST['object_id'] ) ) {
 			return false;
@@ -61,11 +64,20 @@ class Registration extends Base {
 
 		// Check security nonce
 		if ( ! isset( $_POST[ $cmb->nonce() ] ) || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() ) ) {
-			return $cmb->prop( 'submission_error', new WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
+			return $cmb->prop( 'submission_error', newWP_Error( 'security_fail', __( 'Security check failed.' ) ) );
 		}
 
-		$post_data = array();
+		$required_fields = $registration_model->get_required_field_ids( 'individual' );
+		$errors = array();
 
-		die('test');
+		foreach ( $required_fields as $field ) {
+			if ( empty( $_POST[$field] ) ) {
+				$errors[] = $field;
+			}
+		}
+
+		if ( ! empty( $errors ) ) {
+			return $cmb->prop( 'submission_error', new \WP_Error( 'post_data_missing', __( 'Some required fields are empty' ) ) );
+		}
 	}
 }
