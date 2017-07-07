@@ -55,7 +55,7 @@ class Admin {
         return apply_filters( 'peerraiser_menu_items', $this->menu_items );
     }
 
-	public function get_required_field_ids( $group ) {
+	public function get_required_field_ids( $group = false ) {
 		$required_fields = array();
 
 		foreach ( $this->fields as $field_group ) {

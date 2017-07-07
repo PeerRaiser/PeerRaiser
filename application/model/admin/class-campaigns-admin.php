@@ -183,7 +183,7 @@ class Campaigns_Admin extends Admin {
 		            ),
 		            'default_fundraiser_title' => array(
 		            	'name' => __( 'Default Fundraiser Title', 'peerraiser' ),
-			            'id' => '_default_fundraiser_title',
+			            'id' => '_peerraiser_default_fundraiser_title',
 			            'type' => 'text',
 			            'attributes' => array(
 				            'data-rule-required' => "true",
@@ -194,7 +194,7 @@ class Campaigns_Admin extends Admin {
 		            ),
 		            'default_fundraiser_content' => array(
 		            	'name' => __( 'Default Fundraiser Content', 'peerraiser' ),
-			            'id' => '_default_fundraiser_content',
+			            'id' => '_peerraiser_default_fundraiser_content',
 			            'type' => 'wysiwyg',
 			            'default_cb' => array( $this, 'get_field_value'),
 		            )
@@ -380,10 +380,11 @@ class Campaigns_Admin extends Admin {
 		$short_field = substr( $field['id'], 12 );
 
 		switch ( $field['id'] ) {
-			case '_default_fundraiser_title':
+			case '_peerraiser_default_fundraiser_title':
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
 				break;
-			case '_default_fundraiser_content':
+			case '_peerraiser_default_fundraiser_content':
+				error_log( $campaign_model->default_fundraiser_content );
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( "<h2>Thanks for visiting my fundraising page!</h2><p>Please help me support %s by making a donation through this page. The process is easy and secure. Don't forget to share this page on Facebook and Twitter!</p><p>Thank you for supporting this important cause!</p>", 'peerraiser'), get_bloginfo( 'name') );
 				break;
 			default:

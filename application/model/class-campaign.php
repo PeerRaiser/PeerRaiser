@@ -361,8 +361,8 @@ class Campaign {
 
 		// Fundraiser Page Options
 		$this->suggested_individual_goal  = get_term_meta( $this->ID, '_peerraiser_suggested_individual_goal', true );
-		$this->default_fundraiser_title   = get_term_meta( $this->ID, '_default_fundraiser_title', true );
-		$this->default_fundraiser_content = get_term_meta( $this->ID, '_default_fundraiser_content', true );
+		$this->default_fundraiser_title   = get_term_meta( $this->ID, '_peerraiser_default_fundraiser_title', true );
+		$this->default_fundraiser_content = get_term_meta( $this->ID, '_peerraiser_default_fundraiser_content', true );
 
 		// Thank you page
 		$this->thank_you_page = get_term_meta( $this->ID, '_peerraiser_thank_you_page', true );
