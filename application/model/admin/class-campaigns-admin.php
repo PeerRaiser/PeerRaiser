@@ -109,21 +109,6 @@ class Campaigns_Admin extends Admin {
                         'before_field' => $this->get_currency_symbol(),
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'suggested_individual_goal' => array(
-                        'name' => __('Suggested Individual Goal', 'peerraiser'),
-                        'id'   => '_peerraiser_suggested_individual_goal',
-                        'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
-                        'type' => 'text',
-                        'attributes' => array(
-                            'data-rule-required' => "true",
-                            'data-msg-required' => __( 'Individual Goal is required', 'peerraiser' ),
-                            'data-rule-currency' => '["",false]',
-                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
-                            'data-tooltip' => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
-                        ),
-                        'before_field' => $this->get_currency_symbol(),
-                        'default_cb' => array( $this, 'get_field_value'),
-                    ),
                     'suggested_team_goal' => array(
                         'name' => __('Suggested Team Goal', 'peerraiser'),
                         'id'   => '_peerraiser_suggested_team_goal',
@@ -174,6 +159,46 @@ class Campaigns_Admin extends Admin {
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
                 ),
+            ),
+            array(
+            	'title' => __( 'Fundraising Page Options', 'peerraiser' ),
+	            'id' => 'peerraiser-campaign-fundraiser-options',
+	            'context' => 'normal',
+	            'priority' => 'default',
+	            'fields' => array(
+		            'suggested_individual_goal' => array(
+			            'name' => __('Suggested Individual Goal', 'peerraiser'),
+			            'id'   => '_peerraiser_suggested_individual_goal',
+			            'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
+			            'type' => 'text',
+			            'attributes' => array(
+				            'data-rule-required' => "true",
+				            'data-msg-required' => __( 'Individual Goal is required', 'peerraiser' ),
+				            'data-rule-currency' => '["",false]',
+				            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+				            'data-tooltip' => __('The amount to display as a fundraising target to participants.', 'peerraiser' ),
+			            ),
+			            'before_field' => $this->get_currency_symbol(),
+			            'default_cb' => array( $this, 'get_field_value'),
+		            ),
+		            'default_fundraiser_title' => array(
+		            	'name' => __( 'Default Fundraiser Title', 'peerraiser' ),
+			            'id' => '_default_fundraiser_title',
+			            'type' => 'text',
+			            'attributes' => array(
+				            'data-rule-required' => "true",
+				            'data-msg-required' => __( 'Default fundraiser title is required', 'peerraiser' ),
+				            'data-tooltip' => __('The fundraiser title if participant leaves it blank', 'peerraiser' ),
+			            ),
+			            'default_cb' => array( $this, 'get_field_value'),
+		            ),
+		            'default_fundraiser_content' => array(
+		            	'name' => __( 'Default Fundraiser Content', 'peerraiser' ),
+			            'id' => '_default_fundraiser_content',
+			            'type' => 'wysiwyg',
+			            'default_cb' => array( $this, 'get_field_value'),
+		            )
+	            ),
             ),
             array(
                 'title'    => __('Donation Form', 'peerraiser'),
@@ -351,13 +376,16 @@ class Campaigns_Admin extends Admin {
     }
 
 	public function get_field_value( $field ) {
-    	if ( ! isset( $_GET['campaign'] ) )
-    		return;
-
 		$campaign_model = new \PeerRaiser\Model\Campaign( $_GET['campaign'] );
 		$short_field = substr( $field['id'], 12 );
 
 		switch ( $field['id'] ) {
+			case '_default_fundraiser_title':
+				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
+				break;
+			case '_default_fundraiser_content':
+				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( "<h2>Thanks for visiting my fundraising page!</h2><p>Please help me support %s by making a donation through this page. The process is easy and secure. Don't forget to share this page on Facebook and Twitter!</p><p>Thank you for supporting this important cause!</p>", 'peerraiser'), get_bloginfo( 'name') );
+				break;
 			default:
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : '';
 				break;
