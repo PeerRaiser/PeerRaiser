@@ -384,7 +384,6 @@ class Campaigns_Admin extends Admin {
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
 				break;
 			case '_peerraiser_default_fundraiser_content':
-				error_log( $campaign_model->default_fundraiser_content );
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( "<h2>Thanks for visiting my fundraising page!</h2><p>Please help me support %s by making a donation through this page. The process is easy and secure. Don't forget to share this page on Facebook and Twitter!</p><p>Thank you for supporting this important cause!</p>", 'peerraiser'), get_bloginfo( 'name') );
 				break;
 			default:
