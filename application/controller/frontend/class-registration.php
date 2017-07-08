@@ -59,8 +59,6 @@ class Registration extends Base {
 		$registration_model = new \PeerRaiser\Model\Frontend\Registration();
 		$fundraiser         = new Fundraiser();
 		$participant_model  = new Participant();
-		$campaign_model     = new Campaign();
-		$campaign           = $campaign_model->get_campaigns( array( 'slug' => get_query_var( 'peerraiser_campaign' ) ) );
 		$participant        = $participant_model->get_current_participant();
 
 		// If no form submission, bail
@@ -74,11 +72,6 @@ class Registration extends Base {
 		// Check security nonce
 		if ( ! isset( $_POST[ $cmb->nonce() ] ) || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() ) ) {
 			return $cmb->prop( 'submission_error', new WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
-		}
-
-		// Make sure a campaign is specified
-		if ( empty( $campaign ) ) {
-			return $cmb->prop( 'submission_error', new \WP_Error( 'peerraiser_campaign_missing', __( 'A campaign is required. No campaign specified.' ) ) );
 		}
 
 		$required_fields = $registration_model->get_required_field_ids( 'individual' );
@@ -103,10 +96,12 @@ class Registration extends Base {
 		 */
 		$sanitized_values = $cmb->get_sanitized_values( $_POST );
 
+		error_log( print_r( $sanitized_values,1 ) );
+
 		$fundraiser->fundraiser_name    = $sanitized_values['_peerraiser_headline'];
 		$fundraiser->fundraiser_slug    = sanitize_title( $participant->full_name );
 		$fundraiser->fundraiser_content = $sanitized_values['_peerraiser_body'];
-		$fundraiser->campaign_id        = $campaign[0]->ID;
+		$fundraiser->campaign_id        = $_POST['_peerraiser_fundraiser_campaign'];
 		$fundraiser->participant        = $participant->ID;
 
 		// Unset data that shouldn't be saved as post meta
@@ -119,8 +114,6 @@ class Registration extends Base {
 		foreach ( $sanitized_values as $key => $value ) {
 			$fundraiser->update_meta( $key, $value );
 		}
-
-		error_log( print_r( $fundraiser,1 ) );
 
 		// Try to upload the featured image
 		$image_id = File::attach_image_to_post( $fundraiser->ID );
