@@ -50,6 +50,13 @@ class Fundraiser {
 	protected $fundraiser_slug = '';
 
 	/**
+	 * Fundraiser content
+	 *
+	 * @var string
+	 */
+	protected $fundraiser_content = '';
+
+	/**
 	 * Fundraiser goal
 	 *
 	 * @var float
@@ -196,17 +203,18 @@ class Fundraiser {
 		do_action( 'peerraiser_before_setup_fundraiser', $this, $fundraiser );
 
 		// Primary Identifiers
-		$this->ID			   = absint( $fundraiser->ID );
-		$this->_ID             = absint( $fundraiser->ID);
-		$this->fundraiser_name = $fundraiser->post_title;
-		$this->fundraiser_slug = $fundraiser->post_name;
-        $this->participant     = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
+		$this->ID			      = absint( $fundraiser->ID );
+		$this->_ID                = absint( $fundraiser->ID);
+		$this->fundraiser_name    = $fundraiser->post_title;
+		$this->fundraiser_slug    = $fundraiser->post_name;
+		$this->fundraiser_content = $fundraiser->post_content;
+        $this->participant        = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
 
-        $campaign              = wp_get_post_terms( $this->ID, 'peerraiser_campaign' );
-        $this->campaign_id     = ! empty( $campaign ) ? $campaign[0]->term_id : 0;
+        $campaign          = wp_get_post_terms( $this->ID, 'peerraiser_campaign' );
+        $this->campaign_id = ! empty( $campaign ) ? $campaign[0]->term_id : 0;
 
-        $team                  = wp_get_post_terms( $this->ID, 'peerraiser_team' );
-        $this->team_id         = ! empty( $team ) ? $team[0]->term_id : 0;
+        $team          = wp_get_post_terms( $this->ID, 'peerraiser_team' );
+        $this->team_id = ! empty( $team ) ? $team[0]->term_id : 0;
 
 		// Money
 		$this->fundraiser_goal = get_post_meta( $this->ID, '_peerraiser_fundraiser_goal', true );
@@ -228,19 +236,43 @@ class Fundraiser {
 	 * @return bool  True of the save occurred, false if it failed
 	 */
 	public function save() {
+		if ( empty( $this->ID ) ) {
+			$this->insert_fundraiser();
+		}
+
 		if ( $this->ID !== $this->_ID ) {
 			$this->ID = $this->_ID;
 		}
 
 		if ( ! empty( $this->pending ) ) {
+			$pending_post_data = array();
 			foreach ( $this->pending as $key => $value ) {
-				if ( property_exists( $this, $key ) ) {
+				if ( in_array( $key, array( 'fundraiser_name', 'fundraiser_slug', 'fundraiser_content' ) ) ) {
+					switch ( $key ) {
+						case 'fundraiser_name' :
+							$pending_post_data['post_title'] = $value;
+							break;
+						case 'fundraiser_slug' :
+							$pending_post_data['post_name'] = $value;
+							break;
+						case 'fundraiser_content' :
+							$pending_post_data['post_content'] = $value;
+							break;
+					}
+				} elseif ( property_exists( $this, $key ) ) {
 					$this->update_meta( $key, $value );
 					unset( $this->pending[ $key ] );
 				} else {
 					do_action( 'peerraiser_fundraiser_save', $this, $key );
 				}
 			}
+
+			if ( ! empty( $pending_post_data ) ) {
+				$pending_post_data['ID'] = $this->ID;
+
+				wp_update_post( $pending_post_data );
+			}
+
 		}
 
 		do_action( 'peerraiser_fundraiser_saved', $this->ID, $this );
@@ -430,5 +462,32 @@ class Fundraiser {
 
         return $this->donation_value;
     }
+
+	/**
+	 * Creates a donation record in the database
+	 *
+	 * @since     1.0.0
+	 *
+	 * @return    int|\WP_Error    Donation ID
+	 */
+	private function insert_fundraiser() {
+		if ( empty ( $this->fundraiser_name ) ) {
+			$this->fundraiser_name = sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
+		}
+
+		$fundraiser_id = wp_insert_post( array(
+			'post_title' => $this->fundraiser_name,
+			'post_content' => $this->fundraiser_content,
+			'post_status' => 'publish',
+			'post_type' => 'fundraiser'
+		) );
+
+		$this->ID  = $fundraiser_id;
+		$this->_ID = $fundraiser_id;
+
+		do_action( 'peerraiser_fundraiser_added', $this );
+
+		return $this->ID;
+	}
 
 }
