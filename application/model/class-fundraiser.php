@@ -85,13 +85,6 @@ class Fundraiser {
     protected $participant = 0;
 
     /**
-     * Team ID
-     *
-     * @var int
-     */
-    protected $team = 0;
-
-    /**
      * The total amount the fundraiser has received
      *
      * @var float
@@ -260,8 +253,22 @@ class Fundraiser {
 							break;
 					}
 				} elseif ( property_exists( $this, $key ) ) {
-					$this->update_meta( $key, $value );
-					unset( $this->pending[ $key ] );
+					switch ( $key ) {
+						case 'team_id' :
+							$this->add_to_team( $value );
+							$this->update_meta( '_peerraiser_fundraiser_team', $value );
+							break;
+						case 'campaign_id' :
+							$this->add_to_campaign( $value );
+							$this->update_meta( '_peerraiser_fundraiser_campaign', $value );
+							break;
+						case 'fundraiser_goal' :
+							$this->update_meta( '_peerraiser_fundraiser_goal', $value );
+							break;
+						case 'participant' :
+							$this->update_meta( '_peerraiser_fundraiser_participant', $value );
+							break;
+					}
 				} else {
 					do_action( 'peerraiser_fundraiser_save', $this, $key );
 				}
@@ -314,7 +321,17 @@ class Fundraiser {
      * @param $campaign_id int The campaign to add the fundraiser to
      */
 	public function add_to_campaign( $campaign_id ) {
-		$this->update_meta( '_peerraiser_campaign_id', $campaign_id );
+		error_log( $campaign_id );
+		wp_set_object_terms( $this->ID, (int) $campaign_id, 'peerraiser_campaign' );
+	}
+
+	/**
+	 * Add the fundraiser to a team
+	 *
+	 * @param $team_id int The team to add the fundraiser to
+	 */
+	public function add_to_team( $team_id ) {
+		wp_set_object_terms( $this->ID, (int) $team_id, 'peerraiser_team' );
 	}
 
     /**
