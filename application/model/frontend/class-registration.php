@@ -22,9 +22,9 @@ class Registration extends Admin {
 					),
 					'default_cb' => array( $this, 'get_field_value'),
 				),
-				'headline' => array(
+				'headline_individual' => array(
 					'name' => __( "Your Page's Headline", 'peerraiser' ),
-					'id' => '_peerraiser_headline',
+					'id' => '_peerraiser_headline_individual',
 					'type' => 'text',
 					'attributes'  => array(
 						'data-rule-required' => 'true',
@@ -40,9 +40,9 @@ class Registration extends Admin {
 						'type' => 'file',
 					),
 				),
-				'body' => array(
+				'body_individual' => array(
 					'name' => __( 'Your Story', 'peerraiser' ),
-					'id' => '_peerraiser_body',
+					'id' => '_peerraiser_body_individual',
 					'type' => 'wysiwyg',
 					'options' => array(
 						'media_buttons' => false,
@@ -82,15 +82,43 @@ class Registration extends Admin {
 						'data-rule-required' => 'true',
 						'data-msg-required' => __( 'A fundraising goal is required', 'peerraiser' ),
 					),
+					'default_cb' => array( $this, 'get_field_value'),
 				),
-				'headline' => array(
+				'headline_team' => array(
 					'name' => __( "Team's Page Headline", 'peerraiser' ),
-					'id' => '_peerraiser_headline',
+					'id' => '_peerraiser_headline_team',
 					'type' => 'text',
 					'attributes'  => array(
 						'data-rule-required' => 'true',
 						'data-msg-required' => __( 'A team headline is required', 'peerraiser' ),
 					),
+					'default_cb' => array( $this, 'get_field_value'),
+				),
+				'image' => array(
+					'name' => __( 'Team photo', 'peerraiser' ),
+					'id' => '_peerraiser_photo',
+					'type' => 'text',
+					'attributes' => array(
+						'type' => 'file',
+					),
+				),
+				'body_team' => array(
+					'name' => __( 'Team Story', 'peerraiser' ),
+					'id' => '_peerraiser_body_team',
+					'type' => 'wysiwyg',
+					'options' => array(
+						'media_buttons' => false,
+						'teeny' => false,
+						'tinymce' => array(
+							'toolbar1' => 'bold,italic,bullist,numlist,hr,alignleft,aligncenter,alignright,alignjustify,wp_adv',
+							'toolbar2' => 'formatselect,underline,strikethrough,forecolor,pastetext,removeformat',
+						),
+					),
+					'attributes'  => array(
+						'data-rule-required' => 'true',
+						'data-msg-required' => __( 'The page cannot be blank', 'peerraiser' ),
+					),
+					'default_cb' => array( $this, 'get_field_value'),
 				),
 				'peerraiser_action' => array(
 					'id' => 'peerraiser_action',
@@ -141,10 +169,16 @@ class Registration extends Admin {
 		switch ( $field['id'] ) {
 			case '_peerraiser_fundraiser_goal' :
 				return $campaign[0]->suggested_individual_goal;
-			case '_peerraiser_headline' :
+			case '_peerraiser_team_goal' :
+				return $campaign[0]->suggested_team_goal;
+			case '_peerraiser_headline_individual' :
 				return $campaign[0]->default_fundraiser_title;
-			case '_peerraiser_body' :
+			case '_peerraiser_headline_team' :
+				return $campaign[0]->default_team_title;
+			case '_peerraiser_body_individual' :
 				return $campaign[0]->default_fundraiser_content;
+			case '_peerraiser_body_team' :
+				return $campaign[0]->default_team_content;
 			default:
 				return '';
 		}
@@ -161,8 +195,12 @@ class Registration extends Admin {
 		if ( $currency_position === 'before' ) {
 			$this->fields['individual']['fundraising_goal']['before_field'] = sprintf( '<span class="peerraiser-fundraising-goal"><span class="peerraiser-currency-symbol">%s</span>', $currency_symbol );
 			$this->fields['individual']['fundraising_goal']['after_field'] = '</span>';
+
+			$this->fields['start-team']['team_goal']['before_field'] = sprintf( '<span class="peerraiser-fundraising-goal"><span class="peerraiser-currency-symbol">%s</span>', $currency_symbol );
+			$this->fields['start-team']['team_goal']['after_field'] = '</span>';
 		} else {
 			$this->fields['individual']['fundraising_goal']['after_field'] = sprintf( '<span class="currency">%s</span>', $currency_symbol );
+			$this->fields['start-team']['team_goal']['after_field'] = sprintf( '<span class="currency">%s</span>', $currency_symbol );
 		}
 	}
 
