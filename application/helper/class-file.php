@@ -15,18 +15,18 @@ class File {
 	 *
 	 * @return int The ID of the attachment
 	 */
-	function attach_image_to_post( $post_id, $attachment_post_data = array() ) {
+	static function attach_image_to_post( $post_id ) {
 		// Make sure the right files were submitted
 		if (
 			empty( $_FILES )
-			|| ! isset( $_FILES['submitted_post_thumbnail'] )
-			|| isset( $_FILES['submitted_post_thumbnail']['error'] ) && 0 !== $_FILES['submitted_post_thumbnail']['error']
+			|| ! isset( $_FILES['_peerraiser_photo'] )
+			|| isset( $_FILES['_peerraiser_photo']['error'] ) && 0 !== $_FILES['_peerraiser_photo']['error']
 		) {
 			return;
 		}
 
 		// Filter out empty array values
-		$files = array_filter( $_FILES['submitted_post_thumbnail'] );
+		$files = array_filter( $_FILES['_peerraiser_photo'] );
 
 		// Make sure files were submitted at all
 		if ( empty( $files ) ) {
@@ -40,6 +40,6 @@ class File {
 			require_once( ABSPATH . 'wp-admin/includes/media.php' );
 		}
 		// Upload the file and send back the attachment post ID
-		return media_handle_upload( 'submitted_post_thumbnail', $post_id, $attachment_post_data );
+		return media_handle_upload( '_peerraiser_photo', $post_id );
 	}
 }
