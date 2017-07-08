@@ -7,7 +7,7 @@
 <div class="peerraiser-registration-form individual">
 	<?php if ( ! empty( $errors ) ) : ?>
         <div class="error-message">
-            <strong>Oops!</strong> <?php echo $errors; ?></div>
+            <strong><?php _e( 'Oops!', 'peerraiser' ) ?></strong> <?php echo $errors; ?></div>
 	<?php endif; ?>
 
 	<?php do_action( 'peerraiser_before_registration_fields' ); ?>
