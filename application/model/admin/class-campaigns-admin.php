@@ -109,21 +109,6 @@ class Campaigns_Admin extends Admin {
                         'before_field' => $this->get_currency_symbol(),
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
-                    'suggested_team_goal' => array(
-                        'name' => __('Suggested Team Goal', 'peerraiser'),
-                        'id'   => '_peerraiser_suggested_team_goal',
-                        'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
-                        'type' => 'text',
-                        'attributes' => array(
-                            'data-rule-required' => "true",
-                            'data-msg-required' => __( 'Suggested Team Goal is required', 'peerraiser' ),
-                            'data-rule-currency' => '["",false]',
-                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
-                            'data-tooltip' => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
-                        ),
-                        'before_field' => $this->get_currency_symbol(),
-                        'default_cb' => array( $this, 'get_field_value'),
-                    ),
                     'registration_limit' => array(
                         'name' => __( 'Registration Limit', 'peerraiser' ),
                         'id'   => '_peerraiser_registration_limit',
@@ -200,6 +185,46 @@ class Campaigns_Admin extends Admin {
 		            )
 	            ),
             ),
+	        array(
+		        'title' => __( 'Team Options', 'peerraiser' ),
+		        'id' => 'peerraiser-campaign-team-options',
+		        'context' => 'normal',
+		        'priority' => 'default',
+		        'fields' => array(
+			        'suggested_team_goal' => array(
+				        'name' => __('Suggested Team Goal', 'peerraiser'),
+				        'id'   => '_peerraiser_suggested_team_goal',
+				        'desc' => __( 'Format should be XXXX.XX', 'peerraiser' ),
+				        'type' => 'text',
+				        'attributes' => array(
+					        'data-rule-required' => "true",
+					        'data-msg-required' => __( 'Suggested Team Goal is required', 'peerraiser' ),
+					        'data-rule-currency' => '["",false]',
+					        'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+					        'data-tooltip' => __('The amount to display as a fundraising target to team captains.', 'peerraiser' ),
+				        ),
+				        'before_field' => $this->get_currency_symbol(),
+				        'default_cb' => array( $this, 'get_field_value'),
+			        ),
+			        'default_team_title' => array(
+				        'name' => __( 'Default Team Title', 'peerraiser' ),
+				        'id' => '_peerraiser_default_team_title',
+				        'type' => 'text',
+				        'attributes' => array(
+					        'data-rule-required' => "true",
+					        'data-msg-required' => __( 'Default team title is required', 'peerraiser' ),
+					        'data-tooltip' => __('The team title if participant leaves it blank', 'peerraiser' ),
+				        ),
+				        'default_cb' => array( $this, 'get_field_value'),
+			        ),
+			        'default_team_content' => array(
+				        'name' => __( 'Default Team Content', 'peerraiser' ),
+				        'id' => '_peerraiser_default_team_content',
+				        'type' => 'wysiwyg',
+				        'default_cb' => array( $this, 'get_field_value'),
+			        )
+		        ),
+	        ),
             array(
                 'title'    => __('Donation Form', 'peerraiser'),
                 'id'       => 'peerraiser-campaign-donation-form',
@@ -385,6 +410,12 @@ class Campaigns_Admin extends Admin {
 				break;
 			case '_peerraiser_default_fundraiser_content':
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( "<h2>Thanks for visiting my fundraising page!</h2><p>Please help me support %s by making a donation through this page. The process is easy and secure. Don't forget to share this page on Facebook and Twitter!</p><p>Thank you for supporting this important cause!</p>", 'peerraiser'), get_bloginfo( 'name') );
+				break;
+			case '_peerraiser_default_team_title':
+				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( 'Help Us Support %s!', 'peerraiser'), get_bloginfo( 'name') );
+				break;
+			case '_peerraiser_default_team_content':
+				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : sprintf( __( "<h2>Welcome to our team page!</h2><p>Please help us support %s by making a donation to our team. The process is easy and secure. Don't forget to share this page on Facebook and Twitter!</p><p>Thank you for supporting this important cause!</p>", 'peerraiser'), get_bloginfo( 'name') );
 				break;
 			default:
 				$field_value = isset( $campaign_model->$short_field ) ? $campaign_model->$short_field : '';
