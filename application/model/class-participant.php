@@ -118,7 +118,7 @@ class Participant {
 	 * Setup donor class
 	 *
 	 * @since 1.0.0
-	 * @param  int|boolean $id Donor ID
+	 * @param  int|boolean $id User ID
 	 */
 	public function __construct( $id = false ) {
 		if ( empty( $id ) ) {
@@ -430,6 +430,11 @@ class Participant {
 		$this->pending['notes'] = $this->notes;
 
 		return $this->notes;
+	}
+
+	public function get_current_participant() {
+		$current_user = wp_get_current_user();
+		return new self( $current_user->ID );
 	}
 
 	/**
