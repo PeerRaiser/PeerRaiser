@@ -192,6 +192,13 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
 	    if ( in_array( $registration_choice, array( 'individual', 'start-team' ) ) ) {
 	    	$cmb    = cmb2_get_metabox( 'peerraiser-'.$registration_choice, $registration_choice );
+
+	    	$cmb->add_field( array(
+	    		'id' => '_peerraiser_fundraiser_campaign',
+			    'type' => 'hidden',
+			    'default' => $campaign->ID,
+		    ) );
+
 	    	$fields = cmb2_get_metabox_form( $cmb, $registration_choice, array( 'save_button' => __( 'Submit', 'peerraiser' ) ) );
 	    	$this->assign( 'fields', $fields );
 	    }
