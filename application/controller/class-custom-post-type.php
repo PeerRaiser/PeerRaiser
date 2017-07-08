@@ -55,9 +55,9 @@ class Custom_Post_Type extends Base {
         );
 
         $fundraisers = new \PeerRaiser\Model\Custom_Post_Type(
-                apply_filters( 'peerraiser_fundraiser_cpt_name', $post_type_name ),
-                apply_filters( 'peerraiser_fundraiser_cpt_args', $args )
-            );
+            apply_filters( 'peerraiser_fundraiser_cpt_name', $post_type_name ),
+            apply_filters( 'peerraiser_fundraiser_cpt_args', $args )
+        );
 
         $columns = array(
             'cb'            => '<input type="checkbox" />',
