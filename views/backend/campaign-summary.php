@@ -78,7 +78,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</div>
 
                     <div id="normal-sortables" class="meta-box-sortables ui-sortable">
-                        <div id="campaign-options" class="postbox cmb2-postbox">
+                        <div id="fundraising-options" class="postbox cmb2-postbox">
                             <h2 class="hndle ui-sortable-handle"><span><?php _e( 'Fundraising Page Options', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
 								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign-fundraiser-options', 0, array( 'form_format' => '', ) ); ?>
@@ -86,8 +86,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </div>
                     </div>
 
+                    <div id="normal-sortables" class="meta-box-sortables ui-sortable">
+                        <div id="team-options" class="postbox cmb2-postbox">
+                            <h2 class="hndle ui-sortable-handle"><span><?php _e( 'Team Options', 'peerraiser' ); ?></span></h2>
+                            <div class="inside">
+								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign-team-options', 0, array( 'form_format' => '', ) ); ?>
+                            </div>
+                        </div>
+                    </div>
+
 					<div id="normal-sortables" class="meta-box-sortables ui-sortable">
-						<div id="campaign-options" class="postbox cmb2-postbox">
+						<div id="donation-form-options" class="postbox cmb2-postbox">
 							<h2 class="hndle ui-sortable-handle"><span><?php _e( 'Donation Form', 'peerraiser'); ?></span></h2>
 							<div class="inside">
 								<?php echo cmb2_get_metabox_form( 'peerraiser-campaign-donation-form', 0, array( 'form_format' => '', ) ); ?>
