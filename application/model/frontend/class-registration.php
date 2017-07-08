@@ -3,6 +3,7 @@
 namespace PeerRaiser\Model\Frontend;
 
 use PeerRaiser\Model\Admin\Admin;
+use PeerRaiser\Model\Campaign;
 
 class Registration extends Admin {
 
@@ -13,12 +14,13 @@ class Registration extends Admin {
 			'individual' => array(
 				'fundraising_goal' => array(
 					'name' => __( 'Your Fundraising Goal', 'peerraiser' ),
-					'id'   => '_peerraiser_fundraising_goal',
+					'id'   => '_peerraiser_fundraiser_goal',
 					'type' => 'text',
 					'attributes'  => array(
 						'data-rule-required' => 'true',
 						'data-msg-required' => __( 'A fundraising goal is required', 'peerraiser' ),
 					),
+					'default_cb' => array( $this, 'get_field_value'),
 				),
 				'headline' => array(
 					'name' => __( "Your Page's Headline", 'peerraiser' ),
@@ -28,14 +30,15 @@ class Registration extends Admin {
 						'data-rule-required' => 'true',
 						'data-msg-required' => __( 'A page headline is required', 'peerraiser' ),
 					),
+					'default_cb' => array( $this, 'get_field_value'),
 				),
 				'image' => array(
 					'name' => __( 'Your photo', 'peerraiser' ),
 					'id' => '_peerraiser_photo',
 					'type' => 'text',
 					'attributes' => array(
-						'type' => 'file'
-					)
+						'type' => 'file',
+					),
 				),
 				'body' => array(
 					'name' => __( 'Your Story', 'peerraiser' ),
@@ -53,6 +56,7 @@ class Registration extends Admin {
 						'data-rule-required' => 'true',
 						'data-msg-required' => __( 'The page cannot be blank', 'peerraiser' ),
 					),
+					'default_cb' => array( $this, 'get_field_value'),
 				),
 				'peerraiser_action' => array(
 					'id' => 'peerraiser_action',
@@ -127,6 +131,23 @@ class Registration extends Admin {
 		}
 
 		return $required_fields;
+	}
+
+	public function get_field_value( $field ) {
+		$campaign_slug = get_query_var( 'peerraiser_campaign' );
+		$campaign_model = new Campaign();
+		$campaign = $campaign_model->get_campaigns( array( 'slug' => $campaign_slug ) );
+
+		switch ( $field['id'] ) {
+			case '_peerraiser_fundraiser_goal' :
+				return $campaign[0]->suggested_individual_goal;
+			case '_peerraiser_headline' :
+				return $campaign[0]->default_fundraiser_title;
+			case '_peerraiser_body' :
+				return $campaign[0]->default_fundraiser_content;
+			default:
+				return '';
+		}
 	}
 
 	private function add_currency_symbol_to_fields() {
