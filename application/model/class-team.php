@@ -61,7 +61,7 @@ class Team {
 	 *
 	 * @var string
 	 */
-	protected $team_description = '';
+	protected $team_content = '';
 
 	/**
 	 * Thumbnail image
@@ -219,7 +219,7 @@ class Team {
 		$this->campaign_id = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
 
 		// Team content
-		$this->team_description = get_term_meta( $this->ID, '_peerraiser_team_description', true );
+		$this->team_content     = get_term_meta( $this->ID, '_peerraiser_team_contentf', true );
 		$this->thumbnail_image  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
 
 		// Money
@@ -249,12 +249,11 @@ class Team {
 			$this->team_slug = $this->generate_team_slug();
 		}
 
-		$team = wp_insert_term(
-			$this->team_name,
-			'peerraiser_team',
-			$args = array(
-				'slug' => $this->team_slug,
-			) );
+		$team = wp_insert_term( $this->team_name, 'peerraiser_team', array( 'slug' => $this->team_slug ) );
+
+		if ( is_wp_error( $team ) ) {
+			error_log( $team->get_error_message() );
+		}
 
 		$this->ID  = $team['term_id'];
 		$this->_ID = $team['term_id'];
@@ -592,11 +591,39 @@ class Team {
 	/**
 	 * Generate a safe team slug
 	 *
-	 * @since     1.0.0
-	 * @return    string    team slug
+	 * @param bool $slug
+	 *
+	 * @return bool|mixed|string
 	 */
-	private function generate_team_slug() {
-		$team_title = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $this->team_name ) ) );
-		return sanitize_title_with_dashes( $team_title, null, 'save' );
+	private function generate_team_slug( $slug = false ) {
+		if ( ! $slug ) {
+			$slug = $this->team_name;
+		}
+
+		// Remove special characters
+		$slug = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $slug ) ) );
+
+		// Replace whitespaces with dashes.
+		$slug = sanitize_title_with_dashes( $slug, null, 'save' );
+
+		if ( get_term_by( 'slug', $slug, 'peerraiser_team' ) ) {
+			$slug = $this->increment_slug( $slug );
+			$slug = $this->generate_team_slug( $slug );
+			return $slug;
+		} else {
+			return $slug;
+		}
+	}
+
+	function increment_slug( $slug ) {
+		preg_match("/(.*?)-(\d+)$/", $slug, $matches );
+
+		if ( isset( $matches[2] ) ) {
+			$new_slug = $matches[1] . '-' . ( intval($matches[2]) + 1 );
+		} else {
+			$new_slug = $slug . '-2';
+		}
+
+		return $new_slug;
 	}
 }
