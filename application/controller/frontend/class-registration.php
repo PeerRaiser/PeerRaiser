@@ -7,6 +7,7 @@ use PeerRaiser\Helper\File;
 use PeerRaiser\Model\Campaign;
 use PeerRaiser\Model\Fundraiser;
 use PeerRaiser\Model\Participant;
+use PeerRaiser\Model\Team;
 
 class Registration extends Base {
 
@@ -14,6 +15,7 @@ class Registration extends Base {
 		add_action( 'template_redirect',              array( $this, 'registration_redirect' ) );
 		add_action( 'cmb2_init',                      array( $this, 'register_fields') );
 		add_action( 'peerraiser_register_individual', array( $this, 'register_individual' ) );
+		add_action( 'peerraiser_register_team',       array( $this, 'register_team' ) );
 	}
 
 	public function registration_redirect() {
@@ -71,7 +73,7 @@ class Registration extends Base {
 
 		// Check security nonce
 		if ( ! isset( $_POST[ $cmb->nonce() ] ) || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() ) ) {
-			return $cmb->prop( 'submission_error', new WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
+			return $cmb->prop( 'submission_error', new \WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
 		}
 
 		$required_fields = $registration_model->get_required_field_ids( 'individual' );
@@ -96,12 +98,10 @@ class Registration extends Base {
 		 */
 		$sanitized_values = $cmb->get_sanitized_values( $_POST );
 
-		error_log( print_r( $sanitized_values,1 ) );
-
 		$fundraiser->fundraiser_name    = $sanitized_values['_peerraiser_headline'];
 		$fundraiser->fundraiser_slug    = sanitize_title( $participant->full_name );
 		$fundraiser->fundraiser_content = $sanitized_values['_peerraiser_body'];
-		$fundraiser->campaign_id        = $_POST['_peerraiser_fundraiser_campaign'];
+		$fundraiser->campaign_id        = absint( $_POST['_peerraiser_fundraiser_campaign'] );
 		$fundraiser->participant        = $participant->ID;
 
 		// Unset data that shouldn't be saved as post meta
@@ -125,6 +125,60 @@ class Registration extends Base {
 
 		// Redirect to the new fundraiser
 		wp_safe_redirect( get_permalink( $fundraiser->ID ) );
+		exit;
+	}
+
+	public function register_team() {
+		$team               = new Team();
+		$registration_model = new \PeerRaiser\Model\Frontend\Registration();
+		$participant_model  = new Participant();
+		$participant        = $participant_model->get_current_participant();
+
+		// If no form submission, bail
+		if ( empty( $_POST ) || ! isset( $_POST['submit-cmb'], $_POST['object_id'] ) ) {
+			return false;
+		}
+
+		// Get CMB2 metabox object
+		$cmb = cmb2_get_metabox( 'peerraiser-start-team', 'fundraiser' );
+
+		// Check security nonce
+		if ( ! isset( $_POST[ $cmb->nonce() ] ) || ! wp_verify_nonce( $_POST[ $cmb->nonce() ], $cmb->nonce() ) ) {
+			return $cmb->prop( 'submission_error', new \WP_Error( 'security_fail', __( 'Security check failed.' ) ) );
+		}
+
+		$required_fields = $registration_model->get_required_field_ids( 'start-team' );
+		$errors = array();
+
+		foreach ( $required_fields as $field ) {
+			if ( empty( $_POST[$field] ) ) {
+				$errors[] = $field;
+			}
+		}
+
+		if ( ! empty( $errors ) ) {
+			return $cmb->prop( 'submission_error', new \WP_Error( 'post_data_missing', __( 'Some required fields are empty.' ) ) );
+		}
+
+		/**
+		 * Fetch sanitized values
+		 */
+		$sanitized_values = $cmb->get_sanitized_values( $_POST );
+
+		$team->team_name    = $sanitized_values['_peerraiser_headline_team'];
+		$team->team_content = $sanitized_values['_peerraiser_body_team'];
+		$team->campaign_id  = absint( $_POST['_peerraiser_fundraiser_campaign'] );
+		$team->team_goal    = $sanitized_values['_peerraiser_team_goal'];
+		$team->team_leader  = $participant->ID;
+
+		$image_id = File::attach_image_to_post();
+
+		$team->thumbnail_image = wp_get_attachment_url( $image_id );
+
+		$team->save();
+
+		// Redirect to the new fundraiser
+		wp_safe_redirect( $team->get_permalink() );
 		exit;
 	}
 }
