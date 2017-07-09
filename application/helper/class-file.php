@@ -15,7 +15,7 @@ class File {
 	 *
 	 * @return int The ID of the attachment
 	 */
-	static function attach_image_to_post( $post_id ) {
+	static function attach_image_to_post( $post_id = 0 ) {
 		// Make sure the right files were submitted
 		if (
 			empty( $_FILES )
