@@ -191,7 +191,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    }
 
 	    if ( in_array( $registration_choice, array( 'individual', 'start-team' ) ) ) {
-	    	$cmb    = cmb2_get_metabox( 'peerraiser-'.$registration_choice, $registration_choice );
+	    	$cmb = cmb2_get_metabox( 'peerraiser-'.$registration_choice, $registration_choice );
 
 	    	$cmb->add_field( array(
 	    		'id' => '_peerraiser_fundraiser_campaign',
@@ -204,7 +204,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    }
 
 	    // Get any submission errors
-	    if ( ( $error = $cmb->prop( 'submission_error' ) ) && is_wp_error( $error ) ) {
+	    if ( isset( $cmb) && ( $error = $cmb->prop( 'submission_error' ) ) && is_wp_error( $error ) ) {
 		    $this->assign( 'errors', $error->get_error_message() );
 	    }
 
