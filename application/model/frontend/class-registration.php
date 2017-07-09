@@ -4,6 +4,7 @@ namespace PeerRaiser\Model\Frontend;
 
 use PeerRaiser\Model\Admin\Admin;
 use PeerRaiser\Model\Campaign;
+use PeerRaiser\Model\Currency;
 
 class Registration extends Admin {
 
@@ -149,7 +150,7 @@ class Registration extends Admin {
 		$required_fields = array();
 
 		if ( ! isset( $this->fields[$group] ) ) {
-			return new WP_Error( 'unknown_field_group', __( 'The group ID passed is not a valid type.' ) );
+			return new \WP_Error( 'unknown_field_group', __( 'The group ID passed is not a valid type.' ) );
 		}
 
 		foreach ( $this->fields[$group] as $field ) {
@@ -185,7 +186,7 @@ class Registration extends Admin {
 	}
 
 	private function add_currency_symbol_to_fields() {
-		$currency_model  = new \PeerRaiser\Model\Currency();
+		$currency_model  = new Currency();
 		$plugin_options  = get_option( 'peerraiser_options', array() );
 
 		$currency          = $plugin_options['currency'];
