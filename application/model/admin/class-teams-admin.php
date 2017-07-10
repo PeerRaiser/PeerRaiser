@@ -14,44 +14,56 @@ class Teams_Admin extends Admin {
                 'context'  => 'normal',
                 'priority' => 'default',
                 'fields'   => array(
-                    'team_leader' => array(
-                        'name'       => __('Team Leader', 'peerraiser'),
-                        'id'         => '_peerraiser_team_leader',
-                        'type'       => 'select',
-                        'options_cb' => array( $this, 'get_participants_for_select_field'),
-                        'attributes' => array(
-                            'data-rule-required' => 'true',
-                            'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
-                        )
-                    ),
-                    'campaign_id' => array(
-                        'name'       => __('Campaign', 'peerraiser'),
-                        'id'         => '_peerraiser_campaign_id',
-                        'type'       => 'select',
-                        'default'    => 'custom',
-                        'options_cb' => array( $this, 'get_selected_term'),
-                        'attributes' => array(
-                            'data-rule-required' => 'true',
-                            'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
-                        )
-                    ),
-                    'team_goal' => array(
-                        'name' => __('Goal Amount', 'peerraiser'),
-                        'id'   => '_peerraiser_team_goal',
-                        'type' => 'text',
-                        'attributes' => array(
-                            'pattern' => '^\d*(\.\d{2}$)?',
-                            'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
-                        ),
-                        'before_field' => $this->get_currency_symbol(),
-                        'attributes' => array(
-                            'data-rule-currency' => '["",false]',
-                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
-                            'data-rule-required' => 'true',
-                            'data-msg-required' => __( 'A goal amount is required', 'peerraiser' ),
-                        ),
-                        'default_cb' => array( $this, 'get_field_value'),
-                    ),
+	                'team_leader' => array(
+		                'name'       => __('Team Leader', 'peerraiser'),
+		                'id'         => '_peerraiser_team_leader',
+		                'type'       => 'select',
+		                'options_cb' => array( $this, 'get_participants_for_select_field'),
+		                'attributes' => array(
+			                'data-rule-required' => 'true',
+			                'data-msg-required' => __( 'A team leader is required', 'peerraiser' ),
+		                )
+	                ),
+	                'campaign_id' => array(
+		                'name'       => __('Campaign', 'peerraiser'),
+		                'id'         => '_peerraiser_campaign_id',
+		                'type'       => 'select',
+		                'default'    => 'custom',
+		                'options_cb' => array( $this, 'get_selected_term'),
+		                'attributes' => array(
+			                'data-rule-required' => 'true',
+			                'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
+		                )
+	                ),
+	                'team_goal' => array(
+		                'name' => __('Goal Amount', 'peerraiser'),
+		                'id'   => '_peerraiser_team_goal',
+		                'type' => 'text',
+		                'attributes' => array(
+			                'pattern' => '^\d*(\.\d{2}$)?',
+			                'title'   => __('No commas. Cents (.##) are optional', 'peerraiser')
+		                ),
+		                'before_field' => $this->get_currency_symbol(),
+		                'attributes' => array(
+			                'data-rule-currency' => '["",false]',
+			                'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+			                'data-rule-required' => 'true',
+			                'data-msg-required' => __( 'A goal amount is required', 'peerraiser' ),
+		                ),
+		                'default_cb' => array( $this, 'get_field_value'),
+	                ),
+                	'team_title' => array(
+                		'name' => __('Headline'),
+		                'id'   => '_peerraiser_team_headline',
+		                'type' => 'text',
+		                'default_cb' => array( $this, 'get_field_value'),
+	                ),
+	                'team_content' => array(
+		                'name' => __('Content'),
+		                'id'   => '_peerraiser_team_content',
+		                'type' => 'wysiwyg',
+		                'default_cb' => array( $this, 'get_field_value'),
+	                ),
                     'thumbnail_image' => array(
                         'name'    => __('Team Thumbnail Image', 'peerraiser'),
                         'id'      => '_peerraiser_thumbnail_image',
