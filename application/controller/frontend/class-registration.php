@@ -129,8 +129,10 @@ class Registration extends Base {
 	}
 
 	public function register_team() {
+		$plugin_options     = get_option( 'peerraiser_options', array() );
 		$team               = new Team();
 		$registration_model = new \PeerRaiser\Model\Frontend\Registration();
+		$campaign           = new Campaign( $_POST['_peerraiser_fundraiser_campaign'] );
 		$participant_model  = new Participant();
 		$participant        = $participant_model->get_current_participant();
 
@@ -165,11 +167,12 @@ class Registration extends Base {
 		 */
 		$sanitized_values = $cmb->get_sanitized_values( $_POST );
 
-		$team->team_name    = $sanitized_values['_peerraiser_headline_team'];
-		$team->team_content = $sanitized_values['_peerraiser_body_team'];
-		$team->campaign_id  = absint( $_POST['_peerraiser_fundraiser_campaign'] );
-		$team->team_goal    = $sanitized_values['_peerraiser_team_goal'];
-		$team->team_leader  = $participant->ID;
+		$team->team_name     = $sanitized_values['_peerraiser_team_name'];
+		$team->team_headline = $sanitized_values['_peerraiser_headline_team'];
+		$team->team_content  = $sanitized_values['_peerraiser_body_team'];
+		$team->campaign_id   = absint( $_POST['_peerraiser_fundraiser_campaign'] );
+		$team->team_goal     = $sanitized_values['_peerraiser_team_goal'];
+		$team->team_leader   = $participant->ID;
 
 		$image_id = File::attach_image_to_post();
 
@@ -177,8 +180,11 @@ class Registration extends Base {
 
 		$team->save();
 
-		// Redirect to the new fundraiser
-		wp_safe_redirect( $team->get_permalink() );
+		// TODO: If participant already has a fundraising page for this campaign, add it to the new team and redirect to team page
+
+		// Redirect to register for the new team
+		$url = trailingslashit( get_permalink( $plugin_options[ 'registration_page' ] ) ) . $campaign->campaign_slug . '/individual';
+		wp_safe_redirect( add_query_arg( 'team', $team->team_slug, $url) );
 		exit;
 	}
 }
