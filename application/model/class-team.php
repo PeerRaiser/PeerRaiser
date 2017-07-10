@@ -57,6 +57,13 @@ class Team {
 	protected $team_leader = 0;
 
 	/**
+	 * Team Headline
+	 *
+	 * @var string
+	 */
+	protected $team_headline = '';
+
+	/**
 	 * Team Description
 	 *
 	 * @var string
@@ -219,7 +226,8 @@ class Team {
 		$this->campaign_id = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
 
 		// Team content
-		$this->team_content     = get_term_meta( $this->ID, '_peerraiser_team_contentf', true );
+		$this->team_headline    = get_term_meta( $this->ID, '_peerraiser_team_headline', true );
+		$this->team_content     = get_term_meta( $this->ID, '_peerraiser_team_content', true );
 		$this->thumbnail_image  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
 
 		// Money
