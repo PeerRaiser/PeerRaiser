@@ -321,7 +321,6 @@ class Fundraiser {
      * @param $campaign_id int The campaign to add the fundraiser to
      */
 	public function add_to_campaign( $campaign_id ) {
-		error_log( $campaign_id );
 		wp_set_object_terms( $this->ID, (int) $campaign_id, 'peerraiser_campaign' );
 	}
 
