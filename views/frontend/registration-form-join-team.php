@@ -9,7 +9,9 @@
                     <img src="<?php echo $team->get_thumbnail_url(); ?>" class="peerraiser-team-thumbnail">
                     <div class="peerraiser-team-info">
                         <h3><?php echo $team->team_name; ?></h3>
-                        <p class="peerraiser-team-leader"><?php $team->get_team_leader_name; ?></p>
+                        <?php if ( ! empty( $team->team_leader ) ) : ?>
+                            <p class="peerraiser-team-leader"><?php echo $team->team_leader_name; ?></p>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
