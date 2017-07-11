@@ -114,11 +114,25 @@ class Campaign {
 	protected $banner_image = '';
 
 	/**
+	 * Banner image ID
+	 *
+	 * @var int
+	 */
+	protected $banner_image_id = 0;
+
+	/**
 	 * Thumbnail image
 	 *
 	 * @var string
 	 */
 	protected $thumbnail_image = '';
+
+	/**
+	 * Thumbnail image ID
+	 *
+	 * @var int
+	 */
+	protected $thumbnail_image_id = 0;
 
 	/**
 	 * Campaign goal
@@ -356,7 +370,9 @@ class Campaign {
 		// Campaign content
 		$this->campaign_description = get_term_meta( $this->ID, '_peerraiser_campaign_description', true );
 		$this->banner_image         = get_term_meta( $this->ID, '_peerraiser_banner_image', true );
+		$this->banner_image_id      = get_term_meta( $this->ID, '_peerraiser_banner_image_id', true );
 		$this->thumbnail_image      = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+		$this->thumbnail_image_id   = get_term_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
 
 		// Money
 		$this->campaign_goal			 = get_term_meta( $this->ID, '_peerraiser_campaign_goal', true );
