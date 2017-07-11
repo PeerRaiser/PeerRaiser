@@ -548,9 +548,15 @@ class Settings extends Admin {
 
     public function get_field_names() {
         $field_names = array();
+
         foreach ($this->fields as $field_group) {
             $field_names = array_merge($field_names, array_keys($field_group['fields']) );
         }
+
+        $field_names[] = 'team_thumbnail_image_id';
+        $field_names[] = 'campaign_thumbnail_image_id';
+        $field_names[] = 'user_thumbnail_image_id';
+
         return apply_filters( 'peerraiser_setting_fields', $field_names );
     }
 
