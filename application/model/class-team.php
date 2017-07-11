@@ -399,12 +399,39 @@ class Team {
 			}
 		}
 
+		if ( isset( $args['campaign'] ) ) {
+			$fundraiser_model = new Fundraiser();
+			$fundraisers = $fundraiser_model->get_fundraisers( );
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		$term_query = new WP_Term_Query( $args );
 
 		$results = array();
 
+		if ( ! empty( $term_query->terms ) ) {
+			foreach ( $term_query->terms as $term ) {
+				$results[] = new self( $term->term_id );
+			}
+		}
+
+		return $results;
+	}
+
+	public function get_teams_by_campaign( $campaign_id, $count = 20 ) {
+		$args = array(
+			'offset' => 0,
+			'hide_empty' => false,
+			'taxonomy' => array( 'peerraiser_team'),
+			'meta_key'   => '_peerraiser_campaign_id',
+			'meta_value' => $campaign_id,
+			'count' => $count,
+		);
+
+		$term_query = new WP_Term_Query( $args );
+
+		$results = array();
 		if ( ! empty( $term_query->terms ) ) {
 			foreach ( $term_query->terms as $term ) {
 				$results[] = new self( $term->term_id );
@@ -442,7 +469,7 @@ class Team {
 			foreach ( $term_query->terms as $term ) {
 				$team = new self( $term->term_id );
 				if ( $team->donation_value > 0 ){
-					$results[] = new self( $term->term_id );
+					$results[] = $team;
 				}
 			}
 		}
@@ -594,6 +621,26 @@ class Team {
 		}
 
 		return $post_name_abridged;
+	}
+
+	public function get_team_leader_name() {
+    	if ( empty( $this->team_leader ) ) {
+    		return false;
+	    }
+
+		$user_info = get_userdata( $this->team_leader );
+
+    	return trim( $user_info->first_name . ' ' . $user_info->last_name );
+	}
+
+	public function get_thumbnail_url() {
+    	if ( ! empty( $this->thumbnail_image ) ) {
+    		return esc_url( $this->thumbnail_image );
+	    }
+
+		$plugin_options = get_option( 'peerraiser_options', array() );
+
+    	return esc_url( $plugin_options['team_thumbnail_image'] );
 	}
 
 	/**
