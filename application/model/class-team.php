@@ -78,6 +78,13 @@ class Team {
 	protected $thumbnail_image = '';
 
 	/**
+	 * Thumbnail image
+	 *
+	 * @var string
+	 */
+	protected $thumbnail_image_id = 0;
+
+	/**
 	 * Team goal
 	 *
 	 * @var float
@@ -226,9 +233,10 @@ class Team {
 		$this->campaign_id = absint( get_term_meta( $this->ID, '_peerraiser_campaign_id', true ) );
 
 		// Team content
-		$this->team_headline    = get_term_meta( $this->ID, '_peerraiser_team_headline', true );
-		$this->team_content     = get_term_meta( $this->ID, '_peerraiser_team_content', true );
-		$this->thumbnail_image  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+		$this->team_headline       = get_term_meta( $this->ID, '_peerraiser_team_headline', true );
+		$this->team_content        = get_term_meta( $this->ID, '_peerraiser_team_content', true );
+		$this->thumbnail_image     = get_term_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+		$this->thumbnail_image_id  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
 
 		// Money
 		$this->team_goal      = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
