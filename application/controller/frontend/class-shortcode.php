@@ -4,6 +4,7 @@ namespace PeerRaiser\Controller\Frontend;
 
 use PeerRaiser\Model\Campaign;
 use PeerRaiser\Model\Frontend\Registration;
+use PeerRaiser\Model\Team;
 
 class Shortcode extends \PeerRaiser\Controller\Base {
 
@@ -160,6 +161,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	    $campaign_slug       = get_query_var( 'peerraiser_campaign', false );
 	    $registration_model  = new Registration();
 	    $campaign_model      = new Campaign();
+	    $team_model          = new Team();
 
 	    if ( ! $campaign_slug ) {
 	    	$this->assign( 'campaigns', $campaign_model->get_campaigns( array( 'campaign_status' => 'active' ) ) );
@@ -201,6 +203,8 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 
 	    	$fields = cmb2_get_metabox_form( $cmb, $registration_choice, array( 'save_button' => __( 'Submit', 'peerraiser' ) ) );
 	    	$this->assign( 'fields', $fields );
+	    } else {
+	    	$this->assign( 'teams', $team_model->get_teams_by_campaign( $campaign->ID, 1000 ) );
 	    }
 
 	    // Get any submission errors
