@@ -73,7 +73,7 @@ class Teams_Admin extends Admin {
                             'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
                         ),
                         'default_cb' => array( $this, 'get_field_value'),
-                    ),
+                    )
                 ),
             ),
         );
@@ -104,6 +104,14 @@ class Teams_Admin extends Admin {
             return false;
         }
     }
+
+	public function get_field_ids() {
+    	$ids = parent::get_field_ids();
+
+    	$ids['thumbnail_image_id'] = '_peerraiser_thumbnail_image_id';
+
+    	return $ids;
+	}
 
     /**
      * Add fields
