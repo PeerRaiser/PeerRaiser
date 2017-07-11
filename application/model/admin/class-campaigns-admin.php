@@ -297,6 +297,14 @@ class Campaigns_Admin extends Admin {
         return ( is_null($title) ) ? $this->fields : $this->fields[$title];
     }
 
+	public function get_field_ids() {
+		$ids = parent::get_field_ids();
+
+		$ids['banner_image_id']    = '_peerraiser_banner_image_id';
+		$ids['thumbnail_image_id'] = '_peerraiser_thumbnail_image_id';
+
+		return $ids;
+	}
 
     /**
      * Get a specific field by id
