@@ -10,8 +10,7 @@ class Settings extends Base {
 
     public function register_actions() {
         add_action( 'wp_ajax_peerraiser_update_settings', array( $this, 'ajax_update_settings' ) );
-        add_action( 'wordpress_init',                     array( $this, 'add_thumbnail_sizes' ) );
-        add_action( 'wordpress_init',                     array( $this, 'maybe_flush_rewrite_rules' ) );
+        add_action( 'init',                               array( $this, 'maybe_flush_rewrite_rules' ) );
     }
 
     /**
@@ -182,9 +181,4 @@ class Settings extends Base {
 
         return apply_filters( 'peerraiser_settings_content', $default_content );
     }
-
-    public function add_thumbnail_sizes() {
-        add_image_size( 'peerraiser_campaign_thumbnail', 150, 150, true );
-    }
-
 }
