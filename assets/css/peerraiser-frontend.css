@@ -1179,3 +1179,29 @@ form#dashboard_settings {
     margin: 0;
     padding: 0;
 }
+.peerraiser-team-search-results {
+    margin: 1rem 0;
+}
+.peerraiser-team-search-results .peerraiser-team {
+    padding-left: 85px;
+    text-align: left;
+    display: block;
+    border: none;
+    position: relative;
+    width: 100%;
+    min-height: 85px;
+    margin-bottom: 20px;
+}
+.peerraiser-team-search-results .peerraiser-team img {
+    background-color: #eee;
+    border-radius: 72px;
+    border: 1px solid #eee;
+    width: 75px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.peerraiser-team-search-results .peerraiser-team h3 {
+    margin: 0;
+    padding: 0;
+}
