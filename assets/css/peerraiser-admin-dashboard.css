@@ -219,6 +219,10 @@
     color: #666;
 }
 /* Activity Feed */
+.peerraiser-wrap.dashboard-wrap .activity-feed {
+    max-height: 1000px;
+    overflow: auto;
+}
 .peerraiser-wrap.dashboard-wrap .activity-feed li {
     margin-bottom: 1em;
     padding-left: 25px;
