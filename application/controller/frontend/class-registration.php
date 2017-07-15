@@ -98,11 +98,20 @@ class Registration extends Base {
 		 */
 		$sanitized_values = $cmb->get_sanitized_values( $_POST );
 
-		$fundraiser->fundraiser_name    = $sanitized_values['_peerraiser_headline'];
+		$fundraiser->fundraiser_name    = $sanitized_values['_peerraiser_headline_individual'];
 		$fundraiser->fundraiser_slug    = sanitize_title( $participant->full_name );
-		$fundraiser->fundraiser_content = $sanitized_values['_peerraiser_body'];
+		$fundraiser->fundraiser_content = $sanitized_values['_peerraiser_body_individual'];
 		$fundraiser->campaign_id        = absint( $_POST['_peerraiser_fundraiser_campaign'] );
 		$fundraiser->participant        = $participant->ID;
+
+		if ( ! empty( $_POST['_peerraiser_fundraiser_team'] ) ) {
+			$team_model = new Team();
+			$team = $team_model->get_team_by_slug( $_POST['_peerraiser_fundraiser_team'] );
+
+			if ( ! empty( $team ) ) {
+				$fundraiser->team_id = $team->ID;
+			}
+		}
 
 		// Unset data that shouldn't be saved as post meta
 		unset( $sanitized_values['_peerraiser_headline'] );
