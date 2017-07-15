@@ -427,6 +427,16 @@ class Team {
 		return $results;
 	}
 
+	public function get_team_by_slug( $value ) {
+		$term = get_term_by( 'slug', $value, 'peerraiser_team' );
+
+		if ( empty( $term ) ) {
+			return array();
+		}
+
+		return new self( $term->term_id );
+	}
+
 	public function get_teams_by_campaign( $campaign_id, $count = 20 ) {
 		$args = array(
 			'offset' => 0,
