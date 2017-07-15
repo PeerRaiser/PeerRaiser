@@ -201,6 +201,12 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 			    'default' => $campaign->ID,
 		    ) );
 
+	    	$cmb->add_field( array(
+	    		'id' => '_peerraiser_fundraiser_team',
+			    'type' => 'hidden',
+			    'default' => isset( $_GET['team'] ) ? esc_attr( $_GET['team'] ) : '',
+		    ) );
+
 	    	$fields = cmb2_get_metabox_form( $cmb, $registration_choice, array( 'save_button' => __( 'Submit', 'peerraiser' ) ) );
 	    	$this->assign( 'fields', $fields );
 	    } else {
