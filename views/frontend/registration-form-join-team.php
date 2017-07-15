@@ -5,7 +5,7 @@
     <div class="peerraiser-team-search-results">
         <?php if ( ! empty( $teams ) ) : ?>
             <?php foreach( $teams as $team ) : ?>
-                <a href="#" class="peerraiser-team">
+                <a href="<?php echo '../individual/?team=' . $team->team_slug; ?>" class="peerraiser-team">
                     <img src="<?php echo $team->get_thumbnail_url(); ?>" class="peerraiser-team-thumbnail">
                         <h3><?php echo $team->team_name; ?></h3>
                         <?php if ( ! empty( $team->team_leader ) ) : ?>
