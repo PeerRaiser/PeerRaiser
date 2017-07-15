@@ -68,14 +68,17 @@ class Activity_Feed {
     }
 
     public function add_fundraiser_to_feed( $post ) {
-        $participant_id        = $_POST[ '_peerraiser_fundraiser_participant' ];
+        $participant_id        = isset( $_POST[ '_peerraiser_fundraiser_participant' ] ) ? (int) $_POST[ '_peerraiser_fundraiser_participant' ] : get_current_user_id();
         $participant_details   = get_user_by( 'id', $participant_id );
-        $participant_full_name = $participant_details->first_name . ' ' . $participant_details->last_name;
+        $participant_full_name = trim( $participant_details->first_name . ' ' . $participant_details->last_name );
         $user_info             = get_userdata( $participant_id );
-        $participant_name      = ( trim( $participant_full_name ) == false ) ? $user_info->user_login : $participant_full_name;
+        $participant_name      = empty( $participant_full_name ) ? $user_info->user_login : $participant_full_name;
         $campaign              = new \PeerRaiser\Model\Campaign( $_POST[ '_peerraiser_fundraiser_campaign' ] );
 
         $message = sprintf( __( '<a href="user-edit.php?user_id=%1$d">%2$s</a> created fundraiser <a href="post.php?action=edit&post=%3$d">%4$s</a> for the <a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%5$d">%6$s</a> campaign.', 'peerraiser' ), $participant_id, $participant_name, $post->ID, get_the_title( $post->ID ), $campaign->ID, $campaign->campaign_name );
+
+        // Remove activity if fundraiser is already in the feed
+	    $this->remove_activity( $post->ID );
 
         $this->add_activity(
             array(
