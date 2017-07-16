@@ -126,6 +126,15 @@ function peerraiser_get_current_campaign() {
 	return new \PeerRaiser\Model\Campaign( $queried_object->term_id );
 }
 
+function peerraiser_get_current_fundraiser() {
+	// Make sure the current queried object is a peerraiser campaign
+	if ( ! is_single() || get_post_type() !== 'fundraiser' ) {
+		return false;
+	}
+
+	return new \PeerRaiser\Model\Fundraiser( get_the_ID() );
+}
+
 function peerraiser_get_currency_symbol() {
 	$plugin_options = get_option( 'peerraiser_options', array() );
 
