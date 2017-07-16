@@ -1,6 +1,5 @@
 <?php echo $args['before_widget']; ?>
 
-<?php $top_fundraisers = peerraiser_get_top_fundraisers( $instance['list_size'], array( 'campaign_id' => $campaign->ID ) ); ?>
 <?php if ( ! empty( $instance['title'] ) ) : ?>
     <?php echo $args['before_title']; ?>
         <?php echo $instance['title']; ?>
