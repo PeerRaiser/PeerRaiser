@@ -776,32 +776,46 @@ form#dashboard_settings {
 .peerraiser-widget {
     margin-bottom: 1rem;
 }
-/* Campaigns */
-#peerraiser-campaign {
+/* Campaigns and Fundraisers*/
+#peerraiser-campaign,
+#peerraiser-fundraiser {
     margin-right: auto;
     margin-left: auto;
     padding-left: 15px;
     padding-right: 15px;
 }
 #peerraiser-campaign:before,
-#peerraiser-campaign:after {
+#peerraiser-campaign:after,
+#peerraiser-fundraiser:before,
+#peerraiser-fundraiser:after {
     content: " ";
     display: table;
 }
-#peerraiser-campaign:after {
+#peerraiser-campaign:after,
+#peerraiser-fundraiser:after {
     clear: both;
 }
-.peerraiser-campaign-content {
+.peerraiser-campaign-content,
+.peerraiser-fundraiser-content {
     padding: .75rem 15px;
 }
 .peerraiser-campaign-content.has-sidebar {
     width: 75%;
     float: left;
 }
+.peerraiser-fundraiser-content.has-sidebar {
+    width: 75%;
+    float: right;
+}
 .peerraiser-campaign-sidebar {
     padding: .75rem 15px;
     width: 25%;
     float: right;
+}
+.peerraiser-fundraiser-sidebar {
+    padding: .75rem 15px;
+    width: 25%;
+    float: left;
 }
 .peerraiser-campaign-banner img {
     width: 100%;
@@ -810,7 +824,9 @@ form#dashboard_settings {
     display: block;
 }
 .peerraiser-campaign-donate-button a,
-.peerraiser-campaign-register-button a {
+.peerraiser-campaign-register-button a,
+.peerraiser-fundraiser-donate-button a,
+.peerraiser-fundraiser-register-button a {
     text-decoration: none;
     display: block;
     color: #fff;
@@ -836,38 +852,47 @@ form#dashboard_settings {
     width: 100%;
 }
 .peerraiser-campaign-donate-button a:hover,
-.peerraiser-campaign-register-button a:hover {
+.peerraiser-campaign-register-button a:hover,
+.peerraiser-fundraiser-donate-button a:hover,
+.peerraiser-fundraiser-register-button a:hover {
     color: #fff;
     background-color: #c9302c;
     border-color: #c12e2a;
 }
-.peerraiser-campaign-total-raised {
+.peerraiser-campaign-total-raised,
+.peerraiser-fundraiser-total-raised {
     border: 1px solid #333;
     color: #333;
     padding: 1rem;
     text-align: center;
 }
 .peerraiser-campaign-total-raised h3,
-.peerraiser-campaign-total-raised h4 {
+.peerraiser-campaign-total-raised h4,
+.peerraiser-fundraiser-total-raised h3,
+.peerraiser-fundraiser-total-raised h4 {
     margin: 0;
     padding: 0;
 }
-.peerraiser-campaign-total-raised h3 {
+.peerraiser-campaign-total-raised h3 ,
+.peerraiser-fundraiser-total-raised h3 {
     font-size: 1.75rem;
     font-weight: bold;
     letter-spacing: -.75px;
 }
-.peerraiser-campaign-total-raised h4 {
+.peerraiser-campaign-total-raised h4,
+.peerraiser-fundraiser-total-raised h4 {
     font-size: 0.85rem;
     text-transform: uppercase;
     font-weight: normal;
     letter-spacing: 1.25px;
 }
-.peerraiser-top-fundraisers a {
+.peerraiser-top-fundraisers a,
+.peerraiser-top-donors a {
     text-decoration: underline;
 }
 .peerraiser-top-teams ol,
-.peerraiser-top-fundraisers ol {
+.peerraiser-top-fundraisers ol,
+.peerraiser-top-donors ol {
     margin-left: 1rem;
 }
 .peerraiser-thermometer-container {
