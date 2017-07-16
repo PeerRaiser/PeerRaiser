@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Model\Frontend\Widget;
 
+use PeerRaiser\Model\Campaign;
+
 class Top_Fundraisers_Widget extends PeerRaiser_Widget {
 
 	public function __construct() {
@@ -15,23 +17,31 @@ class Top_Fundraisers_Widget extends PeerRaiser_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		$plugin_options = get_option( 'peerraiser_options', array() );
+		if ( $instance['campaign'] === 'auto' ) {
+			$campaign = peerraiser_get_current_campaign();
+			$top_fundraisers = peerraiser_get_top_fundraisers( $instance['list_size'], array( 'campaign_id' => $campaign->ID ) );
+		} elseif( $instance['campaign'] == 'all' || empty( $instance['campaign'] ) ) {
+			$top_fundraisers = peerraiser_get_top_fundraisers( $instance['list_size'] );
+		} else {
+			$campaign = new Campaign( $instance['campaign']);
+			$top_fundraisers = peerraiser_get_top_fundraisers( $instance['list_size'], array( 'campaign_id' => $campaign->ID ) );
+		}
 
-		$view_args = array(
-
-		);
-		$this->assign( 'peerraiser', $view_args );
-		$this->assign( 'campaign', peerraiser_get_current_campaign() );
 		$this->assign( 'args', $args );
+		$this->assign( 'top_fundraisers', $top_fundraisers );
 		$this->assign( 'instance', $instance );
 
 		echo $this->get_text_view( 'frontend/widget/peerraiser-top-fundraisers' );
 	}
 
 	public function form( $instance ) {
+		$campaign_model = new Campaign();
+
 		$view_args = array(
 			'title' => ! empty( $instance['title'] ) ? $instance['title'] : __( 'Top Fundraisers', 'peerraiser' ),
 			'list_size' => ! empty( $instance['list_size'] ) ? $instance['list_size'] : 10,
+			'campaign' => ! empty( $instance['campaign'] ) ? $instance['campaign'] : 'auto',
+			'campaigns' => $campaign_model->get_campaigns(),
 		);
 		$this->assign( 'peerraiser', $view_args );
 
@@ -42,6 +52,7 @@ class Top_Fundraisers_Widget extends PeerRaiser_Widget {
 		$instance = array();
 		$instance['title'] = ! empty( $new_instance['title'] ) ? esc_attr( $new_instance['title'] ) : '';
 		$instance['list_size'] = ! empty( $new_instance['list_size'] ) ? intval( $new_instance['list_size'] ) : 10;
+		$instance['campaign'] = ! empty( $new_instance['campaign'] ) ? esc_attr( $new_instance['campaign'] ) : 'auto';
 
 		return $instance;
 	}
