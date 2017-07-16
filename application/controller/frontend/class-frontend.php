@@ -12,6 +12,7 @@ class Frontend extends Base {
 
 		add_filter( 'query_vars',        array( $this, 'register_query_vars' ) );
 		add_filter( 'cmb2_wrap_classes', array( $this, 'add_form_class' ), 10, 2 );
+		add_filter( 'template_include',  array( $this, 'select_template' ) );
 	}
 
 	public function add_rewrite_rules() {
@@ -48,5 +49,21 @@ class Frontend extends Base {
 
 	public function register_image_sizes() {
 		add_image_size( 'peerraiser_thumbnail', 150, 150, true );
+	}
+
+	public function select_template( $template ) {
+		if ( ! is_single() || get_post_type() !== 'fundraiser' ) {
+			return $template;
+		}
+
+		$template_file  = 'template-peerraiser-fundraiser.php';
+
+		if ( $theme_file = locate_template( array ( $template_file ) ) ) {
+			$template = $theme_file;
+		} else {
+			$template = PEERRAISER_PATH . 'views/frontend/' . $template_file;
+		}
+
+		return $template;
 	}
 }
