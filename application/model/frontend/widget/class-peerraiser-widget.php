@@ -1,6 +1,6 @@
 <?php
 
-namespace PeerRaiser\Model\Frontend;
+namespace PeerRaiser\Model\Frontend\Widget;
 
 use \PeerRaiser\Core\Setup;
 

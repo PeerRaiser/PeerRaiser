@@ -1,6 +1,6 @@
 <?php
 
-namespace PeerRaiser\Model\Frontend;
+namespace PeerRaiser\Model\Frontend\Widget;
 
 class Campaign_Donate_Button_Widget extends PeerRaiser_Widget {
 
