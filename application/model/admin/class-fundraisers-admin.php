@@ -56,6 +56,16 @@ class Fundraisers_Admin extends Admin {
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
+                    'thumbnail_image' => array(
+	                    'name'    => __('Fundraiser Thumbnail Image', 'peerraiser'),
+	                    'id'      => '_peerraiser_thumbnail_image',
+	                    'type'    => 'file',
+	                    'options' => array(
+		                    'url' => false,
+		                    'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+	                    ),
+	                    'default_cb' => array( $this, 'get_field_value'),
+                    )
                 ),
             ),
         );
