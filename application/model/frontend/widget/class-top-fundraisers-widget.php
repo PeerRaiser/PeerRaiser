@@ -10,7 +10,7 @@ class Top_Fundraisers_Widget extends PeerRaiser_Widget {
 	    $widget_title = apply_filters( 'peerraiser-top-fundraisers-widget-title', __( 'Top Fundraisers', 'peerraiser' ) );
 	    $widget_options = apply_filters( 'peerraiser-top-fundraisers-widget-options', array(
 		    'classname' => 'peerraiser-top-fundraisers',
-		    'description' => __( 'Display a list of the top fundraisers for the current campaign', 'peerraiser' ),
+		    'description' => __( 'Display a list of the top fundraisers for a campaign', 'peerraiser' ),
         ) );
 
 		parent::__construct('peerraiser_top_fundraisers', $widget_title, $widget_options );
