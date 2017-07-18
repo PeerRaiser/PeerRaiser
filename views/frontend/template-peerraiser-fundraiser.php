@@ -9,17 +9,15 @@ $fundraiser = peerraiser_get_current_fundraiser();
 
 <div id="peerraiser-fundraiser" class="<?php echo 'peerraiser-fundraiser-' . $fundraiser->ID ?> <?php echo 'peerraiser-fundraiser-' . $fundraiser->fundraiser_slug; ?>">
 
-	<?php if ( is_active_sidebar( 'peerraiser-fundraiser-sidebar' ) ) : ?>
+    <div class="peerraiser-fundraiser-sidebar">
 
-        <div class="peerraiser-fundraiser-sidebar">
+        <img src="<?php echo esc_url( $fundraiser->get_thumbnail_url() ) ?>" alt="<?php _e( 'Profile picture', 'peerraiser' ); ?>">
 
-			<?php dynamic_sidebar( 'peerraiser-fundraiser-sidebar' ); ?>
+        <?php dynamic_sidebar( 'peerraiser-fundraiser-sidebar' ); ?>
 
-        </div>
+    </div>
 
-	<?php endif; ?>
-
-    <div class="peerraiser-fundraiser-content<?php if ( is_active_sidebar( 'peerraiser-fundraiser-sidebar' ) ) echo ' has-sidebar'; ?>">
+    <div class="peerraiser-fundraiser-content has-sidebar">
 
         <h1 class="peerraiser-fundraiser-title"><?php echo $fundraiser->fundraiser_name; ?></h1>
 
