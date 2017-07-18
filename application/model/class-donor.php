@@ -611,7 +611,10 @@ class Donor {
 
 		if ( ! empty( $donors ) ) {
 			foreach ( $donors as $donor ) {
-				$results[] = new self( $donor->donor_id );
+				$donor = new self( $donor->donor_id );
+				if ( $donor->donation_value > 0 ) {
+					$results[] = $donor;
+				}
 			}
 		}
 
