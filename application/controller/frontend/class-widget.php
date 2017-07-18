@@ -41,6 +41,7 @@ class Widget extends Base {
 		register_widget( 'PeerRaiser\Model\Frontend\Widget\Campaign_Register_Button_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Widget\Campaign_Total_Raised_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Widget\Campaign_Thermometer_Widget' );
+		register_widget( 'PeerRaiser\Model\Frontend\Widget\Campaign_Top_Donors_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Widget\Top_Fundraisers_Widget' );
 		register_widget( 'PeerRaiser\Model\Frontend\Widget\Top_Teams_Widget' );
 
