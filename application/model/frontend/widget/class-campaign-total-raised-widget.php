@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Model\Frontend\Widget;
 
+use PeerRaiser\Model\Campaign;
+
 class Campaign_Total_Raised_Widget extends PeerRaiser_Widget {
 
 	public function __construct() {
@@ -15,8 +17,13 @@ class Campaign_Total_Raised_Widget extends PeerRaiser_Widget {
 	}
 
 	public function widget( $args, $instance ) {
+		if ( $instance['campaign'] === 'auto' || empty( $instance['campaign'] ) ) {
+			$campaign = peerraiser_get_current_campaign();
+		} else {
+			$campaign = new Campaign( $instance['campaign']);
+		}
+
 		$hide_if_zero  = ! empty( $instance['hide_if_zero'] ) ? $instance['hide_if_zero'] : 'false';
-		$campaign      = peerraiser_get_current_campaign();
 
 		if ( $hide_if_zero === 'on' && $campaign->donation_value === 0.00 ) {
 			return;
@@ -34,10 +41,14 @@ class Campaign_Total_Raised_Widget extends PeerRaiser_Widget {
 	}
 
 	public function form( $instance ) {
+		$campaign_model = new Campaign();
+
 		$view_args = array(
 			'hide_if_zero'  => ! empty( $instance['hide_if_zero'] ) ? $instance['hide_if_zero'] : 'false',
 			'before_amount' => ! empty( $instance['before_amount'] ) ? $instance['before_amount'] : '',
 			'after_amount'  => ! empty( $instance['after_amount'] ) ? $instance['after_amount'] : __( '<h4>Total Raised</h4>', 'peerraiser' ),
+			'campaign' => ! empty( $instance['campaign'] ) ? $instance['campaign'] : 'auto',
+			'campaigns' => $campaign_model->get_campaigns(),
 		);
 		$this->assign( 'peerraiser', $view_args );
 
@@ -50,6 +61,7 @@ class Campaign_Total_Raised_Widget extends PeerRaiser_Widget {
 		$instance['hide_if_zero']  = $new_instance['hide_if_zero'];
 		$instance['before_amount'] = $new_instance['before_amount'];
 		$instance['after_amount']  = $new_instance['after_amount'];
+		$instance['campaign'] = ! empty( $new_instance['campaign'] ) ? esc_attr( $new_instance['campaign'] ) : 'auto';
 
 		return $instance;
 	}
