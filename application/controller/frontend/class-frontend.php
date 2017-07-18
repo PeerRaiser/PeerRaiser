@@ -48,7 +48,9 @@ class Frontend extends Base {
 	}
 
 	public function register_image_sizes() {
-		add_image_size( 'peerraiser_thumbnail', 150, 150, true );
+		add_image_size( 'peerraiser_thumbnail_small', 150, 150, true );
+		add_image_size( 'peerraiser_thumbnail_medium', 500, 500, true );
+		add_image_size( 'peerraiser_thumbnail_large', 1024, 1024, true );
 	}
 
 	public function select_template( $template ) {
