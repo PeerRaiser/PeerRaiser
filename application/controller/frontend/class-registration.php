@@ -129,7 +129,8 @@ class Registration extends Base {
 
 		// If image upload was successful, set the featured image
 		if ( $image_id && ! is_wp_error( $image_id ) ) {
-			set_post_thumbnail( $fundraiser->ID, $image_id );
+			update_post_meta( $fundraiser->ID, '_peerraiser_thumbnail_image_id', $image_id );
+			update_post_meta( $fundraiser->ID, '_peerraiser_thumbnail_image', wp_get_attachment_url( $image_id ) );
 		}
 
 		// Redirect to the new fundraiser
