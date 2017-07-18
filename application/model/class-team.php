@@ -651,9 +651,9 @@ class Team {
     	return trim( $user_info->first_name . ' ' . $user_info->last_name );
 	}
 
-	public function get_thumbnail_url() {
+	public function get_thumbnail_url( $size = 'peerraiser_thumbnail_small' ) {
     	if ( ! empty( $this->thumbnail_image_id ) ) {
-		    $image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_team_thumbnail_size', 'peerraiser_thumbnail' ) );
+		    $image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_team_thumbnail_size', $size ) );
     		return $image_attributes[0];
 	    }
 
