@@ -57,6 +57,20 @@ class Fundraiser {
 	protected $fundraiser_content = '';
 
 	/**
+	 * Thumbnail image
+	 *
+	 * @var string
+	 */
+	protected $thumbnail_image = '';
+
+	/**
+	 * Thumbnail image
+	 *
+	 * @var string
+	 */
+	protected $thumbnail_image_id = 0;
+
+	/**
 	 * Fundraiser goal
 	 *
 	 * @var float
@@ -201,7 +215,9 @@ class Fundraiser {
 		$this->fundraiser_name    = $fundraiser->post_title;
 		$this->fundraiser_slug    = $fundraiser->post_name;
 		$this->fundraiser_content = $fundraiser->post_content;
-        $this->participant        = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
+		$this->thumbnail_image    = get_post_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+		$this->thumbnail_image_id = get_post_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
+		$this->participant        = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
 
         $campaign          = wp_get_post_terms( $this->ID, 'peerraiser_campaign' );
         $this->campaign_id = ! empty( $campaign ) ? $campaign[0]->term_id : 0;
@@ -268,6 +284,9 @@ class Fundraiser {
 						case 'participant' :
 							$this->update_meta( '_peerraiser_fundraiser_participant', $value );
 							break;
+						default :
+							$this->update_meta( '_peerraiser_' . $key, $value );
+							break;
 					}
 				} else {
 					do_action( 'peerraiser_fundraiser_save', $this, $key );
@@ -333,6 +352,17 @@ class Fundraiser {
 		wp_set_object_terms( $this->ID, (int) $team_id, 'peerraiser_team' );
 	}
 
+	public function get_thumbnail_url( $size = 'peerraiser_thumbnail_medium' ) {
+		if ( ! empty( $this->thumbnail_image_id ) ) {
+			$image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_fundraiser_thumbnail_size', $size ) );
+			return $image_attributes[0];
+		}
+
+		$plugin_options = get_option( 'peerraiser_options', array() );
+
+		return esc_url( $plugin_options['user_thumbnail_image'] );
+	}
+
     /**
      * Get the total number of fundraisers
      *
@@ -340,8 +370,37 @@ class Fundraiser {
      */
 	public function get_total_fundraisers() {
         $fundraisers_count = wp_count_posts( 'fundraiser' );
+
         return (int) $fundraisers_count->publish;
     }
+
+	/**
+	 * Get campaigns
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public function get_fundraisers( $args = array()) {
+		$defaults = array(
+			'posts_per_page' => 20,
+			'paged'          => 1,
+			'post_type'      => array( 'fundraiser' ),
+			'fields'         => 'ids'
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$query = new WP_Query( $args );
+
+		$results = array();
+
+		foreach ( $query->posts as $id ) {
+			$results[] = new self( $id );
+		}
+
+		return $results;
+	}
 
     /**
      * Get the top fundraisers sort by value
