@@ -17,11 +17,9 @@ class Fundraiser_Top_Donors_Widget extends PeerRaiser_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		if ( $instance['fundraiser'] === 'auto' ) {
+		if ( $instance['fundraiser'] === 'auto' || empty( $instance['fundraiser'] ) ) {
 			$fundraiser = peerraiser_get_current_fundraiser();
 			$top_donors = peerraiser_get_top_donors( $instance['list_size'], array( 'fundraiser_id' => $fundraiser->ID ) );
-		} elseif( $instance['fundraiser'] == 'all' || empty( $instance['fundraiser'] ) ) {
-			$top_donors = peerraiser_get_top_donors( $instance['list_size'] );
 		} else {
 			$fundraiser = new Fundraiser( $instance['fundraiser']);
 			$top_donors = peerraiser_get_top_donors( $instance['list_size'], array( 'fundraiser_id' => $fundraiser->ID ) );
