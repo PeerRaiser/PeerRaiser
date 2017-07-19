@@ -887,12 +887,14 @@ form#dashboard_settings {
     letter-spacing: 1.25px;
 }
 .peerraiser-top-fundraisers a,
-.peerraiser-top-donors a {
+.peerraiser-top-donors a,
+.peerraiser-fundraiser-top-donors a {
     text-decoration: underline;
 }
 .peerraiser-top-teams ol,
 .peerraiser-top-fundraisers ol,
-.peerraiser-top-donors ol {
+.peerraiser-top-donors ol,
+.peerraiser-fundraiser-top-donors ol {
     margin-left: 1rem;
 }
 .peerraiser-thermometer-container {
