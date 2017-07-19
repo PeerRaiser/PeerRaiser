@@ -19,6 +19,7 @@ function peerraiser_get_team( $id ) {
     }
 
     $team_model = new \PeerRaiser\Model\Team( $id );
+
     return $team_model;
 }
 
@@ -66,11 +67,11 @@ function peerraiser_money_format( $amount, $with_symbol = true, $decimal = true 
     } else {
         return $number_format;
     }
-
 }
 
 function peerraiser_get_top_donors( $count = 20, $args = array() ) {
     $donor = new PeerRaiser\Model\Donor();
+
     return $donor->get_top_donors( $count, $args );
 }
 
@@ -139,6 +140,7 @@ function peerraiser_get_currency_symbol() {
 	$plugin_options = get_option( 'peerraiser_options', array() );
 
 	$currency        = new \PeerRaiser\Model\Currency();
+
 	return $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
 }
 
@@ -150,8 +152,6 @@ function peerraiser_get_campaign_by_slug( $slug ) {
 
 function peerraiser_get_fundraiser_by_slug( $slug ) {
 	$fundraiser = get_page_by_path( $slug, OBJECT, 'fundraiser' );
-
-	error_log(print_r($fundraiser,1));
 
 	return new \PeerRaiser\Model\Fundraiser( $fundraiser->ID );
 }
