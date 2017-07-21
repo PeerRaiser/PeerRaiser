@@ -221,6 +221,56 @@ class Donor_Table extends Database {
 
     }
 
+    public function get_top_donors_to_fundraiser( $id, $count ) {
+	    global $wpdb;
+
+	    $plugin_options = get_option( 'peerraiser_options', array() );
+
+	    $is_test = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN ) ? 1 : 0;
+
+	    $results = $wpdb->get_results(
+		    $wpdb->prepare(
+		    	"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
+				FROM {$this->table_name} as pr_donations
+				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
+				ON pr_donors.donor_id = pr_donations.donor_id
+				WHERE pr_donations.fundraiser_id = %s 
+				AND pr_donations.status = 'completed'  
+				AND pr_donations.is_test = %s 
+				GROUP BY pr_donations.donor_id
+				ORDER BY total DESC",
+			    absint( $id, $is_test )
+		    )
+	    );
+
+	    return $results;
+    }
+
+	public function get_top_donors_to_campaign( $id, $count ) {
+		global $wpdb;
+
+		$plugin_options = get_option( 'peerraiser_options', array() );
+
+		$is_test = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN ) ? 1 : 0;
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
+				FROM {$this->table_name} as pr_donations
+				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
+				ON pr_donors.donor_id = pr_donations.donor_id
+				WHERE pr_donations.campaign_id = %s 
+				AND pr_donations.status = 'completed'  
+				AND pr_donations.is_test = %s 
+				GROUP BY pr_donations.donor_id
+				ORDER BY total DESC",
+				absint( $id, $is_test )
+			)
+		);
+
+		return $results;
+	}
+
     /**
      * Return the number of results found for a given query
      *
