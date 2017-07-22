@@ -72,7 +72,19 @@ function peerraiser_money_format( $amount, $with_symbol = true, $decimal = true 
 function peerraiser_get_top_donors( $count = 20, $args = array() ) {
     $donor = new PeerRaiser\Model\Donor();
 
-    return $donor->get_top_donors( $count, $args );
+    return $donor->get_top_donors_to_campaign( 0, $count );
+}
+
+function peerraiser_get_top_donors_to_campaign( $id, $count = 20 ) {
+	$donor = new PeerRaiser\Model\Donor();
+
+	return $donor->get_top_donors_to_campaign( $id, $count );
+}
+
+function peerraiser_get_top_donors_to_fundraiser( $id, $count = 20 ) {
+	$donor = new PeerRaiser\Model\Donor();
+
+	return $donor->get_top_donors_to_fundraiser( $id, $count );
 }
 
 function peerraiser_get_top_fundraisers( $count = 20, $args = array() ) {
