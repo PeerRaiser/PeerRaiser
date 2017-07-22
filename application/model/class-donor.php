@@ -2,7 +2,7 @@
 
 namespace PeerRaiser\Model;
 
-use \PeerRaiser\Model\Database\Donor_Table as Donor_Database;
+use \PeerRaiser\Model\Database\Donor_Table;
 use \PeerRaiser\Model\Database\Donor_Meta_Table;
 
 class Donor {
@@ -121,7 +121,7 @@ class Donor {
 	 * @param  int|boolean $id_or_email Donor ID or email address
 	 */
 	public function __construct( $id_or_email = false ) {
-		$this->db = new Donor_Database();
+		$this->db = new Donor_Table();
 
 		if ( empty( $id_or_email ) ) {
 			return false;
@@ -586,40 +586,33 @@ class Donor {
 		return $this->donation_value;
 	}
 
-    /**
-     * Get the top donors, based on donation value
-     *
-     * @param int   $count
-     * @param array $args
-     *
-     * @return array Donors listed by value
-     */
-	public function get_top_donors( $count = 20, $args = array() ) {
-        $donation_table = new Donor_Database();
+	/**
+	 * Get the top donors to a campaign, based on donation value
+	 *
+	 * @param int $id    The campaign ID
+	 * @param int $count Maximum number of results to return
+	 *
+	 * @return array Top donors
+	 */
+	public function get_top_donors_to_campaign( $id, $count = 20 ) {
+		$donor_database = new Donor_Table();
 
-        $defaults = array(
-            'orderby' => 'donation_value',
-            'order'   => 'DESC',
-            'number'  => $count
-        );
-
-		$args = wp_parse_args( $args, $defaults );
-
-        $donors = $donation_table->get_donors( $args );
-
-		$results = array();
-
-		if ( ! empty( $donors ) ) {
-			foreach ( $donors as $donor ) {
-				$donor = new self( $donor->donor_id );
-				if ( $donor->donation_value > 0 ) {
-					$results[] = $donor;
-				}
-			}
-		}
-
-		return $results;
+		return $donor_database->get_top_donors_to_campaign( $id, $count );
     }
+
+	/**
+	 * Get the top donors to a fundraiser, based on donation value
+	 *
+	 * @param int $id    The fundraiser ID
+	 * @param int $count Maximum number of results to return
+	 *
+	 * @return array Top donors
+	 */
+	public function get_top_donors_to_fundraiser( $id, $count = 20 ) {
+		$donor_database = new Donor_Table();
+
+		return $donor_database->get_top_donors_to_fundraiser( $id, $count );
+	}
 
     public function get_profile_image() {
 	    $hash = md5( strtolower( trim( $this->email_address ) ) );
@@ -654,7 +647,7 @@ class Donor {
 			return 0;
 		}
 
-		$donation_table = new Donor_Database();
+		$donation_table = new Donor_Table();
 		$donor_count = $donation_table->count( array( 'email_address' => $this->email_address ) );
 
 		// If there's already a donor using this email address
@@ -747,7 +740,7 @@ class Donor {
 	}
 
     public function get_total_donors() {
-        $donation_table = new Donor_Database();
+        $donation_table = new Donor_Table();
         return $donation_table->get_donors( array( 'number' => -1 ), true );
     }
 }
