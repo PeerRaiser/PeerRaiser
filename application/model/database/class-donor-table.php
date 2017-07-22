@@ -231,16 +231,16 @@ class Donor_Table extends Database {
 	    $results = $wpdb->get_results(
 		    $wpdb->prepare(
 		    	"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
-				FROM {$this->table_name} as pr_donations
+				FROM {$wpdb->prefix}pr_donations as pr_donations
 				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
 				ON pr_donors.donor_id = pr_donations.donor_id
-				WHERE pr_donations.fundraiser_id = %s 
+				WHERE pr_donations.fundraiser_id = %d
 				AND pr_donations.status = 'completed'  
-				AND pr_donations.is_test = %s 
+				AND pr_donations.is_test = %d
 				GROUP BY pr_donations.donor_id
 				ORDER BY total DESC
-				LIMIT %s",
-			    absint( $id, $is_test, $count )
+				LIMIT %d",
+			    absint( $id ), absint( $is_test ), absint( $count )
 		    )
 	    );
 
@@ -257,7 +257,7 @@ class Donor_Table extends Database {
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
-				FROM {$this->table_name} as pr_donations
+				FROM {$wpdb->prefix}pr_donations as pr_donations
 				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
 				ON pr_donors.donor_id = pr_donations.donor_id
 				WHERE pr_donations.campaign_id = %s 
