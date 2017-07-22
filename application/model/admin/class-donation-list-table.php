@@ -6,6 +6,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use PeerRaiser\Model\Donation;
 use \PeerRaiser\Model\Donor;
 use \WP_List_Table;
 
@@ -191,33 +192,11 @@ class Donation_List_Table extends WP_List_Table {
     }
 
     public function process_bulk_action() {
-
         //Detect when a bulk action is being triggered...
-        if ( 'delete' === $this->current_action() ) {
-
-            // In our file that handles the request, verify the nonce.
-            $nonce = esc_attr( $_REQUEST['_wpnonce'] );
-
-            if ( ! wp_verify_nonce( $nonce, 'peerraiser_delete_donation' ) ) {
-                die( 'Sorry, you cannot do that.' );
-            }
-            else {
-                self::delete_donation( absint( $_GET['donation'] ) );
-            }
-
-        }
-
-        // If the delete bulk action is triggered
-        if ( ( isset( $_POST['action'] ) && $_POST['action'] == 'bulk-delete' )
-             || ( isset( $_POST['action2'] ) && $_POST['action2'] == 'bulk-delete' )
-        ) {
-
-          $delete_ids = esc_sql( $_POST['bulk-delete'] );
-
-          // loop over the array of record IDs and delete them
-          foreach ( $delete_ids as $id ) {
-            self::delete_donation( $id );
-          }
+        if ( 'bulk-delete' === $this->current_action() ) {
+        	foreach ( $_POST['bulk-delete'] as $id ) {
+		        self::delete_donation( absint( $id ) );
+	        }
         }
     }
 
@@ -260,13 +239,8 @@ class Donation_List_Table extends WP_List_Table {
      * @param int $id donation ID
      */
     public function delete_donation( $id ) {
-        global $wpdb;
-
-        $wpdb->delete(
-            "{$wpdb->prefix}pr_donations",
-            array( 'donation_id' => $id ),
-            array( '%d' )
-        );
+        $donation = new Donation( $id );
+        $donation->delete();
     }
 
     /**
