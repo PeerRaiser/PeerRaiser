@@ -19,10 +19,10 @@ class Fundraiser_Top_Donors_Widget extends PeerRaiser_Widget {
 	public function widget( $args, $instance ) {
 		if ( $instance['fundraiser'] === 'auto' || empty( $instance['fundraiser'] ) ) {
 			$fundraiser = peerraiser_get_current_fundraiser();
-			$top_donors = peerraiser_get_top_donors( $instance['list_size'], array( 'fundraiser_id' => $fundraiser->ID ) );
+			$top_donors = peerraiser_get_top_donors_to_fundraiser( $fundraiser->ID, $instance['list_size'] );
 		} else {
 			$fundraiser = new Fundraiser( $instance['fundraiser']);
-			$top_donors = peerraiser_get_top_donors( $instance['list_size'], array( 'fundraiser_id' => $fundraiser->ID ) );
+			$top_donors = peerraiser_get_top_donors_to_fundraiser( $fundraiser->ID, $instance['list_size'] );
 		}
 
 		$this->assign( 'args', $args );
