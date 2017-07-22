@@ -221,7 +221,7 @@ class Donor_Table extends Database {
 
     }
 
-    public function get_top_donors_to_fundraiser( $id, $count ) {
+    public function get_top_donors_to_fundraiser( $id, $count = 20 ) {
 	    global $wpdb;
 
 	    $plugin_options = get_option( 'peerraiser_options', array() );
@@ -238,15 +238,16 @@ class Donor_Table extends Database {
 				AND pr_donations.status = 'completed'  
 				AND pr_donations.is_test = %s 
 				GROUP BY pr_donations.donor_id
-				ORDER BY total DESC",
-			    absint( $id, $is_test )
+				ORDER BY total DESC
+				LIMIT %s",
+			    absint( $id, $is_test, $count )
 		    )
 	    );
 
 	    return $results;
     }
 
-	public function get_top_donors_to_campaign( $id, $count ) {
+	public function get_top_donors_to_campaign( $id, $count = 20 ) {
 		global $wpdb;
 
 		$plugin_options = get_option( 'peerraiser_options', array() );
@@ -263,8 +264,9 @@ class Donor_Table extends Database {
 				AND pr_donations.status = 'completed'  
 				AND pr_donations.is_test = %s 
 				GROUP BY pr_donations.donor_id
-				ORDER BY total DESC",
-				absint( $id, $is_test )
+				ORDER BY total DESC
+				LIMIT %s",``
+				absint( $id, $is_test, $count )
 			)
 		);
 
