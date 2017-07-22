@@ -265,7 +265,7 @@ class Donor_Table extends Database {
 				AND pr_donations.is_test = %s 
 				GROUP BY pr_donations.donor_id
 				ORDER BY total DESC
-				LIMIT %s",``
+				LIMIT %s",
 				absint( $id, $is_test, $count )
 			)
 		);
