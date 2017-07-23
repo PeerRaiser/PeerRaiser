@@ -87,7 +87,7 @@ class Donation {
      * @since  1.0.0
      * @var string
      */
-    protected $status = 'pending';
+    protected $status = '';
 
     /**
      * When updating, the old status prior to the change
@@ -330,10 +330,11 @@ class Donation {
      * @param mixed $value  The value of the property
      */
     public function __set( $key, $value ) {
-        $ignore = array( '_ID' );
+        $ignore = array( '_ID', 'old_status' );
 
         if ( $key === 'status' ) {
             $this->old_status = $this->status;
+            $this->status     = $value;
         }
 
         if ( ! in_array( $key, $ignore ) ) {
@@ -454,7 +455,7 @@ class Donation {
 	    $this->pending['is_test'] = $this->is_test;
 
 	    // If this wasn't in test mode, increase donation stats
-	    if ( ! $this->is_test ) {
+	    if ( ! $this->is_test && $this->status === 'completed' ) {
 		    $this->increase_donor_amounts();
 		    $this->increase_campaign_amounts();
 		    $this->increase_fundraiser_amounts();
@@ -500,6 +501,8 @@ class Donation {
         if ( ! empty( $this->pending ) ) {
             foreach ( $this->pending as $key => $value ) {
                 switch( $key ) {
+	                case 'status' :
+	                	$this->maybe_update_stats();
 	                case 'transaction_id' :
 	                case 'donor_id' :
 	                case 'campaign_id' :
@@ -508,7 +511,6 @@ class Donation {
 	                case 'total' :
 	                case 'subtotal' :
 	                case 'ip' :
-	                case 'status' :
 	                case 'date' :
 	                case 'is_anonymous' :
 	                case 'is_test' :
@@ -584,6 +586,28 @@ class Donation {
 		}
 
 		return $updated;
+	}
+
+	private function maybe_update_stats() {
+		if ( $this->is_test || empty( $this->old_status ) || $this->status === $this->old_status ) {
+			return;
+		}
+
+		if ( $this->old_status === 'completed' ) {
+			$this->decrease_donor_amounts();
+			$this->decrease_campaign_amounts();
+			$this->decrease_fundraiser_amounts();
+			$this->decrease_team_amounts();
+			$this->decrease_participant_amounts();
+		}
+
+		if ( $this->status === 'completed' ) {
+			$this->increase_donor_amounts();
+			$this->increase_campaign_amounts();
+			$this->increase_fundraiser_amounts();
+			$this->increase_team_amounts();
+			$this->increase_participant_amounts();
+		}
 	}
 
     /**
