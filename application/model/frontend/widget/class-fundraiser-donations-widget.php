@@ -36,7 +36,7 @@ class Fundraiser_Donations_Widget extends PeerRaiser_Widget {
 		$fundraiser_model = new Fundraiser();
 
 		$view_args = array(
-			'title' => ! empty( $instance['title'] ) ? $instance['title'] : __( 'Donations', 'peerraiser' ),
+			'title' => ! empty( $instance['title'] ) ? $instance['title'] : __( 'Recent Donations', 'peerraiser' ),
 			'list_size' => ! empty( $instance['list_size'] ) ? $instance['list_size'] : 10,
 			'fundraiser' => ! empty( $instance['fundraiser'] ) ? $instance['fundraiser'] : 'auto',
 			'fundraisers' => $fundraiser_model->get_fundraisers(),
