@@ -22,10 +22,16 @@ class Campaign_Donations_Widget extends PeerRaiser_Widget {
 
 		if ( $instance['campaign'] === 'auto' ) {
 			$campaign = peerraiser_get_current_campaign();
-			$donations = $donation_model->get_donations( array( 'campaign_id' => $campaign->ID ) );
+			$donations = $donation_model->get_donations( array(
+				'campaign_id' => $campaign->ID,
+				'number' => $instance['list_size'],
+				'is_test' => false
+			) );
 		} elseif( $instance['campaign'] == 'all' || empty( $instance['campaign'] ) ) {
-			$donations = $donation_model->get_donations();
-			$donations = peerraiser_get_donations( $instance['list_size'] );
+			$donations = $donation_model->get_donations( array(
+				'number' => $instance['list_size'],
+				'is_test' => false
+			) );
 		} else {
 			$campaign = new Campaign( $instance['campaign']);
 			$donations = peerraiser_get_donations( $instance['list_size'], array( 'campaign_id' => $campaign->ID ) );
@@ -42,7 +48,7 @@ class Campaign_Donations_Widget extends PeerRaiser_Widget {
 		$campaign_model = new Campaign();
 
 		$view_args = array(
-			'title' => ! empty( $instance['title'] ) ? $instance['title'] : __( 'Donations', 'peerraiser' ),
+			'title' => ! empty( $instance['title'] ) ? $instance['title'] : __( 'Recent Donations', 'peerraiser' ),
 			'list_size' => ! empty( $instance['list_size'] ) ? $instance['list_size'] : 10,
 			'campaign' => ! empty( $instance['campaign'] ) ? $instance['campaign'] : 'auto',
 			'campaigns' => $campaign_model->get_campaigns(),
