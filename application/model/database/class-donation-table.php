@@ -68,14 +68,12 @@ class Donation_Table extends Database {
         );
     }
 
-    /**
-     * Retrieve donations from the database
-     *
-     * @access  public
-     * @since   1.0.0
-     * @param   array $args
-     * @param   bool  $count  Return only the total number of results found (optional)
-    */
+	/**
+	 * @param array $args
+	 * @param bool $count
+	 *
+	 * @return array|object|null Database query results
+	 */
     public function get_donations( $args = array(), $count = false ) {
 
         global $wpdb;
@@ -92,6 +90,7 @@ class Donation_Table extends Database {
             'status'         => '',
             'orderby'        => 'donation_id',
             'order'          => 'DESC',
+	        'is_test'        => 0
         );
 
         $args  = wp_parse_args( $args, $defaults );
