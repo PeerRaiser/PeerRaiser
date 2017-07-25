@@ -589,6 +589,19 @@ class Donor {
 	/**
 	 * Get the top donors to a campaign, based on donation value
 	 *
+	 * @param int $count Maximum number of results to return
+	 *
+	 * @return array Top donors
+	 */
+	public function get_top_donors( $count = 20 ) {
+		$donor_database = new Donor_Table();
+
+		return $donor_database->get_top_donors( $count );
+	}
+
+	/**
+	 * Get the top donors to a campaign, based on donation value
+	 *
 	 * @param int $id    The campaign ID
 	 * @param int $count Maximum number of results to return
 	 *
