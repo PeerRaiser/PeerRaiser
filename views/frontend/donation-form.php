@@ -76,6 +76,13 @@
 			<input type="email" name="email_address" id="peerraiser_email_address" value="">
 		</div>
 
+        <div id="peerraiser_field_email_address" class="peerraiser-field peerraiser-field-text required">
+            <label for="peerraiser_email_address">
+				<?php _e( 'Display my name publicly as:', 'peerraiser' ); ?> <span class="required">*</span>
+            </label>
+            <input type="text" name="public_name" id="peerraiser_public_name" value="">
+        </div>
+
         <div id="peerraiser_field_anonymous" class="peerraiser-field peerraiser-field-checkbox">
             <label for="peerraiser_anonymous">
                 <input type="checkbox" name="is_anonymous" id="peerraiser_anonymous" value="true"><?php _e( "I would like my donation to remain anonymous", 'peerraiser' ); ?>
