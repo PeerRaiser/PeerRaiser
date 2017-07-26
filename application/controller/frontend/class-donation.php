@@ -53,14 +53,23 @@ class Donation extends \PeerRaiser\Controller\Base {
 
 		$donation_amount = empty( $_POST['other_amount'] ) ? $_POST['donation_amount'] : $_POST['other_amount'];
 
+		if ( isset( $_POST['is_anonymous'] ) && $_POST['is_anonymous'] === 'true' ) {
+			$is_anonymous = true;
+			$donor_name = '';
+		} else {
+			$is_anonymous = false;
+			$donor_name = empty( $_POST['public_name'] ) ? $donor->full_name : trim( esc_attr( $_POST['public_name'] ) );
+		}
+
 		// Donation Fields
 		$donation->donor_id      = $donor->ID;
+		$donation->donor_name    = $donor_name;
 		$donation->total         = $donation_amount;
 		$donation->subtotal      = $donation_amount;
 		$donation->campaign_id   = peerraiser_get_campaign_by_slug( $_POST['campaign'] )->ID;
 		$donation->status        = 'pending';
 		$donation->donation_type = 'cc';
-		$donation->is_anonymous  = ( isset( $_POST['is_anonymous'] ) && $_POST['is_anonymous'] === 'true' );
+		$donation->is_anonymous  = $is_anonymous;
 
 		if ( isset( $_POST['fundraiser'] ) ) {
 			$donation->fundraiser_id = peerraiser_get_fundraiser_by_slug( $_POST['fundraiser'] )->ID;
