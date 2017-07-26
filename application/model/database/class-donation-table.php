@@ -32,6 +32,7 @@ class Donation_Table extends Database {
             'donation_id'    => '%d',
             'transaction_id' => '%s',
             'donor_id'       => '%d',
+            'donor_name'     => '%s',
             'campaign_id'    => '%d',
             'team_id'        => '%d',
             'fundraiser_id'  => '%d',
@@ -55,6 +56,7 @@ class Donation_Table extends Database {
         return array(
             'transaction_id' => '',
             'donor_id'       => 0,
+            'donor_name'     => '',
             'campaign_id'    => 0,
             'team_id'        => 0,
             'fundraiser_id'  => 0,
@@ -372,6 +374,7 @@ class Donation_Table extends Database {
         $data = array(
             'transaction_id' => $donation->transaction_id,
             'donor_id'       => $donation->donor_id,
+            'donor_name'     => $donation->donor_name,
             'campaign_id'    => $donation->campaign_id,
             'team_id'        => $donation->team_id,
             'fundraiser_id'  => $donation->fundraiser_id,
@@ -413,6 +416,7 @@ class Donation_Table extends Database {
         donation_id bigint(20) NOT NULL AUTO_INCREMENT,
         transaction_id tinytext NOT NULL,
         donor_id bigint(20) NOT NULL,
+        donor_name text,
         campaign_id bigint(20) NOT NULL,
         team_id bigint(20) NOT NULL DEFAULT '0',
         fundraiser_id bigint(20) NOT NULL DEFAULT '0',
