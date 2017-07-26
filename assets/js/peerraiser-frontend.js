@@ -73,7 +73,11 @@
                 }
 
                 window.location.href = './' + campaign_slug;
-            })
+            });
+
+            $('.peerraiser-donation-form #peerraiser_anonymous').on('change', function(){
+                $('.peerraiser-donation-form #peerraiser_public_name').attr( 'disabled', $(this).is(':checked') ).val('');
+            });
         },
 
         handleFile = function( file ) {
