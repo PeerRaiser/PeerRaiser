@@ -26,6 +26,12 @@ class Donations_Admin extends Admin {
 							'data-msg-required' => __( 'A donor record is required', 'peerraiser' ),
                         ),
                     ),
+                    // 'donor_name' => array(
+                    // 	'name' => __( 'Donor Name', 'peerraiser' ),
+	                 //    'desc' => __( 'The public name of the donor. Leave blank if anonymous.', 'peerraiser' ),
+	                 //    'id' => 'donor_name',
+	                 //    'type' => 'text',
+                    // ),
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
 						'desc'         => __( 'Format should be XXXX.XX', 'peerraiser'),
