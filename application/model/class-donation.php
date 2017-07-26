@@ -113,6 +113,14 @@ class Donation {
      */
     protected $donor_id = null;
 
+	/**
+	 * The public name of the donor, if not anonymous
+	 *
+	 * @since  1.0.0
+	 * @var integer
+	 */
+	protected $donor_name = '';
+
     /**
      * The User ID of the donor (if they have one) that made the donation
      *
@@ -398,6 +406,7 @@ class Donation {
         // User related
         $this->ip             = $donation->ip;
         $this->donor_id       = $donation->donor_id;
+        $this->donor_name     = $donation->donor_name;
         $this->campaign_id    = $donation->campaign_id;
         $this->fundraiser_id  = $donation->fundraiser_id;
         $this->team_id        = $donation->team_id;
@@ -505,6 +514,7 @@ class Donation {
 	                	$this->maybe_update_stats();
 	                case 'transaction_id' :
 	                case 'donor_id' :
+	                case 'donor_name' :
 	                case 'campaign_id' :
 	                case 'team_id' :
 	                case 'fundraiser_id' :
