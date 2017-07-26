@@ -8,7 +8,7 @@
 <?php if ( ! empty( $donations ) ):  ?>
     <ol>
         <?php foreach ( $donations as $donation ) : ?>
-            <li><?php echo $donation->full_name; ?> (<?php echo peerraiser_money_format( $donation->total ); ?>)</li>
+            <li><?php echo ( ! $donation->is_anonymous ) ? $donation->donor_name : _e( 'Anonymous', 'peerraiser' ); ?> (<?php echo peerraiser_money_format( $donation->total ); ?>)</li>
         <?php endforeach; ?>
     </ol>
 <?php endif; ?>
