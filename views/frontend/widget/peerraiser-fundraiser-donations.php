@@ -6,10 +6,10 @@
     <?php echo $args['after_title']; ?>
 <?php endif; ?>
 
-<?php if ( ! empty( $top_donors ) ):  ?>
+<?php if ( ! empty( $donations ) ):  ?>
     <ol>
-        <?php foreach ( $top_donors as $donor ) : ?>
-            <li><?php echo $donor->full_name; ?> (<?php echo peerraiser_money_format( $donor->total ); ?>)</li>
+        <?php foreach ( $donations as $donation ) : ?>
+            <li><?php echo $donation->donor_name; ?> (<?php echo peerraiser_money_format( $donation->total ); ?>)</li>
         <?php endforeach; ?>
     </ol>
 <?php endif; ?>
