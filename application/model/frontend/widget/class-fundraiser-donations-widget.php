@@ -2,6 +2,7 @@
 
 namespace PeerRaiser\Model\Frontend\Widget;
 
+use PeerRaiser\Model\Donation;
 use PeerRaiser\Model\Fundraiser;
 
 class Fundraiser_Donations_Widget extends PeerRaiser_Widget {
@@ -17,12 +18,22 @@ class Fundraiser_Donations_Widget extends PeerRaiser_Widget {
 	}
 
 	public function widget( $args, $instance ) {
+		$donation_model = new Donation();
+
 		if ( $instance['fundraiser'] === 'auto' || empty( $instance['fundraiser'] ) ) {
 			$fundraiser = peerraiser_get_current_fundraiser();
-			$donations = peerraiser_get_donations_to_fundraiser( $fundraiser->ID, $instance['list_size'] );
+			$donations = $donation_model->get_donations( array(
+				'fundraiser_id' => $fundraiser->ID,
+				'number' => $instance['list_size'],
+				'is_test' => false
+			) );
 		} else {
 			$fundraiser = new Fundraiser( $instance['fundraiser']);
-			$donations = peerraiser_get_donations_to_fundraiser( $fundraiser->ID, $instance['list_size'] );
+			$donations = $donation_model->get_donations( array(
+				'fundraiser_id' => $fundraiser->ID,
+				'number' => $instance['list_size'],
+				'is_test' => false
+			) );
 		}
 
 		$this->assign( 'args', $args );
