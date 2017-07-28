@@ -188,11 +188,6 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 
 		$item->save();
 
-		if ( $item->status === 'completed' ) {
-			$activity_feed = new Activity_Feed();
-			$activity_feed->add_donation_to_feed( $item );
-		}
-
 		$data = array(
 			'success' => true
 		);
