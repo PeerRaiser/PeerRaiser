@@ -87,7 +87,7 @@ class Donation {
      * @since  1.0.0
      * @var string
      */
-    protected $status = '';
+    protected $status = 'pending';
 
     /**
      * When updating, the old status prior to the change
@@ -609,6 +609,9 @@ class Donation {
 			$this->decrease_fundraiser_amounts();
 			$this->decrease_team_amounts();
 			$this->decrease_participant_amounts();
+
+			$activity_feed = new Activity_Feed();
+			$activity_feed->remove_activity( $this->ID );
 		}
 
 		if ( $this->status === 'completed' ) {
@@ -617,6 +620,9 @@ class Donation {
 			$this->increase_fundraiser_amounts();
 			$this->increase_team_amounts();
 			$this->increase_participant_amounts();
+
+			$activity_feed = new Activity_Feed();
+			$activity_feed->add_donation_to_feed( $this );
 		}
 	}
 
