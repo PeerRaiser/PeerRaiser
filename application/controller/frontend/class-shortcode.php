@@ -4,6 +4,7 @@ namespace PeerRaiser\Controller\Frontend;
 
 use PeerRaiser\Model\Campaign;
 use PeerRaiser\Model\Frontend\Registration;
+use PeerRaiser\Model\Fundraiser;
 use PeerRaiser\Model\Team;
 
 class Shortcode extends \PeerRaiser\Controller\Base {
@@ -105,21 +106,23 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         ), $atts );
 
         // Models
-        $dashboard_model = new \PeerRaiser\Model\Frontend\Dashboard();
-        $currency_model  = new \PeerRaiser\Model\Currency();
+        $dashboard_model  = new \PeerRaiser\Model\Frontend\Dashboard();
+        $currency_model   = new \PeerRaiser\Model\Currency();
+        $fundraiser_model = new Fundraiser();
+        $current_user_id  = get_current_user_id();
 
         $navigation_links = apply_filters( 'peerraiser_participant_dashboard_navigation', $dashboard_model->get_navigation() );
 
         $view_args = array(
 	        'navigation'                 => $navigation_links,
 	        'donations'                  => $dashboard_model->get_donations(),
-	        'fundraisers'                => $dashboard_model->get_fundraisers(),
+	        'fundraisers'                => $fundraiser_model->get_fundraisers( array( 'participant' => $current_user_id ) ),
 	        'teams'                      => $dashboard_model->get_teams(),
 	        'user_id'                    => get_current_user_id(),
 	        'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
 	        'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
 	        'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
-	        'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', get_current_user_id() ),
+	        'settings_form'              => cmb2_get_metabox_form( 'dashboard_settings', $current_user_id ),
 	        'profile_photo'              => \PeerRaiser\Helper\View::get_avatar(),
 	        'password_form'              => $this->get_password_form(),
         );
