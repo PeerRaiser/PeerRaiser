@@ -318,7 +318,6 @@ class View {
      * @return    string    Custom avatar, Gravatar, or default avatar image URL.
      */
 	public static function get_avatar() {
-
 		// Get the current user's email address
 		$current_user  = wp_get_current_user();
 		$email_address = $current_user->user_email;

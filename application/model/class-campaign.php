@@ -881,6 +881,15 @@ class Campaign {
 		return $timezone;
 	}
 
+	public function get_thumbnail_image() {
+		if ( ! empty ( $this->thumbnail_image ) ) {
+			return $this->thumbnail_image;
+		}
+
+		$plugin_options = get_option( 'peerraiser_options', array() );
+		return $plugin_options['campaign_thumbnail_image'];
+	}
+
     /**
      * Generate a safe campaign slug
      *
