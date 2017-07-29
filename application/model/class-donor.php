@@ -231,7 +231,7 @@ class Donor {
 		$this->user_id        = $donor->user_id;
 
 		// Donor Notes
-		$donor_notes = $this->get_meta( '_peerraiser_donor_notes', true );
+		$donor_notes = $this->get_meta( 'notes', true );
 		$this->notes = ! empty( $donor_notes ) ? $donor_notes : array();
 
 		// Add your own items to this object via this hook:
@@ -294,21 +294,9 @@ class Donor {
 						$bulk_update[$key] = $value;
 						$updated[] = array( $key => $value );
 						break;
-					case 'street_address_1' :
-					case 'street_address_2' :
-					case 'city' :
-					case 'state_province' :
-					case 'zip_postal' :
-					case 'country' :
+					default :
 						$this->update_meta( $key, $value );
 						$updated[] = array( $key => $value );
-						break;
-					case 'notes' :
-						$this->update_meta( '_peerraiser_donor_notes', $value );
-						$updated[] = array( '_peerraiser_donor_notes' => $value );
-						break;
-					default :
-						do_action( 'peerraiser_donor_save', $this, $key );
 						break;
 				}
 			}
