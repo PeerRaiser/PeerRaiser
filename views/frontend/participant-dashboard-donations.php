@@ -19,24 +19,22 @@
             </tr>
         </thead>
         <tbody>
-        <?php if ( $peerraiser['donations']->have_posts() ) : $total = 0;?>
-            <?php while( $peerraiser['donations']->have_posts() ) : $peerraiser['donations']->the_post() ?>
+        <?php if ( ! empty( $peerraiser['donations'] ) ) : $total = 0;?>
+            <?php foreach( $peerraiser['donations'] as $donation ) : ?>
+                <?php $donor = new \PeerRaiser\Model\Donor( $donation->donor_id ); ?>
                 <tr>
-                    <?php $donor_id = get_post_meta( get_the_ID(), '_donor', true) ?>
-                    <td><?= get_post_meta( $donor_id, '_donor_first_name', true) ?> <?= get_post_meta( $donor_id, '_donor_last_name', true) ?></td>
+                    <td><?php echo esc_attr( $donor->full_name ); ?></td>
+                    <td><?php echo peerraiser_money_format( $donation->total ) ;?></td>
+                    <?php $total += $donation->total; ?>
 
-                    <?php $donation_amount = get_post_meta( get_the_ID(), '_donation_amount', true ); ?>
-                    <td><?= $peerraiser['currency_symbol'] . $donation_amount; ?></td>
-                    <?php $total += floatval( $donation_amount ); ?>
+                    <td><?php echo mysql2date( 'F j, Y', $donation->date ); ?></td>
 
-                    <td><?= get_the_date( get_option( 'date_format' ), get_the_ID() ) ?></td>
-
-                    <td><a href="">Email</a></td>
+                    <td><a href="mailto:<?php echo esc_attr( $donor->email_address ); ?>"><?php echo _e( 'Email', 'peerraiser' ); ?></a></td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
                 <tr>
                     <td><strong><?php _e( 'TOTAL:', 'peerraiser' ) ?></strong></td>
-                    <td colspan="3"><strong><?= $peerraiser['currency_symbol'] . $total; ?></strong></td>
+                    <td colspan="3"><strong><?php echo peerraiser_money_format( $total ); ?></strong></td>
                 </tr>
         <?php else : ?>
             <tr>
