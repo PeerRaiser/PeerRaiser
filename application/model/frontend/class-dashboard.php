@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Model\Frontend;
 
+use PeerRaiser\Model\Donation;
+
 class Dashboard extends \PeerRaiser\Model\Admin\Admin {
 
     private $navigation = array();
@@ -47,14 +49,10 @@ class Dashboard extends \PeerRaiser\Model\Admin\Admin {
     }
 
     public function get_donations() {
-        $args = array(
-            'post_type'       => 'pr_donation',
-            'posts_per_page'  => -1,
-            'post_status'     => 'publish',
-            'connected_type'  => 'donation_to_participant',
-            'connected_items' => get_current_user_id()
-        );
-        return new \WP_Query( $args );
+	    $participant_id = get_current_user_id();
+        $donation_model = new Donation();
+
+        return $donation_model->get_donations( array( 'particpant_id' => $participant_id ) );
     }
 
     public function get_fundraisers() {
