@@ -651,11 +651,39 @@ class Team {
     	return trim( $user_info->first_name . ' ' . $user_info->last_name );
 	}
 
-	public function get_thumbnail_url( $size = 'peerraiser_thumbnail_small' ) {
-    	if ( ! empty( $this->thumbnail_image_id ) ) {
-		    $image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_team_thumbnail_size', $size ) );
-    		return $image_attributes[0];
-	    }
+	public function get_teams_for_current_user() {
+		$current_user_id  = get_current_user_id();
+
+		$args = array(
+			'post_type'		 =>	'fundraiser',
+			'fields'         => 'ids',
+			'posts_per_page' => 9999,
+			'meta_query'	 =>	array(
+				array(
+					'key'   =>  '_peerraiser_fundraiser_participant',
+					'value'	=>	$current_user_id
+				)
+			)
+		);
+		$fundraisers = new \WP_Query( $args );
+		$fundraiser_ids = $fundraisers->posts;
+
+		$team_ids = wp_get_object_terms( $fundraiser_ids, 'peerraiser_team', array( 'fields' => 'ids' ) );
+
+		error_log(print_r( $fundraiser_ids,1 ) );
+
+		$teams = array();
+		foreach ( $team_ids as $team_id ) {
+			$teams[] = new self( $team_id );
+		}
+
+		return $teams;
+	}
+
+	public function get_thumbnail_image() {
+		if ( ! empty ( $this->thumbnail_image ) ) {
+			return $this->thumbnail_image;
+		}
 
 		$plugin_options = get_option( 'peerraiser_options', array() );
 
