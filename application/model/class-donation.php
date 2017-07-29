@@ -802,6 +802,22 @@ class Donation {
         return $total;
     }
 
+    public function get_donor_name() {
+    	if ( $this->is_anonymous ) {
+    		return apply_filters( 'peerraiser_anonymous_name', __( 'Anonymous', 'peerraiser' ) );
+	    }
+
+	    if ( empty( trim( $this->donor_name ) ) ) {
+    		$donor = new Donor_Model( $this->donor_id );
+
+    		$donor_name = $donor->first_name . ' ' . $donor->last_name[0] . '.';
+
+    		return apply_filters( 'peerraiser_donor_name_fallback', $donor_name );
+	    }
+
+	    return $this->donor_name;
+    }
+
     private function increase_donor_amounts() {
         $donor = new Donor_Model( $this->donor_id );
 
