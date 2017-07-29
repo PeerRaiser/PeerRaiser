@@ -377,8 +377,6 @@ class Donation {
      * @return    bool                   True if the setup worked, false if not
      */
     private function setup_donation( $donation ) {
-        $this->pending = array();
-
         // Perform your actions before the donation is loaded with this hook:
         do_action( 'peerraiser_before_setup_donation', $this, $donation );
 
@@ -420,8 +418,6 @@ class Donation {
 
         // Add your own items to this object via this hook:
         do_action( 'peerraiser_after_setup_donation', $this, $donation );
-
-        return true;
     }
 
     /**
@@ -505,13 +501,14 @@ class Donation {
             $this->ID = $this->_ID;
         }
 
-        $updated = array();
+        $bulk_update = array();
+        $updated     = array();
 
         if ( ! empty( $this->pending ) ) {
             foreach ( $this->pending as $key => $value ) {
                 switch( $key ) {
 	                case 'status' :
-	                	$this->maybe_update_stats();
+	                	$this->maybe_update_stats( $value );
 	                case 'transaction_id' :
 	                case 'donor_id' :
 	                case 'donor_name' :
@@ -524,30 +521,32 @@ class Donation {
 	                case 'date' :
 	                case 'is_anonymous' :
 	                case 'is_test' :
-		                $this->update( array( $key => $value ) );
+	                	$bulk_update[$key] = $value;
 		                $updated[] = array( $key => $value );
-		                do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
 		                break;
-                    case 'donation_type' :
-	                case 'gateway' :
-	                case 'notes' :
-                        $this->update_meta( $key, $value );
-		                $updated[] = array( $key => $value );
-		                do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
-                        break;
                     default :
-                        do_action( 'peerraiser_donation_save', $this, $key );
+	                    $this->update_meta( $key, $value );
+	                    $updated[] = array( $key => $value );
                         break;
                 }
             }
         }
 
-        do_action( 'peerraiser_donation_saved', $this, $updated );
+        if ( ! empty ( $bulk_update ) ) {
+	        $this->update( $bulk_update );
+        }
 
-        $cache_key = md5( 'peerraiser_donation_' . $this->ID );
-        wp_cache_set( $cache_key, $this, 'donations' );
+	    $cache_key = md5( 'peerraiser_donation_' . $this->ID );
+	    wp_cache_set( $cache_key, $this, 'donations' );
 
-        return true;
+	    $this->pending = array();
+
+	    do_action( 'peerraiser_donation_saved', $this, $updated );
+	    foreach ( $updated as $key => $value ) {
+		    do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
+	    }
+
+	    return true;
     }
 
     /**
@@ -598,8 +597,8 @@ class Donation {
 		return $updated;
 	}
 
-	private function maybe_update_stats() {
-		if ( $this->is_test || empty( $this->old_status ) || $this->status === $this->old_status ) {
+	private function maybe_update_stats( $status ) {
+		if ( $this->is_test || empty( $this->old_status ) || $status === $this->old_status ) {
 			return;
 		}
 
@@ -614,7 +613,7 @@ class Donation {
 			$activity_feed->remove_activity( $this->ID );
 		}
 
-		if ( $this->status === 'completed' ) {
+		if ( $status === 'completed' ) {
 			$this->increase_donor_amounts();
 			$this->increase_campaign_amounts();
 			$this->increase_fundraiser_amounts();
