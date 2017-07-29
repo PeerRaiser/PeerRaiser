@@ -181,12 +181,12 @@ class Donation_Rest_Controller extends WP_REST_Controller {
 		}
 
 		$item->transaction_id = $params['transaction_id'];
-		$item->status         = $params['status'];
 		$item->subtotal       = $params['subtotal'];
 		$item->total          = $params['total'];
-		$item->add_note( __( 'Donation completed!', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
-
+		$item->status         = $params['status'];
 		$item->save();
+
+		$item->add_note( __( 'Donation completed!', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
 
 		$data = array(
 			'success' => true
