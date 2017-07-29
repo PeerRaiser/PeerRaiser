@@ -52,7 +52,7 @@ class Participant_Dashboard extends \PeerRaiser\Controller\Base {
 	    echo Text::peerraiser_json_encode( array(
 		    'avatar_id' => $attachment_id,
 		    'success'   => true,
-		    'image_url' => wp_get_attachment_image_url( $attachment_id, 'peerraiser_campaign_thumbnail' )
+		    'image_url' => wp_get_attachment_image_url( $attachment_id, 'peerraiser_campaign_thumbnail_id' )
 	    ) );
 
 	    wp_die();
