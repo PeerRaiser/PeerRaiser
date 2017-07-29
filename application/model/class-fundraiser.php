@@ -363,6 +363,10 @@ class Fundraiser {
 		return esc_url( $plugin_options['user_thumbnail_image'] );
 	}
 
+	public function get_fundraiser_url() {
+		return get_permalink( $this->ID );
+	}
+
     /**
      * Get the total number of fundraisers
      *
