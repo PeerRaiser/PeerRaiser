@@ -109,6 +109,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         $dashboard_model  = new \PeerRaiser\Model\Frontend\Dashboard();
         $currency_model   = new \PeerRaiser\Model\Currency();
         $fundraiser_model = new Fundraiser();
+        $team_model       = new Team();
         $current_user_id  = get_current_user_id();
 
         $navigation_links = apply_filters( 'peerraiser_participant_dashboard_navigation', $dashboard_model->get_navigation() );
@@ -117,8 +118,8 @@ class Shortcode extends \PeerRaiser\Controller\Base {
 	        'navigation'                 => $navigation_links,
 	        'donations'                  => $dashboard_model->get_donations(),
 	        'fundraisers'                => $fundraiser_model->get_fundraisers( array( 'participant' => $current_user_id ) ),
-	        'teams'                      => $dashboard_model->get_teams(),
-	        'user_id'                    => get_current_user_id(),
+	        'teams'                      => $team_model->get_teams_for_current_user(),
+	        'user_id'                    => $current_user_id,
 	        'default_campaign_thumbnail' => $plugin_options['campaign_thumbnail_image'],
 	        'default_team_thumbnail'     => $plugin_options['team_thumbnail_image'],
 	        'currency_symbol'            => $currency_model->get_currency_symbol_by_iso4217_code( $plugin_options['currency'] ),
