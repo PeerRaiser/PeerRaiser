@@ -887,7 +887,8 @@ class Campaign {
 		}
 
 		$plugin_options = get_option( 'peerraiser_options', array() );
-		return $plugin_options['campaign_thumbnail_image'];
+
+		return esc_url( $plugin_options['campaign_thumbnail_image'] );
 	}
 
     /**
