@@ -36,7 +36,7 @@ class Donation extends \PeerRaiser\Controller\Base {
 			return;
 		}
 
-		$donor    = new \PeerRaiser\Model\Donor( trim( $_POST['email_address'] ) );
+		$donor = new \PeerRaiser\Model\Donor( trim( $_POST['email_address'] ) );
 
 		// Donor fields
 		$donor->first_name = trim( esc_attr( $_POST['first_name'] ) );
