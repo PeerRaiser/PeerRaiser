@@ -212,8 +212,6 @@ class Donor {
 	 * @return bool True if the setup worked, false if not
 	 */
 	private function setup_donor( $donor ) {
-		$this->pending = array();
-
 		// Perform your actions before the donor is loaded with this hook:
 		do_action( 'peerraiser_before_setup_donor', $this, $donor );
 
@@ -281,7 +279,8 @@ class Donor {
 			$this->user_id = $this->maybe_connect_user();
 		}
 
-		$updated = array();
+		$bulk_update = array();
+		$updated     = array();
 
 		if ( ! empty( $this->pending ) ) {
 			foreach ( $this->pending as $key => $value ) {
@@ -292,9 +291,8 @@ class Donor {
 					case 'email_address' :
 					case 'date' :
 					case 'user_id' :
-						$this->update( array( $key => $value ) );
+						$bulk_update[$key] = $value;
 						$updated[] = array( $key => $value );
-						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
 						break;
 					case 'street_address_1' :
 					case 'street_address_2' :
@@ -304,12 +302,10 @@ class Donor {
 					case 'country' :
 						$this->update_meta( $key, $value );
 						$updated[] = array( $key => $value );
-						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
 						break;
 					case 'notes' :
 						$this->update_meta( '_peerraiser_donor_notes', $value );
 						$updated[] = array( '_peerraiser_donor_notes' => $value );
-						do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
 						break;
 					default :
 						do_action( 'peerraiser_donor_save', $this, $key );
@@ -318,10 +314,19 @@ class Donor {
 			}
 		}
 
-		do_action( 'peerraiser_donor_saved', $this, $updated );
+		if ( ! empty ( $bulk_update ) ) {
+			$this->update( $bulk_update );
+		}
 
 		$cache_key = md5( 'peerraiser_donor_' . $this->ID );
 		wp_cache_set( $cache_key, $this, 'donors' );
+
+		$this->pending = array();
+
+		do_action( 'peerraiser_donor_saved', $this, $updated );
+		foreach ( $updated as $key => $value ) {
+			do_action( "peerraiser_donor_updated_{$key}", $this, $key, $value );
+		}
 
 		return true;
 	}
