@@ -148,6 +148,17 @@ function peerraiser_get_current_fundraiser() {
 	return new \PeerRaiser\Model\Fundraiser( get_the_ID() );
 }
 
+function peerraiser_get_current_team() {
+	$queried_object = get_queried_object();
+
+	// Make sure the current queried object is a peerraiser campaign
+	if ( ! is_a( $queried_object, 'WP_Term' ) || $queried_object->taxonomy !== 'peerraiser_team' ) {
+		return false;
+	}
+
+	return new \PeerRaiser\Model\Team( $queried_object->term_id );
+}
+
 function peerraiser_get_currency_symbol() {
 	$plugin_options = get_option( 'peerraiser_options', array() );
 
