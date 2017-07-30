@@ -55,32 +55,4 @@ class Dashboard extends \PeerRaiser\Model\Admin\Admin {
         return $donation_model->get_donations( array( 'particpant_id' => $participant_id ) );
     }
 
-    public function get_fundraisers() {
-        $args = array(
-            'post_type'       => 'fundraiser',
-            'posts_per_page'  => -1,
-            'post_status'     => 'publish',
-            'connected_type'  => 'fundraiser_to_participant',
-            'connected_items' => get_current_user_id(),
-        );
-        return new \WP_Query( $args );
-    }
-
-    /**
-     * Get teams where the current user is the leader
-     *
-     * @since     1.0.0
-     * @return    WP_Query
-     */
-    public function get_teams() {
-        $args = array(
-            'post_type' => 'pr_team',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-            'connected_type' => 'teams_to_captains',
-            'connected_items' => get_current_user_id(),
-        );
-        return new \WP_Query( $args );
-    }
-
 }
