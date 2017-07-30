@@ -178,24 +178,6 @@ class Settings extends Admin {
 						'type'       => 'text',
 						'default_cb' => array( $this, 'get_field_value' ),
 					),
-					'peerraiser_password' => array(
-						'name' => __('PeerRaiser.com Password', 'peerraiser' ),
-						'id'   => 'peerraiser_password',
-						'type' => 'text',
-						'attributes' => array(
-							'type' => 'password',
-						),
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
-					'peerraiser_secret_key' => array(
-						'name' => __('PeerRaiser.com Key', 'peerraiser' ),
-						'id'   => 'peerraiser_secret_key',
-						'type' => 'text',
-						'attributes' => array(
-							'type' => 'password',
-						),
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
 				)
 			),
             array(
@@ -340,6 +322,7 @@ class Settings extends Admin {
 				'account' => array(
 					'name' => __('Account Settings', 'peerraiser'),
 					'fields' => 'account-settings',
+					'before_fields' => array( $this, 'peerraiser_account_signup_info'),
 				)
 			),
             'emails' => array (
@@ -579,11 +562,19 @@ class Settings extends Admin {
         $html = '';
         $data['title'] = $section['name'];
 
-        if ( isset($section['before_fields']) ) {
-            $html .= $section['before_fields'];
+        if ( ! empty($section['before_fields']) ) {
+        	if ( is_callable( $section['before_fields' ] ) ) {
+        		$results = call_user_func( $section['before_fields'] );
+
+        		if ( ! empty( $results ) ) {
+        			$html .= $results;
+		        }
+	        } else {
+		        $html .= $section['before_fields'];
+	        }
         }
 
-        if (  isset($section['fields']) ) {
+        if ( ! empty($section['fields']) ) {
             $field_html = cmb2_get_metabox_form(
                 $section['fields'],
                 0,
@@ -595,14 +586,32 @@ class Settings extends Admin {
             $html .= $field_html;
         }
 
-        if (  isset($section['after_fields']) ) {
-            $html .= $section['after_fields'];
+        if ( ! empty($section['after_fields']) ) {
+	        if ( is_callable( $section['after_fields' ] ) ) {
+		        $results = call_user_func( $section['after_fields'] );
+
+		        if ( ! empty( $results ) ) {
+			        $html .= $results;
+		        }
+	        } else {
+		        $html .= $section['after_fields'];
+	        }
         }
 
         $data['html'] = $html;
 
         return $data;
 
+    }
+
+    public function peerraiser_account_signup_info() {
+	    $plugin_options = get_option( 'peerraiser_options', array() );
+
+	    if ( ! empty( $plugin_options['peerraiser_username'] ) ) {
+		    return '';
+	    }
+
+	    return __( '<span>You need to <a href="https://peerraiser.com/signup/" target="_blank">signup for a free PeerRaiser account</a> to accept donations. After you signup, enter your username below.</span>', 'peerraiser' );
     }
 
 }
