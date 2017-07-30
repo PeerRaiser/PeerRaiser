@@ -101,10 +101,12 @@ class Dashboard extends Base {
             'campaigns_total'      => View::format_number( $campaign_model->get_total_campaigns(), false, true ),
             'fundraisers_total'    => View::format_number( $fundraiser_model->get_total_fundraisers(), false, true ),
             'donors_total'         => View::format_number( $donor_model->get_total_donors(), false, true ),
+            'donate_url'           => get_the_permalink( $plugin_options['donation_page'] ),
             'font_awesome_class'   => array(
                 'step_1'           => 'fa-square-o',
-                'step_2'           => 'fa-square-o',
-                'step_3'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o'
+                'step_2'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o',
+	            'step_3'           => 'fa-square-o',
+	            'step_4'           => 'fa-square-o',
             ),
             'top_donors'           => $donor_model->get_top_donors(),
             'top_fundraisers'      => $fundraiser_model->get_top_fundraisers(),
