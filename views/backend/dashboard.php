@@ -25,9 +25,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <h3><?php _e("Get started by following these steps:", 'peerraiser') ?></h3>
 
                     <ul>
-                        <li class="status-complete"><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="https://peerraiser.com/signup"><?php _e('Create a free PeerRaiser account', 'peerraiser') ?></a></li>
-                        <li class="status-incomplete"><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings"><?php _e('Connect your PeerRaiser account', 'peerraiser') ?></a></li>
-                        <li class="status-incomplete"><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_3'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>post-new.php?post_type=pr_campaign"><?php _e('Create your first campaign', 'peerraiser') ?></a></li>
+                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings&tab=account"><?php _e('Connect your PeerRaiser account', 'peerraiser') ?></a></li>
+                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>post-new.php?post_type=pr_campaign"><?php _e('Create your first campaign', 'peerraiser') ?></a></li>
+                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_3'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['donate_url'] ?>"><?php _e('Make a test donation', 'peerraiser') ?></a></li>
+                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_4'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings"><?php _e('Disable test mode', 'peerraiser') ?></a></li>
                     </ul>
 
                     <a href="#" class="close" data-message-type="welcome_message" data-nonce="<?php echo wp_create_nonce("dismiss_welcome_message") ?>"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
