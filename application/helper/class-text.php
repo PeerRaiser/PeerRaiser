@@ -207,16 +207,16 @@ class Text {
     }
 
     public static function str_replace_last( $search, $replace, $subject ) {
-	    $pos = strrpos($subject, $search);
+        $pos = strrpos($subject, $search);
 
-	    if ( $pos !== false ) {
-		    $subject = substr_replace($subject, $replace, $pos, strlen( $search ) );
-	    }
+        if ( $pos !== false ) {
+            $subject = substr_replace($subject, $replace, $pos, strlen( $search ) );
+        }
 
-	    return $subject;
+        return $subject;
     }
 
     public static function is_currency($number) {
-	    return preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number);
+        return preg_match("/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number);
     }
 }

@@ -41,8 +41,8 @@ class Donation_Table extends Database {
             'ip'             => '%s',
             'status'         => '%s',
             'date'           => '%s',
-	        'is_anonymous'   => '%d',
-	        'is_test'        => '%d',
+            'is_anonymous'   => '%d',
+            'is_test'        => '%d',
         );
     }
 
@@ -65,17 +65,17 @@ class Donation_Table extends Database {
             'ip'             => '',
             'status'         => 'completed',
             'date'           => date( 'Y-m-d H:i:s' ),
-	        'is_anonymous'   => 0,
-	        'is_test'        => 0,
+            'is_anonymous'   => 0,
+            'is_test'        => 0,
         );
     }
 
-	/**
-	 * @param array $args
-	 * @param bool $count
-	 *
-	 * @return array|object|null Database query results
-	 */
+    /**
+     * @param array $args
+     * @param bool $count
+     *
+     * @return array|object|null Database query results
+     */
     public function get_donations( $args = array(), $count = false ) {
 
         global $wpdb;
@@ -92,7 +92,7 @@ class Donation_Table extends Database {
             'status'         => '',
             'orderby'        => 'donation_id',
             'order'          => 'DESC',
-	        'is_test'        => 0
+            'is_test'        => 0
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -284,32 +284,32 @@ class Donation_Table extends Database {
 
         }
 
-	    // By anonymous donation or not
-	    if ( ! empty( $args['is_anonymous'] ) ) {
-		    // Convert boolean to 1 for true and 0 for false
-		    $is_anonymous = $args['is_anonymous'] ? 1 : 0;
+        // By anonymous donation or not
+        if ( ! empty( $args['is_anonymous'] ) ) {
+            // Convert boolean to 1 for true and 0 for false
+            $is_anonymous = $args['is_anonymous'] ? 1 : 0;
 
-		    if ( empty( $where ) ) {
-			    $where .= " WHERE";
-		    } else {
-			    $where .= " AND";
-		    }
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-		    $where .= " `is_anonymous` = '{$is_anonymous}' ";
-	    }
+            $where .= " `is_anonymous` = '{$is_anonymous}' ";
+        }
 
-	    // By test mode or not
+        // By test mode or not
         if ( ! empty( $args['is_test'] ) ) {
-	        // Convert boolean to 1 for true and 0 for false
-	        $is_test = $args['is_test'] ? 1 : 0;
+            // Convert boolean to 1 for true and 0 for false
+            $is_test = $args['is_test'] ? 1 : 0;
 
-	        if ( empty( $where ) ) {
-		        $where .= " WHERE";
-	        } else {
-		        $where .= " AND";
-	        }
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-	        $where .= " `is_test` = '{$is_test}' ";
+            $where .= " `is_test` = '{$is_test}' ";
         }
 
         $args['orderby'] = ! array_key_exists( $args['orderby'], $this->get_columns() ) ? $this->primary_key : $args['orderby'];
@@ -383,8 +383,8 @@ class Donation_Table extends Database {
             'ip'             => $donation->ip,
             'status'         => $donation->status,
             'date'           => $donation->date,
-	        'is_anonymous'   => $donation->is_anonymous,
-	        'is_test'        => $donation->is_test,
+            'is_anonymous'   => $donation->is_anonymous,
+            'is_test'        => $donation->is_test,
         );
 
         $this->insert( $data );

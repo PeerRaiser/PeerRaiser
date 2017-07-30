@@ -14,9 +14,9 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         add_action( 'manage_fundraiser_posts_custom_column', array( $this, 'manage_columns' ), 10, 2 );
         add_action( 'meta_boxes',                            array( $this, 'add_meta_boxes' ) );
         add_action( 'post_edit_form_tag',                    array( $this, 'add_peerraiser_class' ) );
-	    add_action( 'pre_get_posts',                         array( $this, 'orderby_donation_value' ) );
+        add_action( 'pre_get_posts',                         array( $this, 'orderby_donation_value' ) );
 
-	    add_filter( 'manage_edit-fundraiser_sortable_columns', array( $this, 'sortable_columns' ) );
+        add_filter( 'manage_edit-fundraiser_sortable_columns', array( $this, 'sortable_columns' ) );
     }
 
     public function register_meta_boxes() {
@@ -202,10 +202,10 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
             case 'campaign':
                 $campaigns = wp_get_post_terms( $post_id, 'peerraiser_campaign' );
                 if ( ! empty( $campaigns ) ) {
-                	$campaign = new \PeerRaiser\Model\Campaign( $campaigns[0]->term_id );
-	                echo '<a href="admin.php?page=peerraiser-campaigns&campaign=' . $campaign->ID . '&view=summary">' . $campaign->campaign_name . '</a>';
+                    $campaign = new \PeerRaiser\Model\Campaign( $campaigns[0]->term_id );
+                    echo '<a href="admin.php?page=peerraiser-campaigns&campaign=' . $campaign->ID . '&view=summary">' . $campaign->campaign_name . '</a>';
                 } else {
-                	echo '&mdash;';
+                    echo '&mdash;';
                 }
                 break;
             case 'participant':
@@ -228,23 +228,23 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
         }
     }
 
-	public function sortable_columns( $columns ) {
-		$columns['amount_raised'] = 'donation_value';
+    public function sortable_columns( $columns ) {
+        $columns['amount_raised'] = 'donation_value';
 
-		return $columns;
-	}
+        return $columns;
+    }
 
-	function orderby_donation_value( $query ) {
-		if( ! is_admin() )
-			return;
+    function orderby_donation_value( $query ) {
+        if( ! is_admin() )
+            return;
 
-		$orderby = $query->get( 'orderby');
+        $orderby = $query->get( 'orderby');
 
-		if( 'donation_value' == $orderby ) {
-			$query->set( 'meta_key', '_peerraiser_donation_value' );
-			$query->set( 'orderby', 'meta_value_num' );
-		}
-	}
+        if( 'donation_value' == $orderby ) {
+            $query->set( 'meta_key', '_peerraiser_donation_value' );
+            $query->set( 'orderby', 'meta_value_num' );
+        }
+    }
 
     public function add_meta_boxes() {
         if ( $this->is_edit_page( 'new' ) )

@@ -35,11 +35,11 @@ class Admin extends Base {
         add_action( 'wp_ajax_peerraiser_get_campaigns', array( $this, 'ajax_get_campaigns' ) );
         add_action( 'wp_ajax_peerraiser_get_teams',     array( $this, 'ajax_get_teams' ) );
         add_action( 'wp_ajax_peerraiser_get_users',     array( $this, 'ajax_get_users' ) );
-	    add_action( 'wp_ajax_peerraiser_get_slug',      array( $this, 'ajax_get_slug' ) );
+        add_action( 'wp_ajax_peerraiser_get_slug',      array( $this, 'ajax_get_slug' ) );
 
         add_filter( 'enter_title_here',           array( $this, 'customize_title' ), 1 );
-	    add_filter( 'manage_users_columns',       array( $this, 'add_peerraiser_group_column' ) );
-	    add_filter( 'manage_users_custom_column', array( $this, 'manage_peerraiser_group_column'), 10, 3 );
+        add_filter( 'manage_users_columns',       array( $this, 'add_peerraiser_group_column' ) );
+        add_filter( 'manage_users_custom_column', array( $this, 'manage_peerraiser_group_column'), 10, 3 );
     }
 
     public function handle_peerraiser_actions() {
@@ -58,7 +58,7 @@ class Admin extends Base {
             __( 'PeerRaiser', 'peerraiser' ),
             'PeerRaiser',
             'moderate_comments', // allow Super Admin, Admin, and Editor to view the settings page
-	        'peerraiser-dashboard',
+            'peerraiser-dashboard',
             array( $this, 'run' ),
             'dashicons-peerraiser-logo',
             81
@@ -181,10 +181,10 @@ class Admin extends Base {
                 $donors_controller = new DonorsController( Setup::get_plugin_config() );
                 $donors_controller->render_page();
                 break;
-	        case 'participants' :
-		        $participants_controller = new ParticipantsController( Setup::get_plugin_config() );
-		        $participants_controller->render_page();
-		        break;
+            case 'participants' :
+                $participants_controller = new ParticipantsController( Setup::get_plugin_config() );
+                $participants_controller->render_page();
+                break;
             case 'settings' :
                 $settings_controller = new SettingsController( Setup::get_plugin_config() );
                 $settings_controller->render_page();
@@ -276,20 +276,20 @@ class Admin extends Base {
      * @return    null
      */
     public function register_admin_scripts() {
-		wp_register_script(
-			'validate',
-			Setup::get_plugin_config()->get('js_url') . 'vendor/validate/jquery.validate.min.js',
-			array( 'jquery' ),
-			'1.16.0',
-			true
-		);
-		wp_register_script(
-			'validate-additional-methods',
-			Setup::get_plugin_config()->get('js_url') . 'vendor/validate/additional-methods.min.js',
-			array( 'jquery', 'validate' ),
-			'1.16.0',
-			true
-		);
+        wp_register_script(
+            'validate',
+            Setup::get_plugin_config()->get('js_url') . 'vendor/validate/jquery.validate.min.js',
+            array( 'jquery' ),
+            '1.16.0',
+            true
+        );
+        wp_register_script(
+            'validate-additional-methods',
+            Setup::get_plugin_config()->get('js_url') . 'vendor/validate/additional-methods.min.js',
+            array( 'jquery', 'validate' ),
+            '1.16.0',
+            true
+        );
         wp_register_script(
             'peerraiser-admin',
             Setup::get_plugin_config()->get( 'js_url' ) . 'peerraiser-admin.js',
@@ -305,21 +305,21 @@ class Admin extends Base {
             true
         );
 
-	    // Localize scripts
-	    wp_localize_script(
-		    'peerraiser-admin',
-		    'peerraiser_admin_object',
-		    array(
-			    'ajax_url' => admin_url( 'admin-ajax.php' ),
-			    'template_directory' => get_template_directory_uri(),
-			    'i10n' => array(
-			    	'edit'           => __('Edit', 'peerraiser'),
-			    	'ok'             => __('OK', 'peerraiser'),
-			    	'cancel'         => __('Cancel'),
-			    	'confirm_delete' => __('Are you sure you want to delete this? This cannot be undone.', 'peerraiser' )
-			    )
-		    )
-	    );
+        // Localize scripts
+        wp_localize_script(
+            'peerraiser-admin',
+            'peerraiser_admin_object',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri(),
+                'i10n' => array(
+                    'edit'           => __('Edit', 'peerraiser'),
+                    'ok'             => __('OK', 'peerraiser'),
+                    'cancel'         => __('Cancel'),
+                    'confirm_delete' => __('Are you sure you want to delete this? This cannot be undone.', 'peerraiser' )
+                )
+            )
+        );
     }
 
     public function register_admin_styles() {
@@ -351,10 +351,10 @@ class Admin extends Base {
      * Customize the "Enter title here" placeholder in the Title field based on post type
      *
      * @since 1.0.0
-	 * @param $title
-	 *
-	 * @return string
-	 */
+     * @param $title
+     *
+     * @return string
+     */
     public function customize_title( $title ) {
         $current_screen = get_current_screen();
 
@@ -374,40 +374,40 @@ class Admin extends Base {
         return $title;
     }
 
-	/**
-	 * Add a 'PeerRaiser Group' column to the Users list table
-	 *
-	 * @param $column
-	 *
-	 * @return mixed
-	 */
+    /**
+     * Add a 'PeerRaiser Group' column to the Users list table
+     *
+     * @param $column
+     *
+     * @return mixed
+     */
     public function add_peerraiser_group_column( $column ) {
-	    $column['peerraiser_group'] = __( 'PeerRaiser Group', 'peerraiser' );
+        $column['peerraiser_group'] = __( 'PeerRaiser Group', 'peerraiser' );
 
-    	return $column;
+        return $column;
     }
 
-	/**
-	 * Manage the display output of 'PeerRaiser Group' columns in the Users list table.
-	 *
-	 * @param string $output      Custom column output. Default empty.
-	 * @param string $column_name Column name.
-	 * @param int    $user_id     ID of the currently-listed user.
-	 *
-	 * @return string
-	 */
-	public function manage_peerraiser_group_column( $output, $column_name, $user_id ) {
-		switch ($column_name) {
-			case 'peerraiser_group' :
-				$peerraiser_groups = wp_get_object_terms( $user_id, array( 'peerraiser_group' ), array( 'fields' => 'names' ) );
-				return implode( ', ', $peerraiser_groups );
-				break;
-			default:
-		}
-		return $output;
-	}
+    /**
+     * Manage the display output of 'PeerRaiser Group' columns in the Users list table.
+     *
+     * @param string $output      Custom column output. Default empty.
+     * @param string $column_name Column name.
+     * @param int    $user_id     ID of the currently-listed user.
+     *
+     * @return string
+     */
+    public function manage_peerraiser_group_column( $output, $column_name, $user_id ) {
+        switch ($column_name) {
+            case 'peerraiser_group' :
+                $peerraiser_groups = wp_get_object_terms( $user_id, array( 'peerraiser_group' ), array( 'fields' => 'names' ) );
+                return implode( ', ', $peerraiser_groups );
+                break;
+            default:
+        }
+        return $output;
+    }
 
-	/**
+    /**
      * Retrieve posts and creates <option> for select lists
      *
      * @since     1.0.0
@@ -503,12 +503,12 @@ class Admin extends Base {
         );
 
         if ( isset( $_POST['peerraiser_group'] ) && $_POST['peerraiser_group'] === 'participants' ) {
-	        $participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
-	        $participant_ids  = get_objects_in_term( $participant_term->term_id, 'peerraiser_group' );
+            $participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
+            $participant_ids  = get_objects_in_term( $participant_term->term_id, 'peerraiser_group' );
 
-        	if ( ! empty( $participant_ids ) ) {
-		        $args['include'] = $participant_ids;
-	        }
+            if ( ! empty( $participant_ids ) ) {
+                $args['include'] = $participant_ids;
+            }
         }
 
         if ( isset($_POST['q'] ) ){
@@ -532,67 +532,67 @@ class Admin extends Base {
             }
         }
 
-		echo Text::peerraiser_json_encode( array(
-			'items' => $data ,
-			'total_count' => $total_users
-		) );
+        echo Text::peerraiser_json_encode( array(
+            'items' => $data ,
+            'total_count' => $total_users
+        ) );
 
-		wp_die();
+        wp_die();
     }
 
-	public function ajax_get_slug() {
-	    // Remove special characters
-	    $sanitized = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $_POST['new_slug'] ) ) );
+    public function ajax_get_slug() {
+        // Remove special characters
+        $sanitized = preg_replace("/&([a-z])[a-z]+;/i", "$1", htmlentities( wp_strip_all_tags( $_POST['new_slug'] ) ) );
 
-	    // Replace whitespaces with dashes.
-	    $sanitized = sanitize_title_with_dashes( $sanitized, null, 'save' );
+        // Replace whitespaces with dashes.
+        $sanitized = sanitize_title_with_dashes( $sanitized, null, 'save' );
 
-		switch ( $_POST['object_type'] ) {
-			case 'campaign' :
-				$term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_campaign' );
-				if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
-					$_POST['new_slug'] = $this->increment_slug( $sanitized );
-					$this->ajax_get_slug();
-				} else {
-					$new_slug = $sanitized;
-				}
-				break;
-			case 'team' :
-				$term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_team' );
-				if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
-					$_POST['new_slug'] = $this->increment_slug( $sanitized );
-					$this->ajax_get_slug();
-				} else {
-					$new_slug = $sanitized;
-				}
-				break;
-			default :
-				break;
-		}
+        switch ( $_POST['object_type'] ) {
+            case 'campaign' :
+                $term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_campaign' );
+                if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
+                    $_POST['new_slug'] = $this->increment_slug( $sanitized );
+                    $this->ajax_get_slug();
+                } else {
+                    $new_slug = $sanitized;
+                }
+                break;
+            case 'team' :
+                $term = get_term_by( 'slug', $_POST['new_slug'], 'peerraiser_team' );
+                if ( $term && $term->term_id !== (int) $_POST['object_id'] ) {
+                    $_POST['new_slug'] = $this->increment_slug( $sanitized );
+                    $this->ajax_get_slug();
+                } else {
+                    $new_slug = $sanitized;
+                }
+                break;
+            default :
+                break;
+        }
 
-		if ( mb_strlen( $new_slug ) > 34 ) {
-			$new_slug_abridged = mb_substr( $new_slug, 0, 16 ) . '&hellip;' . mb_substr( $new_slug, -16 );
-		} else {
-			$new_slug_abridged = $new_slug;
-		}
+        if ( mb_strlen( $new_slug ) > 34 ) {
+            $new_slug_abridged = mb_substr( $new_slug, 0, 16 ) . '&hellip;' . mb_substr( $new_slug, -16 );
+        } else {
+            $new_slug_abridged = $new_slug;
+        }
 
-		echo Text::peerraiser_json_encode( array(
-			'new_slug' => $new_slug,
-			'slug_abridged' => $new_slug_abridged,
-		) );
+        echo Text::peerraiser_json_encode( array(
+            'new_slug' => $new_slug,
+            'slug_abridged' => $new_slug_abridged,
+        ) );
 
-		wp_die();
-	}
+        wp_die();
+    }
 
-	function increment_slug( $slug ) {
-		preg_match("/(.*?)-(\d+)$/", $slug, $matches );
+    function increment_slug( $slug ) {
+        preg_match("/(.*?)-(\d+)$/", $slug, $matches );
 
-		if ( isset( $matches[2] ) ) {
-			$new_slug = $matches[1] . '-' . ( intval($matches[2]) + 1 );
-		} else {
-			$new_slug = $slug . '-2';
-		}
+        if ( isset( $matches[2] ) ) {
+            $new_slug = $matches[1] . '-' . ( intval($matches[2]) + 1 );
+        } else {
+            $new_slug = $slug . '-2';
+        }
 
-		return $new_slug;
-	}
+        return $new_slug;
+    }
 }

@@ -142,9 +142,9 @@ class Settings extends Base {
             // settings => json_encode( $plugin_options ),
         );
 
-		echo Text::peerraiser_json_encode( $data );
+        echo Text::peerraiser_json_encode( $data );
 
-		wp_die();
+        wp_die();
     }
 
     /**

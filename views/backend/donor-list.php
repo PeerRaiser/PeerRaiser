@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
     <h1 class="wp-heading-inline"><?php _e( 'Donors', 'peerraiser' ); ?></h1>
-	<a href="<?php echo admin_url( 'admin.php?page=peerraiser-donors&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
-	<hr class="wp-header-end">
+    <a href="<?php echo admin_url( 'admin.php?page=peerraiser-donors&view=add' ); ?>" class="page-title-action"><?php _e( 'Add New', 'peerraiser' ); ?></a>
+    <hr class="wp-header-end">
 
-	<?php $peerraiser['list_table']->views(); ?>
-	<form method="post">
-		<?php
-		$peerraiser['list_table']->prepare_items();
-		$peerraiser['list_table']->display();
-		?>
-	</form>
+    <?php $peerraiser['list_table']->views(); ?>
+    <form method="post">
+        <?php
+        $peerraiser['list_table']->prepare_items();
+        $peerraiser['list_table']->display();
+        ?>
+    </form>
 </div>

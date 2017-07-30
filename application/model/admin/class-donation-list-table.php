@@ -194,9 +194,9 @@ class Donation_List_Table extends WP_List_Table {
     public function process_bulk_action() {
         //Detect when a bulk action is being triggered...
         if ( 'bulk-delete' === $this->current_action() ) {
-        	foreach ( $_POST['bulk-delete'] as $id ) {
-		        self::delete_donation( absint( $id ) );
-	        }
+            foreach ( $_POST['bulk-delete'] as $id ) {
+                self::delete_donation( absint( $id ) );
+            }
         }
     }
 
@@ -214,23 +214,23 @@ class Donation_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_donations( $per_page = 10, $page_number = 1 ) {
-	    $donations = new \PeerRaiser\Model\Database\Donation_Table();
+        $donations = new \PeerRaiser\Model\Database\Donation_Table();
 
-	    $args = array(
-		    'number' => $per_page,
-		    'offset' => ( $page_number - 1 ) * $per_page
-	    );
+        $args = array(
+            'number' => $per_page,
+            'offset' => ( $page_number - 1 ) * $per_page
+        );
 
-	    if ( ! empty( $_REQUEST['orderby'] ) ) {
-		    $args['orderby'] = $_REQUEST['orderby'];
-		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
-	    }
+        if ( ! empty( $_REQUEST['orderby'] ) ) {
+            $args['orderby'] = $_REQUEST['orderby'];
+            $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+        }
 
-	    if ( ! empty( $_REQUEST['status'] ) ) {
-		    $args['status'] = $_REQUEST['status'];
-	    }
+        if ( ! empty( $_REQUEST['status'] ) ) {
+            $args['status'] = $_REQUEST['status'];
+        }
 
-		return $donations->get_donations( $args );
+        return $donations->get_donations( $args );
     }
 
     /**
@@ -256,12 +256,12 @@ class Donation_List_Table extends WP_List_Table {
         return $wpdb->get_var( $sql );
     }
 
-	/**
-	 *
-	 * @return array
-	 */
-	protected function get_table_classes() {
-		return array( 'widefat', 'fixed', 'striped', 'donations', 'peerraiser-list-table' );
-	}
+    /**
+     *
+     * @return array
+     */
+    protected function get_table_classes() {
+        return array( 'widefat', 'fixed', 'striped', 'donations', 'peerraiser-list-table' );
+    }
 
 }

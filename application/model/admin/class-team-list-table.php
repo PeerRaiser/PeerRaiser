@@ -33,18 +33,18 @@ class Team_List_Table extends WP_List_Table {
      * @return string
      */
     function column_name( $team ) {
-	    // create a nonce
-	    $delete_nonce = wp_create_nonce( 'peerraiser_delete_team_' . $team->ID );
+        // create a nonce
+        $delete_nonce = wp_create_nonce( 'peerraiser_delete_team_' . $team->ID );
 
-	    $title = '<strong><a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a></strong>';
+        $title = '<strong><a href="' . add_query_arg( array( 'team' => $team->ID, 'view' => 'summary' ) ) . '">' . $team->team_name . '</a></strong>';
 
-	    $actions = array(
-		    'edit'   => sprintf( '<a href="?page=%1$s&view=%2$s&team=%3$s">%4$s</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ), __( 'Edit', 'peerraiser') ),
-		    'view'   => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $team->get_permalink() ), __( 'View', 'peerraiser' ) ),
-		    'delete' => sprintf( '<a href="?page=%1$s&peerraiser_action=%2$s&team_id=%3$s&_wpnonce=%4$s">%5$s</a>', esc_attr( $_REQUEST['page'] ), 'delete_team', absint( $team->ID ), $delete_nonce, __( 'Delete', 'peerraiser' ) ),
-	    );
+        $actions = array(
+            'edit'   => sprintf( '<a href="?page=%1$s&view=%2$s&team=%3$s">%4$s</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $team->ID ), __( 'Edit', 'peerraiser') ),
+            'view'   => sprintf( '<a href="%1$s">%2$s</a>', esc_url( $team->get_permalink() ), __( 'View', 'peerraiser' ) ),
+            'delete' => sprintf( '<a href="?page=%1$s&peerraiser_action=%2$s&team_id=%3$s&_wpnonce=%4$s">%5$s</a>', esc_attr( $_REQUEST['page'] ), 'delete_team', absint( $team->ID ), $delete_nonce, __( 'Delete', 'peerraiser' ) ),
+        );
 
-	    return $title . $this->row_actions( apply_filters( 'peerraiser_team_actions', $actions ) );
+        return $title . $this->row_actions( apply_filters( 'peerraiser_team_actions', $actions ) );
     }
 
     /**
@@ -60,17 +60,17 @@ class Team_List_Table extends WP_List_Table {
             case 'count' :
                 return $team->get_total_members();
                 break;
-	        case 'raised' :
-	        	return peerraiser_money_format( $team->donation_value );
-	        	break;
-	        case 'leader' :
-		        $user_info = get_userdata( $team->team_leader );
-	        	return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s %3$s</a>', $team->team_leader, $user_info->first_name, $user_info->last_name);
-	        	break;
-	        case 'campaign' :
-	        	$campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id );
-		        return sprintf( '<a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%1$d">%2$s</a>', $campaign->ID, $campaign->campaign_name );
-	        	break;
+            case 'raised' :
+                return peerraiser_money_format( $team->donation_value );
+                break;
+            case 'leader' :
+                $user_info = get_userdata( $team->team_leader );
+                return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s %3$s</a>', $team->team_leader, $user_info->first_name, $user_info->last_name);
+                break;
+            case 'campaign' :
+                $campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id );
+                return sprintf( '<a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%1$d">%2$s</a>', $campaign->ID, $campaign->campaign_name );
+                break;
             default:
                 return print_r( $team, true ); //Show the whole array for troubleshooting purposes
         }
@@ -101,7 +101,7 @@ class Team_List_Table extends WP_List_Table {
             'leader'   => __( 'Team Leader', 'peerraiser' ),
             'campaign' => __( 'Campaign', 'peerraiser' ),
             'count'    => __( 'Fundraisers', 'peerraiser' ),
-	        'raised'   => __( 'Raised', 'peerraiser' ),
+            'raised'   => __( 'Raised', 'peerraiser' ),
         );
 
       return $columns;
@@ -205,19 +205,19 @@ class Team_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_teams( $per_page = 10, $page_number = 1 ) {
-	    $team_model = new \PeerRaiser\Model\Team();
+        $team_model = new \PeerRaiser\Model\Team();
 
-	    $args = array(
-		    'count'      => $per_page,
-		    'offset'     => $per_page * ( $page_number - 1 )
-	    );
+        $args = array(
+            'count'      => $per_page,
+            'offset'     => $per_page * ( $page_number - 1 )
+        );
 
-	    if ( ! empty( $_REQUEST['orderby'] ) ) {
-		    $args['orderby'] = $_REQUEST['orderby'];
-		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
-	    }
+        if ( ! empty( $_REQUEST['orderby'] ) ) {
+            $args['orderby'] = $_REQUEST['orderby'];
+            $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+        }
 
-	    return $team_model->get_teams( $args );
+        return $team_model->get_teams( $args );
     }
 
     /**
@@ -226,8 +226,8 @@ class Team_List_Table extends WP_List_Table {
      * @param int $id team ID
      */
     public function delete_team( $id ) {
-	    $team = new \PeerRaiser\Model\Team( $id );
-	    $team->delete();
+        $team = new \PeerRaiser\Model\Team( $id );
+        $team->delete();
     }
 
     /**
@@ -236,16 +236,16 @@ class Team_List_Table extends WP_List_Table {
      * @return null|string
      */
     public function record_count() {
-	    $team = new \PeerRaiser\Model\Team();
-	    return $team->get_total_teams();
+        $team = new \PeerRaiser\Model\Team();
+        return $team->get_total_teams();
     }
 
-	/**
-	 *
-	 * @return array
-	 */
-	protected function get_table_classes() {
-		return array( 'widefat', 'fixed', 'striped', 'teams', 'peerraiser-list-table' );
-	}
+    /**
+     *
+     * @return array
+     */
+    protected function get_table_classes() {
+        return array( 'widefat', 'fixed', 'striped', 'teams', 'peerraiser-list-table' );
+    }
 
 }

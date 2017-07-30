@@ -11,78 +11,78 @@ use WP_Query;
  */
 class Fundraiser {
 
-	/**
-	 * The Fundraiser ID
-	 *
-	 * @since  1.0.0
-	 * @var    integer
-	 */
-	public    $ID  = 0;
+    /**
+     * The Fundraiser ID
+     *
+     * @since  1.0.0
+     * @var    integer
+     */
+    public    $ID  = 0;
 
-	/**
-	 * The Protected Fundraiser ID
-	 *
-	 * @since  1.0.0
-	 * @var    integer
-	 */
-	protected $_ID = 0;
+    /**
+     * The Protected Fundraiser ID
+     *
+     * @since  1.0.0
+     * @var    integer
+     */
+    protected $_ID = 0;
 
-	/**
-	 * New or existing fundraiser
-	 *
-	 * @since  1.0.0
-	 * @var boolean
-	 */
-	protected $new = false;
+    /**
+     * New or existing fundraiser
+     *
+     * @since  1.0.0
+     * @var boolean
+     */
+    protected $new = false;
 
-	/**
-	 * Fundraiser name
-	 *
-	 * @var string
-	 */
-	protected $fundraiser_name = '';
+    /**
+     * Fundraiser name
+     *
+     * @var string
+     */
+    protected $fundraiser_name = '';
 
-	/**
-	 * Fundraiser slug
-	 *
-	 * @var string
-	 */
-	protected $fundraiser_slug = '';
+    /**
+     * Fundraiser slug
+     *
+     * @var string
+     */
+    protected $fundraiser_slug = '';
 
-	/**
-	 * Fundraiser content
-	 *
-	 * @var string
-	 */
-	protected $fundraiser_content = '';
+    /**
+     * Fundraiser content
+     *
+     * @var string
+     */
+    protected $fundraiser_content = '';
 
-	/**
-	 * Thumbnail image
-	 *
-	 * @var string
-	 */
-	protected $thumbnail_image = '';
+    /**
+     * Thumbnail image
+     *
+     * @var string
+     */
+    protected $thumbnail_image = '';
 
-	/**
-	 * Thumbnail image
-	 *
-	 * @var string
-	 */
-	protected $thumbnail_image_id = 0;
+    /**
+     * Thumbnail image
+     *
+     * @var string
+     */
+    protected $thumbnail_image_id = 0;
 
-	/**
-	 * Fundraiser goal
-	 *
-	 * @var float
-	 */
-	protected $fundraiser_goal = 0.00;
+    /**
+     * Fundraiser goal
+     *
+     * @var float
+     */
+    protected $fundraiser_goal = 0.00;
 
-	/**
-	 * Campaign ID
-	 *
-	 * @var int
-	 */
-	protected $campaign_id = 0;
+    /**
+     * Campaign ID
+     *
+     * @var int
+     */
+    protected $campaign_id = 0;
 
     /**
      * Team ID
@@ -112,112 +112,112 @@ class Fundraiser {
      */
     protected $donation_count = 0;
 
-	/**
-	 * Array of items that have changed since the last save() was run
-	 * This is for internal use, to allow fewer update_fundraiser_meta calls to be run
-	 *
-	 * @since  1.0.0
-	 * @var array
-	 */
-	private $pending;
+    /**
+     * Array of items that have changed since the last save() was run
+     * This is for internal use, to allow fewer update_fundraiser_meta calls to be run
+     *
+     * @since  1.0.0
+     * @var array
+     */
+    private $pending;
 
-	/**
-	 * Setup fundraiser class
-	 *
-	 * @since 1.0.0
-	 * @param int|boolean $id Fundraiser ID
-	 */
-	public function __construct( $id = false ) {
-		if ( empty( $id ) ) {
-			return false;
-		}
+    /**
+     * Setup fundraiser class
+     *
+     * @since 1.0.0
+     * @param int|boolean $id Fundraiser ID
+     */
+    public function __construct( $id = false ) {
+        if ( empty( $id ) ) {
+            return false;
+        }
 
-		$id = absint( $id );
+        $id = absint( $id );
 
-		$fundraiser = get_post( $id );
+        $fundraiser = get_post( $id );
 
-		if ( empty( $fundraiser ) ) {
-			return false;
-		}
+        if ( empty( $fundraiser ) ) {
+            return false;
+        }
 
-		$this->setup_fundraiser( $fundraiser );
+        $this->setup_fundraiser( $fundraiser );
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Run when reading data from inaccessible properties.
-	 *
-	 * @since  1.0.0
-	 * @param  string $key  The property
-	 * @return mixed        The value
-	 */
-	public function __get( $key ) {
-		if ( method_exists( $this, 'get_' . $key ) ) {
-			$value = call_user_func( array( $this, 'get_' . $key ) );
-		} else {
-			$value = $this->$key;
-		}
+    /**
+     * Run when reading data from inaccessible properties.
+     *
+     * @since  1.0.0
+     * @param  string $key  The property
+     * @return mixed        The value
+     */
+    public function __get( $key ) {
+        if ( method_exists( $this, 'get_' . $key ) ) {
+            $value = call_user_func( array( $this, 'get_' . $key ) );
+        } else {
+            $value = $this->$key;
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
-	/**
-	 * Run when writing data to inaccessible properties.
-	 *
-	 * @since  1.0.0
-	 * @param string $key   The property name
-	 * @param mixed $value  The value of the property
-	 */
-	public function __set( $key, $value ) {
-		$ignore = array( '_ID' );
+    /**
+     * Run when writing data to inaccessible properties.
+     *
+     * @since  1.0.0
+     * @param string $key   The property name
+     * @param mixed $value  The value of the property
+     */
+    public function __set( $key, $value ) {
+        $ignore = array( '_ID' );
 
-		if ( ! in_array( $key, $ignore ) ) {
-			$this->pending[ $key ] = $value;
-		}
+        if ( ! in_array( $key, $ignore ) ) {
+            $this->pending[ $key ] = $value;
+        }
 
-		if( '_ID' !== $key ) {
-			$this->$key = $value;
-		}
-	}
+        if( '_ID' !== $key ) {
+            $this->$key = $value;
+        }
+    }
 
-	/**
-	 * Run when isset() or empty() is called on inaccessible properties.
-	 *
-	 * @since  1.0.0
-	 * @param  string  $name The attribute to get
-	 * @return boolean       If the item is set or not
-	 */
-	public function __isset( $name ) {
-		if ( property_exists( $this, $name) ) {
-			return false === empty( $this->$name );
-		} else {
-			return null;
-		}
-	}
+    /**
+     * Run when isset() or empty() is called on inaccessible properties.
+     *
+     * @since  1.0.0
+     * @param  string  $name The attribute to get
+     * @return boolean       If the item is set or not
+     */
+    public function __isset( $name ) {
+        if ( property_exists( $this, $name) ) {
+            return false === empty( $this->$name );
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * Setup the fundraiser properties
-	 *
-	 * @since  1.0.0
-	 * @param  object $fundraiser A fundraiser object
-	 * @return bool             True if the setup worked, false if not
-	 */
-	private function setup_fundraiser( $fundraiser ) {
-		$this->pending = array();
+    /**
+     * Setup the fundraiser properties
+     *
+     * @since  1.0.0
+     * @param  object $fundraiser A fundraiser object
+     * @return bool             True if the setup worked, false if not
+     */
+    private function setup_fundraiser( $fundraiser ) {
+        $this->pending = array();
 
-		// Perform your actions before the fundraiser is loaded with this hook:
-		do_action( 'peerraiser_before_setup_fundraiser', $this, $fundraiser );
+        // Perform your actions before the fundraiser is loaded with this hook:
+        do_action( 'peerraiser_before_setup_fundraiser', $this, $fundraiser );
 
-		// Primary Identifiers
-		$this->ID			      = absint( $fundraiser->ID );
-		$this->_ID                = absint( $fundraiser->ID);
-		$this->fundraiser_name    = $fundraiser->post_title;
-		$this->fundraiser_slug    = $fundraiser->post_name;
-		$this->fundraiser_content = $fundraiser->post_content;
-		$this->thumbnail_image    = get_post_meta( $this->ID, '_peerraiser_thumbnail_image', true );
-		$this->thumbnail_image_id = get_post_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
-		$this->participant        = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
+        // Primary Identifiers
+        $this->ID			      = absint( $fundraiser->ID );
+        $this->_ID                = absint( $fundraiser->ID);
+        $this->fundraiser_name    = $fundraiser->post_title;
+        $this->fundraiser_slug    = $fundraiser->post_name;
+        $this->fundraiser_content = $fundraiser->post_content;
+        $this->thumbnail_image    = get_post_meta( $this->ID, '_peerraiser_thumbnail_image', true );
+        $this->thumbnail_image_id = get_post_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
+        $this->participant        = (int) get_post_meta( $this->ID, '_peerraiser_fundraiser_participant', true );
 
         $campaign          = wp_get_post_terms( $this->ID, 'peerraiser_campaign' );
         $this->campaign_id = ! empty( $campaign ) ? $campaign[0]->term_id : 0;
@@ -225,186 +225,186 @@ class Fundraiser {
         $team          = wp_get_post_terms( $this->ID, 'peerraiser_team' );
         $this->team_id = ! empty( $team ) ? $team[0]->term_id : 0;
 
-		// Money
-		$this->fundraiser_goal = get_post_meta( $this->ID, '_peerraiser_fundraiser_goal', true );
+        // Money
+        $this->fundraiser_goal = get_post_meta( $this->ID, '_peerraiser_fundraiser_goal', true );
         $donation_value        = get_post_meta( $this->ID, '_peerraiser_donation_value', true );
         $this->donation_value  = $donation_value ? floatval( $donation_value ) : 0.00;
         $donation_count        = get_post_meta( $this->ID, '_peerraiser_donation_count', true );
         $this->donation_count  = $donation_count ? intval( $donation_count ) : 0;
 
-		// Add your own items to this object via this hook:
-		do_action( 'peerraiser_after_setup_fundraiser', $this, $fundraiser );
+        // Add your own items to this object via this hook:
+        do_action( 'peerraiser_after_setup_fundraiser', $this, $fundraiser );
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Save information to the database
-	 *
-	 * @since 1.0.0
-	 * @return bool  True of the save occurred, false if it failed
-	 */
-	public function save() {
-		if ( empty( $this->ID ) ) {
-			$this->insert_fundraiser();
-		}
+    /**
+     * Save information to the database
+     *
+     * @since 1.0.0
+     * @return bool  True of the save occurred, false if it failed
+     */
+    public function save() {
+        if ( empty( $this->ID ) ) {
+            $this->insert_fundraiser();
+        }
 
-		if ( $this->ID !== $this->_ID ) {
-			$this->ID = $this->_ID;
-		}
+        if ( $this->ID !== $this->_ID ) {
+            $this->ID = $this->_ID;
+        }
 
-		if ( ! empty( $this->pending ) ) {
-			$pending_post_data = array();
-			foreach ( $this->pending as $key => $value ) {
-				if ( in_array( $key, array( 'fundraiser_name', 'fundraiser_slug', 'fundraiser_content' ) ) ) {
-					switch ( $key ) {
-						case 'fundraiser_name' :
-							$pending_post_data['post_title'] = $value;
-							break;
-						case 'fundraiser_slug' :
-							$pending_post_data['post_name'] = $value;
-							break;
-						case 'fundraiser_content' :
-							$pending_post_data['post_content'] = $value;
-							break;
-					}
-				} elseif ( property_exists( $this, $key ) ) {
-					switch ( $key ) {
-						case 'team_id' :
-							$this->add_to_team( $value );
-							$this->update_meta( '_peerraiser_fundraiser_team', $value );
-							break;
-						case 'campaign_id' :
-							$this->add_to_campaign( $value );
-							$this->update_meta( '_peerraiser_fundraiser_campaign', $value );
-							break;
-						case 'fundraiser_goal' :
-							$this->update_meta( '_peerraiser_fundraiser_goal', $value );
-							break;
-						case 'participant' :
-							$this->update_meta( '_peerraiser_fundraiser_participant', $value );
-							break;
-						default :
-							$this->update_meta( '_peerraiser_' . $key, $value );
-							break;
-					}
-				} else {
-					do_action( 'peerraiser_fundraiser_save', $this, $key );
-				}
-			}
+        if ( ! empty( $this->pending ) ) {
+            $pending_post_data = array();
+            foreach ( $this->pending as $key => $value ) {
+                if ( in_array( $key, array( 'fundraiser_name', 'fundraiser_slug', 'fundraiser_content' ) ) ) {
+                    switch ( $key ) {
+                        case 'fundraiser_name' :
+                            $pending_post_data['post_title'] = $value;
+                            break;
+                        case 'fundraiser_slug' :
+                            $pending_post_data['post_name'] = $value;
+                            break;
+                        case 'fundraiser_content' :
+                            $pending_post_data['post_content'] = $value;
+                            break;
+                    }
+                } elseif ( property_exists( $this, $key ) ) {
+                    switch ( $key ) {
+                        case 'team_id' :
+                            $this->add_to_team( $value );
+                            $this->update_meta( '_peerraiser_fundraiser_team', $value );
+                            break;
+                        case 'campaign_id' :
+                            $this->add_to_campaign( $value );
+                            $this->update_meta( '_peerraiser_fundraiser_campaign', $value );
+                            break;
+                        case 'fundraiser_goal' :
+                            $this->update_meta( '_peerraiser_fundraiser_goal', $value );
+                            break;
+                        case 'participant' :
+                            $this->update_meta( '_peerraiser_fundraiser_participant', $value );
+                            break;
+                        default :
+                            $this->update_meta( '_peerraiser_' . $key, $value );
+                            break;
+                    }
+                } else {
+                    do_action( 'peerraiser_fundraiser_save', $this, $key );
+                }
+            }
 
-			if ( ! empty( $pending_post_data ) ) {
-				$pending_post_data['ID'] = $this->ID;
+            if ( ! empty( $pending_post_data ) ) {
+                $pending_post_data['ID'] = $this->ID;
 
-				wp_update_post( $pending_post_data );
-			}
+                wp_update_post( $pending_post_data );
+            }
 
-		}
+        }
 
-		do_action( 'peerraiser_fundraiser_saved', $this->ID, $this );
+        do_action( 'peerraiser_fundraiser_saved', $this->ID, $this );
 
-		$cache_key = md5( 'peerraiser_fundraiser_' . $this->ID );
-		wp_cache_set( $cache_key, $this, 'fundraisers' );
+        $cache_key = md5( 'peerraiser_fundraiser_' . $this->ID );
+        wp_cache_set( $cache_key, $this, 'fundraisers' );
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Delete the fundraiser
-	 */
-	public function delete() {
-	    do_action( 'peerraiser_fundraiser_delete', $this );
+    /**
+     * Delete the fundraiser
+     */
+    public function delete() {
+        do_action( 'peerraiser_fundraiser_delete', $this );
 
         wp_delete_post( $this->ID );
 
         do_action( 'peerraiser_fundraiser_deleted', $this );
-	}
+    }
 
-	/**
-	 * Update fundraiser meta
-	 *
-	 * @since     1.0.0
-	 * @param     string    $meta_key      Meta key to update
-	 * @param     string    $meta_value    Meta value
-	 * @param     string    $prev_value    Previous value
-	 *
-	 * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
-	 */
-	public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		return update_post_meta( $this->ID, $meta_key, $meta_value, $prev_value );
-	}
+    /**
+     * Update fundraiser meta
+     *
+     * @since     1.0.0
+     * @param     string    $meta_key      Meta key to update
+     * @param     string    $meta_value    Meta value
+     * @param     string    $prev_value    Previous value
+     *
+     * @return    int|bool                 Meta ID if the key didn't exist, true on success, false on failure
+     */
+    public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
+        return update_post_meta( $this->ID, $meta_key, $meta_value, $prev_value );
+    }
 
     /**
      * Add the fundraiser to a campaign
      *
      * @param $campaign_id int The campaign to add the fundraiser to
      */
-	public function add_to_campaign( $campaign_id ) {
-		wp_set_object_terms( $this->ID, (int) $campaign_id, 'peerraiser_campaign' );
-	}
+    public function add_to_campaign( $campaign_id ) {
+        wp_set_object_terms( $this->ID, (int) $campaign_id, 'peerraiser_campaign' );
+    }
 
-	/**
-	 * Add the fundraiser to a team
-	 *
-	 * @param $team_id int The team to add the fundraiser to
-	 */
-	public function add_to_team( $team_id ) {
-		wp_set_object_terms( $this->ID, (int) $team_id, 'peerraiser_team' );
-	}
+    /**
+     * Add the fundraiser to a team
+     *
+     * @param $team_id int The team to add the fundraiser to
+     */
+    public function add_to_team( $team_id ) {
+        wp_set_object_terms( $this->ID, (int) $team_id, 'peerraiser_team' );
+    }
 
-	public function get_thumbnail_url( $size = 'peerraiser_thumbnail_medium' ) {
-		if ( ! empty( $this->thumbnail_image_id ) ) {
-			$image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_fundraiser_thumbnail_size', $size ) );
-			return $image_attributes[0];
-		}
+    public function get_thumbnail_url( $size = 'peerraiser_thumbnail_medium' ) {
+        if ( ! empty( $this->thumbnail_image_id ) ) {
+            $image_attributes = wp_get_attachment_image_src( $this->thumbnail_image_id, apply_filters( 'peerraiser_fundraiser_thumbnail_size', $size ) );
+            return $image_attributes[0];
+        }
 
-		$plugin_options = get_option( 'peerraiser_options', array() );
+        $plugin_options = get_option( 'peerraiser_options', array() );
 
-		return esc_url( $plugin_options['user_thumbnail_image'] );
-	}
+        return esc_url( $plugin_options['user_thumbnail_image'] );
+    }
 
-	public function get_fundraiser_url() {
-		return get_permalink( $this->ID );
-	}
+    public function get_fundraiser_url() {
+        return get_permalink( $this->ID );
+    }
 
     /**
      * Get the total number of fundraisers
      *
      * @return int Number of fundraisers
      */
-	public function get_total_fundraisers() {
+    public function get_total_fundraisers() {
         $fundraisers_count = wp_count_posts( 'fundraiser' );
 
         return (int) $fundraisers_count->publish;
     }
 
-	/**
-	 * Get campaigns
-	 *
-	 * @param array $args
-	 *
-	 * @return array
-	 */
-	public function get_fundraisers( $args = array()) {
-		$defaults = array(
-			'posts_per_page' => 20,
-			'paged'          => 1,
-			'post_type'      => array( 'fundraiser' ),
-			'fields'         => 'ids'
-		);
+    /**
+     * Get campaigns
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function get_fundraisers( $args = array()) {
+        $defaults = array(
+            'posts_per_page' => 20,
+            'paged'          => 1,
+            'post_type'      => array( 'fundraiser' ),
+            'fields'         => 'ids'
+        );
 
-		$args = wp_parse_args( $args, $defaults );
+        $args = wp_parse_args( $args, $defaults );
 
-		$query = new WP_Query( $args );
+        $query = new WP_Query( $args );
 
-		$results = array();
+        $results = array();
 
-		foreach ( $query->posts as $id ) {
-			$results[] = new self( $id );
-		}
+        foreach ( $query->posts as $id ) {
+            $results[] = new self( $id );
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 
     /**
      * Get the top fundraisers sort by value
@@ -415,25 +415,25 @@ class Fundraiser {
      * @return array Fundraisers
      */
     public function get_top_fundraisers( $count = 20, $args = array() ) {
-	    $defaults = array(
-	    	'post_type'      => 'fundraiser',
-		    'posts_per_page' => $count,
-		    'meta_key'       => '_peerraiser_donation_value',
+        $defaults = array(
+            'post_type'      => 'fundraiser',
+            'posts_per_page' => $count,
+            'meta_key'       => '_peerraiser_donation_value',
             'orderby'        => 'meta_value_num',
             'order'          => 'DESC'
-	    );
+        );
 
-	    $args = wp_parse_args( $args, $defaults );
+        $args = wp_parse_args( $args, $defaults );
 
-	    $fundraisers = new \WP_Query( $args );
-	    $fundraiser_ids = wp_list_pluck( $fundraisers->posts, 'ID' );
-	    $data = array();
+        $fundraisers = new \WP_Query( $args );
+        $fundraiser_ids = wp_list_pluck( $fundraisers->posts, 'ID' );
+        $data = array();
 
-	    foreach ( $fundraiser_ids as $fundraiser_id ) {
-	    	$data[] = new $this( $fundraiser_id );
-	    }
+        foreach ( $fundraiser_ids as $fundraiser_id ) {
+            $data[] = new $this( $fundraiser_id );
+        }
 
-	    return $data;
+        return $data;
     }
 
     /**
@@ -542,31 +542,31 @@ class Fundraiser {
         return $this->donation_value;
     }
 
-	/**
-	 * Creates a donation record in the database
-	 *
-	 * @since     1.0.0
-	 *
-	 * @return    int|\WP_Error    Donation ID
-	 */
-	private function insert_fundraiser() {
-		if ( empty ( $this->fundraiser_name ) ) {
-			$this->fundraiser_name = sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
-		}
+    /**
+     * Creates a donation record in the database
+     *
+     * @since     1.0.0
+     *
+     * @return    int|\WP_Error    Donation ID
+     */
+    private function insert_fundraiser() {
+        if ( empty ( $this->fundraiser_name ) ) {
+            $this->fundraiser_name = sprintf( __( 'Help Me Support %s!', 'peerraiser'), get_bloginfo( 'name') );
+        }
 
-		$fundraiser_id = wp_insert_post( array(
-			'post_title' => $this->fundraiser_name,
-			'post_content' => $this->fundraiser_content,
-			'post_status' => 'publish',
-			'post_type' => 'fundraiser'
-		) );
+        $fundraiser_id = wp_insert_post( array(
+            'post_title' => $this->fundraiser_name,
+            'post_content' => $this->fundraiser_content,
+            'post_status' => 'publish',
+            'post_type' => 'fundraiser'
+        ) );
 
-		$this->ID  = $fundraiser_id;
-		$this->_ID = $fundraiser_id;
+        $this->ID  = $fundraiser_id;
+        $this->_ID = $fundraiser_id;
 
-		do_action( 'peerraiser_fundraiser_added', $this );
+        do_action( 'peerraiser_fundraiser_added', $this );
 
-		return $this->ID;
-	}
+        return $this->ID;
+    }
 
 }

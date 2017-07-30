@@ -36,10 +36,10 @@ class Settings extends Admin {
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'team_slug' => array(
-	                    'name'       => __( 'Team Slug', 'peerraiser' ),
-	                    'id'         => 'team_slug',
-	                    'type'       => 'text_small',
-	                    'default_cb' => array( $this, 'get_field_value'),
+                        'name'       => __( 'Team Slug', 'peerraiser' ),
+                        'id'         => 'team_slug',
+                        'type'       => 'text_small',
+                        'default_cb' => array( $this, 'get_field_value'),
                     ),
                     'show_welcome_message' => array(
                         'name'       => __( 'Show Welcome Message on Dashboard?', 'peerraiser' ),
@@ -110,10 +110,10 @@ class Settings extends Admin {
                         'options_cb'        => array( $this, 'get_selected_post'),
                     ),
                     'registration_page' => array(
-	                    'name'              => __('Registration Page', 'peerraiser'),
-	                    'id'                => 'registration_page',
-	                    'type'              => 'select',
-	                    'options_cb'        => array( $this, 'get_selected_post'),
+                        'name'              => __('Registration Page', 'peerraiser'),
+                        'id'                => 'registration_page',
+                        'type'              => 'select',
+                        'options_cb'        => array( $this, 'get_selected_post'),
                     ),
                     'participant_dashboard' => array(
                         'name'              => __('Participant Dashboard', 'peerraiser'),
@@ -122,10 +122,10 @@ class Settings extends Admin {
                         'options_cb'        => array( $this, 'get_selected_post'),
                     ),
                     'donation_page' => array(
-	                    'name'              => __('Donation Page', 'peerraiser'),
-	                    'id'                => 'donation_page',
-	                    'type'              => 'select',
-	                    'options_cb'        => array( $this, 'get_selected_post'),
+                        'name'              => __('Donation Page', 'peerraiser'),
+                        'id'                => 'donation_page',
+                        'type'              => 'select',
+                        'options_cb'        => array( $this, 'get_selected_post'),
                     ),
                 ),
             ),
@@ -169,17 +169,17 @@ class Settings extends Admin {
                     ),
                 )
             ),
-			array(
-				'id' => 'account-settings',
-				'fields' => array(
-					'peerraiser_username' => array(
-						'name'       => __('PeerRaiser.com Username', 'peerraiser' ),
-						'id'         => 'peerraiser_username',
-						'type'       => 'text',
-						'default_cb' => array( $this, 'get_field_value' ),
-					),
-				)
-			),
+            array(
+                'id' => 'account-settings',
+                'fields' => array(
+                    'peerraiser_username' => array(
+                        'name'       => __('PeerRaiser.com Username', 'peerraiser' ),
+                        'id'         => 'peerraiser_username',
+                        'type'       => 'text',
+                        'default_cb' => array( $this, 'get_field_value' ),
+                    ),
+                )
+            ),
             array(
                 'id'     => 'email-settings',
                 'fields' => array(
@@ -303,7 +303,7 @@ class Settings extends Admin {
         );
         $this->tabs = array(
             'general'  => __('General', 'peerraiser'),
-			'account'  => __('Account', 'peerraiser'),
+            'account'  => __('Account', 'peerraiser'),
             'emails'   => __('Emails', 'peerraiser'),
             'advanced' => __('Advanced', 'peerraiser'),
         );
@@ -318,13 +318,13 @@ class Settings extends Admin {
                     'fields' => 'currency-settings',
                 )
             ),
-			'account' => array(
-				'account' => array(
-					'name' => __('Account Settings', 'peerraiser'),
-					'fields' => 'account-settings',
-					'before_fields' => array( $this, 'peerraiser_account_signup_info'),
-				)
-			),
+            'account' => array(
+                'account' => array(
+                    'name' => __('Account Settings', 'peerraiser'),
+                    'fields' => 'account-settings',
+                    'before_fields' => array( $this, 'peerraiser_account_signup_info'),
+                )
+            ),
             'emails' => array (
                 'emails' => array(
                     'name'   => __('Email Settings', 'peerraiser'),
@@ -440,9 +440,9 @@ class Settings extends Admin {
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaigns';
                 break;
 
-	        case 'team_slug':
-		        $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'teams';
-		        break;
+            case 'team_slug':
+                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'teams';
+                break;
 
             // True or False questions
             case 'show_welcome_message':
@@ -563,15 +563,15 @@ class Settings extends Admin {
         $data['title'] = $section['name'];
 
         if ( ! empty($section['before_fields']) ) {
-        	if ( is_callable( $section['before_fields' ] ) ) {
-        		$results = call_user_func( $section['before_fields'] );
+            if ( is_callable( $section['before_fields' ] ) ) {
+                $results = call_user_func( $section['before_fields'] );
 
-        		if ( ! empty( $results ) ) {
-        			$html .= $results;
-		        }
-	        } else {
-		        $html .= $section['before_fields'];
-	        }
+                if ( ! empty( $results ) ) {
+                    $html .= $results;
+                }
+            } else {
+                $html .= $section['before_fields'];
+            }
         }
 
         if ( ! empty($section['fields']) ) {
@@ -587,15 +587,15 @@ class Settings extends Admin {
         }
 
         if ( ! empty($section['after_fields']) ) {
-	        if ( is_callable( $section['after_fields' ] ) ) {
-		        $results = call_user_func( $section['after_fields'] );
+            if ( is_callable( $section['after_fields' ] ) ) {
+                $results = call_user_func( $section['after_fields'] );
 
-		        if ( ! empty( $results ) ) {
-			        $html .= $results;
-		        }
-	        } else {
-		        $html .= $section['after_fields'];
-	        }
+                if ( ! empty( $results ) ) {
+                    $html .= $results;
+                }
+            } else {
+                $html .= $section['after_fields'];
+            }
         }
 
         $data['html'] = $html;
@@ -605,13 +605,13 @@ class Settings extends Admin {
     }
 
     public function peerraiser_account_signup_info() {
-	    $plugin_options = get_option( 'peerraiser_options', array() );
+        $plugin_options = get_option( 'peerraiser_options', array() );
 
-	    if ( ! empty( $plugin_options['peerraiser_username'] ) ) {
-		    return '';
-	    }
+        if ( ! empty( $plugin_options['peerraiser_username'] ) ) {
+            return '';
+        }
 
-	    return __( '<span>You need to <a href="https://peerraiser.com/signup/" target="_blank">signup for a free PeerRaiser account</a> to accept donations. After you signup, enter your username below.</span>', 'peerraiser' );
+        return __( '<span>You need to <a href="https://peerraiser.com/signup/" target="_blank">signup for a free PeerRaiser account</a> to accept donations. After you signup, enter your username below.</span>', 'peerraiser' );
     }
 
 }

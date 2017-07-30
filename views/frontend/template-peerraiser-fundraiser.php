@@ -22,7 +22,7 @@ $fundraiser = peerraiser_get_current_fundraiser();
         <h1 class="peerraiser-fundraiser-title"><?php echo $fundraiser->fundraiser_name; ?></h1>
 
         <div class="peerraiser-fundraiser-description">
-		    <?php echo $fundraiser->fundraiser_content; ?>
+            <?php echo $fundraiser->fundraiser_content; ?>
         </div>
 
     </div>

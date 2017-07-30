@@ -106,8 +106,8 @@ class Dashboard extends Base {
             'font_awesome_class'   => array(
                 'step_1'           => ! empty( $plugin_options['peerraiser_username'] ) ? 'fa-check-square-o' : 'fa-square-o',
                 'step_2'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o',
-	            'step_3'           => $this->made_test_donation() ? 'fa-check-square-o' : 'fa-square-o',
-	            'step_4'           => ! filter_var($plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN) ? 'fa-check-square-o' : 'fa-square-o',
+                'step_3'           => $this->made_test_donation() ? 'fa-check-square-o' : 'fa-square-o',
+                'step_4'           => ! filter_var($plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN) ? 'fa-check-square-o' : 'fa-square-o',
             ),
             'top_donors'           => $donor_model->get_top_donors(),
             'top_fundraisers'      => $fundraiser_model->get_top_fundraisers(),
@@ -150,14 +150,14 @@ class Dashboard extends Base {
     }
 
     private function made_test_donation() {
-    	$donation_model = new Donation();
+        $donation_model = new Donation();
 
-    	$test_donations = $donation_model->get_donations( array(
-    		'is_test' =>  1,
-		    'status' => 'completed',
-		    'number' => 1,
-	    ) );
+        $test_donations = $donation_model->get_donations( array(
+            'is_test' =>  1,
+            'status' => 'completed',
+            'number' => 1,
+        ) );
 
-    	return count( $test_donations ) > 0;
+        return count( $test_donations ) > 0;
     }
 }

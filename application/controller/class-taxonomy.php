@@ -17,9 +17,9 @@ class Taxonomy extends Base {
         $this->register_peerraiser_group_taxonomy();
     }
 
-	/**
-	 * Campaign Taxonomy
-	 */
+    /**
+     * Campaign Taxonomy
+     */
     private function register_campaign_taxonomy() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -49,9 +49,9 @@ class Taxonomy extends Base {
             'show_admin_column'     => false,
             'update_count_callback' => '_update_post_term_count',
             'query_var'             => true,
-	        'rewrite'               => array(
-	        	'slug' => isset( $plugin_options['campaign_slug'] ) ? $plugin_options['campaign_slug'] : 'campaigns'
-	        ),
+            'rewrite'               => array(
+                'slug' => isset( $plugin_options['campaign_slug'] ) ? $plugin_options['campaign_slug'] : 'campaigns'
+            ),
         );
 
         $objects = array( 'fundraiser', 'donation', 'donor' );
@@ -63,9 +63,9 @@ class Taxonomy extends Base {
         );
     }
 
-	/**
-	 * Team Taxonomy
-	 */
+    /**
+     * Team Taxonomy
+     */
     private function register_team_taxonomy() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
@@ -96,7 +96,7 @@ class Taxonomy extends Base {
             'update_count_callback' => '_update_post_term_count',
             'query_var'             => true,
             'rewrite'               => array(
-	            'slug' => isset( $plugin_options['team_slug'] ) ? $plugin_options['team_slug'] : 'teams'
+                'slug' => isset( $plugin_options['team_slug'] ) ? $plugin_options['team_slug'] : 'teams'
             ),
         );
 
@@ -109,54 +109,54 @@ class Taxonomy extends Base {
         );
     }
 
-	/**
-	 * PeerRaiser Group Taxonomy
-	 */
+    /**
+     * PeerRaiser Group Taxonomy
+     */
     private function register_peerraiser_group_taxonomy() {
-	    register_taxonomy(
-		    'peerraiser_group',
-		    'user',
-		    array(
-			    'public' => false,
-			    'labels' => array(
-				    'name' => __( 'PeerRaiser Groups' ),
-				    'singular_name' => __( 'PeerRaiser Group' ),
-				    'menu_name' => __( 'PeerRaiser Groups' ),
-				    'search_items' => __( 'Search Groups' ),
-				    'popular_items' => __( 'Popular Groups' ),
-				    'all_items' => __( 'All Groups' ),
-				    'edit_item' => __( 'Edit Group' ),
-				    'update_item' => __( 'Update Group' ),
-				    'add_new_item' => __( 'Add New Group' ),
-				    'new_item_name' => __( 'New Group Name' ),
-				    'separate_items_with_commas' => __( 'Separate groups with commas' ),
-				    'add_or_remove_items' => __( 'Add or remove groups' ),
-				    'choose_from_most_used' => __( 'Choose from the most popular groups' ),
-			    ),
-			    'update_count_callback' => array( $this, 'update_peerraiser_group_count' )
-		    )
-	    );
+        register_taxonomy(
+            'peerraiser_group',
+            'user',
+            array(
+                'public' => false,
+                'labels' => array(
+                    'name' => __( 'PeerRaiser Groups' ),
+                    'singular_name' => __( 'PeerRaiser Group' ),
+                    'menu_name' => __( 'PeerRaiser Groups' ),
+                    'search_items' => __( 'Search Groups' ),
+                    'popular_items' => __( 'Popular Groups' ),
+                    'all_items' => __( 'All Groups' ),
+                    'edit_item' => __( 'Edit Group' ),
+                    'update_item' => __( 'Update Group' ),
+                    'add_new_item' => __( 'Add New Group' ),
+                    'new_item_name' => __( 'New Group Name' ),
+                    'separate_items_with_commas' => __( 'Separate groups with commas' ),
+                    'add_or_remove_items' => __( 'Add or remove groups' ),
+                    'choose_from_most_used' => __( 'Choose from the most popular groups' ),
+                ),
+                'update_count_callback' => array( $this, 'update_peerraiser_group_count' )
+            )
+        );
     }
 
-	/**
-	 * Function for updating the 'peerraiser_group' taxonomy count.
-	 *
-	 * See the _update_post_term_count() function in WordPress for more info.
-	 *
-	 * @param array  $terms    List of Term taxonomy IDs
-	 * @param object $taxonomy Current taxonomy object of terms
-	 */
+    /**
+     * Function for updating the 'peerraiser_group' taxonomy count.
+     *
+     * See the _update_post_term_count() function in WordPress for more info.
+     *
+     * @param array  $terms    List of Term taxonomy IDs
+     * @param object $taxonomy Current taxonomy object of terms
+     */
     public function update_peerraiser_group_count( $terms, $taxonomy ) {
-	    global $wpdb;
+        global $wpdb;
 
-	    foreach ( (array) $terms as $term ) {
+        foreach ( (array) $terms as $term ) {
 
-		    $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term ) );
+            $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term ) );
 
-		    do_action( 'edit_term_taxonomy', $term, $taxonomy );
-		    $wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
-		    do_action( 'edited_term_taxonomy', $term, $taxonomy );
-	    }
+            do_action( 'edit_term_taxonomy', $term, $taxonomy );
+            $wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
+            do_action( 'edited_term_taxonomy', $term, $taxonomy );
+        }
     }
 
 }

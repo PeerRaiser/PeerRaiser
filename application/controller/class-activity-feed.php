@@ -10,10 +10,10 @@ class Activity_Feed extends Base {
     public function register_actions() {
         add_action( 'save_post',                   array( $this, 'maybe_add_post_to_feed' ), 10, 3 );
         add_action( 'delete_post',                 array( $this, 'maybe_remove_post_from_feed' ) );
-	    add_action( 'peerraiser_campaign_added',   array( $this, 'add_campaign_to_feed' ) );
-	    add_action( 'peerraiser_campaign_deleted', array( $this, 'remove_campaign_from_feed', ) );
-	    add_action( 'peerraiser_donation_added',   array( $this, 'add_donation_to_feed' ) );
-	    add_action( 'peerraiser_donation_deleted', array( $this, 'remove_donation_from_feed', ) );
+        add_action( 'peerraiser_campaign_added',   array( $this, 'add_campaign_to_feed' ) );
+        add_action( 'peerraiser_campaign_deleted', array( $this, 'remove_campaign_from_feed', ) );
+        add_action( 'peerraiser_donation_added',   array( $this, 'add_donation_to_feed' ) );
+        add_action( 'peerraiser_donation_deleted', array( $this, 'remove_donation_from_feed', ) );
     }
 
     /**
@@ -65,27 +65,27 @@ class Activity_Feed extends Base {
     }
 
     public function add_campaign_to_feed( $campaign ) {
-	    $model = new \PeerRaiser\Model\Activity_Feed();
-	    $model->add_campaign_to_feed( $campaign );
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->add_campaign_to_feed( $campaign );
     }
 
     public function remove_campaign_from_feed( $campaign ) {
-		$model = new \PeerRaiser\Model\Activity_Feed();
-		$model->remove_campaign_from_feed( $campaign );
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->remove_campaign_from_feed( $campaign );
     }
 
-	public function add_donation_to_feed( $donation ) {
-    	if ( $donation->status === 'pending' ) {
-    		return;
-	    }
+    public function add_donation_to_feed( $donation ) {
+        if ( $donation->status === 'pending' ) {
+            return;
+        }
 
-		$model = new \PeerRaiser\Model\Activity_Feed();
-		$model->add_donation_to_feed( $donation );
-	}
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->add_donation_to_feed( $donation );
+    }
 
-	public function remove_donation_from_feed( $donation ) {
-		$model = new \PeerRaiser\Model\Activity_Feed();
-		$model->remove_donation_from_feed( $donation );
-	}
+    public function remove_donation_from_feed( $donation ) {
+        $model = new \PeerRaiser\Model\Activity_Feed();
+        $model->remove_donation_from_feed( $donation );
+    }
 
 }

@@ -7,8 +7,8 @@ namespace PeerRaiser\Controller;
  */
 class Install extends Base {
 
-	// TODO: Move this to the model
-	private $default_pages = array();
+    // TODO: Move this to the model
+    private $default_pages = array();
 
     public function __construct() {
         $this->default_pages = array(
@@ -25,16 +25,16 @@ class Install extends Base {
                 'post_content'   => __( '[peerraiser_signup]', 'peerraiser' )
             ),
             'register' => array(
-	            'post_title'     => __( 'Register', 'peerraiser' ),
-	            'post_content'   => __( '[peerraiser_registration]', 'peerraiser' )
+                'post_title'     => __( 'Register', 'peerraiser' ),
+                'post_content'   => __( '[peerraiser_registration]', 'peerraiser' )
             ),
             'participant_dashboard' => array(
                 'post_title'     => __( 'Participant Dashboard', 'peerraiser' ),
                 'post_content'   => __( '[peerraiser_participant_dashboard]', 'peerraiser' )
             ),
             'donate' => array(
-	            'post_title'     => __( 'Donate', 'peerraiser' ),
-	            'post_content'   => __( '[peerraiser_donation_form]', 'peerraiser' )
+                'post_title'     => __( 'Donate', 'peerraiser' ),
+                'post_content'   => __( '[peerraiser_donation_form]', 'peerraiser' )
             ),
         );
         parent::__construct();
@@ -143,7 +143,7 @@ class Install extends Base {
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
         if ( version_compare( $current_version, $this->config->get( 'version' ), '==' ) ) {
-	        return;
+            return;
         }
 
         // cancel the installation process, if the requirements check returns errors
@@ -168,7 +168,7 @@ class Install extends Base {
         $this->populate_roles();
 
         // keep the plugin version up to date
-	    $plugin_options  = get_option( 'peerraiser_options', array() );
+        $plugin_options  = get_option( 'peerraiser_options', array() );
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
         update_option( 'peerraiser_options', $plugin_options );
 

@@ -17,18 +17,18 @@ use \DateTimeZone;
 class Campaigns extends Base {
 
     public function register_actions() {
-		add_action( 'cmb2_admin_init',                           array( $this, 'register_meta_boxes' ) );
+        add_action( 'cmb2_admin_init',                           array( $this, 'register_meta_boxes' ) );
         add_action( 'peerraiser_page_peerraiser-campaigns',      array( $this, 'load_assets' ) );
-		add_action( 'peerraiser_add_campaign',	                 array( $this, 'handle_add_campaign' ) );
-		add_action( 'peerraiser_update_campaign',                array( $this, 'handle_update_campaign' ) );
-		add_action( 'peerraiser_delete_campaign',                array( $this, 'delete_campaign' ) );
-		add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_schedule_cron' ), 10, 3 );
-		add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_update_date_utc' ), 10, 3 );
-		add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_clear_cron' ), 10, 2 );
-		add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_delete_end_date_utc' ), 10, 2 );
-		add_action( 'peerraiser_end_campaign',                   array( $this, 'end_campaign' ) );
-	    add_action( 'wp_ajax_peerraiser_get_fundraisers',        array( $this, 'ajax_get_fundraisers' ) );
-	    add_action( 'wp_ajax_nopriv_peerraiser_get_fundraisers', array( $this, 'ajax_get_fundraisers' ) );
+        add_action( 'peerraiser_add_campaign',	                 array( $this, 'handle_add_campaign' ) );
+        add_action( 'peerraiser_update_campaign',                array( $this, 'handle_update_campaign' ) );
+        add_action( 'peerraiser_delete_campaign',                array( $this, 'delete_campaign' ) );
+        add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_schedule_cron' ), 10, 3 );
+        add_action( 'peerraiser_updated_campaign_meta',          array( $this, 'maybe_update_date_utc' ), 10, 3 );
+        add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_clear_cron' ), 10, 2 );
+        add_action( 'peerraiser_deleted_campaign_meta',          array( $this, 'maybe_delete_end_date_utc' ), 10, 2 );
+        add_action( 'peerraiser_end_campaign',                   array( $this, 'end_campaign' ) );
+        add_action( 'wp_ajax_peerraiser_get_fundraisers',        array( $this, 'ajax_get_fundraisers' ) );
+        add_action( 'wp_ajax_nopriv_peerraiser_get_fundraisers', array( $this, 'ajax_get_fundraisers' ) );
     }
 
     /**
@@ -54,12 +54,12 @@ class Campaigns extends Base {
             'standard_currency'    => $plugin_options['currency'],
             'admin_url'            => get_admin_url(),
             'list_table'           => new Campaign_List_Table(),
-	        'campaign_admin'       => new \PeerRaiser\Model\Admin\Campaigns_Admin()
+            'campaign_admin'       => new \PeerRaiser\Model\Admin\Campaigns_Admin()
         );
 
-	    if ( $view === 'summary' ) {
-		    $view_args['campaign'] = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign'] );
-	    }
+        if ( $view === 'summary' ) {
+            $view_args['campaign'] = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign'] );
+        }
 
         $this->assign( 'peerraiser', $view_args );
 
@@ -104,34 +104,34 @@ class Campaigns extends Base {
         wp_localize_script(
             'peerraiser-admin-campaigns',
             'peerraiser_object',
-	        array(
-		        'ajax_url'           => admin_url( 'admin-ajax.php' ),
-		        'template_directory' => get_template_directory_uri(),
-		        'timezone_string'    => get_option( 'timezone_string' ),
-		        'i18n'               => array(
-			        'date'            => __( 'Date', 'peerraiser' ),
-			        'time'            => __( 'Time', 'peerraiser' ),
-			        'select_timezone' => __( 'Select a Timezone', 'peerraiser' ),
-		        )
-	        )
+            array(
+                'ajax_url'           => admin_url( 'admin-ajax.php' ),
+                'template_directory' => get_template_directory_uri(),
+                'timezone_string'    => get_option( 'timezone_string' ),
+                'i18n'               => array(
+                    'date'            => __( 'Date', 'peerraiser' ),
+                    'time'            => __( 'Time', 'peerraiser' ),
+                    'select_timezone' => __( 'Select a Timezone', 'peerraiser' ),
+                )
+            )
         );
 
     }
 
-	public function register_meta_boxes() {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
-		$campaign_field_groups = $campaigns_model->get_fields();
-		foreach ($campaign_field_groups as $field_group) {
-			$cmb = new_cmb2_box( array(
-				'id'           => $field_group['id'],
-				'title'        => $field_group['title'],
-				'object_types' => array( 'post' ),
-				'hookup'       => false,
-				'save_fields'  => false,
-			) );
-			foreach ($field_group['fields'] as $key => $value) {
-				$cmb->add_field($value);
-			}
+    public function register_meta_boxes() {
+        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+        $campaign_field_groups = $campaigns_model->get_fields();
+        foreach ($campaign_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'        => $field_group['title'],
+                'object_types' => array( 'post' ),
+                'hookup'       => false,
+                'save_fields'  => false,
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
          }
     }
 
@@ -257,412 +257,412 @@ class Campaigns extends Base {
         $this->render( 'backend/partials/campaign-stats' );
     }
 
-	/**
-	 * Handle "Add Campaign" form submission
-	 *
-	 * @since 1.0.0
-	 */
+    /**
+     * Handle "Add Campaign" form submission
+     *
+     * @since 1.0.0
+     */
     public function handle_add_campaign() {
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_campaign_nonce' ) ) {
-			die( __('Security check failed.', 'peerraiser' ) );
-		}
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_campaign_nonce' ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
 
-		$validation = $this->is_valid_campaign();
-		if ( ! $validation['is_valid'] ) {
-			return;
-		}
+        $validation = $this->is_valid_campaign();
+        if ( ! $validation['is_valid'] ) {
+            return;
+        }
 
-		$campaign = new Campaign();
+        $campaign = new Campaign();
 
-	    $this->add_fields( $campaign );
+        $this->add_fields( $campaign );
 
-	    $campaign->save();
+        $campaign->save();
 
-	    // Create redirect URL
-	    $location = add_query_arg( array(
-		    'page'               => 'peerraiser-campaigns',
-		    'view'               => 'summary',
-		    'campaign'           => $campaign->ID,
-		    'peerraiser_notice' => 'campaign_added',
-	    ), admin_url( 'admin.php' ) );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-campaigns',
+            'view'               => 'summary',
+            'campaign'           => $campaign->ID,
+            'peerraiser_notice' => 'campaign_added',
+        ), admin_url( 'admin.php' ) );
 
-		// Redirect to the edit screen for this new donation
-		wp_safe_redirect( $location );
-	}
+        // Redirect to the edit screen for this new donation
+        wp_safe_redirect( $location );
+    }
 
-	public function handle_update_campaign() {
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_campaign_' . $_REQUEST['campaign_id'] ) ) {
-			die( __( 'Security check failed.', 'peerraiser' ) );
-		}
+    public function handle_update_campaign() {
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_update_campaign_' . $_REQUEST['campaign_id'] ) ) {
+            die( __( 'Security check failed.', 'peerraiser' ) );
+        }
 
-		$validation = $this->is_valid_campaign();
-		if ( ! $validation['is_valid'] ) {
-			return;
-		}
+        $validation = $this->is_valid_campaign();
+        if ( ! $validation['is_valid'] ) {
+            return;
+        }
 
-		$campaign = new Campaign( $_REQUEST['campaign_id'] );
+        $campaign = new Campaign( $_REQUEST['campaign_id'] );
 
-		$this->update_fields( $campaign );
-		$campaign->save();
+        $this->update_fields( $campaign );
+        $campaign->save();
 
-		// Create redirect URL
-		$location = add_query_arg( array(
-			'page'               => 'peerraiser-campaigns',
-			'view'               => 'summary',
-			'campaign'           => $campaign->ID,
-			'peerraiser_notice' => 'campaign_updated',
-		), admin_url( 'admin.php' ) );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-campaigns',
+            'view'               => 'summary',
+            'campaign'           => $campaign->ID,
+            'peerraiser_notice' => 'campaign_updated',
+        ), admin_url( 'admin.php' ) );
 
-		// Redirect to the edit screen for this new donation
-		wp_safe_redirect( $location );
-	}
+        // Redirect to the edit screen for this new donation
+        wp_safe_redirect( $location );
+    }
 
-	/**
-	 * Handle "delete campaign" action
-	 *
-	 * @since 1.0.0
-	 */
-	public function delete_campaign() {
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_campaign_' . $_REQUEST['campaign_id'] ) ) {
-			die( __('Security check failed.', 'peerraiser' ) );
-		}
+    /**
+     * Handle "delete campaign" action
+     *
+     * @since 1.0.0
+     */
+    public function delete_campaign() {
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_campaign_' . $_REQUEST['campaign_id'] ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
 
-		// Delete the campaign
-		$campaign = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign_id'] );
+        // Delete the campaign
+        $campaign = new \PeerRaiser\Model\Campaign( $_REQUEST['campaign_id'] );
 
-		$campaign->delete();
+        $campaign->delete();
 
-		// Create redirect URL
-		$location = add_query_arg( array(
-			'page'               => 'peerraiser-campaigns',
-			'peerraiser_notice' => 'campaign_deleted',
-		), admin_url( 'admin.php' ) );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-campaigns',
+            'peerraiser_notice' => 'campaign_deleted',
+        ), admin_url( 'admin.php' ) );
 
-		wp_safe_redirect( $location );
-	}
+        wp_safe_redirect( $location );
+    }
 
-	/**
-	 * Maybe set cron for campaign end date
-	 *
-	 * Checks if the updated field is the end date, and handles setting the cron
-	 *
-	 * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
-	 * @param string                     $meta_key   Meta key
-	 * @param string                     $meta_value Meta value
-	 */
-	public function maybe_schedule_cron( $campaign, $meta_key, $meta_value ) {
-		if ( $meta_key !== '_peerraiser_end_date_utc' || empty( $meta_value ) ) {
-			return;
-		}
+    /**
+     * Maybe set cron for campaign end date
+     *
+     * Checks if the updated field is the end date, and handles setting the cron
+     *
+     * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
+     * @param string                     $meta_key   Meta key
+     * @param string                     $meta_value Meta value
+     */
+    public function maybe_schedule_cron( $campaign, $meta_key, $meta_value ) {
+        if ( $meta_key !== '_peerraiser_end_date_utc' || empty( $meta_value ) ) {
+            return;
+        }
 
-		// Clear existing cron, if there is one
-		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+        // Clear existing cron, if there is one
+        wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
 
-		wp_schedule_single_event( $meta_value, 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
-	}
+        wp_schedule_single_event( $meta_value, 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+    }
 
-	/**
-	 * Maybe unset the cron for campaign end date
-	 *
-	 * Checks if the deleted field is the end date, and handles removing the cron
-	 *
-	 * @param \PeerRaiser\Model\Campaign $campaign Campaign object
-	 * @param string                     $meta_key Meta key
-	 */
-	public function maybe_clear_cron( $campaign, $meta_key ) {
-		if ( $meta_key !== '_peerraiser_end_date_utc') {
-			return;
-		}
+    /**
+     * Maybe unset the cron for campaign end date
+     *
+     * Checks if the deleted field is the end date, and handles removing the cron
+     *
+     * @param \PeerRaiser\Model\Campaign $campaign Campaign object
+     * @param string                     $meta_key Meta key
+     */
+    public function maybe_clear_cron( $campaign, $meta_key ) {
+        if ( $meta_key !== '_peerraiser_end_date_utc') {
+            return;
+        }
 
-		wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
-	}
+        wp_clear_scheduled_hook( 'peerraiser_end_campaign', array( 'campaign_id' =>  $campaign->ID ) );
+    }
 
-	/**
-	 * Maybe Update the Date UTC
-	 *
-	 * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
-	 * @param string                     $meta_key   Meta key
-	 * @param string                     $meta_value Meta value
-	 */
-	public function maybe_update_date_utc( $campaign, $meta_key, $meta_value ) {
-		$date_fields = array(
-			'_peerraiser_start_date',
-			'_peerraiser_start_time',
-			'_peerraiser_end_date',
-			'_peerraiser_end_time',
-			'_peerraiser_timezone',
-		);
+    /**
+     * Maybe Update the Date UTC
+     *
+     * @param \PeerRaiser\Model\Campaign $campaign   Campaign object
+     * @param string                     $meta_key   Meta key
+     * @param string                     $meta_value Meta value
+     */
+    public function maybe_update_date_utc( $campaign, $meta_key, $meta_value ) {
+        $date_fields = array(
+            '_peerraiser_start_date',
+            '_peerraiser_start_time',
+            '_peerraiser_end_date',
+            '_peerraiser_end_time',
+            '_peerraiser_timezone',
+        );
 
-		// If the updated field isn't one of the date fields, return
-		if ( ! in_array( $meta_key, $date_fields ) ) {
-			return;
-		}
+        // If the updated field isn't one of the date fields, return
+        if ( ! in_array( $meta_key, $date_fields ) ) {
+            return;
+        }
 
-		// Update start_date_utc if the timezone or start date/time fields changed
-		if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'start') !== false ) {
-			if ( empty( $campaign->start_date ) || empty( $campaign->start_time ) ) {
-				return;
-			}
+        // Update start_date_utc if the timezone or start date/time fields changed
+        if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'start') !== false ) {
+            if ( empty( $campaign->start_date ) || empty( $campaign->start_time ) ) {
+                return;
+            }
 
-			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
-			$time       = new DateTime( $campaign->start_date . ' ' . $campaign->start_time, $timezone );
-			$timestamp  = (int) $time->format('U');
+            $timezone   = new DateTimeZone( $campaign->get_timezone_string() );
+            $time       = new DateTime( $campaign->start_date . ' ' . $campaign->start_time, $timezone );
+            $timestamp  = (int) $time->format('U');
 
-			$campaign->start_date_utc = $timestamp;
-		}
+            $campaign->start_date_utc = $timestamp;
+        }
 
-		// Update end_date_utc if the timezone or end date/time fields changed
-		if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'end') !== false ) {
-			if ( empty( $campaign->end_date ) || empty( $campaign->end_time ) ) {
-				return;
-			}
+        // Update end_date_utc if the timezone or end date/time fields changed
+        if ( $meta_key === '_peerraiser_timezone' || strpos( $meta_key, 'end') !== false ) {
+            if ( empty( $campaign->end_date ) || empty( $campaign->end_time ) ) {
+                return;
+            }
 
-			$timezone   = new DateTimeZone( $campaign->get_timezone_string() );
-			$time       = new DateTime( $campaign->end_date . ' ' . $campaign->end_time, $timezone );
-			$timestamp  = (int) $time->format('U');
+            $timezone   = new DateTimeZone( $campaign->get_timezone_string() );
+            $time       = new DateTime( $campaign->end_date . ' ' . $campaign->end_time, $timezone );
+            $timestamp  = (int) $time->format('U');
 
-			$campaign->end_date_utc = $timestamp;
-		}
+            $campaign->end_date_utc = $timestamp;
+        }
 
-		$campaign->save();
-	}
+        $campaign->save();
+    }
 
-	/**
-	 * Maybe delete the End Date UTC meta if the deleted field is the end date
-	 *
-	 * @param \PeerRaiser\Model\Campaign $campaign Campaign object
-	 * @param string                     $meta_key Meta key
-	 */
-	public function maybe_delete_end_date_utc( $campaign, $meta_key ) {
-		if ( $meta_key !== '_peerraiser_end_date' ) {
-			return;
-		}
+    /**
+     * Maybe delete the End Date UTC meta if the deleted field is the end date
+     *
+     * @param \PeerRaiser\Model\Campaign $campaign Campaign object
+     * @param string                     $meta_key Meta key
+     */
+    public function maybe_delete_end_date_utc( $campaign, $meta_key ) {
+        if ( $meta_key !== '_peerraiser_end_date' ) {
+            return;
+        }
 
-		$campaign->delete_meta( '_peerraiser_end_date_utc' );
-	}
+        $campaign->delete_meta( '_peerraiser_end_date_utc' );
+    }
 
-	/**
-	 * Set campaign status to 'ended' when the campaign ends
-	 *
-	 * @param $campaign_id
-	 */
-	public function end_campaign( $campaign_id ) {
-		$campaign = new Campaign( $campaign_id );
+    /**
+     * Set campaign status to 'ended' when the campaign ends
+     *
+     * @param $campaign_id
+     */
+    public function end_campaign( $campaign_id ) {
+        $campaign = new Campaign( $campaign_id );
 
-		if ( $campaign->campaign_status !== 'active' ) {
-			return;
-		}
+        if ( $campaign->campaign_status !== 'active' ) {
+            return;
+        }
 
-		$campaign->campaign_status = 'ended';
-		$campaign->save();
-	}
+        $campaign->campaign_status = 'ended';
+        $campaign->save();
+    }
 
-	/**
-	 * Get fundraisers for a campaign via ajax
-	 */
-	public function ajax_get_fundraisers() {
-		if ( ! wp_verify_nonce( $_POST['nonce'], 'ajax_get_fundraisers' ) ) {
-			$data = array(
-				'success'     => false,
-				'fundraisers' => array(),
-				'message'     => 'Security check failed'
-			);
+    /**
+     * Get fundraisers for a campaign via ajax
+     */
+    public function ajax_get_fundraisers() {
+        if ( ! wp_verify_nonce( $_POST['nonce'], 'ajax_get_fundraisers' ) ) {
+            $data = array(
+                'success'     => false,
+                'fundraisers' => array(),
+                'message'     => 'Security check failed'
+            );
 
-			echo Text::peerraiser_json_encode( $data );
-			wp_die();
-		}
+            echo Text::peerraiser_json_encode( $data );
+            wp_die();
+        }
 
-		$campaign = peerraiser_get_campaign_by_slug( $_POST['campaign_slug'] );
-		$fundraisers = $campaign->get_fundraisers();
+        $campaign = peerraiser_get_campaign_by_slug( $_POST['campaign_slug'] );
+        $fundraisers = $campaign->get_fundraisers();
 
-		$fundraiser_info = array();
+        $fundraiser_info = array();
 
-		foreach( $fundraisers as $fundraiser ) {
-			$fundraiser_info[] = array(
-				'name' => $fundraiser->fundraiser_name,
-				'slug' => $fundraiser->fundraiser_slug,
-			);
-		}
+        foreach( $fundraisers as $fundraiser ) {
+            $fundraiser_info[] = array(
+                'name' => $fundraiser->fundraiser_name,
+                'slug' => $fundraiser->fundraiser_slug,
+            );
+        }
 
-		$data = array(
-			'success'     => true,
-			'fundraisers' => $fundraiser_info,
-		);
+        $data = array(
+            'success'     => true,
+            'fundraisers' => $fundraiser_info,
+        );
 
-		echo Text::peerraiser_json_encode( $data );
+        echo Text::peerraiser_json_encode( $data );
 
-		wp_die();
-	}
+        wp_die();
+    }
 
-	/**
-	 * Checks if the fields are valid
-	 *
-	 * @since     1.0.0
-	 * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
-	 */
-	private function is_valid_campaign() {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
-		$required_fields = $campaigns_model->get_required_field_ids();
+    /**
+     * Checks if the fields are valid
+     *
+     * @since     1.0.0
+     * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
+     */
+    private function is_valid_campaign() {
+        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+        $required_fields = $campaigns_model->get_required_field_ids();
 
-		$data = array(
-			'is_valid'     => true,
-			'field_errors' => array(),
-		);
+        $data = array(
+            'is_valid'     => true,
+            'field_errors' => array(),
+        );
 
-		// If this is a new campaign, make sure campaign name isn't already taken
-		if ( isset( $_REQUEST['peerraiser_action'] ) && 'add_campaign' === $_REQUEST['peerraiser_action'] ) {
-			$campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_name'], 'peerraiser_campaign' );
+        // If this is a new campaign, make sure campaign name isn't already taken
+        if ( isset( $_REQUEST['peerraiser_action'] ) && 'add_campaign' === $_REQUEST['peerraiser_action'] ) {
+            $campaign_exists = term_exists( $_REQUEST['_peerraiser_campaign_name'], 'peerraiser_campaign' );
 
-			if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
-				$data['field_errors'][ '_peerraiser_campaign_name' ] = __( 'This campaign name already exists', 'peerraiser' );
-			}
-		}
+            if ( $campaign_exists !== 0 && $campaign_exists !== null ) {
+                $data['field_errors'][ '_peerraiser_campaign_name' ] = __( 'This campaign name already exists', 'peerraiser' );
+            }
+        }
 
         // Check required fields
-		foreach ( $required_fields as $field ) {
-			if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
-				$data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
-			}
-		}
+        foreach ( $required_fields as $field ) {
+            if ( ! isset( $_REQUEST[ $field ] ) || empty( $_REQUEST[ $field ] ) ) {
+                $data['field_errors'][ $field ] = __( 'This field is required.', 'peerraiser' );
+            }
+        }
 
-		// Check currency format
-		$currency_fields = array(
-			'_peerraiser_campaign_goal',
-			'_peerraiser_suggested_individual_goal',
-			'_peerraiser_suggested_team_goal',
-		);
+        // Check currency format
+        $currency_fields = array(
+            '_peerraiser_campaign_goal',
+            '_peerraiser_suggested_individual_goal',
+            '_peerraiser_suggested_team_goal',
+        );
 
-		foreach ( $currency_fields as $currency_field ) {
-			if ( ! isset( $_REQUEST[ $currency_field ] ) ) {
-				continue;
-			}
+        foreach ( $currency_fields as $currency_field ) {
+            if ( ! isset( $_REQUEST[ $currency_field ] ) ) {
+                continue;
+            }
 
-			if ( ! \PeerRaiser\Helper\Text::is_currency( $_REQUEST[ $currency_field ] ) ) {
-				$data['field_errors'][ $currency_field ] = __( 'Please use the valid currency format', 'peerraiser' );
-			}
-		}
+            if ( ! \PeerRaiser\Helper\Text::is_currency( $_REQUEST[ $currency_field ] ) ) {
+                $data['field_errors'][ $currency_field ] = __( 'Please use the valid currency format', 'peerraiser' );
+            }
+        }
 
-		if ( ! empty( $data['field_errors'] ) ) {
-			$message = __( 'There was an issue creating this campaign. Please fix the errors below.', 'peerraiser' );
-			Admin_Notices_Model::add_notice( $message, 'notice-error', true );
+        if ( ! empty( $data['field_errors'] ) ) {
+            $message = __( 'There was an issue creating this campaign. Please fix the errors below.', 'peerraiser' );
+            Admin_Notices_Model::add_notice( $message, 'notice-error', true );
 
-			wp_localize_script(
-				'jquery',
-				'peerraiser_field_errors',
-				$data['field_errors']
-			);
+            wp_localize_script(
+                'jquery',
+                'peerraiser_field_errors',
+                $data['field_errors']
+            );
 
-			$data['is_valid'] = false;
-		}
+            $data['is_valid'] = false;
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	private function add_fields( $campaign) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+    private function add_fields( $campaign) {
+        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
-		$field_ids   = $campaigns_model->get_field_ids();
+        $field_ids   = $campaigns_model->get_field_ids();
 
-		// Add campaign name and status to field list, since they're not a CMB2 fields
-		$field_ids['campaign_name']   = '_peerraiser_campaign_name';
-		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
+        // Add campaign name and status to field list, since they're not a CMB2 fields
+        $field_ids['campaign_name']   = '_peerraiser_campaign_name';
+        $field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
-		// If the start date is empty, set it to today's date
-		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
-			$time     = new DateTime( '', $timezone );
-			$_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
-		}
+        // If the start date is empty, set it to today's date
+        if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+            $timezone = new DateTimeZone( $campaign->get_timezone_string() );
+            $time     = new DateTime( '', $timezone );
+            $_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+        }
 
-		// If the start time is empty, set it to the current time
-		if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
-			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
-			$time     = new DateTime( '', $timezone );
-			$_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-		}
+        // If the start time is empty, set it to the current time
+        if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
+            $timezone = new DateTimeZone( $campaign->get_timezone_string() );
+            $time     = new DateTime( '', $timezone );
+            $_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+        }
 
-		// If the end date is empty, make sure the end time is also empty
-		if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
-			$_REQUEST['_peerraiser_end_time'] = '';
-			// If it's not empty, but the time is empty, set it to the current time
-		} elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
-			$time = new DateTime();
-			$_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-		}
+        // If the end date is empty, make sure the end time is also empty
+        if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
+            $_REQUEST['_peerraiser_end_time'] = '';
+            // If it's not empty, but the time is empty, set it to the current time
+        } elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
+            $time = new DateTime();
+            $_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+        }
 
-		foreach ( $field_ids as $key => $value ) {
-			if ( isset( $_REQUEST[$value] ) ) {
-				$campaign->$key = $_REQUEST[$value];
-			}
-		}
-	}
+        foreach ( $field_ids as $key => $value ) {
+            if ( isset( $_REQUEST[$value] ) ) {
+                $campaign->$key = $_REQUEST[$value];
+            }
+        }
+    }
 
-	private function update_fields( $campaign ) {
-		$campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+    private function update_fields( $campaign ) {
+        $campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
 
-		$field_ids   = $campaigns_model->get_field_ids();
+        $field_ids   = $campaigns_model->get_field_ids();
 
-		// Add campaign status to field list, since its not a CMB2 field
-		$field_ids['campaign_status'] = '_peerraiser_campaign_status';
+        // Add campaign status to field list, since its not a CMB2 field
+        $field_ids['campaign_status'] = '_peerraiser_campaign_status';
 
-		if ( ! empty( $_REQUEST['_peerraiser_campaign_name'] ) && $campaign->campaign_name !== $_REQUEST['_peerraiser_campaign_name'] ) {
-			$slug = ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) ) ? $_REQUEST['slug'] : $campaign->campaign_slug;
-			$campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'], $slug );
-		} elseif ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) && $_REQUEST['slug'] !== $campaign->campaign_slug ) {
-			$campaign->update_campaign_name( $campaign->campaign_name, $_REQUEST['slug'] );
-		}
+        if ( ! empty( $_REQUEST['_peerraiser_campaign_name'] ) && $campaign->campaign_name !== $_REQUEST['_peerraiser_campaign_name'] ) {
+            $slug = ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) ) ? $_REQUEST['slug'] : $campaign->campaign_slug;
+            $campaign->update_campaign_name( $_REQUEST['_peerraiser_campaign_name'], $slug );
+        } elseif ( isset( $_REQUEST['slug'] ) && ! empty( $_REQUEST['slug'] ) && $_REQUEST['slug'] !== $campaign->campaign_slug ) {
+            $campaign->update_campaign_name( $campaign->campaign_name, $_REQUEST['slug'] );
+        }
 
-		// If the start date is empty, set it to today's date
-		if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
-			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
-			$time     = new DateTime( '', $timezone );
-			$_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
-		}
+        // If the start date is empty, set it to today's date
+        if ( ! isset( $_REQUEST['_peerraiser_start_date'] ) || empty( $_REQUEST['_peerraiser_start_date'] ) ) {
+            $timezone = new DateTimeZone( $campaign->get_timezone_string() );
+            $time     = new DateTime( '', $timezone );
+            $_REQUEST['_peerraiser_start_date'] = $time->format( apply_filters( 'peerraiser_date_field_format', 'm/d/Y' ) );
+        }
 
-		// If the start time is empty, set it to the current time
-		if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
-			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
-			$time     = new DateTime( '', $timezone );
-			$_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-		}
+        // If the start time is empty, set it to the current time
+        if ( ! isset( $_REQUEST['_peerraiser_start_time'] ) || empty( $_REQUEST['_peerraiser_start_time'] ) ) {
+            $timezone = new DateTimeZone( $campaign->get_timezone_string() );
+            $time     = new DateTime( '', $timezone );
+            $_REQUEST['_peerraiser_start_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+        }
 
-		// If the end date is empty, make sure the end time is also empty
-		if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
-			$_REQUEST['_peerraiser_end_time'] = '';
-		// If it's not empty, but the time is empty, set it to the current time
-		} elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
-			$timezone = new DateTimeZone( $campaign->get_timezone_string() );
-			$time     = new DateTime( '', $timezone );
-			$_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
-		}
+        // If the end date is empty, make sure the end time is also empty
+        if ( empty( $_REQUEST['_peerraiser_end_date'] ) ) {
+            $_REQUEST['_peerraiser_end_time'] = '';
+        // If it's not empty, but the time is empty, set it to the current time
+        } elseif ( empty( $_REQUEST['_peerraiser_end_time'] ) ) {
+            $timezone = new DateTimeZone( $campaign->get_timezone_string() );
+            $time     = new DateTime( '', $timezone );
+            $_REQUEST['_peerraiser_end_time'] = $time->format( apply_filters( 'peerraiser_time_field_format', 'g:i a' ) );
+        }
 
-		// Get the current values from the database to see if things changes
-		$current = $campaign->get_meta();
+        // Get the current values from the database to see if things changes
+        $current = $campaign->get_meta();
 
-		foreach ( $field_ids as $key => $value ) {
-			// Skip field if it isn't set
-			if ( ! isset( $_REQUEST[$value] ) ) {
-				continue;
-			}
+        foreach ( $field_ids as $key => $value ) {
+            // Skip field if it isn't set
+            if ( ! isset( $_REQUEST[$value] ) ) {
+                continue;
+            }
 
-			// Delete field from database if its empty
-			if ( trim( $_REQUEST[$value] ) === '' ) {
-				if ( ! isset( $current[$value][0] ) ) {
-					continue;
-				}
+            // Delete field from database if its empty
+            if ( trim( $_REQUEST[$value] ) === '' ) {
+                if ( ! isset( $current[$value][0] ) ) {
+                    continue;
+                }
 
-				$campaign->delete_meta($value);
-				continue;
-			}
+                $campaign->delete_meta($value);
+                continue;
+            }
 
-			// Skip field if data didn't change
-			if ( isset( $current[$value][0] ) && $_REQUEST[$value] === $current[$value][0] ) {
-				continue;
-			}
+            // Skip field if data didn't change
+            if ( isset( $current[$value][0] ) && $_REQUEST[$value] === $current[$value][0] ) {
+                continue;
+            }
 
-			// Update the data. It changed and isn't empty
-			$campaign->$key = $_REQUEST[$value];
-		}
-	}
+            // Update the data. It changed and isn't empty
+            $campaign->$key = $_REQUEST[$value];
+        }
+    }
 
 }
