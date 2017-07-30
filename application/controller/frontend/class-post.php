@@ -23,13 +23,13 @@ class Post extends \PeerRaiser\Controller\Base {
     }
 
     public function add_frontend_scripts() {
-	    wp_register_script(
-		    'jquery-validate',
-		    Setup::get_plugin_config()->get('js_url') . 'vendor/validate/jquery.validate.min.js',
-		    array( 'jquery' ),
-		    '1.16.0',
-		    true
-	    );
+        wp_register_script(
+            'jquery-validate',
+            Setup::get_plugin_config()->get('js_url') . 'vendor/validate/jquery.validate.min.js',
+            array( 'jquery' ),
+            '1.16.0',
+            true
+        );
         wp_register_script(
             'peerraiser-frontend',
             Setup::get_plugin_config()->get( 'js_url' ) . 'peerraiser-frontend.js',

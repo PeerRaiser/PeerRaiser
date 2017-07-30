@@ -4,7 +4,7 @@ namespace PeerRaiser\Model\Admin;
 
 class Fundraisers_Admin extends Admin {
 
-	protected $fields = array();
+    protected $fields = array();
 
     public function __construct() {
         $this->fields = array(
@@ -57,14 +57,14 @@ class Fundraisers_Admin extends Admin {
                         'before_field' => $this->get_currency_symbol(),
                     ),
                     'thumbnail_image' => array(
-	                    'name'    => __('Fundraiser Thumbnail Image', 'peerraiser'),
-	                    'id'      => '_peerraiser_thumbnail_image',
-	                    'type'    => 'file',
-	                    'options' => array(
-		                    'url' => false,
-		                    'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
-	                    ),
-	                    'default_cb' => array( $this, 'get_field_value'),
+                        'name'    => __('Fundraiser Thumbnail Image', 'peerraiser'),
+                        'id'      => '_peerraiser_thumbnail_image',
+                        'type'    => 'file',
+                        'options' => array(
+                            'url' => false,
+                            'add_upload_file_text' => __( 'Add Image', 'peerraiser' )
+                        ),
+                        'default_cb' => array( $this, 'get_field_value'),
                     )
                 ),
             ),
@@ -166,7 +166,7 @@ class Fundraisers_Admin extends Admin {
 
         if ( isset($field->value) && $field->value !== '' ) {
             if ( $term = get_term($field->value) ) {
-	            $results[$field->value] = $term->name;
+                $results[$field->value] = $term->name;
             }
         }
 

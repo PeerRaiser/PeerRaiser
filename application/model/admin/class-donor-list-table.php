@@ -33,21 +33,21 @@ class Donor_List_Table extends WP_List_Table {
      *
      * @return string
      */
-	function column_name( $item ) {
-		// create a nonce
-		$delete_nonce = wp_create_nonce( 'peerraiser_delete_donor_' . $item->donor_id );
+    function column_name( $item ) {
+        // create a nonce
+        $delete_nonce = wp_create_nonce( 'peerraiser_delete_donor_' . $item->donor_id );
 
-		$donor = new Donor( $item->donor_id );
+        $donor = new Donor( $item->donor_id );
 
-		$title = '<strong><a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->full_name . '</a></strong>';
+        $title = '<strong><a href="' . add_query_arg( array( 'donor' => $item->donor_id, 'view' => 'donor-details' ) ) . '">' . $donor->full_name . '</a></strong>';
 
-		$actions = array(
-			'edit' => sprintf( '<a href="?page=%s&view=%s&donor=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->donor_id ) ),
-			'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donor_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donor', absint( $item->donor_id ), $delete_nonce ),
-		);
+        $actions = array(
+            'edit' => sprintf( '<a href="?page=%s&view=%s&donor=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $item->donor_id ) ),
+            'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donor_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donor', absint( $item->donor_id ), $delete_nonce ),
+        );
 
-		return $title . $this->row_actions( apply_filters( 'peerraiser_donor_actions', $actions ) );
-	}
+        return $title . $this->row_actions( apply_filters( 'peerraiser_donor_actions', $actions ) );
+    }
 
     /**
      * Render a column when no column specific method exists.
@@ -58,15 +58,15 @@ class Donor_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default( $item, $column_name ) {
-    	$donor = new Donor( $item->donor_id );
+        $donor = new Donor( $item->donor_id );
 
         switch ( $column_name ) {
-			case 'email_address':
-				return  empty( $donor->email_address) ? '&mdash;' : $donor->email_address;
-			case 'donations' :
-				return $donor->donation_count;
+            case 'email_address':
+                return  empty( $donor->email_address) ? '&mdash;' : $donor->email_address;
+            case 'donations' :
+                return $donor->donation_count;
             case 'amount':
-            	$amount = $donor->donation_value ? $donor->donation_value : 0;
+                $amount = $donor->donation_value ? $donor->donation_value : 0;
                 return peerraiser_money_format( $amount );
             case 'date':
                 $date = strtotime( $donor->date );
@@ -98,8 +98,8 @@ class Donor_List_Table extends WP_List_Table {
         $columns = array(
             'cb'            => '<input type="checkbox" />',
             'name'          => __( 'Name', 'peerraiser' ),
-			'email_address' => __( 'Email', 'peerraiser' ),
-			'donations'     => __( 'Donations', 'peerraiser' ),
+            'email_address' => __( 'Email', 'peerraiser' ),
+            'donations'     => __( 'Donations', 'peerraiser' ),
             'amount'        => __( 'Total Donated', 'peerraiser' ),
             'date'          => __( 'Date', 'peerraiser' ),
         );
@@ -114,10 +114,10 @@ class Donor_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
-	        'name'      => array( 'name', true ),
-	        'donations' => array( 'donation_count', true ),
-	        'amount'    => array( 'donation_value', false ),
-	        'date'      => array( 'date', false ),
+            'name'      => array( 'name', true ),
+            'donations' => array( 'donation_count', true ),
+            'amount'    => array( 'donation_value', false ),
+            'date'      => array( 'date', false ),
         );
 
         return $sortable_columns;
@@ -186,7 +186,7 @@ class Donor_List_Table extends WP_List_Table {
 
           // loop over the array of record IDs and delete them
           foreach ( $delete_ids as $id ) {
-	          self::delete_donor( $id );
+              self::delete_donor( $id );
           }
         }
     }
@@ -197,19 +197,19 @@ class Donor_List_Table extends WP_List_Table {
     }
 
     public function get_donors( $per_page = 10, $page_number = 1 ) {
-	    $donors = new Donor_DB();
+        $donors = new Donor_DB();
 
-	    $args = array(
-		    'number' => $per_page,
-		    'offset' => ( $page_number - 1 ) * $per_page
-	    );
+        $args = array(
+            'number' => $per_page,
+            'offset' => ( $page_number - 1 ) * $per_page
+        );
 
-	    if ( ! empty( $_REQUEST['orderby'] ) ) {
-		    $args['orderby'] = $_REQUEST['orderby'];
-		    $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
-	    }
+        if ( ! empty( $_REQUEST['orderby'] ) ) {
+            $args['orderby'] = $_REQUEST['orderby'];
+            $args['order']   = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : 'asc';
+        }
 
-	    return $donors->get_donors( $args );
+        return $donors->get_donors( $args );
     }
 
     /**
@@ -218,8 +218,8 @@ class Donor_List_Table extends WP_List_Table {
      * @param int $id donor ID
      */
     public function delete_donor( $id ) {
-	    $donor = new \PeerRaiser\Model\Donor( $id );
-	    $donor->delete();
+        $donor = new \PeerRaiser\Model\Donor( $id );
+        $donor->delete();
     }
 
     /**
@@ -235,12 +235,12 @@ class Donor_List_Table extends WP_List_Table {
         return $wpdb->get_var( $sql );
     }
 
-	/**
-	 *
-	 * @return array
-	 */
-	protected function get_table_classes() {
-		return array( 'widefat', 'fixed', 'striped', 'donors', 'peerraiser-list-table' );
-	}
+    /**
+     *
+     * @return array
+     */
+    protected function get_table_classes() {
+        return array( 'widefat', 'fixed', 'striped', 'donors', 'peerraiser-list-table' );
+    }
 
 }

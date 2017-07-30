@@ -23,25 +23,25 @@ class Donations_Admin extends Admin {
                         'options_cb' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
                             'data-rule-required' => 'true',
-							'data-msg-required' => __( 'A donor record is required', 'peerraiser' ),
+                            'data-msg-required' => __( 'A donor record is required', 'peerraiser' ),
                         ),
                     ),
                     // 'donor_name' => array(
                     // 	'name' => __( 'Donor Name', 'peerraiser' ),
-	                 //    'desc' => __( 'The public name of the donor. Leave blank if anonymous.', 'peerraiser' ),
-	                 //    'id' => 'donor_name',
-	                 //    'type' => 'text',
+                     //    'desc' => __( 'The public name of the donor. Leave blank if anonymous.', 'peerraiser' ),
+                     //    'id' => 'donor_name',
+                     //    'type' => 'text',
                     // ),
                     'donation_amount' => array(
                         'name'         => __( 'Donation Amount', 'peerraiser'),
-						'desc'         => __( 'Format should be XXXX.XX', 'peerraiser'),
+                        'desc'         => __( 'Format should be XXXX.XX', 'peerraiser'),
                         'id'           => 'donation_amount',
                         'type'         => 'text',
                         'attributes' => array(
-							'data-rule-required' => "true",
-							'data-msg-required' => __( 'Donation amount is required', 'peerraiser' ),
-							'data-rule-currency' => '["",false]',
-							'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
+                            'data-rule-required' => "true",
+                            'data-msg-required' => __( 'Donation amount is required', 'peerraiser' ),
+                            'data-rule-currency' => '["",false]',
+                            'data-msg-currency' => __( 'Please use the valid currency format', 'peerraiser' ),
                         ),
                         'before_field' => $this->get_currency_symbol(),
                     ),
@@ -54,7 +54,7 @@ class Donations_Admin extends Admin {
                         'options_cb' => array( $this, 'get_selected_post' ),
                         'attributes'  => array(
                             'data-rule-required' => 'true',
-							'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
+                            'data-msg-required' => __( 'A campaign is required', 'peerraiser' ),
                         ),
                     ),
                     'fundraiser' => array(

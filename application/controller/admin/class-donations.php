@@ -7,12 +7,12 @@ class Donations extends \PeerRaiser\Controller\Base {
     public function register_actions() {
         add_action( 'peerraiser_page_peerraiser-donations', array( $this, 'load_assets' ) );
         add_action( 'admin_init',                           array( $this, 'on_donations_view' ) );
-		add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
+        add_action( 'cmb2_admin_init',                      array( $this, 'register_meta_boxes' ) );
         add_action( 'peerraiser_after_donation_metaboxes',  array( $this, 'donation_notes_metabox' ), 50, 1 );
-		add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
-		add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
-		add_action( 'peerraiser_update_donation',           array( $this, 'handle_update_donation' ) );
-		add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
+        add_action( 'publish_pr_donation',                  array( $this, 'delete_transient' ) );
+        add_action( 'peerraiser_add_donation',              array( $this, 'handle_add_donation' ) );
+        add_action( 'peerraiser_update_donation',           array( $this, 'handle_update_donation' ) );
+        add_action( 'peerraiser_delete_donation', 			array( $this, 'delete_donation' ) );
     }
 
     public function load_assets() {
@@ -86,9 +86,9 @@ class Donations extends \PeerRaiser\Controller\Base {
         );
 
         if ( $view === 'summary' ) {
-		    $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
-		    $view_args['donor']    = new \PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
-	    }
+            $view_args['donation'] = new \PeerRaiser\Model\Donation( $_REQUEST['donation'] );
+            $view_args['donor']    = new \PeerRaiser\Model\Donor( $view_args['donation']->donor_id );
+        }
 
         $this->assign( 'peerraiser', $view_args );
 
@@ -96,23 +96,23 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/donation-' . $view );
     }
 
-	public function register_meta_boxes() {
-		$donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
-		$donation_field_groups = $donations_model->get_fields();
+    public function register_meta_boxes() {
+        $donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
+        $donation_field_groups = $donations_model->get_fields();
 
-		foreach ($donation_field_groups as $field_group) {
-			$cmb = new_cmb2_box( array(
-				'id'           => $field_group['id'],
-				'title'         => $field_group['title'],
-				'object_types'  => array( 'pr_donation' ),
-				'context'       => $field_group['context'],
-				'priority'      => $field_group['priority'],
-			) );
-			foreach ($field_group['fields'] as $key => $value) {
-				$cmb->add_field($value);
-			}
-		}
-	}
+        foreach ($donation_field_groups as $field_group) {
+            $cmb = new_cmb2_box( array(
+                'id'           => $field_group['id'],
+                'title'         => $field_group['title'],
+                'object_types'  => array( 'pr_donation' ),
+                'context'       => $field_group['context'],
+                'priority'      => $field_group['priority'],
+            ) );
+            foreach ($field_group['fields'] as $key => $value) {
+                $cmb->add_field($value);
+            }
+        }
+    }
 
     public function on_donations_view() {
         if ( isset( $_REQUEST['page'], $_REQUEST['view'] ) && $_REQUEST['page'] === 'peerraiser-donations' && $_REQUEST['view'] === 'add' ) {
@@ -179,11 +179,11 @@ class Donations extends \PeerRaiser\Controller\Base {
         $this->render( 'backend/partials/donation-box-notes' );
     }
 
-	/**
-	 * Handle "Add Offline Donation" submission
-	 *
-	 * @since     1.0.0
-	 */
+    /**
+     * Handle "Add Offline Donation" submission
+     *
+     * @since     1.0.0
+     */
     public function handle_add_donation() {
         if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_add_donation_nonce' ) ) {
             die( __('Security check failed.', 'peerraiser' ) );
@@ -209,20 +209,20 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->fundraiser_id = isset( $_REQUEST['fundraiser'] ) ? absint( $_REQUEST['fundraiser'] ) : 0;
 
         if ( isset( $_REQUEST['donation_note'] ) && ! empty( trim( $_REQUEST['donation_note'] ) ) ) {
-	        $user = wp_get_current_user();
-        	$donation->add_note( $_REQUEST['donation_note'], $user->user_login );
+            $user = wp_get_current_user();
+            $donation->add_note( $_REQUEST['donation_note'], $user->user_login );
         }
 
         // Save to the database
         $donation->save();
 
-	    // Create redirect URL
-	    $location = add_query_arg( array(
-		    'page'               => 'peerraiser-donations',
-		    'view'               => 'summary',
-		    'donation'           => $donation->ID,
-		    'peerraiser_notice' => 'donation_added',
-	    ), admin_url( 'admin.php' ) );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-donations',
+            'view'               => 'summary',
+            'donation'           => $donation->ID,
+            'peerraiser_notice' => 'donation_added',
+        ), admin_url( 'admin.php' ) );
 
         // Redirect to the edit screen for this new donation
         wp_safe_redirect( $location );
@@ -244,54 +244,54 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $donation->save();
 
-	    // Create redirect URL
-	    $location = add_query_arg( array(
-		    'page'               => 'peerraiser-donations',
-		    'view'               => 'summary',
-		    'donation'           => $donation->ID,
-		    'peerraiser_notice' => 'donation_updated',
-	    ), admin_url( 'admin.php' ) );
+        // Create redirect URL
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-donations',
+            'view'               => 'summary',
+            'donation'           => $donation->ID,
+            'peerraiser_notice' => 'donation_updated',
+        ), admin_url( 'admin.php' ) );
 
-	    // Redirect to the edit screen for this new donation
-	    wp_safe_redirect( $location );
+        // Redirect to the edit screen for this new donation
+        wp_safe_redirect( $location );
     }
 
-	/**
-	 * Handle "delete donation" action
-	 *
-	 * @since     1.0.0
-	 */
+    /**
+     * Handle "delete donation" action
+     *
+     * @since     1.0.0
+     */
     public function delete_donation() {
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_donation_' . $_REQUEST['donation_id'] ) ) {
-			die( __('Security check failed.', 'peerraiser' ) );
-		}
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'peerraiser_delete_donation_' . $_REQUEST['donation_id'] ) ) {
+            die( __('Security check failed.', 'peerraiser' ) );
+        }
 
-		// Models
-		$donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
+        // Models
+        $donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
 
         // Delete the donation
         $donation->delete();
 
         // Create redirect URL
-	    $location = add_query_arg( array(
-		    'page'               => 'peerraiser-donations',
-		    'peerraiser_notice' => 'donation_deleted'
-	    ), admin_url( 'admin.php' ) );
+        $location = add_query_arg( array(
+            'page'               => 'peerraiser-donations',
+            'peerraiser_notice' => 'donation_deleted'
+        ), admin_url( 'admin.php' ) );
 
-		wp_safe_redirect( $location );
-	}
+        wp_safe_redirect( $location );
+    }
 
-	/**
+    /**
      * Checks if the fields are valid
      *
      * @since     1.0.0
      * @return    array    Array with 'is_valid' of TRUE or FALSE and 'field_errors' with any error messages
      */
     private function is_valid_donation() {
-	    $donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
-	    $required_fields = $donations_model->get_required_field_ids();
+        $donations_model = new \PeerRaiser\Model\Admin\Donations_Admin();
+        $required_fields = $donations_model->get_required_field_ids();
 
-	    $required_fields['donation_status'] = 'donation_status';
+        $required_fields['donation_status'] = 'donation_status';
 
         $data = array(
             'is_valid'     => true,

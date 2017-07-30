@@ -37,7 +37,7 @@
         <h2><?php _e( 'My Teams', 'peerraiser' ); ?></h2>
         <div class="teams">
         <?php foreach ( $peerraiser['teams'] as $team ) : ?>
-	        <?php $campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id ); ?>
+            <?php $campaign = new \PeerRaiser\Model\Campaign( $team->campaign_id ); ?>
 
             <div class="team">
                 <div class="thumbnail">

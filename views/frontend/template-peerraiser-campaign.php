@@ -29,7 +29,7 @@ $campaign = peerraiser_get_current_campaign();
 
         <div class="peerraiser-campaign-sidebar">
 
-	        <?php dynamic_sidebar( 'peerraiser-campaign-sidebar' ); ?>
+            <?php dynamic_sidebar( 'peerraiser-campaign-sidebar' ); ?>
 
         </div>
 

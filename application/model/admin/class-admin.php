@@ -39,9 +39,9 @@ class Admin {
                 'cap'   => 'activate_plugins',
             ),
             'participants' => array(
-	            'url'   => 'peerraiser-participants',
-	            'title' => __( 'Participants', 'peerraiser' ),
-	            'cap'   => 'activate_plugins',
+                'url'   => 'peerraiser-participants',
+                'title' => __( 'Participants', 'peerraiser' ),
+                'cap'   => 'activate_plugins',
             ),
             'settings' => array(
                 'url'   => 'peerraiser-settings',
@@ -55,73 +55,73 @@ class Admin {
         return apply_filters( 'peerraiser_menu_items', $this->menu_items );
     }
 
-	public function get_required_field_ids( $group = false ) {
-		$required_fields = array();
+    public function get_required_field_ids( $group = false ) {
+        $required_fields = array();
 
-		foreach ( $this->fields as $field_group ) {
-			foreach ( $field_group['fields'] as $field ) {
-				if ( isset( $field['attributes']['data-rule-required'] ) ) {
-					$required_fields[] =  $field['id'];
-				}
-			}
-		}
+        foreach ( $this->fields as $field_group ) {
+            foreach ( $field_group['fields'] as $field ) {
+                if ( isset( $field['attributes']['data-rule-required'] ) ) {
+                    $required_fields[] =  $field['id'];
+                }
+            }
+        }
 
-		return $required_fields;
-	}
+        return $required_fields;
+    }
 
-	public function get_field_ids() {
-		$ids = array();
-		foreach ( $this->fields as $field_group ) {
-			$ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
-		}
+    public function get_field_ids() {
+        $ids = array();
+        foreach ( $this->fields as $field_group ) {
+            $ids = array_merge( $ids, wp_list_pluck( $field_group['fields'], 'id' ) );
+        }
 
-		return $ids;
-	}
+        return $ids;
+    }
 
-	public function get_field_value( $field ) {
-		if ( ! isset( $_GET['team'] ) )
-			return;
+    public function get_field_value( $field ) {
+        if ( ! isset( $_GET['team'] ) )
+            return;
 
-		$team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
-		$short_field = substr( $field['id'], 12 );
+        $team_model = new \PeerRaiser\Model\Team( $_GET['team'] );
+        $short_field = substr( $field['id'], 12 );
 
-		switch ( $field['id'] ) {
-			default:
-				$field_value = isset( $team_model->$short_field ) ? $team_model->$short_field : '';
-				break;
-		}
+        switch ( $field['id'] ) {
+            default:
+                $field_value = isset( $team_model->$short_field ) ? $team_model->$short_field : '';
+                break;
+        }
 
-		return $field_value;
-	}
+        return $field_value;
+    }
 
-	public function get_selected_post( $field ) {
-		// Empty array to fill with posts
-		$results = array();
+    public function get_selected_post( $field ) {
+        // Empty array to fill with posts
+        $results = array();
 
-		if ( isset($field->value) && $field->value !== '' ) {
-			$post = get_post($field->value);
-			$results[$field->value] = get_the_title( $post );
-		}
+        if ( isset($field->value) && $field->value !== '' ) {
+            $post = get_post($field->value);
+            $results[$field->value] = get_the_title( $post );
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 
-	public function custom_label( $field_args, $field ) {
-		$label = $field_args['name'];
+    public function custom_label( $field_args, $field ) {
+        $label = $field_args['name'];
 
-		if ( $field_args['options']['tooltip'] ) {
-			$label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
-		}
+        if ( $field_args['options']['tooltip'] ) {
+            $label .= sprintf( '<span class="pr_tooltip"><i class="pr_icon fa %s"></i><span class="pr_tip">%s</span></span>', $field_args['options'][ 'tooltip-class' ], $field_args['options'][ 'tooltip' ]);
+        }
 
-		return $label;
-	}
+        return $label;
+    }
 
-	protected function get_currency_symbol(){
-		$plugin_options = get_option( 'peerraiser_options', array() );
-		$currency       = new \PeerRaiser\Model\Currency();
-		$iso4217_code   = isset( $plugin_options['currency'] ) ? $plugin_options['currency'] : 'USD';
+    protected function get_currency_symbol(){
+        $plugin_options = get_option( 'peerraiser_options', array() );
+        $currency       = new \PeerRaiser\Model\Currency();
+        $iso4217_code   = isset( $plugin_options['currency'] ) ? $plugin_options['currency'] : 'USD';
 
-		return $currency->get_currency_symbol_by_iso4217_code( $iso4217_code );
-	}
+        return $currency->get_currency_symbol_by_iso4217_code( $iso4217_code );
+    }
 
 }

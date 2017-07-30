@@ -11,8 +11,8 @@
     <select name="<?php echo esc_attr( $this->get_field_name( 'campaign' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'campaign' ) ); ?>">
         <option value="auto" <?php selected( $peerraiser['campaign'], 'auto' ); ?>><?php _e( 'Current Campaign (auto detect)', 'peerraiser' ); ?></option>
         <option value="all" <?php selected( $peerraiser['campaign'], 'all' ); ?>><?php _e( 'All Campaigns', 'peerraiser' ); ?></option>
-		<?php foreach ( $peerraiser['campaigns'] as $campaign ) :?>
+        <?php foreach ( $peerraiser['campaigns'] as $campaign ) :?>
             <option value="<?php echo esc_attr( $campaign->ID ); ?>" <?php selected( absint( $peerraiser['campaign'] ), $campaign->ID ) ?>><?php echo $campaign->campaign_name; ?></option>
-		<?php endforeach; ?>
+        <?php endforeach; ?>
     </select>
 </p>

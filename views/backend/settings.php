@@ -28,10 +28,10 @@ if ( ! defined( 'ABSPATH' ) ) {
         <?php endforeach; ?>
     </h2>
 
-	<?php do_action( 'peerraiser_after_settings_tabs', $peerraiser ); ?>
+    <?php do_action( 'peerraiser_after_settings_tabs', $peerraiser ); ?>
 
     <?php if ( $number_of_sections > 1 ) : $count = 1; ?>
-	    <?php do_action( 'peerraiser_before_settings_sub_tabs', $peerraiser ); ?>
+        <?php do_action( 'peerraiser_before_settings_sub_tabs', $peerraiser ); ?>
 
         <div class="group">
             <ul class="subsubsub">
@@ -45,19 +45,19 @@ if ( ! defined( 'ABSPATH' ) ) {
             </ul>
         </div>
 
-	    <?php do_action( 'peerraiser_after_settings_sub_tabs', $peerraiser ); ?>
+        <?php do_action( 'peerraiser_after_settings_sub_tabs', $peerraiser ); ?>
     <?php endif;?>
 
-	<?php do_action( 'peerraiser_before_settings_title', $peerraiser ); ?>
+    <?php do_action( 'peerraiser_before_settings_title', $peerraiser ); ?>
 
     <h3><?= $peerraiser['content']['title'] ?></h3>
 
-	<?php do_action( 'peerraiser_after_settings_title', $peerraiser ); ?>
+    <?php do_action( 'peerraiser_after_settings_title', $peerraiser ); ?>
 
-	<?php do_action( 'peerraiser_before_settings_fields', $peerraiser ); ?>
+    <?php do_action( 'peerraiser_before_settings_fields', $peerraiser ); ?>
 
     <?= $peerraiser['content']['html'] ?>
 
-	<?php do_action( 'peerraiser_after_settings_fields', $peerraiser ); ?>
+    <?php do_action( 'peerraiser_after_settings_fields', $peerraiser ); ?>
 
 </div>

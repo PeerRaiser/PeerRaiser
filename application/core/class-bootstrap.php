@@ -92,8 +92,8 @@ class Bootstrap {
      * @return    void
      */
     private function register_frontend_actions() {
-	    $frontend_controller = self::get_controller( 'Frontend\Frontend' );
-	    $frontend_controller->register_actions();
+        $frontend_controller = self::get_controller( 'Frontend\Frontend' );
+        $frontend_controller->register_actions();
 
         $post_controller = self::get_controller( 'Frontend\Post' );
         $post_controller->register_actions();
@@ -101,8 +101,8 @@ class Bootstrap {
         $shortcode_controller = self::get_controller( 'Frontend\Shortcode' );
         $shortcode_controller->register_actions();
 
-	    $registration_controller = self::get_controller( 'Frontend\Registration' );
-	    $registration_controller->register_actions();
+        $registration_controller = self::get_controller( 'Frontend\Registration' );
+        $registration_controller->register_actions();
 
         $account_controller = self::get_controller( 'Frontend\Account' );
         $account_controller->register_actions();
@@ -110,14 +110,14 @@ class Bootstrap {
         $dashboard_controller = self::get_controller( 'Frontend\Participant_Dashboard' );
         $dashboard_controller->register_actions();
 
-	    $template_controller = self::get_controller( 'Frontend\Template' );
-	    $template_controller->register_actions();
+        $template_controller = self::get_controller( 'Frontend\Template' );
+        $template_controller->register_actions();
 
-	    $donation_controller = self::get_controller( 'Frontend\Donation' );
-	    $donation_controller->register_actions();
+        $donation_controller = self::get_controller( 'Frontend\Donation' );
+        $donation_controller->register_actions();
 
-	    $widget_controller = self::get_controller( 'Frontend\Widget' );
-	    $widget_controller->register_actions();
+        $widget_controller = self::get_controller( 'Frontend\Widget' );
+        $widget_controller->register_actions();
     }
 
     /**
@@ -192,9 +192,9 @@ class Bootstrap {
         $donors_controller = self::get_controller( 'Admin\Donors' );
         $donors_controller->register_actions();
 
-	    // participants controller
-	    $participants_controller = self::get_controller( 'Admin\Participants' );
-	    $participants_controller->register_actions();
+        // participants controller
+        $participants_controller = self::get_controller( 'Admin\Participants' );
+        $participants_controller->register_actions();
     }
 
     private function register_activity_log() {
@@ -242,8 +242,8 @@ class Bootstrap {
     }
 
     public function register_routes() {
-	    $donation_rest_controller = self::get_controller( 'Api\Donation_Rest_Controller' );
-	    $donation_rest_controller->register_routes();
+        $donation_rest_controller = self::get_controller( 'Api\Donation_Rest_Controller' );
+        $donation_rest_controller->register_routes();
     }
 
 }

@@ -152,15 +152,15 @@ abstract class Database {
         return $wpdb->insert_id;
     }
 
-	/**
-	 * Update a row
-	 *
-	 * @param $row_id
-	 * @param array $data
-	 * @param string $where
-	 *
-	 * @return bool
-	 */
+    /**
+     * Update a row
+     *
+     * @param $row_id
+     * @param array $data
+     * @param string $where
+     *
+     * @return bool
+     */
     public function update( $row_id, $data = array(), $where = '' ) {
 
         global $wpdb;

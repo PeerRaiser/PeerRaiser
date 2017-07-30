@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                                             <fieldset id="timestampdiv" class="hide-if-js">
                                                 <legend class="screen-reader-text"><?php _e( 'Date and time' ); ?></legend>
-	                                            <?php \PeerRaiser\Helper\View::get_time_fields(false ); ?>
+                                                <?php \PeerRaiser\Helper\View::get_time_fields(false ); ?>
                                             </fieldset>
                                         </div>
                                     </div>

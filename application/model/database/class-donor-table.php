@@ -30,13 +30,13 @@ class Donor_Table extends Database {
     public function get_columns() {
         return array(
             'donor_id'       => '%d',
-			'user_id'        => '%d',
-			'first_name'     => '%s',
+            'user_id'        => '%d',
+            'first_name'     => '%s',
             'last_name'      => '%s',
             'full_name'      => '%s',
-			'email_address'  => '%s',
-			'donation_value' => '%f',
-			'donation_count' => '%d',
+            'email_address'  => '%s',
+            'donation_value' => '%f',
+            'donation_count' => '%d',
             'date'           => '%s',
         );
     }
@@ -53,10 +53,10 @@ class Donor_Table extends Database {
             'first_name'     => '',
             'last_name'      => '',
             'full_name'      => '',
-			'email_address'  => '',
+            'email_address'  => '',
             'user_id'        => 0,
-			'donation_value' => '0.00',
-			'donation_count' => 0,
+            'donation_value' => '0.00',
+            'donation_count' => 0,
             'date'           => date( 'Y-m-d H:i:s' ),
         );
     }
@@ -83,7 +83,7 @@ class Donor_Table extends Database {
             'first_name'     => '',
             'last_name'      => '',
             'full_name'      => '',
-			'email_address'  => '',
+            'email_address'  => '',
             'donation_count' => '',
             'orderby'        => 'donor_id',
             'order'          => 'ASC',
@@ -108,16 +108,16 @@ class Donor_Table extends Database {
             $where .= "WHERE `donor_id` IN( {$donor_ids} ) ";
         }
 
-	    // by user id
-	    if ( ! empty( $args['user_id'] ) ) {
-		    if ( is_array( $args['user_id'] ) ) {
-			    $user_ids = implode( ',', $args['user_id'] );
-		    } else {
-			    $user_ids = intval( $args['user_id'] );
-		    }
+        // by user id
+        if ( ! empty( $args['user_id'] ) ) {
+            if ( is_array( $args['user_id'] ) ) {
+                $user_ids = implode( ',', $args['user_id'] );
+            } else {
+                $user_ids = intval( $args['user_id'] );
+            }
 
-		    $where .= "WHERE `user_id` IN( {$user_ids} ) ";
-	    }
+            $where .= "WHERE `user_id` IN( {$user_ids} ) ";
+        }
 
         // By donor first name
         if ( ! empty( $args['first_name'] ) ) {
@@ -130,63 +130,63 @@ class Donor_Table extends Database {
             $where .= sprintf(" `first_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['first_name']) . "%%" );
         }
 
-	    // By donor last name
-	    if ( ! empty( $args['last_name'] ) ) {
-		    if ( empty( $where ) ) {
-			    $where .= " WHERE";
-		    } else {
-			    $where .= " AND";
-		    }
+        // By donor last name
+        if ( ! empty( $args['last_name'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-		    $where .= sprintf(" `last_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['last_name']) . "%%" );
-	    }
+            $where .= sprintf(" `last_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['last_name']) . "%%" );
+        }
 
-	    // By donor name
-	    if ( ! empty( $args['donor_name'] ) ) {
-		    if ( empty( $where ) ) {
-			    $where .= " WHERE";
-		    } else {
-			    $where .= " AND";
-		    }
+        // By donor name
+        if ( ! empty( $args['donor_name'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-		    $where .= sprintf(" `full_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
-	    }
+            $where .= sprintf(" `full_name` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donor_name']) . "%%" );
+        }
 
-		// By donor name
-		if ( ! empty( $args['email_address'] ) ) {
-			if ( empty( $where ) ) {
-				$where .= " WHERE";
-			} else {
-				$where .= " AND";
-			}
+        // By donor name
+        if ( ! empty( $args['email_address'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-			$where .= sprintf(" `email_address` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['email_address']) . "%%" );
-		}
+            $where .= sprintf(" `email_address` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['email_address']) . "%%" );
+        }
 
-	    // By number of donations
-	    if ( ! empty( $args['donation_count'] ) ) {
-		    if ( empty( $where ) ) {
-			    $where .= " WHERE";
-		    } else {
-			    $where .= " AND";
-		    }
+        // By number of donations
+        if ( ! empty( $args['donation_count'] ) ) {
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-		    $where .= sprintf(" `donation_count` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donation_count']) . "%%" );
-	    }
+            $where .= sprintf(" `donation_count` LIKE '%s' ", "%%" . $wpdb->esc_like( $args['donation_count']) . "%%" );
+        }
 
         // By date
-		if ( ! empty( $args['date'] ) ) {
-			$year  = date( 'Y', strtotime( $args['date'] ) );
-			$month = date( 'm', strtotime( $args['date'] ) );
-			$day   = date( 'd', strtotime( $args['date'] ) );
+        if ( ! empty( $args['date'] ) ) {
+            $year  = date( 'Y', strtotime( $args['date'] ) );
+            $month = date( 'm', strtotime( $args['date'] ) );
+            $day   = date( 'd', strtotime( $args['date'] ) );
 
-			if ( empty( $where ) ) {
-				$where .= " WHERE";
-			} else {
-				$where .= " AND";
-			}
+            if ( empty( $where ) ) {
+                $where .= " WHERE";
+            } else {
+                $where .= " AND";
+            }
 
-			$where .= " $year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date )";
+            $where .= " $year = YEAR ( date ) AND $month = MONTH ( date ) AND $day = DAY ( date )";
         }
 
         $args['orderby'] = ! array_key_exists( $args['orderby'], $this->get_columns() ) ? $this->primary_key : $args['orderby'];
@@ -221,48 +221,48 @@ class Donor_Table extends Database {
 
     }
 
-	public function get_top_donors( $count = 20 ) {
-		global $wpdb;
+    public function get_top_donors( $count = 20 ) {
+        global $wpdb;
 
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
-				FROM {$wpdb->prefix}pr_donations as pr_donations
-				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
-				ON pr_donors.donor_id = pr_donations.donor_id
-				AND pr_donations.status = 'completed'  
-				AND pr_donations.is_test = 0
-				GROUP BY pr_donations.donor_id
-				ORDER BY total DESC
-				LIMIT %d",
-				absint( $count )
-			)
-		);
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
+                FROM {$wpdb->prefix}pr_donations as pr_donations
+                INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
+                ON pr_donors.donor_id = pr_donations.donor_id
+                AND pr_donations.status = 'completed'  
+                AND pr_donations.is_test = 0
+                GROUP BY pr_donations.donor_id
+                ORDER BY total DESC
+                LIMIT %d",
+                absint( $count )
+            )
+        );
 
-		return $results;
-	}
+        return $results;
+    }
 
-	public function get_top_donors_to_campaign( $id, $count = 20 ) {
-		global $wpdb;
+    public function get_top_donors_to_campaign( $id, $count = 20 ) {
+        global $wpdb;
 
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
-				FROM {$wpdb->prefix}pr_donations as pr_donations
-				INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
-				ON pr_donors.donor_id = pr_donations.donor_id
-				WHERE pr_donations.campaign_id = %d 
-				AND pr_donations.status = 'completed'  
-				AND pr_donations.is_test = 0
-				GROUP BY pr_donations.donor_id
-				ORDER BY total DESC
-				LIMIT %d",
-				absint( $id ), absint( $count )
-			)
-		);
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
+                FROM {$wpdb->prefix}pr_donations as pr_donations
+                INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
+                ON pr_donors.donor_id = pr_donations.donor_id
+                WHERE pr_donations.campaign_id = %d 
+                AND pr_donations.status = 'completed'  
+                AND pr_donations.is_test = 0
+                GROUP BY pr_donations.donor_id
+                ORDER BY total DESC
+                LIMIT %d",
+                absint( $id ), absint( $count )
+            )
+        );
 
-		return $results;
-	}
+        return $results;
+    }
 
     /**
      * Return the number of results found for a given query
@@ -315,22 +315,22 @@ class Donor_Table extends Database {
         return parent::table_exists( $this->table_name );
     }
 
-	public function add_donor( \PeerRaiser\Model\Donor $donor ) {
-		global $wpdb;
+    public function add_donor( \PeerRaiser\Model\Donor $donor ) {
+        global $wpdb;
 
-		$data = array(
-			'first_name'     => $donor->first_name,
-			'last_name'      => $donor->last_name,
-			'full_name'      => $donor->full_name,
-			'email_address'  => $donor->email_address,
-			'user_id'        => $donor->user_id,
-			'donation_value' => $donor->donation_value,
-			'donation_count' => $donor->donation_count,
-			'date'           => $donor->date,
-		);
+        $data = array(
+            'first_name'     => $donor->first_name,
+            'last_name'      => $donor->last_name,
+            'full_name'      => $donor->full_name,
+            'email_address'  => $donor->email_address,
+            'user_id'        => $donor->user_id,
+            'donation_value' => $donor->donation_value,
+            'donation_count' => $donor->donation_count,
+            'date'           => $donor->date,
+        );
 
-		$this->insert( $data );
+        $this->insert( $data );
 
-		return $wpdb->insert_id;
-	}
+        return $wpdb->insert_id;
+    }
 }

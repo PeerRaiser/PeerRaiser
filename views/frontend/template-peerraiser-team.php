@@ -22,7 +22,7 @@ $team = peerraiser_get_current_team();
         <h1 class="peerraiser-team-title"><?php echo $team->team_name; ?></h1>
 
         <div class="peerraiser-team-description">
-		    <?php echo $team->team_content; ?>
+            <?php echo $team->team_content; ?>
         </div>
 
     </div>

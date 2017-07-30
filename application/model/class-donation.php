@@ -113,13 +113,13 @@ class Donation {
      */
     protected $donor_id = null;
 
-	/**
-	 * The public name of the donor, if not anonymous
-	 *
-	 * @since  1.0.0
-	 * @var integer
-	 */
-	protected $donor_name = '';
+    /**
+     * The public name of the donor, if not anonymous
+     *
+     * @since  1.0.0
+     * @var integer
+     */
+    protected $donor_name = '';
 
     /**
      * The User ID of the donor (if they have one) that made the donation
@@ -153,13 +153,13 @@ class Donation {
      */
     protected $team_id = 0;
 
-	/**
-	 * The Participant ID this donation was made to (if applicable)
-	 *
-	 * @since  1.0.0
-	 * @var integer
-	 */
-	protected $participant_id = 0;
+    /**
+     * The Participant ID this donation was made to (if applicable)
+     *
+     * @since  1.0.0
+     * @var integer
+     */
+    protected $participant_id = 0;
 
     /**
      * The first name of the donor
@@ -241,13 +241,13 @@ class Donation {
      */
     protected $notes = array();
 
-	/**
-	 * Is this an anonymous donation?
-	 *
-	 * @since 1.0.0
-	 * @var bool
-	 */
-	protected $is_anonymous = false;
+    /**
+     * Is this an anonymous donation?
+     *
+     * @since 1.0.0
+     * @var bool
+     */
+    protected $is_anonymous = false;
 
     /**
      * Is test mode?
@@ -266,10 +266,10 @@ class Donation {
      */
     private $pending;
 
-	/**
-	 * The donation database
-	 */
-	protected $db;
+    /**
+     * The donation database
+     */
+    protected $db;
 
     /**
      * Setup donation class
@@ -279,7 +279,7 @@ class Donation {
      * @param string      $by What to lookup the donation by (donation_id or transaction_id)
      */
     public function __construct( $id = false, $by = 'donation_id' ) {
-	    $this->db = new Donation_Table();
+        $this->db = new Donation_Table();
 
         if ( empty( $id ) ) {
             return false;
@@ -387,10 +387,10 @@ class Donation {
         $this->_ID = absint( $donation->donation_id);
 
         // Status and Dates
-	    $this->date         = $donation->date;
-	    $this->status       = $donation->status;
-	    $this->is_anonymous = boolval( $donation->is_anonymous );
-	    $this->is_test      = boolval( $donation->is_test );
+        $this->date         = $donation->date;
+        $this->status       = $donation->status;
+        $this->is_anonymous = boolval( $donation->is_anonymous );
+        $this->is_test      = boolval( $donation->is_test );
 
         // Money related
         $this->total    = $donation->total;
@@ -433,7 +433,7 @@ class Donation {
         }
 
         if ( empty( $this->donor_id ) ) {
-			return new \WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
+            return new \WP_Error( 'peerraiser_missing_donor_id', __( "A donor ID is required to make a donation", "peerraiser" ) );
         }
 
         // If no team is currently set, try to see if the fundraiser is part of one
@@ -447,26 +447,26 @@ class Donation {
         }
 
         // If the participant isn't set, but the fundraiser is, get the participant for that fundraiser
-	    if ( empty( $this->participant_id ) && ! empty( $this->fundraiser_id ) ) {
-        	$fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
+        if ( empty( $this->participant_id ) && ! empty( $this->fundraiser_id ) ) {
+            $fundraiser = new \PeerRaiser\Model\Fundraiser( $this->fundraiser_id );
 
-        	$this->participant_id = $fundraiser->participant;
-        	$this->pending['participant_id'] = $fundraiser->participant;
-	    }
+            $this->participant_id = $fundraiser->participant;
+            $this->pending['participant_id'] = $fundraiser->participant;
+        }
 
-	    $plugin_options  = get_option( 'peerraiser_options', array() );
+        $plugin_options  = get_option( 'peerraiser_options', array() );
 
-	    $this->is_test            = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN );
-	    $this->pending['is_test'] = $this->is_test;
+        $this->is_test            = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN );
+        $this->pending['is_test'] = $this->is_test;
 
-	    // If this wasn't in test mode, increase donation stats
-	    if ( ! $this->is_test && $this->status === 'completed' ) {
-		    $this->increase_donor_amounts();
-		    $this->increase_campaign_amounts();
-		    $this->increase_fundraiser_amounts();
-		    $this->increase_team_amounts();
-		    $this->increase_participant_amounts();
-	    }
+        // If this wasn't in test mode, increase donation stats
+        if ( ! $this->is_test && $this->status === 'completed' ) {
+            $this->increase_donor_amounts();
+            $this->increase_campaign_amounts();
+            $this->increase_fundraiser_amounts();
+            $this->increase_team_amounts();
+            $this->increase_participant_amounts();
+        }
 
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
@@ -481,7 +481,7 @@ class Donation {
         $this->ID  = $donation_id;
         $this->_ID = $donation_id;
 
-	    do_action( 'peerraiser_donation_added', $this );
+        do_action( 'peerraiser_donation_added', $this );
 
         return $this->ID;
     }
@@ -507,46 +507,46 @@ class Donation {
         if ( ! empty( $this->pending ) ) {
             foreach ( $this->pending as $key => $value ) {
                 switch( $key ) {
-	                case 'status' :
-	                	$this->maybe_update_stats( $value );
-	                case 'transaction_id' :
-	                case 'donor_id' :
-	                case 'donor_name' :
-	                case 'campaign_id' :
-	                case 'team_id' :
-	                case 'fundraiser_id' :
-	                case 'total' :
-	                case 'subtotal' :
-	                case 'ip' :
-	                case 'date' :
-	                case 'is_anonymous' :
-	                case 'is_test' :
-	                	$bulk_update[$key] = $value;
-		                $updated[] = array( $key => $value );
-		                break;
+                    case 'status' :
+                        $this->maybe_update_stats( $value );
+                    case 'transaction_id' :
+                    case 'donor_id' :
+                    case 'donor_name' :
+                    case 'campaign_id' :
+                    case 'team_id' :
+                    case 'fundraiser_id' :
+                    case 'total' :
+                    case 'subtotal' :
+                    case 'ip' :
+                    case 'date' :
+                    case 'is_anonymous' :
+                    case 'is_test' :
+                        $bulk_update[$key] = $value;
+                        $updated[] = array( $key => $value );
+                        break;
                     default :
-	                    $this->update_meta( $key, $value );
-	                    $updated[] = array( $key => $value );
+                        $this->update_meta( $key, $value );
+                        $updated[] = array( $key => $value );
                         break;
                 }
             }
         }
 
         if ( ! empty ( $bulk_update ) ) {
-	        $this->update( $bulk_update );
+            $this->update( $bulk_update );
         }
 
-	    $cache_key = md5( 'peerraiser_donation_' . $this->ID );
-	    wp_cache_set( $cache_key, $this, 'donations' );
+        $cache_key = md5( 'peerraiser_donation_' . $this->ID );
+        wp_cache_set( $cache_key, $this, 'donations' );
 
-	    $this->pending = array();
+        $this->pending = array();
 
-	    do_action( 'peerraiser_donation_saved', $this, $updated );
-	    foreach ( $updated as $key => $value ) {
-		    do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
-	    }
+        do_action( 'peerraiser_donation_saved', $this, $updated );
+        foreach ( $updated as $key => $value ) {
+            do_action( "peerraiser_donation_updated_{$key}", $this, $key, $value );
+        }
 
-	    return true;
+        return true;
     }
 
     /**
@@ -555,7 +555,7 @@ class Donation {
     public function delete() {
         do_action( 'peerraiser_donation_delete', $this );
 
-		$this->db->delete( $this->ID );
+        $this->db->delete( $this->ID );
 
         $this->decrease_donor_amounts();
         $this->decrease_campaign_amounts();
@@ -564,66 +564,66 @@ class Donation {
         $this->decrease_team_amounts();
         $this->decrease_participant_amounts();
 
-		do_action( 'peerraiser_donation_deleted', $this );
-	}
+        do_action( 'peerraiser_donation_deleted', $this );
+    }
 
-	/**
-	 * Update a donation record
-	 *
-	 * @since 1.0.0
-	 * @param array $data Array of data attributes for a donor
-	 *
-	 * @return bool If the update was successful or not
-	 */
-	public function update( $data = array() ) {
-		if ( empty( $data ) ) {
-			return false;
-		}
+    /**
+     * Update a donation record
+     *
+     * @since 1.0.0
+     * @param array $data Array of data attributes for a donor
+     *
+     * @return bool If the update was successful or not
+     */
+    public function update( $data = array() ) {
+        if ( empty( $data ) ) {
+            return false;
+        }
 
-		$data = $this->sanitize_columns( $data );
+        $data = $this->sanitize_columns( $data );
 
-		do_action( 'peerraiser_donation_pre_update', $this->ID, $data );
+        do_action( 'peerraiser_donation_pre_update', $this->ID, $data );
 
-		$updated = false;
+        $updated = false;
 
-		if ( $this->db->update( $this->ID, $data ) ) {
+        if ( $this->db->update( $this->ID, $data ) ) {
 
-			$donation = $this->db->get_donations( array( 'donation_id' => $this->ID ) );
-			$this->setup_donation( reset( $donation ) );
+            $donation = $this->db->get_donations( array( 'donation_id' => $this->ID ) );
+            $this->setup_donation( reset( $donation ) );
 
-			$updated = true;
-		}
+            $updated = true;
+        }
 
-		return $updated;
-	}
+        return $updated;
+    }
 
-	private function maybe_update_stats( $status ) {
-		if ( $this->is_test || empty( $this->old_status ) || $status === $this->old_status ) {
-			return;
-		}
+    private function maybe_update_stats( $status ) {
+        if ( $this->is_test || empty( $this->old_status ) || $status === $this->old_status ) {
+            return;
+        }
 
-		if ( $this->old_status === 'completed' ) {
-			$this->decrease_donor_amounts();
-			$this->decrease_campaign_amounts();
-			$this->decrease_fundraiser_amounts();
-			$this->decrease_team_amounts();
-			$this->decrease_participant_amounts();
+        if ( $this->old_status === 'completed' ) {
+            $this->decrease_donor_amounts();
+            $this->decrease_campaign_amounts();
+            $this->decrease_fundraiser_amounts();
+            $this->decrease_team_amounts();
+            $this->decrease_participant_amounts();
 
-			$activity_feed = new Activity_Feed();
-			$activity_feed->remove_activity( $this->ID );
-		}
+            $activity_feed = new Activity_Feed();
+            $activity_feed->remove_activity( $this->ID );
+        }
 
-		if ( $status === 'completed' ) {
-			$this->increase_donor_amounts();
-			$this->increase_campaign_amounts();
-			$this->increase_fundraiser_amounts();
-			$this->increase_team_amounts();
-			$this->increase_participant_amounts();
+        if ( $status === 'completed' ) {
+            $this->increase_donor_amounts();
+            $this->increase_campaign_amounts();
+            $this->increase_fundraiser_amounts();
+            $this->increase_team_amounts();
+            $this->increase_participant_amounts();
 
-			$activity_feed = new Activity_Feed();
-			$activity_feed->add_donation_to_feed( $this );
-		}
-	}
+            $activity_feed = new Activity_Feed();
+            $activity_feed->add_donation_to_feed( $this );
+        }
+    }
 
     /**
      * Add a note to a donation
@@ -634,7 +634,7 @@ class Donation {
      *
      * @return array
      */
-	public function add_note( $what = '', $who = 'bot', $when = 'now' ) {
+    public function add_note( $what = '', $who = 'bot', $when = 'now' ) {
         $notes = $this->notes;
 
         if ( 'now' === $when ) {
@@ -658,57 +658,57 @@ class Donation {
         return $this->notes;
     }
 
-	/**
-	 * Sanitize the data for update/create
-	 *
-	 * @since 1.0.0
-	 * @param array $data The data to sanitize
-	 *
-	 * @return array The sanitized data, based off column defaults
-	 */
-	private function sanitize_columns( $data ) {
-		$columns        = $this->db->get_columns();
-		$default_values = $this->db->get_column_defaults();
+    /**
+     * Sanitize the data for update/create
+     *
+     * @since 1.0.0
+     * @param array $data The data to sanitize
+     *
+     * @return array The sanitized data, based off column defaults
+     */
+    private function sanitize_columns( $data ) {
+        $columns        = $this->db->get_columns();
+        $default_values = $this->db->get_column_defaults();
 
-		foreach ( $columns as $key => $type ) {
-			if ( ! array_key_exists( $key, $data ) ) {
-				continue;
-			}
+        foreach ( $columns as $key => $type ) {
+            if ( ! array_key_exists( $key, $data ) ) {
+                continue;
+            }
 
-			switch( $type ) {
-				case '%s':
-					$data[$key] = sanitize_text_field( $data[$key] );
-					break;
+            switch( $type ) {
+                case '%s':
+                    $data[$key] = sanitize_text_field( $data[$key] );
+                    break;
 
-				case '%d':
-					if ( 'is_anonymous' == $key || 'is_test' == $key ) {
-						$data[$key] = $data[$key] ? 1 : 0;
-					} elseif ( ! is_numeric( $data[$key] ) || (int) $data[$key] !== absint( $data[$key] ) ) {
-						$data[$key] = $default_values[$key];
-					} else {
-						$data[$key] = absint( $data[$key] );
-					}
-					break;
+                case '%d':
+                    if ( 'is_anonymous' == $key || 'is_test' == $key ) {
+                        $data[$key] = $data[$key] ? 1 : 0;
+                    } elseif ( ! is_numeric( $data[$key] ) || (int) $data[$key] !== absint( $data[$key] ) ) {
+                        $data[$key] = $default_values[$key];
+                    } else {
+                        $data[$key] = absint( $data[$key] );
+                    }
+                    break;
 
-				case '%f':
-					$value = floatval( $data[$key] );
+                case '%f':
+                    $value = floatval( $data[$key] );
 
-					if ( ! is_float( $value ) ) {
-						$data[$key] = $default_values[$key];
-					} else {
-						$data[$key] = $value;
-					}
-					break;
+                    if ( ! is_float( $value ) ) {
+                        $data[$key] = $default_values[$key];
+                    } else {
+                        $data[$key] = $value;
+                    }
+                    break;
 
-				default:
-					$data[$key] = sanitize_text_field( $data[$key] );
-					break;
-			}
+                default:
+                    $data[$key] = sanitize_text_field( $data[$key] );
+                    break;
+            }
 
-		}
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
     /**
      * Gets the IP address
@@ -761,13 +761,13 @@ class Donation {
     public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
         $donation_meta = new Donation_Meta_Table();
 
-	    do_action( 'peerraiser_update_donation_meta', $this, $meta_key, $meta_value );
+        do_action( 'peerraiser_update_donation_meta', $this, $meta_key, $meta_value );
 
-	    if ( $results = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value) ) {
-		    do_action( 'peerraiser_updated_donation_meta', $this, $meta_key, $meta_value );
-	    }
+        if ( $results = $donation_meta->update_meta( $this->ID, $meta_key, $meta_value, $prev_value) ) {
+            do_action( 'peerraiser_updated_donation_meta', $this, $meta_key, $meta_value );
+        }
 
-	    return $results;
+        return $results;
     }
 
     /**
@@ -784,17 +784,17 @@ class Donation {
         return $result;
     }
 
-	public function get_donations( $args ) {
-		$donation_rows = $this->db->get_donations( $args );
+    public function get_donations( $args ) {
+        $donation_rows = $this->db->get_donations( $args );
 
-		$donations = array();
+        $donations = array();
 
-		foreach( $donation_rows as $row ) {
-			$donations[] = new self( $row->donation_id );
-		}
+        foreach( $donation_rows as $row ) {
+            $donations[] = new self( $row->donation_id );
+        }
 
-		return $donations;
-	}
+        return $donations;
+    }
 
     public function get_donations_total() {
         $total = $this->db->get_donations_total();
@@ -803,19 +803,19 @@ class Donation {
     }
 
     public function get_donor_name() {
-    	if ( $this->is_anonymous ) {
-    		return apply_filters( 'peerraiser_anonymous_name', __( 'Anonymous', 'peerraiser' ) );
-	    }
+        if ( $this->is_anonymous ) {
+            return apply_filters( 'peerraiser_anonymous_name', __( 'Anonymous', 'peerraiser' ) );
+        }
 
-	    if ( empty( trim( $this->donor_name ) ) ) {
-    		$donor = new Donor_Model( $this->donor_id );
+        if ( empty( trim( $this->donor_name ) ) ) {
+            $donor = new Donor_Model( $this->donor_id );
 
-    		$donor_name = $donor->first_name . ' ' . $donor->last_name[0] . '.';
+            $donor_name = $donor->first_name . ' ' . $donor->last_name[0] . '.';
 
-    		return apply_filters( 'peerraiser_donor_name_fallback', $donor_name );
-	    }
+            return apply_filters( 'peerraiser_donor_name_fallback', $donor_name );
+        }
 
-	    return $this->donor_name;
+        return $this->donor_name;
     }
 
     private function increase_donor_amounts() {
@@ -890,25 +890,25 @@ class Donation {
         $campaign->decrease_value( abs( $this->total ) );
     }
 
-	private function increase_participant_amounts() {
-		if ( empty( $this->participant_id ) ) {
-			return;
-		}
+    private function increase_participant_amounts() {
+        if ( empty( $this->participant_id ) ) {
+            return;
+        }
 
-		$participant = new Participant_Model( $this->participant_id );
+        $participant = new Participant_Model( $this->participant_id );
 
-		$participant->increase_donation_count( 1 );
-		$participant->increase_value( $this->total );
-	}
+        $participant->increase_donation_count( 1 );
+        $participant->increase_value( $this->total );
+    }
 
-	private function decrease_participant_amounts() {
-		if ( empty( $this->participant_id ) ) {
-			return;
-		}
+    private function decrease_participant_amounts() {
+        if ( empty( $this->participant_id ) ) {
+            return;
+        }
 
-		$participant = new Participant_Model( $this->participant_id );
+        $participant = new Participant_Model( $this->participant_id );
 
-		$participant->decrease_donation_count( 1 );
-		$participant->decrease_value( abs( $this->total ) );
-	}
+        $participant->decrease_donation_count( 1 );
+        $participant->decrease_value( abs( $this->total ) );
+    }
 }

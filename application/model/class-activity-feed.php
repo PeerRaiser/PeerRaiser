@@ -31,10 +31,10 @@ class Activity_Feed {
     }
 
     public function add_donation_to_feed( $donation ) {
-    	$donor = new \PeerRaiser\Model\Donor( $donation->donor_id );
-    	$campaign = new \PeerRaiser\Model\Campaign( $donation->campaign_id );
+        $donor = new \PeerRaiser\Model\Donor( $donation->donor_id );
+        $campaign = new \PeerRaiser\Model\Campaign( $donation->campaign_id );
 
-	    $message = sprintf( __( '<a href="admin.php?page=peerraiser-donors&donor=%1$d&view=summary">%2$s</a> donated <a href="admin.php?page=peerraiser-donations&donation=%3$d&view=summary">%4$s</a> to the <a href="admin.php?page=peerraiser-campaigns&campaign=%5$d&view=summary">%6$s</a> campaign.', 'peerraiser' ), $donor->ID, $donor->full_name, $donation->ID, peerraiser_money_format( $donation->total ), $campaign->ID, $campaign->campaign_name );
+        $message = sprintf( __( '<a href="admin.php?page=peerraiser-donors&donor=%1$d&view=summary">%2$s</a> donated <a href="admin.php?page=peerraiser-donations&donation=%3$d&view=summary">%4$s</a> to the <a href="admin.php?page=peerraiser-campaigns&campaign=%5$d&view=summary">%6$s</a> campaign.', 'peerraiser' ), $donor->ID, $donor->full_name, $donation->ID, peerraiser_money_format( $donation->total ), $campaign->ID, $campaign->campaign_name );
 
         $this->add_activity(
             array(
@@ -46,12 +46,12 @@ class Activity_Feed {
         );
     }
 
-	public function remove_donation_from_feed( $donation ) {
-		$this->remove_activity( $donation->ID );
-	}
+    public function remove_donation_from_feed( $donation ) {
+        $this->remove_activity( $donation->ID );
+    }
 
     public function add_campaign_to_feed( $campaign ) {
-	    $message = sprintf( __( '"<a href="admin.php?page=peerraiser-campaigns&campaign=%1$d&view=summary">%2$s</a>" campaign created.', 'peerraiser' ), $campaign->ID, $campaign->campaign_name );
+        $message = sprintf( __( '"<a href="admin.php?page=peerraiser-campaigns&campaign=%1$d&view=summary">%2$s</a>" campaign created.', 'peerraiser' ), $campaign->ID, $campaign->campaign_name );
 
         $this->add_activity(
             array(
@@ -64,7 +64,7 @@ class Activity_Feed {
     }
 
     public function remove_campaign_from_feed( $campaign ) {
-	    $this->remove_activity( $campaign->ID );
+        $this->remove_activity( $campaign->ID );
     }
 
     public function add_fundraiser_to_feed( $post ) {
@@ -78,7 +78,7 @@ class Activity_Feed {
         $message = sprintf( __( '<a href="user-edit.php?user_id=%1$d">%2$s</a> created fundraiser <a href="post.php?action=edit&post=%3$d">%4$s</a> for the <a href="admin.php?page=peerraiser-campaigns&view=summary&campaign=%5$d">%6$s</a> campaign.', 'peerraiser' ), $participant_id, $participant_name, $post->ID, get_the_title( $post->ID ), $campaign->ID, $campaign->campaign_name );
 
         // Remove activity if fundraiser is already in the feed
-	    $this->remove_activity( $post->ID );
+        $this->remove_activity( $post->ID );
 
         $this->add_activity(
             array(
