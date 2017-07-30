@@ -122,6 +122,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                             <?php endif; ?>
                                         </tr>
                                         <tr>
+                                            <td><strong><?php _e( 'Subtotal', 'peerraiser' ); ?>:</strong></td>
+                                            <td><strong><?php echo peerraiser_money_format( $peerraiser['donation']->subtotal ); ?></strong></td>
+                                        </tr>
+                                        <tr>
                                             <td><strong><?php _e( 'Total Donation', 'peerraiser' ); ?>:</strong></td>
                                             <td><strong><?php echo peerraiser_money_format( $peerraiser['donation']->total ); ?></strong></td>
                                         </tr>
