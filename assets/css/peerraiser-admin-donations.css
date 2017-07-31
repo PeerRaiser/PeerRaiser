@@ -39,15 +39,19 @@
     vertical-align: bottom;
     color: #82878c;
 }
+.peerraiser-form .donation-info .donation-status .label:before,
 .peerraiser-form .misc-pub-section.donation-status:before {
     content: "\f059";
 }
+.peerraiser-form .donation-info .donation-status.completed .label:before,
 .peerraiser-form .misc-pub-section.donation-status.completed:before {
     content: "\f058";
 }
+.peerraiser-form .donation-info .donation-status.pending .label:before,
 .peerraiser-form .misc-pub-section.donation-status.pending:before {
     content: "\f017";
 }
+.peerraiser-form .donation-info .donation-status.failed .label:before,
 .peerraiser-form .misc-pub-section.donation-status.failed:before {
     content: "\f057";
 }
@@ -56,9 +60,6 @@
 }
 .peerraiser-form .donation-info .donation-date .label:before {
     content: "\f073";
-}
-.peerraiser-form .donation-info .donation-status .label:before {
-    content: "\f059";
 }
 .peerraiser-form .donation-info .donation-method .label:before {
     content: "\f09d";
