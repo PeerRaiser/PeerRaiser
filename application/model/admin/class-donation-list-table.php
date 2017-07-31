@@ -40,7 +40,7 @@ class Donation_List_Table extends WP_List_Table {
         $title = '<strong><a href="' . add_query_arg( array( 'donation' => $donation->donation_id, 'view' => 'summary' ) ) . '">Donation #' . $donation->donation_id . '</a></strong>';
 
         $actions = array(
-            'view' => sprintf( '<a href="?page=%s&view=%s&donation=%s">View</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $donation->donation_id ) ),
+            'edit' => sprintf( '<a href="?page=%s&view=%s&donation=%s">Edit</a>', esc_attr( $_REQUEST['page'] ), 'summary', absint( $donation->donation_id ) ),
             'delete' => sprintf( '<a href="?page=%s&peerraiser_action=%s&donation_id=%s&_wpnonce=%s">Delete</a>', esc_attr( $_REQUEST['page'] ), 'delete_donation', absint( $donation->donation_id ), $delete_nonce ),
         );
 
