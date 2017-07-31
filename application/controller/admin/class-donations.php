@@ -201,9 +201,9 @@ class Donations extends \PeerRaiser\Controller\Base {
         $donation->total         = $_REQUEST['donation_amount'];
         $donation->subtotal      = $_REQUEST['donation_amount'];
         $donation->campaign_id   = absint( $_REQUEST['campaign'] );
-        $donation->status        = $_REQUEST['donation_status'];
         $donation->donation_type = $_REQUEST['donation_type'];
         $donation->gateway       = 'offline';
+        $donation->status        = $_REQUEST['donation_status'];
 
         // Optional Fields
         $donation->fundraiser_id = isset( $_REQUEST['fundraiser'] ) ? absint( $_REQUEST['fundraiser'] ) : 0;
@@ -236,6 +236,8 @@ class Donations extends \PeerRaiser\Controller\Base {
         }
 
         $donation = new \PeerRaiser\Model\Donation( (int) $_REQUEST['donation_id'] );
+
+        $donation->status = $_REQUEST['donation_status'];
 
         if ( isset( $_REQUEST['donation_note'] ) && ! empty( trim( $_REQUEST['donation_note'] ) ) ) {
             $user = wp_get_current_user();
