@@ -11,7 +11,9 @@ $fundraiser = peerraiser_get_current_fundraiser();
 
     <div class="peerraiser-fundraiser-sidebar">
 
-        <img src="<?php echo esc_url( $fundraiser->get_thumbnail_url() ) ?>" alt="<?php _e( 'Profile picture', 'peerraiser' ); ?>">
+        <div class="peerraiser-fundraiser-thumbnail">
+            <img src="<?php echo esc_url( $fundraiser->get_thumbnail_url() ) ?>" alt="<?php _e( 'Profile picture', 'peerraiser' ); ?>">
+        </div>
 
         <?php dynamic_sidebar( 'peerraiser-fundraiser-sidebar' ); ?>
 
