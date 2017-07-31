@@ -776,7 +776,7 @@ form#dashboard_settings {
 .peerraiser-widget {
     margin-bottom: 1rem;
 }
-/* Campaigns and Fundraisers */
+/* Campaigns, Fundraisers and Teams */
 #peerraiser-campaign,
 #peerraiser-fundraiser,
 #peerraiser-team {
@@ -804,22 +804,22 @@ form#dashboard_settings {
 .peerraiser-team-content {
     padding: .75rem 15px;
 }
-.peerraiser-campaign-content.has-sidebar,
-.peerraiser-team-content.has-sidebar {
+.peerraiser-campaign-content.has-sidebar {
     width: 75%;
     float: left;
 }
-.peerraiser-fundraiser-content.has-sidebar {
+.peerraiser-fundraiser-content.has-sidebar,
+.peerraiser-team-content.has-sidebar {
     width: 75%;
     float: right;
 }
-.peerraiser-campaign-sidebar,
-.peerraiser-team-sidebar {
+.peerraiser-campaign-sidebar {
     padding: .75rem 15px;
     width: 25%;
     float: right;
 }
-.peerraiser-fundraiser-sidebar {
+.peerraiser-fundraiser-sidebar,
+.peerraiser-team-sidebar {
     padding: .75rem 15px;
     width: 25%;
     float: left;
