@@ -31,9 +31,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                 <span class="label"><?php _e( 'Date/Time', 'peerraiser' ); ?></span>
                                                 <strong><?php echo mysql2date( get_option('date_format'), $peerraiser['donation']->date ); ?></strong>
                                             </div>
-                                            <div class="donation-status">
+                                            <div class="donation-status <?php echo $peerraiser['donation']->status; ?>">
                                                 <span class="label"><?php _e( 'Donation Status', 'peerraiser' ); ?></span>
                                                 <strong><?php echo ucwords( $peerraiser['donation']->status ) ?></strong>
+                                                <a href="#donation_status" class="edit-donation-status hide-if-no-js" role="button"><span aria-hidden="true">Edit</span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
+                                                <div id="donation-status-select" class="hide-if-js">
+                                                    <input type="hidden" name="donation_status_hidden" value="<?php echo $peerraiser['donation']->status; ?>">
+                                                    <select name="donation_status" id="donation-status">
+                                                        <option value="completed" <?php selected( $peerraiser['donation']->status, 'completed' ); ?>><?php _e( 'Completed', 'peerraiser' ); ?></option>
+                                                        <option value="pending" <?php selected( $peerraiser['donation']->status, 'pending' ); ?>><?php _e( 'Pending', 'peerraiser' ); ?></option>
+                                                        <option value="failed" <?php selected( $peerraiser['donation']->status, 'failed' ); ?>><?php _e( 'Failed', 'peerraiser' ); ?></option>
+                                                    </select>
+                                                    <a href="#donation_status" class="save hide-if-no-js button"><?php _e( 'OK', 'peerraiser' ); ?></a>
+                                                    <a href="#donation_status" class="cancel hide-if-no-js button-cancel"><?php _e( 'Cancel', 'peerraiser' ); ?></a>
+                                                </div>
                                             </div>
                                             <div class="donation-method">
                                                 <span class="label"><?php _e( 'Payment Method', 'peerraiser' ); ?></span>
