@@ -23,7 +23,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="inside">
                                 <div class="submitbox" id="submitpost">
                                     <div class="misc-pub-section campaign-status <?php echo $peerraiser['campaign']->campaign_status; ?>">
-                                        <?php _e( 'Status:', 'peerraiser' ); ?> <strong><?php echo $peerraiser['campaign_admin']->get_campaign_status_by_key( $peerraiser['campaign']->campaign_status ); ?></strong>
+                                        <?php _e( 'Status:', 'peerraiser' ); ?>
+                                        <strong><?php echo $peerraiser['campaign_admin']->get_campaign_status_by_key( $peerraiser['campaign']->campaign_status ); ?></strong>
                                         <a href="#campaign_status" class="edit-campaign-status hide-if-no-js" role="button"><span aria-hidden="true"><?php _e( 'Edit', 'peerraiser') ?></span> <span class="screen-reader-text"><?php _e( 'Edit status', 'peerraiser' ); ?></span></a>
                                         <div id="campaign-status-select" class="hide-if-js">
                                             <input type="hidden" name="_peerraiser_campaign_status_hidden" value="<?php echo $peerraiser['campaign']->campaign_status ?>">
