@@ -3,8 +3,8 @@
 
     function peerRaiserAdminDonations(){
         var $o = {
-            donationStatusContainer : $('.misc-pub-section.donation-status'),
-            donationTypeContainer   : $('.misc-pub-section.donation-type'),
+            donationStatusContainer : $('.donation-status'),
+            donationTypeContainer   : $('.donation-type'),
             editDonationStatus      : $('.edit-donation-status'),
             editDonationType        : $('.edit-donation-type'),
             donationStatusSelect    : $('#donation-status-select'),
@@ -157,7 +157,11 @@
                 var value = $o.donationStatusSelect.find('select option:selected').val(),
                     label = $o.donationStatusSelect.find('select option:selected').text();
 
-                $('.misc-pub-section.donation-status').attr('class', 'misc-pub-section donation-status ' + value );
+                if ( $('.donation-status.misc-pub-section').length ) {
+                    $('.donation-status.misc-pub-section').attr('class', 'misc-pub-section donation-status ' + value );
+                } else {
+                    $('.donation-status').attr('class', 'donation-status ' + value );
+                }
 
                 $o.donationStatusSelect.find('input[type=hidden]').val( value );
                 $o.donationStatusContainer.find('strong').text( label );
