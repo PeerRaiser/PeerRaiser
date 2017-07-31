@@ -7,7 +7,7 @@ $fundraiser = peerraiser_get_current_fundraiser();
 
 <?php get_header(); ?>
 
-<div id="peerraiser-fundraiser" class="<?php echo 'peerraiser-fundraiser-' . $fundraiser->ID ?> <?php echo 'peerraiser-fundraiser-' . $fundraiser->fundraiser_slug; ?>">
+<div id="peerraiser-fundraiser" class="<?php echo 'peerraiser-fundraiser-' . $fundraiser->ID ?> <?php echo 'peerraiser-fundraiser-' . esc_url( $fundraiser->fundraiser_slug ); ?>">
 
     <div class="peerraiser-fundraiser-sidebar">
 
@@ -19,10 +19,10 @@ $fundraiser = peerraiser_get_current_fundraiser();
 
     <div class="peerraiser-fundraiser-content has-sidebar">
 
-        <h1 class="peerraiser-fundraiser-title"><?php echo $fundraiser->fundraiser_name; ?></h1>
+        <h1 class="peerraiser-fundraiser-title"><?php echo esc_attr( $fundraiser->fundraiser_name ); ?></h1>
 
         <div class="peerraiser-fundraiser-description">
-            <?php echo $fundraiser->fundraiser_content; ?>
+            <?php echo wp_kses_post( $fundraiser->fundraiser_content ); ?>
         </div>
 
     </div>
