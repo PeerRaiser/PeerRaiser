@@ -12,7 +12,7 @@ class Widget extends Base {
     }
 
     public function register_sidebars() {
-        // Campaign Sidebars
+        // Campaign Sidebar
         register_sidebar( array(
             'name' => __( 'PeerRaiser Campaign Sidebar', 'peerraiser' ),
             'id' => 'peerraiser-campaign-sidebar',
@@ -23,11 +23,22 @@ class Widget extends Base {
             'after_title'   => '</h2>',
         ) );
 
-
+        // Fundraiser Sidebar
         register_sidebar( array(
             'name' => __( 'PeerRaiser Fundraiser Sidebar', 'peerraiser' ),
             'id' => 'peerraiser-fundraiser-sidebar',
             'description' => __( 'Widgets in this area will be shown on side of fundraiser pages.', 'peerraiser' ),
+            'before_widget' => '<div id="%1$s" class="peerraiser-widget %2$s">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h2 class="widget-title">',
+            'after_title'   => '</h2>',
+        ) );
+
+        // Team Sidebar
+        register_sidebar( array(
+            'name' => __( 'PeerRaiser Team Sidebar', 'peerraiser' ),
+            'id' => 'peerraiser-team-sidebar',
+            'description' => __( 'Widgets in this area will be shown on side of team pages.', 'peerraiser' ),
             'before_widget' => '<div id="%1$s" class="peerraiser-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h2 class="widget-title">',
@@ -50,6 +61,9 @@ class Widget extends Base {
         register_widget( 'PeerRaiser\Model\Frontend\Widget\Fundraiser_Donate_Button_Widget' );
         register_widget( 'PeerRaiser\Model\Frontend\Widget\Fundraiser_Total_Raised_Widget' );
         register_widget( 'PeerRaiser\Model\Frontend\Widget\Fundraiser_Thermometer_Widget' );
+
+        // Team Widgets
+        register_widget( 'PeerRaiser\Model\Frontend\Widget\Team_Join_Button_Widget' );
     }
 
 }
