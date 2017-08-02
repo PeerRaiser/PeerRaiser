@@ -24,7 +24,7 @@ class Account extends \PeerRaiser\Controller\Base {
             );
 
             if ( isset( $_POST['next_url'] ) ) {
-                $args['next_url'] = $_POST['next_url'];
+                $args['next_url'] = urldecode( $_POST['next_url'] );
             }
 
             wp_safe_redirect( add_query_arg( $args, $login_page ) );
