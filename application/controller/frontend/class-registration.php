@@ -18,8 +18,11 @@ class Registration extends Base {
         add_action( 'peerraiser_register_team',       array( $this, 'register_team' ) );
     }
 
+    /**
+     * Redirect visitor to login page if they try to access the registration page and are not logged in.
+     */
     public function registration_redirect() {
-        global $wp_query;
+        global $wp_query, $wp;
         $post_id = $wp_query->get_queried_object_id();
 
         // Get the default dashboard and login page urls
@@ -30,7 +33,7 @@ class Registration extends Base {
         // If this is the registration page and the user isn't logged in, redirect to the login page
         if ( $post_id == $registration_page && ! is_user_logged_in() ) {
             $args = array(
-                'next_url' => get_permalink( $registration_page )
+                'next_url' => urlencode( add_query_arg( $_GET, home_url(add_query_arg(array(),$wp->request)) ) )
             );
 
             wp_safe_redirect( add_query_arg( $args, $login_page_url ) );
