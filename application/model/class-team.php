@@ -690,6 +690,47 @@ class Team {
         return esc_url( $plugin_options['team_thumbnail_image'] );
     }
 
+    public function get_fundraisers( $options = array() ) {
+        $defaults = array(
+            'number' => -1,
+        );
+
+        $options = wp_parse_args( $options, $defaults );
+
+        $args = array(
+            'post_type' => 'fundraiser',
+            'posts_per_page' => $options['number'],
+            'fields' => 'ids',
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'peerraiser_team',
+                    'field'    => 'id',
+                    'terms'    => array( $this->ID ),
+                ),
+            ),
+        );
+
+        if ( isset( $options['orderby'] ) ) {
+            switch ( $options['orderby'] ) {
+                case 'raised' :
+                    $args['meta_key'] = '_peerraiser_donation_value';
+                    $args['orderby'] = 'meta_value_num';
+                    break;
+                default :
+                    // do nothing
+            }
+        }
+
+        $query = new \WP_Query( $args );
+
+        $fundraisers = array();
+        foreach( $query->posts as $fundraiser_id ) {
+            $fundraisers[] = new Fundraiser( $fundraiser_id );
+        }
+
+        return $fundraisers;
+    }
+
     /**
      * Generate a safe team slug
      *
