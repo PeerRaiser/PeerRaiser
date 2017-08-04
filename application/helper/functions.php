@@ -160,6 +160,28 @@ function peerraiser_get_top_donors_to_campaign( $id, $count = 20 ) {
 }
 
 /**
+ * Get the fundraisers associated with a specific team.
+ *
+ * @param int   $id      The team ID to get fundraisers for
+ * @param array $options Optional arguments
+ *
+ * @return array|WP_Error An array of fundraiser, or error if no team found by given id
+ */
+function peerraiser_get_team_fundraisers( $id = 0, $options = array() ) {
+    if ( empty( $id ) ) {
+        $id = peerraiser_get_current_team();
+
+        if ( empty ( $id ) ) {
+            return new WP_Error( 'peerraiser_team_not_found', escape_html_e( 'Team not found.', 'peerraiser' ) );
+        }
+    }
+
+    $team = new \PeerRaiser\Model\Team( $id );
+
+    return $team->get_fundraisers( $options );
+}
+
+/**
  * Returns the top donors to a specific fundraiser.
  *
  * @param int $id    The fundraiser id to get the donors for
