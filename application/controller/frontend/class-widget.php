@@ -65,6 +65,7 @@ class Widget extends Base {
         // Team Widgets
         register_widget( 'PeerRaiser\Model\Frontend\Widget\Team_Join_Button_Widget' );
         register_widget( 'PeerRaiser\Model\Frontend\Widget\Team_Thermometer_Widget' );
+        register_widget( 'PeerRaiser\Model\Frontend\Widget\Team_Roster_Widget' );
     }
 
 }
