@@ -905,11 +905,13 @@ form#dashboard_settings {
 .peerraiser-top-fundraisers a,
 .peerraiser-campaign-donations a,
 .peerraiser-fundraiser-donations a,
-.peerraiser-team-donations a {
+.peerraiser-team-donations a,
+.peerraiser-team-roster a {
     text-decoration: underline;
 }
 .peerraiser-top-teams ol,
 .peerraiser-top-fundraisers ol,
+.peerraiser-team-roster ol,
 .peerraiser-campaign-donations ol,
 .peerraiser-fundraiser-donations ol {
     margin-left: 1rem;
