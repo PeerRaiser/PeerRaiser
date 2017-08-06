@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: PeerRaiser
  * Plugin URI:  https://PeerRaiser.com
@@ -105,4 +104,3 @@ function peerraiser_before_start() {
     $peerraiser_autoloader = new PeerRaiser\Autoloader();
     spl_autoload_register( array($peerraiser_autoloader, 'register_class_autoloader') );
 }
-
