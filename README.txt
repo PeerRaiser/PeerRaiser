@@ -1,6 +1,6 @@
 === PeerRaiser ===
 Contributors: nateallen
-Tags: nate allen, peer-to-peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity
+Tags: peer-to-peer, peer to peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins
 Requires at least: 4.4.0
 Tested up to: 4.8.1
 Stable tag: trunk
