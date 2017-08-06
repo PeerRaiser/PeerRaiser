@@ -172,11 +172,13 @@ class Settings extends Admin {
             array(
                 'id' => 'account-settings',
                 'fields' => array(
-                    'peerraiser_username' => array(
-                        'name'       => __('PeerRaiser.com Username', 'peerraiser' ),
-                        'id'         => 'peerraiser_username',
-                        'type'       => 'text',
-                        'default_cb' => array( $this, 'get_field_value' ),
+                    'donation_form_slug' => array(
+                        'name'         => __('Donation Form Slug', 'peerraiser' ),
+                        'desc'         => __('You can set this in the <a href="https://peerraiser.com/dashboard/donation-form/">donation form options</a> section at PeerRaiser.com'),
+                        'id'           => 'donation_form_slug',
+                        'type'         => 'text_medium',
+                        'before_field' => 'https://peerraiser.com/donate/',
+                        'default_cb'   => array( $this, 'get_field_value' ),
                     ),
                 )
             ),
@@ -607,7 +609,7 @@ class Settings extends Admin {
     public function peerraiser_account_signup_info() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        if ( ! empty( $plugin_options['peerraiser_username'] ) ) {
+        if ( ! empty( $plugin_options['donation_form_slug'] ) ) {
             return '';
         }
 
