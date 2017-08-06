@@ -1,4 +1,4 @@
-=== PeerRaiser - Peer-to-Peer Fundraising ===
+=== PeerRaiser ===
 Contributors: nateallen
 Tags: nate allen, peer-to-peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity
 Requires at least: 4.4.0
