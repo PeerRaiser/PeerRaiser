@@ -15,13 +15,13 @@ In addition, the plugin separates the HTML from the PHP into templates that can 
 
 To overwrite a template, create a "peerraiser" folder in your theme folder, and copy the template from the "views" folder into it. Make sure to keep the same folder structure.
 
-For example, to customize the donation form, you could copy `views/frontend/donation-form.php` and place it in `your-theme/peerraiser/frontend/donation-form.php` and then make your changes.
+For example, to customize the donation form, you could copy `views/frontend/donation-form.php` and place it in `your-theme/peerraiser/frontend/donation-form.php`, and then make your changes.
 
 Note: We suggest using hooks instead of using this method, whenever possible.
 
 ### Easy
 
-PeerRaiser is so easy to use, you can get setup and accepting donations in minutes! There's no need to mess with SSL certificates or setting up complicated merchant accounts.
+PeerRaiser is so easy to use, you can get setup and accepting donations in minutes! There's no need to mess with SSL certificates or setup complicated merchant accounts.
 
 
 ## Installation
@@ -29,4 +29,9 @@ PeerRaiser is so easy to use, you can get setup and accepting donations in minut
 1. Upload the folder `peerraiser` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Click on the PeerRaiser icon in the left sidebar to access the dashboard.
-4. Follow the steps on the dashboard to get setup
+4. Follow the steps on the dashboard to get started
+
+## Minimum Requirements ###
+
+* WordPress 4.4.0 or greater
+* PHP version 5.3 or greater
