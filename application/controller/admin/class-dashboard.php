@@ -104,7 +104,7 @@ class Dashboard extends Base {
             'donors_total'         => View::format_number( $donor_model->get_total_donors(), false, true ),
             'donate_url'           => get_the_permalink( $plugin_options['donation_page'] ),
             'font_awesome_class'   => array(
-                'step_1'           => ! empty( $plugin_options['peerraiser_username'] ) ? 'fa-check-square-o' : 'fa-square-o',
+                'step_1'           => ! empty( $plugin_options['donation_form_slug'] ) ? 'fa-check-square-o' : 'fa-square-o',
                 'step_2'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o',
                 'step_3'           => $this->made_test_donation() ? 'fa-check-square-o' : 'fa-square-o',
                 'step_4'           => ! filter_var($plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN) ? 'fa-check-square-o' : 'fa-square-o',
