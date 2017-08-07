@@ -24,7 +24,7 @@ $fundraiser = peerraiser_get_current_fundraiser();
         <h1 class="peerraiser-fundraiser-title"><?php echo esc_attr( $fundraiser->fundraiser_name ); ?></h1>
 
         <div class="peerraiser-fundraiser-description">
-            <?php echo wp_kses_post( $fundraiser->fundraiser_content ); ?>
+            <?php echo wpautop( wp_kses_post( $fundraiser->fundraiser_content ) ); ?>
         </div>
 
     </div>

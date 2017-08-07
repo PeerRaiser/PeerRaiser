@@ -20,7 +20,7 @@ $campaign = peerraiser_get_current_campaign();
         <h1 class="peerraiser-campaign-title"><?php echo esc_attr( $campaign->campaign_name ); ?></h1>
 
         <div class="peerraiser-campaign-description">
-            <?php echo wp_kses_post( $campaign->campaign_description ); ?>
+            <?php echo wpautop( wp_kses_post( $campaign->campaign_description ) ); ?>
         </div>
 
     </div>
