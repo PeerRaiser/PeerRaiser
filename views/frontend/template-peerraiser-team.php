@@ -24,7 +24,7 @@ $team = peerraiser_get_current_team();
         <h1 class="peerraiser-team-title"><?php echo esc_attr( $team->team_name ); ?></h1>
 
         <div class="peerraiser-team-description">
-            <?php echo wp_kses_post( $team->team_content ); ?>
+            <?php echo wpautop( wp_kses_post( $team->team_content ) ); ?>
         </div>
 
     </div>
