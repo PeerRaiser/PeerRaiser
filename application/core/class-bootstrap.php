@@ -244,6 +244,9 @@ class Bootstrap {
     public function register_routes() {
         $donation_rest_controller = self::get_controller( 'Api\Donation_Rest_Controller' );
         $donation_rest_controller->register_routes();
+
+        $connection_rest_controller = self::get_controller( 'Api\Connection_Rest_Controller' );
+        $connection_rest_controller->register_routes();
     }
 
 }
