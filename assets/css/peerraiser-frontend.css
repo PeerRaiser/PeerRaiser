@@ -803,6 +803,7 @@ form#dashboard_settings {
 .peerraiser-fundraiser-content,
 .peerraiser-team-content {
     padding: .75rem 15px;
+    box-sizing: border-box;
 }
 .peerraiser-campaign-content.has-sidebar {
     width: 75%;
@@ -814,12 +815,14 @@ form#dashboard_settings {
     float: right;
 }
 .peerraiser-campaign-sidebar {
+    box-sizing: border-box;
     padding: .75rem 15px;
     width: 25%;
     float: right;
 }
 .peerraiser-fundraiser-sidebar,
 .peerraiser-team-sidebar {
+    box-sizing: border-box;
     padding: .75rem 15px;
     width: 25%;
     float: left;
@@ -831,16 +834,27 @@ form#dashboard_settings {
     display: block;
 }
 .peerraiser-campaign-donate-button a,
+.peerraiser-campaign-donate-button a:link,
+.peerraiser-campaign-donate-button a:visited,
 .peerraiser-campaign-register-button a,
+.peerraiser-campaign-register-button a:link,
+.peerraiser-campaign-register-button a:visited,
 .peerraiser-fundraiser-donate-button a,
+.peerraiser-fundraiser-donate-button a:link,
+.peerraiser-fundraiser-donate-button a:visited,
 .peerraiser-fundraiser-register-button a,
+.peerraiser-fundraiser-register-button a:link,
+.peerraiser-fundraiser-register-button a:visited,
 .peerraiser-team-donate-button a,
-.peerraiser-team-join-button a {
+.peerraiser-team-donate-button a:link,
+.peerraiser-team-donate-button a:visited,
+.peerraiser-team-join-button a,
+.peerraiser-team-join-button a:link,
+.peerraiser-team-join-button a:visited{
     text-decoration: none;
     display: block;
     color: #fff;
     background-color: #d9534f;
-    display: inline-block;
     font-weight: 400;
     line-height: 1.25;
     text-align: center;
@@ -858,7 +872,7 @@ form#dashboard_settings {
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
     text-align: center;
-    width: 100%;
+    width: auto;
 }
 .peerraiser-campaign-donate-button a:hover,
 .peerraiser-campaign-register-button a:hover,
@@ -914,7 +928,18 @@ form#dashboard_settings {
 .peerraiser-team-roster ol,
 .peerraiser-campaign-donations ol,
 .peerraiser-fundraiser-donations ol {
-    margin-left: 1rem;
+    margin-left: 0;
+    padding-left: 0;
+}
+.peerraiser-top-teams li,
+.peerraiser-top-fundraisers li,
+.peerraiser-team-roster li,
+.peerraiser-campaign-donations li,
+.peerraiser-fundraiser-donations li {
+    margin-left: 0;
+    padding-left: 0;
+    list-style: inside;
+    list-style-type: decimal;
 }
 .peerraiser-thermometer-container {
     text-align: center;
