@@ -172,12 +172,11 @@ class Settings extends Admin {
             array(
                 'id' => 'account-settings',
                 'fields' => array(
-                    'donation_form_slug' => array(
-                        'name'         => __('Donation Form Slug', 'peerraiser' ),
-                        'desc'         => __('You can set this in the <a href="https://peerraiser.com/dashboard/donation-form/">donation form options</a> section at PeerRaiser.com'),
-                        'id'           => 'donation_form_slug',
-                        'type'         => 'text_medium',
-                        'before_field' => 'https://peerraiser.com/donate/',
+                    'license_key' => array(
+                        'name'         => __('License Key', 'peerraiser' ),
+                        'desc'         => __('You can find this in the <a href="https://peerraiser.com/dashboard/connect/">connect section</a> at PeerRaiser.com'),
+                        'id'           => 'license_key',
+                        'type'         => 'text',
                         'default_cb'   => array( $this, 'get_field_value' ),
                     ),
                 )
