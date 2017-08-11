@@ -22,11 +22,9 @@ class Setup {
         $config->set( 'plugin_url', plugins_url( '/', PEERRAISER_FILE ) );
         $config->set( 'view_dir', plugin_dir_path( PEERRAISER_FILE ) . 'views/' );
 
-        $config->set( 'peerraiser_live_url', 'https://peerraiser.com/api/live' );
-
         $peerraiser_urls = array(
             'peerraiser_url.live'    => 'https://peerraiser.com/donate/%s/%s',
-            'peerraiser_url.sandbox' => 'https://peerraiser.com/sandbox/%s/%s'
+            'peerraiser_url.sandbox' => 'https://peerraiser.com/sandbox/%s/%s',
         );
         $config->import( $peerraiser_urls );
 
