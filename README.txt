@@ -1,9 +1,9 @@
-=== PeerRaiser ===
+=== PeerRaiser - Peer-to-Peer Fundraising ===
 Contributors: nateallen
 Tags: peer-to-peer, peer to peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: trunk
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
