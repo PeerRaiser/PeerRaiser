@@ -80,9 +80,9 @@ class Donation extends \PeerRaiser\Controller\Base {
         $donation->save();
 
         if ( filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN ) ) {
-            $redirect_url = sprintf( \PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.sandbox'), urlencode( trim( $plugin_options['donation_form_slug'] ) ), $donation->transaction_id );
+            $redirect_url = sprintf( \PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.sandbox'), urlencode( trim( get_option('peerraiser_slug') ) ), $donation->transaction_id );
         } else {
-            $redirect_url = sprintf(\PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.live'), urlencode( trim( $plugin_options['donation_form_slug'] ) ), $donation->transaction_id );
+            $redirect_url = sprintf(\PeerRaiser\Core\Setup::get_plugin_config()->get('peerraiser_url.live'), urlencode( trim( get_option('peerraiser_slug') ) ), $donation->transaction_id );
         }
 
         // Send to PeerRaiser.com to finish the transaction
