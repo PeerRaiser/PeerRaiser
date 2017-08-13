@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                     <ul>
                         <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_1'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings&tab=account"><?php _e('Connect your PeerRaiser account', 'peerraiser') ?></a></li>
-                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>post-new.php?post_type=pr_campaign"><?php _e('Create your first campaign', 'peerraiser') ?></a></li>
+                        <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_2'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-campaigns"><?php _e('Create your first campaign', 'peerraiser') ?></a></li>
                         <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_3'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['donate_url'] ?>"><?php _e('Make a test donation', 'peerraiser') ?></a></li>
                         <li><i class="fa fa-fw <?php echo $peerraiser['font_awesome_class']['step_4'] ?>" aria-hidden="true"></i><a href="<?php echo $peerraiser['admin_url'] ?>admin.php?page=peerraiser-settings"><?php _e('Disable test mode', 'peerraiser') ?></a></li>
                     </ul>
