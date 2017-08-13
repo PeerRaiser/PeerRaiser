@@ -612,7 +612,7 @@ class Settings extends Admin {
             return '';
         }
 
-        return __( '<span>You need to <a href="https://peerraiser.com/signup/" target="_blank">signup for a free PeerRaiser account</a> to accept donations. After you signup, enter your username below.</span>', 'peerraiser' );
+        return __( '<span>You need to <a href="https://peerraiser.com/signup/" target="_blank">signup for a free PeerRaiser account</a> to accept donations. After you signup, enter your license key below.</span>', 'peerraiser' );
     }
 
 }
