@@ -54,6 +54,7 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 = 1.0.6 =
 * Fix issue with Step 1 not showing check mark when account connected
+* Fix link to add a new campaign in Step 2
 
 = 1.0.5 =
 * Fix issue with connection controller using staging server instead of live server
