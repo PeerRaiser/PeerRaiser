@@ -25,7 +25,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         // Donations can't be processed if the PeerRaiser account isn't setup :(
-        if ( empty( $plugin_options['donation_form_slug'] ) ) {
+        if ( empty( get_option('peerraiser_slug') ) ) {
             return sprintf( __( 'Error: PeerRaiser account not connected. Please <a href="mailto:%s">contact the site owner</a>.', 'peerraiser'), get_option( 'admin_email' ) );
         }
 
