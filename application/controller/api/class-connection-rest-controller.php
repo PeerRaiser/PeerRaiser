@@ -55,8 +55,7 @@ class Connection_Rest_Controller extends WP_REST_Controller {
 			return new WP_REST_Response( array( 'valid' => false ), 404 );
 		}
 
-		// @todo: Change from .dev to .com
-		$response = wp_remote_post( 'http://peerraiser.dev/wp-json/heart/v1/connect', array(
+		$response = wp_remote_post( 'http://peerraiser.com/wp-json/heart/v1/connect', array(
 			'body' => array(
 				'slug' => $slug,
                 'license_key' => $license_key,
