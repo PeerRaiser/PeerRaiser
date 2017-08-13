@@ -55,12 +55,12 @@ class Connection_Rest_Controller extends WP_REST_Controller {
 			return new WP_REST_Response( array( 'valid' => false ), 404 );
 		}
 
-		$response = wp_remote_post( 'http://peerraiser.com/wp-json/heart/v1/connect', array(
-			'body' => array(
-				'slug' => $slug,
-                'license_key' => $license_key,
-			)
-		) );
+		$response = wp_remote_post( add_query_arg(
+		    array(
+                'slug' => esc_attr( $slug ),
+                'license_key' => esc_attr( $license_key ),
+            ), 'http://peerraiser.com/wp-json/heart/v1/connect' )
+        );
 
         if ( is_wp_error( $response ) ) {
             error_log( print_r( $response, 1) );
