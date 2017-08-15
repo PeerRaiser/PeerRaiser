@@ -2,7 +2,9 @@
 
     <section class="peerraiser-campaign-selection <?php echo $peerraiser['campaign_select_class']; ?>">
         <select name="campaign" id="peerraiser_campaign">
-            <option value=""><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
+            <?php if ( count( $peerraiser['campaigns'] ) > 1 ) : ?>
+                <option value=""><?php _e( 'Select a Campaign to Support', 'peerraiser' ); ?> *</option>
+            <?php endif; ?>
             <?php foreach( $peerraiser['campaigns'] as $campaign ) : ?>
                 <option value="<?php echo $campaign->campaign_slug; ?>" <?php selected( get_query_var( 'peerraiser_campaign' ), $campaign->campaign_slug ) ?>><?php echo $campaign->campaign_name; ?></option>
             <?php endforeach; ?>
