@@ -522,11 +522,11 @@ class Donation {
                     case 'is_anonymous' :
                     case 'is_test' :
                         $bulk_update[$key] = $value;
-                        $updated[] = array( $key => $value );
+                        $updated[$key] = $value;
                         break;
                     default :
                         $this->update_meta( $key, $value );
-                        $updated[] = array( $key => $value );
+                        $updated[$key] = $value;
                         break;
                 }
             }
