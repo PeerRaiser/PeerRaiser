@@ -292,11 +292,11 @@ class Donor {
                     case 'date' :
                     case 'user_id' :
                         $bulk_update[$key] = $value;
-                        $updated[] = array( $key => $value );
+                        $updated[$key] = $value;
                         break;
                     default :
                         $this->update_meta( $key, $value );
-                        $updated[] = array( $key => $value );
+                        $updated[$key] = $value;
                         break;
                 }
             }
