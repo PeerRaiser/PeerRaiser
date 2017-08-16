@@ -3,7 +3,7 @@ Contributors: nateallen
 Tags: peer-to-peer, peer to peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,11 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 1. A user's fundraising page
 
 == Changelog ==
+
+= 1.0.7 =
+* If only one campaign is available, that campaign is now pre-selected on donation page
+* Exclude test donations when getting total donations
+* Fix filter peerraiser_donor_updated_{$key} not firing properly
 
 = 1.0.6 =
 * Fix issue with Step 1 not showing check mark when account connected
