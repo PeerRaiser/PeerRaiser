@@ -52,7 +52,7 @@ class Dashboard extends \PeerRaiser\Model\Admin\Admin {
         $participant_id = get_current_user_id();
         $donation_model = new Donation();
 
-        return $donation_model->get_donations( array( 'particpant_id' => $participant_id ) );
+        return $donation_model->get_donations( array( 'participant_id' => $participant_id, 'status' => 'completed' ) );
     }
 
 }
