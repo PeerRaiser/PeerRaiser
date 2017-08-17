@@ -1,17 +1,17 @@
-=== PeerRaiser - Peer-to-Peer Fundraising ===
+=== PeerRaiser - Peer-to-Peer Fundraising Donation Plugin ===
 Contributors: nateallen
-Tags: peer-to-peer, peer to peer, fundraising, donation, events, teams, nonprofit, donate, p2p, social fundraising, crowdfunding, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins
+Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: 1.0.7
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-PeerRaiser makes it easy to create powerful peer-to-peer fundraising campaigns on your own WordPress site.
+PeerRaiser is a donation plugin that makes it easy to create powerful peer-to-peer fundraising campaigns on your own WordPress site.
 
 == Description ==
 
-**[PeerRaiser](https://peerraiser.com/?utm_source=readme&utm_medium=description_tab&utm_content=home&utm_campaign=readme)** makes it easy to create powerful peer-to-peer fundraising campaigns on your own WordPress site.
+**[PeerRaiser](https://peerraiser.com/?utm_source=readme&utm_medium=description_tab&utm_content=home&utm_campaign=readme)** is a donation plugin that makes it easy to create powerful peer-to-peer fundraising campaigns on your own WordPress site.
 
 Empower individuals and teams to recruit new constituents and fundraise in support of your organization.
 
@@ -51,6 +51,9 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 1. A user's fundraising page
 
 == Changelog ==
+
+= 1.1.0 =
+* Add 'participant_id' column to the donations database
 
 = 1.0.7 =
 * If only one campaign is available, that campaign is now pre-selected on donation page
