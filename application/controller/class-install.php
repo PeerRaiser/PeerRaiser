@@ -142,6 +142,7 @@ class Install extends Base {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
+        // If the installed version and this version of the same, do nothing
         if ( version_compare( $current_version, $this->config->get( 'version' ), '==' ) ) {
             return;
         }
@@ -167,6 +168,9 @@ class Install extends Base {
         // Populate default roles
         $this->populate_roles();
 
+        // Perform data updates
+        $this->maybe_update_donation_table();
+
         // keep the plugin version up to date
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
@@ -179,7 +183,6 @@ class Install extends Base {
         // clear opcode cache
         \PeerRaiser\Helper\Cache::reset_opcode_cache();
     }
-
 
     /**
      * Trigger requirements check.
@@ -373,6 +376,42 @@ class Install extends Base {
         );
 
         return $page_id;
+    }
+
+    /**
+     * Maybe update the donation table
+     *
+     * In version 1.1.0 PeerRaiser added a participant_id column. If the current version is less than 1.1.0, this
+     * function will add that column
+     *
+     * @since 1.1.0
+     */
+    private function maybe_update_donation_table() {
+        global $wpdb;
+
+        $plugin_options  = get_option( 'peerraiser_options', array() );
+        $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+        // If current version is not less than 1.1.0, do nothing
+        if ( $current_version === 0 || version_compare( $current_version, '1.1.0', '>=' ) ) {
+            return;
+        }
+
+        $table   = $wpdb->prefix . 'pr_donations';
+        $columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table . ';' );
+
+        $is_participant_id_present = false;
+
+        foreach ( $columns as $column ) {
+            if ( $column->Field === 'participant_id' ) {
+                $is_participant_id_present = true;
+            }
+        }
+
+        // If need to add participant_id field
+        if ( ! $is_participant_id_present ) {
+            $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `participant_id` bigint(20) NOT NULL DEFAULT 0 AFTER `team_id`;' );
+        }
     }
 
 }
