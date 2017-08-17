@@ -408,9 +408,7 @@ class Donation {
         $this->campaign_id    = $donation->campaign_id;
         $this->fundraiser_id  = $donation->fundraiser_id;
         $this->team_id        = $donation->team_id;
-
-        // TODO: Add participant ID column to pr_donation table
-        // $this->participant_id = $donation->participant_id;
+        $this->participant_id = $donation->participant_id;
 
         // Donation Notes
         $donation_notes = $this->get_meta( 'notes', true );
@@ -515,6 +513,7 @@ class Donation {
                     case 'campaign_id' :
                     case 'team_id' :
                     case 'fundraiser_id' :
+                    case 'participant_id' :
                     case 'total' :
                     case 'subtotal' :
                     case 'ip' :
