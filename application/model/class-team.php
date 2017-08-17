@@ -670,8 +670,6 @@ class Team {
 
         $team_ids = wp_get_object_terms( $fundraiser_ids, 'peerraiser_team', array( 'fields' => 'ids' ) );
 
-        error_log(print_r( $fundraiser_ids,1 ) );
-
         $teams = array();
         foreach ( $team_ids as $team_id ) {
             $teams[] = new self( $team_id );
