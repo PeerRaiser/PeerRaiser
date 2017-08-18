@@ -382,7 +382,7 @@ class Install extends Base {
      * Maybe update the donation table
      *
      * In version 1.1.0 PeerRaiser added a participant_id column. If the current version is less than 1.1.0, this
-     * function will add that column
+     * function will add that column.
      *
      * @since 1.1.0
      */
