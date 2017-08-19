@@ -3,7 +3,7 @@ Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 1. A user's fundraising page
 
 == Changelog ==
+
+= 1.1.1 =
+* Add default widgets to sidebars when plugin is installed
 
 = 1.1.0 =
 * Add 'participant_id' column to the donations database
