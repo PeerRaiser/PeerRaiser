@@ -81,7 +81,7 @@ class Widget extends Base {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $active_widgets  = get_option( 'sidebars_widgets' );
 
-        // Check if sidebar widgets have already been setup
+        //Check if sidebar widgets have already been setup
         if ( isset( $plugin_options['_widgets_setup'] ) ) {
             return;
         }
@@ -175,7 +175,7 @@ class Widget extends Base {
             foreach ( $widget_options[$sidebar] as $widget => $option ) {
                 $active_widgets[$sidebar][] = $widget . '-2';
 
-                update_option( $widget, array( '2' => $option ) );
+                update_option( 'widget_' . $widget, array( '2' => $option, '_multiwidget' => 1 ) );
             }
         }
 
