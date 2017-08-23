@@ -552,6 +552,8 @@ class Donation {
      * Delete the donation record
      */
     public function delete() {
+        global $wpdb;
+
         do_action( 'peerraiser_donation_delete', $this );
 
         $this->db->delete( $this->ID );
@@ -562,6 +564,9 @@ class Donation {
         $this->decrease_fundraiser_amounts();
         $this->decrease_team_amounts();
         $this->decrease_participant_amounts();
+
+        // Delete the donation meta
+        $wpdb->delete( $wpdb->prefix . 'pr_donationmeta', array( 'donation_id' => $this->ID ), array( '%d' ) );
 
         do_action( 'peerraiser_donation_deleted', $this );
     }
