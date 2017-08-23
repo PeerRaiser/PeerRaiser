@@ -323,9 +323,14 @@ class Donor {
      * Delete this donor
      */
     public function delete() {
+        global $wpdb;
+
         do_action( 'peerraiser_donor_delete', $this );
 
         $this->db->delete( $this->ID );
+
+        // Delete the donor meta
+        $wpdb->delete( $wpdb->prefix . 'pr_donormeta', array( 'donor_id' => $this->ID ), array( '%d' ) );
 
         do_action( 'peerraiser_donor_delete', $this );
     }
