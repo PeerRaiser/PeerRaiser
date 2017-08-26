@@ -52,6 +52,9 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 == Changelog ==
 
+= 1.1.3 =
+* Add support for more currencies
+
 = 1.1.2 =
 * Delete donor meta when donor is deleted
 * Delete donation meta when donation is deleted
