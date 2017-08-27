@@ -17,8 +17,6 @@ class Currency {
 
     /**
      * Constructor
-     *
-     * @return \PeerRaiser\Model\Currency
      */
     function __construct() {
         $this->currencies = array(
@@ -457,7 +455,7 @@ class Currency {
      * @return    string    $symbol
      */
     public function get_currency_symbol_by_iso4217_code( $name ) {
-        $full_name = '';
+        $symbol = '';
 
         foreach ( $this->currencies as $currency ) {
             if ( $currency['short_name'] === $name ) {
