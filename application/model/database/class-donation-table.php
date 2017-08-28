@@ -319,7 +319,7 @@ class Donation_Table extends Database {
         }
 
         // By test mode or not
-        if ( ! empty( $args['is_test'] ) ) {
+        if ( isset( $args['is_test'] ) ) {
             // Convert boolean to 1 for true and 0 for false
             $is_test = $args['is_test'] ? 1 : 0;
 
