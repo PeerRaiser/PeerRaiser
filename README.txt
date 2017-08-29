@@ -3,7 +3,7 @@ Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,12 +48,16 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 == Screenshots ==
 
-1. A user's fundraising page
+1. Fully customizable campaign page
+2. Your dashboard, where you can track the progress of your campaigns
+3. Created an unlimited number of campaigns
+4. Donor information
 
 == Changelog ==
 
 = 1.1.3 =
 * Add support for more currencies
+* Fix donation widget so it doesn't show test donations
 
 = 1.1.2 =
 * Delete donor meta when donor is deleted
