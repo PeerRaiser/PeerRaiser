@@ -154,8 +154,8 @@ class Dashboard extends Base {
 
         $test_donations = $donation_model->get_donations( array(
             'is_test' =>  1,
-            'status' => 'completed',
-            'number' => 1,
+            'status'  => 'completed',
+            'number'  => 1,
         ) );
 
         return count( $test_donations ) > 0;
