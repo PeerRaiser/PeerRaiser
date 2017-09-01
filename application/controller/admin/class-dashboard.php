@@ -89,6 +89,7 @@ class Dashboard extends Base {
         $campaign_model   = new Campaign_Model();
         $fundraiser_model = new Fundraiser_Model();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+        $peerraiser_slug = ('peerraiser_slug');
 
         $view_args = array(
             'activity_feed'        => $activity_feed->get_activity_feed(),
@@ -104,7 +105,7 @@ class Dashboard extends Base {
             'donors_total'         => View::format_number( $donor_model->get_total_donors(), false, true ),
             'donate_url'           => get_the_permalink( $plugin_options['donation_page'] ),
             'font_awesome_class'   => array(
-                'step_1'           => ! empty( get_option('peerraiser_slug') ) ? 'fa-check-square-o' : 'fa-square-o',
+                'step_1'           => ! empty( $peerraiser_slug ) ? 'fa-check-square-o' : 'fa-square-o',
                 'step_2'           => ( $campaign_model->get_total_campaigns() > 0 ) ? 'fa-check-square-o' : 'fa-square-o',
                 'step_3'           => $this->made_test_donation() ? 'fa-check-square-o' : 'fa-square-o',
                 'step_4'           => ! filter_var($plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN) ? 'fa-check-square-o' : 'fa-square-o',
