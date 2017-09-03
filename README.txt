@@ -3,7 +3,7 @@ Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams, peer raiser
 Requires at least: 4.4.0
 Tested up to: 4.8.1
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,9 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 4. Donor information
 
 == Changelog ==
+
+= 1.1.5 =
+* Use get_option to get the peerraiser_slug value
 
 = 1.1.4 =
 * Fix issue with variable in empty() function
