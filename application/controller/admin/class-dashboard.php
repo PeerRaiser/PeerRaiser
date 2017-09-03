@@ -89,7 +89,7 @@ class Dashboard extends Base {
         $campaign_model   = new Campaign_Model();
         $fundraiser_model = new Fundraiser_Model();
         $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
-        $peerraiser_slug = ('peerraiser_slug');
+        $peerraiser_slug = get_option('peerraiser_slug');
 
         $view_args = array(
             'activity_feed'        => $activity_feed->get_activity_feed(),
