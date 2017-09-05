@@ -10,6 +10,10 @@
     width: 400px;
     margin: 0 auto;
 }
+.login-form-wrapper *,
+.signup-form-wrapper* {
+    box-sizing: border-box;
+}
 .signup-form-wrapper,
 .login-form-wrapper {
     margin-bottom: 20px;
@@ -292,6 +296,9 @@
     outline: 0;
     -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
     box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+}
+.peerraiser-dashboard * {
+    box-sizing: border-box;
 }
 .peerraiser-dashboard .fundraisers {
     margin-bottom: 2em;
