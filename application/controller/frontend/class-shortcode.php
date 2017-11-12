@@ -34,6 +34,7 @@ class Shortcode extends \PeerRaiser\Controller\Base {
             'fundraisers' => $this->get_fundraisers_for_current_campaign(),
             'currency_symbol' => peerraiser_get_currency_symbol(),
             'currency_position' => $plugin_options['currency_position'],
+            'donation_minimum' => isset( $plugin_options['donation_minimum'] ) ? $plugin_options['donation_minimum'] : 10,
             'campaign_select_class' => $this->get_campaign_select_class(),
             'fundraiser_select_class' => $this->get_fundraiser_select_class(),
         );
