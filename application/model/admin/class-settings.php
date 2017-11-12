@@ -167,6 +167,12 @@ class Settings extends Admin {
                         'type' => 'text',
                         'default_cb' => array( $this, 'get_field_value' ),
                     ),
+                    'donation_minimum' => array(
+	                    'name' => __( 'Minimum Donation', 'peerraiser' ),
+	                    'id'   => 'donation_minimum',
+	                    'type' => 'text',
+	                    'default_cb' => array( $this, 'get_field_value' ),
+                    ),
                 )
             ),
             array(
@@ -432,6 +438,10 @@ class Settings extends Admin {
             case 'number_decimals':
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 2;
                 break;
+
+	        case 'donation_minimum':
+		        $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 10;
+		        break;
 
             case 'fundraiser_slug':
                 $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'give';
