@@ -2,8 +2,8 @@
 Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams, peer raiser
 Requires at least: 4.4.0
-Tested up to: 4.8.1
-Stable tag: 1.1.5
+Tested up to: 4.8.3
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,40 +55,43 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 == Changelog ==
 
+= 1.1.6 =
+* Added the ability to change the donation minimum
+
 = 1.1.5 =
 * Use get_option to get the peerraiser_slug value
 
 = 1.1.4 =
-* Fix issue with variable in empty() function
+* Fixed issue with variable in empty() function
 
 = 1.1.3 =
-* Add support for more currencies
-* Fix donation widget so it doesn't show test donations
+* Added support for more currencies
+* Fixed donation widget so it doesn't show test donations
 
 = 1.1.2 =
-* Delete donor meta when donor is deleted
-* Delete donation meta when donation is deleted
+* Deleted donor meta when donor is deleted
+* Deleted donation meta when donation is deleted
 
 = 1.1.1 =
-* Add default widgets to sidebars when plugin is installed
+* Added default widgets to sidebars when plugin is installed
 
 = 1.1.0 =
-* Add 'participant_id' column to the donations database
+* Added 'participant_id' column to the donations database
 
 = 1.0.7 =
 * If only one campaign is available, that campaign is now pre-selected on donation page
-* Exclude test donations when getting total donations
-* Fix filter peerraiser_donor_updated_{$key} not firing properly
+* Excluding test donations when getting total donations
+* Fixed filter peerraiser_donor_updated_{$key} not firing properly
 
 = 1.0.6 =
-* Fix issue with Step 1 not showing check mark when account connected
-* Fix link to add a new campaign in Step 2
+* Fixed issue with Step 1 not showing check mark when account connected
+* Fixed link to add a new campaign in Step 2
 
 = 1.0.5 =
-* Fix issue with connection controller using staging server instead of live server
+* Fixed issue with connection controller using staging server instead of live server
 
 = 1.0.4 =
-* Convert some custom post types to custom tables
+* Converted some custom post types to custom tables
 
 = 1.0.4 =
 * Initial release
