@@ -2,10 +2,15 @@
 
 namespace PeerRaiser\Controller\Frontend;
 
+use PeerRaiser\Helper\Email;
+use PeerRaiser\Model\Donor;
+
 class Donation extends \PeerRaiser\Controller\Base {
 
     public function register_actions() {
         add_action( 'peerraiser_add_pending_donation', array( $this, 'handle_add_pending_donation' ) );
+        add_action( 'peerraiser_donation_completed', array( $this, 'send_donation_receipt_email' ) );
+        add_action( 'peerraiser_donation_completed', array( $this, 'send_donation_notification_email' ) );
     }
 
     public function add_rewrite_rules() {
@@ -90,6 +95,85 @@ class Donation extends \PeerRaiser\Controller\Base {
         exit;
     }
 
+	/**
+	 * Send a donation receipt to the donor when a donation is made
+	 *
+	 * @param $donation
+	 */
+    public function send_donation_receipt_email( $donation ) {
+		$peerraiser_options = get_option( 'peerraiser_options', array() );
+
+		// Skip donation receipt if option is set to disabled
+		if ( $peerraiser_options['donation_receipt_enabled'] === 'false' ) {
+			return;
+		}
+
+    	/**
+		 * You can prevent the email from being sent by using this filter:
+		 * add_filter('peerraiser_skip_donation_receipt', '__return_true');
+		 */
+    	if ( apply_filters('peerraiser_skip_donation_receipt', false, $donation ) ) {
+    		return;
+	    }
+
+	    $donor = new Donor( $donation->donor_id );
+
+		$vars = array(
+			"{{donor_first_name}}" => $donor->first_name,
+			"{{donor_last_name}}" => $donor->last_name,
+			"{{donor_full_name}}" => $donor->full_name,
+			"{{donation_summary}}" => $this->get_transaction_summary( $donation ),
+			"{{site_name}}" => get_bloginfo( 'name' ),
+		);
+
+	    $vars = apply_filters( 'donation_receipt_variables', $vars, $donation );
+
+		$message = strtr( $peerraiser_options['donation_receipt_body'], $vars);
+		$subject = strtr( $peerraiser_options['donation_receipt_subject'], $vars);
+
+		Email::send_email( $donor->email_address, $subject, wpautop($message), 'peerraiser_donation_receipt', $donation );
+	}
+
+	/**
+	 * Send a notification to the site owner when a donation is made
+	 *
+	 * @param $donation
+	 */
+	public function send_donation_notification_email( $donation ) {
+		$peerraiser_options = get_option( 'peerraiser_options', array() );
+
+		// Skip donation receipt if option is set to disabled
+		if ( $peerraiser_options['donation_receipt_enabled'] === 'false' ) {
+			return;
+		}
+
+		/**
+		 * You can prevent the email from being sent by using this filter:
+		 * add_filter('peerraiser_skip_donation_receipt', '__return_true');
+		 */
+		if ( apply_filters('peerraiser_skip_donation_notification', false, $donation ) ) {
+			return;
+		}
+
+		$donor = new Donor( $donation->donor_id );
+
+		$vars = array(
+			"{{donor_first_name}}" => $donor->first_name,
+			"{{donor_last_name}}" => $donor->last_name,
+			"{{donor_full_name}}" => $donor->full_name,
+			"{{donation_summary}}" => $this->get_transaction_summary( $donation ),
+			"{{site_name}}" => get_bloginfo( 'name' ),
+		);
+
+		$vars = apply_filters( 'donation_notification_variables', $vars, $donation );
+
+		$message = strtr( $peerraiser_options['new_donation_notification_body'], $vars);
+		$subject = strtr( $peerraiser_options['new_donation_notification_subject'], $vars);
+		$to      = $peerraiser_options['new_donation_notification_to'];
+
+		Email::send_email( $to, $subject, wpautop($message), 'peerraiser_donation_notification', $donation );
+	}
+
     /**
      * Checks if the fields are valid
      *
@@ -132,5 +216,14 @@ class Donation extends \PeerRaiser\Controller\Base {
         }
 
         return $data;
+    }
+
+    private function get_transaction_summary( $donation ) {
+	    $peerraiser_options = get_option( 'peerraiser_options', array() );
+
+	    $this->assign( 'donation', $donation );
+	    $this->assign( 'tax_id', $peerraiser_options['tax_id'] );
+
+	    return $this->get_text_view( 'email/transaction-summary' );
     }
 }
