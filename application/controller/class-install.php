@@ -1,6 +1,7 @@
 <?php
-
 namespace PeerRaiser\Controller;
+
+use PeerRaiser\Model\Database\Donation_Table;
 
 /**
  * PeerRaiser installation controller.
@@ -171,6 +172,9 @@ class Install extends Base {
         // Perform data updates
         $this->maybe_update_donation_table();
 
+        // Update the email templates
+	    $this->maybe_update_email_templates();
+
         // keep the plugin version up to date
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $plugin_options['peerraiser_version'] = $this->config->get( 'version' );
@@ -212,9 +216,10 @@ class Install extends Base {
 
         $default_options['currency']                          = $this->config->get( 'currency.default' );
         $default_options['currency_position']                 = $this->config->get( 'currency.position');
-        $default_options['thousands_separator']               = $this->config->get( 'currency.thousands_separator');
-        $default_options['decimal_separator']                 = $this->config->get( 'currency.decimal_separator');
-        $default_options['number_decimals']                   = $this->config->get( 'currency.number_decimals');
+        $default_options['thousands_separator']               = $this->config->get( 'currency.thousands_separator' );
+        $default_options['decimal_separator']                 = $this->config->get( 'currency.decimal_separator' );
+        $default_options['number_decimals']                   = $this->config->get( 'currency.number_decimals' );
+        $default_options['donation_minimum']                  = $this->config->get( 'donation_minimum' );
         $default_options['fundraiser_slug']                   = 'give';
         $default_options['campaign_slug']                     = 'campaign';
         $default_options['disable_css_styles']                = false;
@@ -222,34 +227,25 @@ class Install extends Base {
         $default_options['show_welcome_message']              = true;
         $default_options['donation_receipt_enabled']          = true;
         $default_options['new_donation_notification_enabled'] = true;
-        $default_options['welcome_email_enabled']             = true;
-        $default_options['from_name']                         = get_bloginfo( 'name' );
+	    $default_options['welcome_email_enabled']             = true;
+	    $default_options['team_registration_email_enabled']   = true;
+	    $default_options['from_name']                         = get_bloginfo( 'name' );
         $default_options['from_email']                        = get_bloginfo( 'admin_email' );
+        $default_options['tax_id']                            = '';
         $default_options['new_donation_notification_to']      = get_bloginfo( 'admin_email' );
         $default_options['uninstall_deletes_data']            = false;
-        $default_options['donation_receipt_subject']          = __('Thank you for your donation', 'peerraiser');
-        $default_options['donation_receipt_body']             = __('Dear [peerraiser_email show=donor_first_name],
-
-            Thank you so much for your generous donation.
-
-            Transaction Summary
-            [peerraiser_email show=donation_summary]
-
-            With thanks,
-            [peerraiser_email show=site_name]', 'peerraiser');
-        $default_options['new_donation_notification_subject'] = __('New donation received', 'peerraiser');
-        $default_options['new_donation_notification_body']    = __('[peerraiser_email show=donor] has just made a donation!
-
-            Summary
-            [peerraiser_email show=donation_summary]', 'peerraiser');
-        $default_options['welcome_email_subject']             = __('Welcome!', 'peerraiser');
-        $default_options['welcome_email_body']                = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
+        $default_options['donation_receipt_subject']          = $this->config->get( 'donation_receipt_subject' );
+        $default_options['donation_receipt_body']             = $this->config->get( 'donation_receipt_body' );
+        $default_options['new_donation_notification_subject'] = $this->config->get( 'new_donation_notification_subject' );
+	    $default_options['new_donation_notification_body']    = $this->config->get( 'new_donation_notification_body' );
+		$default_options['welcome_email_subject']             = $this->config->get( 'welcome_email_subject' );
+		$default_options['welcome_email_body']                = $this->config->get( 'welcome_email_body' );
 
         update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
     }
 
     /**
-     * Create default pages if current version if not 1.0.0 or better
+     * Create default pages if current version is not 1.0.0 or better
      *
      * PeerRaiser needs a few default pages setup to work out of the box. The user can change these later.
      *
@@ -412,6 +408,34 @@ class Install extends Base {
         if ( ! $is_participant_id_present ) {
             $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `participant_id` bigint(20) NOT NULL DEFAULT 0 AFTER `team_id`;' );
         }
+    }
+
+	/**
+	 * Maybe update the email templates
+	 *
+	 * In version 1.2.0 PeerRaiser changed the way email templates work. If the current version is less than 1.1.0, this
+	 * function will update the templates to the new version.
+	 *
+	 */
+    private function maybe_update_email_templates() {
+	    $plugin_options  = get_option( 'peerraiser_options', array() );
+	    $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+	    // If current version is not less than 1.2.0, do nothing
+	    if ( $current_version === 0 || version_compare( $current_version, '1.1.7', '>=' ) ) {
+		    return;
+	    }
+
+	    $plugin_options = get_option( 'peerraiser_options', array() );
+
+	    $default_options['donation_receipt_subject']          = $this->config->get( 'donation_receipt_subject' );
+	    $default_options['donation_receipt_body']             = $this->config->get( 'donation_receipt_body' );
+	    $default_options['new_donation_notification_subject'] = $this->config->get( 'new_donation_notification_subject' );
+	    $default_options['new_donation_notification_body']    = $this->config->get( 'new_donation_notification_body' );
+	    $default_options['welcome_email_subject']             = $this->config->get( 'welcome_email_subject' );
+	    $default_options['welcome_email_body']                = $this->config->get( 'welcome_email_body' );
+
+	    update_option( 'peerraiser_options', wp_parse_args( $plugin_options, $default_options ) );
     }
 
 }
