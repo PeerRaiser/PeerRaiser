@@ -8,7 +8,7 @@
 <?php if ( ! empty( $top_teams ) ):  ?>
     <ol>
         <?php foreach ( $top_teams as $team ) : ?>
-            <li><a href="<?php echo get_the_permalink( $team->ID ); ?>"><?php echo $team->team_name; ?></a> (<?php echo peerraiser_money_format( $team->donation_value ); ?>)</li>
+            <li><a href="<?php echo $team->get_permalink(); ?>"><?php echo $team->team_name; ?></a> (<?php echo peerraiser_money_format( $team->donation_value ); ?>)</li>
         <?php endforeach; ?>
     </ol>
 <?php endif; ?>
