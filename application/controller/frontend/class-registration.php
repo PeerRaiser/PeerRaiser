@@ -136,6 +136,8 @@ class Registration extends Base {
             update_post_meta( $fundraiser->ID, '_peerraiser_thumbnail_image', wp_get_attachment_url( $image_id ) );
         }
 
+        add_action( 'peerraiser_individual_registration_completed', $fundraiser );
+
         // Redirect to the new fundraiser
         wp_safe_redirect( get_permalink( $fundraiser->ID ) );
         exit;
@@ -194,6 +196,8 @@ class Registration extends Base {
         $team->save();
 
         // TODO: If participant already has a fundraising page for this campaign, add it to the new team and redirect to team page
+
+	    add_action( 'peerraiser_team_registration_completed', $team );
 
         // Redirect to register for the new team
         $url = trailingslashit( get_permalink( $plugin_options[ 'registration_page' ] ) ) . $campaign->campaign_slug . '/individual';
