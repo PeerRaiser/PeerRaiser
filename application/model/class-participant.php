@@ -432,8 +432,14 @@ class Participant {
         return $this->notes;
     }
 
+	/**
+	 * Returns a Participant model for the current logged in user
+	 *
+	 * @return Participant
+	 */
     public function get_current_participant() {
         $current_user = wp_get_current_user();
+
         return new self( $current_user->ID );
     }
 
