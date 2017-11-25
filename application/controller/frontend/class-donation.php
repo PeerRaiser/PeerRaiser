@@ -218,6 +218,14 @@ class Donation extends \PeerRaiser\Controller\Base {
         return $data;
     }
 
+	/**
+	 * Creates the transaction summary for donation emails
+	 *
+	 * @param $donation
+	 *
+	 * @since     1.2.0
+	 * @return string
+	 */
     private function get_transaction_summary( $donation ) {
 	    $peerraiser_options = get_option( 'peerraiser_options', array() );
 
