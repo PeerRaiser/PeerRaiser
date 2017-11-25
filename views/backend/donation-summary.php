@@ -94,12 +94,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div id="donation-summary" class="postbox">
                             <h2><span><?php _e( 'Donation Summary', 'peerraiser' ); ?></span></h2>
                             <div class="inside">
-<<<<<<< HEAD
                                 <?php $donor_link = "<a href='admin.php?page=peerraiser-donors&view=summary&donor={$peerraiser['donor']->ID}'>{$peerraiser['donor']->full_name}</a>"; ?>
                                 <p class="summary"><?php printf( '%1$s made a donation of <strong>%2$s</strong> on <strong>%3$s</strong>', $donor_link, peerraiser_money_format( $peerraiser['donation']->total ), mysql2date( get_option('date_format'), $peerraiser['donation']->date ) ); ?></p>
-=======
-                                <p class="summary"><?php printf( '%1$s made a donation of <strong>%2$s</strong> on <strong>%3$s</strong>', $peerraiser['donor']->full_name, peerraiser_money_format( $peerraiser['donation']->total ), mysql2date( get_option('date_format'), $peerraiser['donation']->date ) ); ?></p>
->>>>>>> 51435d9d2740108df12e0c71e70ece983cbe0f6f
                                 <table class="transaction-info table table-striped">
                                     <thead>
                                         <tr>
