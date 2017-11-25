@@ -2,6 +2,8 @@
 
 namespace PeerRaiser\Model\Admin;
 
+use PeerRaiser\Core\Setup;
+
 class Settings extends Admin {
 
     private $fields   = array();
@@ -202,6 +204,13 @@ class Settings extends Admin {
                         'type'       => 'text',
                         'default_cb' => array( $this, 'get_field_value'),
                     ),
+                    'tax_id' => array(
+	                    'name'       => __( 'Tax ID', 'peerraiser' ),
+	                    'desc'       => __( 'If set, will be included in donation receipt email', 'peerraiser' ),
+	                    'id'         => 'tax_id',
+	                    'type'       => 'text',
+	                    'default_cb' => array( $this, 'get_field_value' ),
+                    ),
                 ),
             ),
             array(
@@ -292,6 +301,33 @@ class Settings extends Admin {
                     )
                 ),
             ),
+	        array(
+		        'id'     => 'team-registration',
+		        'fields' => array(
+			        'team_registration_email_enabled' => array(
+				        'name'       => __('Enabled', 'peerraiser'),
+				        'id'         => 'team_registration_email_enabled',
+				        'type'       => 'select',
+				        'default_cb' => array( $this, 'get_field_value'),
+				        'options'    => array(
+					        'true'    => __( 'Yes', 'peerraiser' ),
+					        'false'   => __( 'No', 'peerraiser' ),
+				        ),
+			        ),
+			        'team_registration_subject' => array(
+				        'name'       => __('Email Subject', 'peerraiser'),
+				        'id'         => 'team_registration_subject',
+				        'type'       => 'text',
+				        'default_cb' => array( $this, 'get_field_value'),
+			        ),
+			        'team_registration_body' => array(
+				        'name'       => __('Email Body', 'peerraiser'),
+				        'id'         => 'team_registration_body',
+				        'type'       => 'wysiwyg',
+				        'default_cb' => array( $this, 'get_field_value'),
+			        )
+		        ),
+	        ),
             array(
                 'id'     => 'advanced-settings',
                 'fields' => array(
@@ -349,6 +385,10 @@ class Settings extends Admin {
                     'name'   => __('Welcome Email', 'peerraiser'),
                     'fields' => 'welcome-email',
                 ),
+	            'team_registration' => array(
+	            	'name' => __('Team Registration', 'peerraiser'),
+		            'fields' => 'team-registration',
+	            )
             ),
             'advanced' => array (
                 'advanced' => array(
@@ -411,48 +451,50 @@ class Settings extends Admin {
                 $currency_options[$currency['short_name']] = $currency['full_name'] . ' ('.$currency['short_name'].')';
             }
 
-            return ( isset($currency_options) ) ? $currency_options : array();
+            return isset($currency_options) ? $currency_options : array();
         }
     }
 
     public function get_field_value( $field ) {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        switch ($field['id']) {
+	    $plugin_config = Setup::get_plugin_config();
+
+	    switch ($field['id']) {
             case 'currency':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'USD';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'currency.default' );
                 break;
 
             case 'currency_position':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'before';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'currency.position' );
                 break;
 
             case 'thousands_separator':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : ',';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'currency.thousands_separator' );
                 break;
 
             case 'decimal_separator':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : '.';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'currency.decimal_separator' );
                 break;
 
             case 'number_decimals':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 2;
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'currency.number_decimals' );
                 break;
 
 	        case 'donation_minimum':
-		        $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 10;
+		        $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'donation_minimum' );
 		        break;
 
             case 'fundraiser_slug':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'give';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'fundraiser_slug' );
                 break;
 
             case 'campaign_slug':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'campaigns';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'campaign_slug' );
                 break;
 
             case 'team_slug':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : 'teams';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'team_slug' );
                 break;
 
             // True or False questions
@@ -461,66 +503,59 @@ class Settings extends Admin {
             case 'donation_receipt_enabled':
             case 'new_donation_notification_enabled':
             case 'welcome_email_enabled':
+            case 'team_registration_email_enabled':
             case 'test_mode':
             case 'uninstall_deletes_data':
                 $field_value = ( filter_var($plugin_options[$field['id']], FILTER_VALIDATE_BOOLEAN) ) ? 'true' : 'false';
                 break;
 
             case 'from_name':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : get_bloginfo( 'name' );
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : get_bloginfo( 'name' );
                 break;
 
             case 'from_email':
             case 'new_donation_notification_to':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : get_bloginfo( 'admin_email' );
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : get_bloginfo( 'admin_email' );
                 break;
 
+	        case 'tax_id' :
+	        	$field_value = isset( $plugin_options[$field['id']] ) ? $plugin_options[$field['id']] : '';
+	        	break;
+
             case 'donation_receipt_subject':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : __('Thank you for your donation', 'peerraiser');
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'donation_receipt_subject' );
                 break;
 
             case 'new_donation_notification_subject':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : __('New donation received', 'peerraiser');
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'new_donation_notification_subject' );
                 break;
 
             case 'welcome_email_subject':
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : __('Welcome!', 'peerraiser');
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'welcome_email_subject' );
                 break;
 
+	        case 'team_registration_subject':
+		        $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'team_registration_subject' );
+		        break;
+
             case 'donation_receipt_body':
-                $default_body = __('Dear [peerraiser_email show=donor_first_name],
-
-                Thank you so much for your generous donation.
-
-                Transaction Summary
-                [peerraiser_email show=donation_summary]
-
-                With thanks,
-                [peerraiser_email show=site_name]', 'peerraiser');
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : $default_body;
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'donation_receipt_body' );
                 break;
 
             case 'new_donation_notification_body':
-                $default_body = __('[peerraiser_email show=donor] has just made a donation!
-
-                Summary
-                [peerraiser_email show=donation_summary]', 'peerraiser');
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : $default_body;
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'new_donation_notification_body' );
                 break;
 
             case 'welcome_email_body':
-                $default_body = __('Welcome to the [peerraiser_email show=campaign_name] campaign!', 'peerraiser');
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : $default_body;
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'welcome_email_body' );
                 break;
 
-            // case 'campaign_thumbnail_image' :
-            //     $attachment_id = $plugin_options['campaign_thumbnail_image'];
-            //     $image = wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail' );
-            //     $field_value = ( $image ) ? $image[0] : '';
-            //     break;
+	        case 'team_registration_body':
+		        $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : $plugin_config->get( 'team_registration_body' );
+		        break;
 
             default:
-                $field_value = ( isset($plugin_options[$field['id']]) ) ? $plugin_options[$field['id']] : '';
+                $field_value = isset($plugin_options[$field['id']]) ? $plugin_options[$field['id']] : '';
                 break;
         }
 
