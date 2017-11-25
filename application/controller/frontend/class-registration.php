@@ -196,12 +196,42 @@ class Registration extends Base {
         $team->save();
 
         // TODO: If participant already has a fundraising page for this campaign, add it to the new team and redirect to team page
+	    $this->maybe_add_fundraiser_to_team( $team );
 
 	    add_action( 'peerraiser_team_registration_completed', $team );
 
         // Redirect to register for the new team
         $url = trailingslashit( get_permalink( $plugin_options[ 'registration_page' ] ) ) . $campaign->campaign_slug . '/individual';
-        wp_safe_redirect( add_query_arg( 'team', $team->team_slug, $url) );
+        wp_safe_redirect( add_query_arg( array( 'team' => $team->team_slug, 'peerraiser_notice' => 'team_created' ), $url) );
         exit;
+    }
+
+	/**
+	 * Check if participant already has a fundraiser for this campaign, and if so, assigns that
+	 * campaign and skips the next step so they don't create another one
+	 *
+	 * @param $team
+	 */
+    private function maybe_add_fundraiser_to_team( $team ) {
+	    $participant_model  = new Participant();
+	    $fundraiser_model   = new Fundraiser();
+	    $participant        = $participant_model->get_current_participant();
+
+	    $results = $fundraiser_model->get_fundraisers( array(
+	    	'participant' => $participant->ID,
+		    'campaign'    => $team->campaign_id,
+	    ) );
+
+	    // If no fundraiser was found, they go to the next step to create one
+	    if ( empty ( $results ) ) {
+	    	return;
+	    }
+
+	    // Add the fundraiser to this team
+	    $results[0]->add_to_team( $team->ID );
+
+	    // Redirect to the team page
+	    wp_safe_redirect( add_query_arg( array( 'peerraiser_notice' => 'team_created' ), $team->get_permalink() ) );
+	    exit;
     }
 }
