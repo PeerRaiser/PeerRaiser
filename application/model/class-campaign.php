@@ -382,8 +382,8 @@ class Campaign {
         $this->donation_count            = $donation_count ? intval( $donation_count ) : 0;
 
         // Limits
-        $this->registration_limit 		 = get_term_meta( $this->ID, '_peerraiser_registration_limit', true );
-        $this->team_limit         		 = get_term_meta( $this->ID, '_peerraiser_team_limit', true );
+	    $this->registration_limit        = get_term_meta( $this->ID, '_peerraiser_registration_limit', true );
+	    $this->team_limit                = get_term_meta( $this->ID, '_peerraiser_team_limit', true );
         $this->allow_anonymous_donations = get_term_meta( $this->ID, '_peerraiser_allow_anonymous_donations', true );
         $this->allow_comments            = get_term_meta( $this->ID, '_peerraiser_allow_comments', true );
         $this->allow_fees_covered        = get_term_meta( $this->ID, '_peerraiser_allow_fees_covered', true );
@@ -889,6 +889,16 @@ class Campaign {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
         return esc_url( $plugin_options['campaign_thumbnail_image'] );
+    }
+
+	/**
+	 * Determines if the fundraiser limit has been reached
+	 *
+	 * @since 1.2.0
+	 * @return bool Whether the limit has been reached or not
+	 */
+    public function fundraiser_limit_reached() {
+    	return ( ! empty( $this->registration_limit ) && $this->get_total_fundraisers() >= $this->registration_limit );
     }
 
     /**
