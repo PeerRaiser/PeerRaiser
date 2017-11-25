@@ -93,7 +93,17 @@ class Registration extends Base {
         // TODO: Check if campaign accepting fundraisers
 
         if ( ! empty( $errors ) ) {
-            return $cmb->prop( 'submission_error', new \WP_Error( 'post_data_missing', __( 'Some required fields are empty.' ) ) );
+            return $cmb->prop( 'submission_error', new \WP_Error( 'post_data_missing', __( 'Some required fields are empty.', 'peerraiser' ) ) );
+        }
+
+	    // Check if participant already registered
+	    $results = $fundraiser->get_fundraisers( array(
+		    'participant' => $participant->ID,
+		    'campaign'    => absint( $_POST['_peerraiser_fundraiser_campaign'] )
+	    ) );
+
+	    if ( ! empty( $results ) ) {
+		    return $cmb->prop( 'submission_error', new \WP_Error( 'already_registered', __( 'You are already registered for this campaign', 'peerraiser' ) ) );
         }
 
         /**
