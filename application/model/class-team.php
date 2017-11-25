@@ -617,17 +617,28 @@ class Team {
         return $this->donation_value;
     }
 
+	/**
+	 * Returns the total number of members of the team
+	 *
+	 * @return int
+	 */
     public function get_total_members() {
         $term = get_term( $this->ID, 'peerraiser_team' );
         return $term->count;
     }
 
+	/**
+	 * Returns the Team Page URL
+	 *
+	 * @return string|\WP_Error
+	 */
     public function get_permalink() {
         return get_term_link( (int) $this->ID, 'peerraiser_team' );
     }
 
     public function get_display_link() {
         $post_name_html = '<span id="editable-post-name">' . esc_html( $this->get_name_abridged() ) . '</span>';
+
         return \PeerRaiser\Helper\Text::str_replace_last( $this->team_slug, $post_name_html, $this->get_permalink() );
     }
 
