@@ -218,7 +218,8 @@ class Donation_List_Table extends WP_List_Table {
 
         $args = array(
             'number' => $per_page,
-            'offset' => ( $page_number - 1 ) * $per_page
+            'offset' => ( $page_number - 1 ) * $per_page,
+	        'include_test' => true,
         );
 
         if ( ! empty( $_REQUEST['orderby'] ) ) {
