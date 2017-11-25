@@ -301,16 +301,15 @@ class Donation {
                 break;
         }
 
-        $donations = $this->db->get_donations( $args );
-        $donation  = reset( $donations );
+	    $donation = $this->db->get_donation( $id, $by );
 
-        if ( empty( $donation ) ) {
-            return false;
-        }
+	    if ( is_wp_error( $donation ) ) {
+		    return false;
+	    }
 
-        $this->setup_donation( $donation );
+	    $this->setup_donation( $donation );
 
-        return $this;
+	    return $this;
     }
 
     /**
@@ -591,9 +590,8 @@ class Donation {
         $updated = false;
 
         if ( $this->db->update( $this->ID, $data ) ) {
-
-            $donation = $this->db->get_donations( array( 'donation_id' => $this->ID ) );
-            $this->setup_donation( reset( $donation ) );
+            $donation = $this->db->get_donation( $this->ID );
+            $this->setup_donation( $donation );
 
             $updated = true;
         }
@@ -788,6 +786,13 @@ class Donation {
         return $result;
     }
 
+	/**
+	 * Get donations
+	 *
+	 * @param $args
+	 *
+	 * @return array
+	 */
     public function get_donations( $args ) {
         $donation_rows = $this->db->get_donations( $args );
 
@@ -800,12 +805,40 @@ class Donation {
         return $donations;
     }
 
+	/**
+	 * Get a single donation by its ID
+	 *
+	 * @param $id
+	 * @param string $by
+	 *
+	 * @return object|\WP_Error
+	 */
+    public function get_donation( $id, $by = 'donation_id' ) {
+	    $donation = $this->db->get_donation( $id, $by );
+
+	    if ( is_wp_error( $donation ) ) {
+	    	return $donation;
+	    }
+
+	    return new self( $donation->donation_id );
+    }
+
+	/**
+	 * Get the total amount donated
+	 *
+	 * @return mixed
+	 */
     public function get_donations_total() {
         $total = $this->db->get_donations_total();
 
         return $total;
     }
 
+	/**
+	 * Get the donor's name for display publicly
+	 *
+	 * @return string
+	 */
     public function get_donor_name() {
         if ( $this->is_anonymous ) {
             return apply_filters( 'peerraiser_anonymous_name', __( 'Anonymous', 'peerraiser' ) );
