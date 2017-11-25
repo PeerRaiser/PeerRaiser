@@ -75,10 +75,21 @@ class Setup {
         );
         $config->import( $currency_settings );
 
+	    $config->set( 'donation_minimum', 10 );
+
+	    // Emails
+	    $config->set( 'donation_receipt_subject', __('Thank you for your donation', 'peerraiser') );
+	    $config->set( 'donation_receipt_body', __("Dear {{donor_first_name}},\r\n\r\nThank you so much for your generous donation.\r\n\r\nTransaction Summary:\r\n{{donation_summary}}\r\n\r\nWith thanks,\r\n{{site_name}}", 'peerraiser') );
+	    $config->set( 'new_donation_notification_subject', __('New donation received', 'peerraiser') );
+	    $config->set( 'new_donation_notification_body', __("{{donor_first_name}} has just made a donation!\r\n\r\nSummary:\r\n{{donation_summary}}", 'peerraiser') );
+	    $config->set( 'welcome_email_subject', __('Welcome!', 'peerraiser') );
+	    $config->set( 'welcome_email_body', __('Welcome to the {{campaign_name}} campaign!', 'peerraiser') );
+	    $config->set( 'team_registration_subject', __('Thank you for creating a team!', 'peerraiser') );
+	    $config->set( 'team_registration_body', __("{{first_name}},\r\n\r\nThank you for registering a team.\r\n\r\nYour team page is located at:\r\n{{team_url}}\r\n\r\nTell your friends and family to join your team at this URL:\r\n{{team_url}}\r\n\r\nSincerely,\r\n{{site_name}}", 'peerraiser') );
+
         wp_cache_set( 'config', $config, 'peerraiser' );
 
         return $config;
-
     }
 
 }
