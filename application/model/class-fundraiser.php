@@ -395,6 +395,25 @@ class Fundraiser {
 
         $args = wp_parse_args( $args, $defaults );
 
+        if ( isset( $args['participant'] ) ) {
+        	$args['meta_query'][] = array(
+        		'key' => '_peerraiser_fundraiser_participant',
+		        'value' => $args['participant'],
+	        );
+
+        	unset( $args['participant']);
+        }
+
+        if ( isset( $args['campaign'] ) ) {
+        	$args['tax_query'][] = array(
+        		'taxonomy' => 'peerraiser_campaign',
+		        'field'    => is_numeric( $args['campaign'] ) ? 'term_id' : 'slug',
+		        'terms'    => $args['campaign'],
+	        );
+
+        	unset( $args['campaign']);
+        }
+
         $query = new WP_Query( $args );
 
         $results = array();
