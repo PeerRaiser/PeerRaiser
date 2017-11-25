@@ -95,10 +95,9 @@ class Donation_Rest_Controller extends WP_REST_Controller {
         $item     = array();
         $donation = new Donation();
 
-        $donations = $donation->get_donations( array( 'transaction_id' => $params['key'] ) );
+        $donation = $donation->get_donation( $params['key'], 'transaction_id' );
 
-        if ( ! empty( $donations ) ) {
-            $donation       = $donations[0];
+        if ( ! is_wp_error( $donation ) ) {
             $plugin_options = get_option( 'peerraiser_options', array() );
             $donor          = new Donor( $donation->donor_id );
             $campaign       = new Campaign( $donation->campaign_id );
@@ -176,7 +175,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
         $params = $request->get_params();
         $item   = $this->prepare_item_for_database( $request );
 
-        if ( empty( $item ) ) {
+        if ( is_wp_error( $item ) ) {
             return new WP_Error( 'cant-update', __( 'Donation not found', 'peerraiser'), array( 'status' => 500 ) );
         }
 
@@ -187,6 +186,7 @@ class Donation_Rest_Controller extends WP_REST_Controller {
         $item->add_note( __( 'Donation completed!', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
         $item->save();
 
+        do_action( 'peerraiser_donation_completed', $item );
 
         $data = array(
             'success' => true
@@ -269,19 +269,15 @@ class Donation_Rest_Controller extends WP_REST_Controller {
      * Prepare the item for create or update operation
      *
      * @param WP_REST_Request $request Request object
-     * @return WP_Error|object $prepared_item
+     * @return WP_Error|object|array $prepared_item
      */
     protected function prepare_item_for_database( $request ) {
         $params   = $request->get_params();
         $donation = new Donation();
 
-        $donations = $donation->get_donations( array( 'transaction_id' => $params['key'] ) );
+        $donation = $donation->get_donation( $params['key'], 'transaction_id' );
 
-        if ( empty( $donations ) ) {
-            return array();
-        }
-
-        return $donations[0];
+        return $donation;
     }
 
     /**
