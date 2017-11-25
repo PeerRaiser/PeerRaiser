@@ -62,9 +62,10 @@ class Registration extends Base {
 
     public function register_individual() {
         $registration_model = new \PeerRaiser\Model\Frontend\Registration();
-        $fundraiser         = new Fundraiser();
+        $fundraiser_model   = new Fundraiser();
         $participant_model  = new Participant();
         $participant        = $participant_model->get_current_participant();
+        $campaign_model     = new Campaign( $_POST['_peerraiser_fundraiser_campaign'] );
 
         // If no form submission, bail
         if ( empty( $_POST ) || ! isset( $_POST['submit-cmb'], $_POST['object_id'] ) ) {
@@ -90,16 +91,23 @@ class Registration extends Base {
 
         // TODO: Check if file type and size is allowed
         // TODO: Check if goal amount is correct format
-        // TODO: Check if campaign accepting fundraisers
 
         if ( ! empty( $errors ) ) {
             return $cmb->prop( 'submission_error', new \WP_Error( 'post_data_missing', __( 'Some required fields are empty.', 'peerraiser' ) ) );
         }
 
+	    if ( $campaign_model->fundraiser_limit_reached() ) {
+		    return $cmb->prop( 'submission_error', new \WP_Error( 'campaign_not_active', __( 'This campaign has reached the maximum number of registrations allowed', 'peerraiser' ) ) );
+	    }
+
+        if ( $campaign_model->campaign_status !== 'active' ) {
+	        return $cmb->prop( 'submission_error', new \WP_Error( 'campaign_not_active', __( 'This campaign is not currently accepting registrations', 'peerraiser' ) ) );
+        }
+
 	    // Check if participant already registered
-	    $results = $fundraiser->get_fundraisers( array(
+	    $results = $fundraiser_model->get_fundraisers( array(
 		    'participant' => $participant->ID,
-		    'campaign'    => absint( $_POST['_peerraiser_fundraiser_campaign'] )
+		    'campaign'    => $campaign_model->ID
 	    ) );
 
 	    if ( ! empty( $results ) ) {
@@ -111,18 +119,18 @@ class Registration extends Base {
          */
         $sanitized_values = $cmb->get_sanitized_values( $_POST );
 
-        $fundraiser->fundraiser_name    = $sanitized_values['_peerraiser_headline_individual'];
-        $fundraiser->fundraiser_slug    = sanitize_title( $participant->full_name );
-        $fundraiser->fundraiser_content = $sanitized_values['_peerraiser_body_individual'];
-        $fundraiser->campaign_id        = absint( $_POST['_peerraiser_fundraiser_campaign'] );
-        $fundraiser->participant        = $participant->ID;
+        $fundraiser_model->fundraiser_name    = $sanitized_values['_peerraiser_headline_individual'];
+        $fundraiser_model->fundraiser_slug    = sanitize_title( $participant->full_name );
+        $fundraiser_model->fundraiser_content = $sanitized_values['_peerraiser_body_individual'];
+        $fundraiser_model->campaign_id        = $campaign_model->ID;
+        $fundraiser_model->participant        = $participant->ID;
 
         if ( ! empty( $_POST['_peerraiser_fundraiser_team'] ) ) {
             $team_model = new Team();
             $team = $team_model->get_team_by_slug( $_POST['_peerraiser_fundraiser_team'] );
 
             if ( ! empty( $team ) ) {
-                $fundraiser->team_id = $team->ID;
+                $fundraiser_model->team_id = $team->ID;
             }
         }
 
@@ -131,25 +139,25 @@ class Registration extends Base {
         unset( $sanitized_values['_peerraiser_body'] );
         unset( $sanitized_values['peerraiser_action'] );
 
-        $fundraiser->save();
+        $fundraiser_model->save();
 
         foreach ( $sanitized_values as $key => $value ) {
-            $fundraiser->update_meta( $key, $value );
+            $fundraiser_model->update_meta( $key, $value );
         }
 
         // Try to upload the featured image
-        $image_id = File::attach_image_to_post( $fundraiser->ID );
+        $image_id = File::attach_image_to_post( $fundraiser_model->ID );
 
         // If image upload was successful, set the featured image
         if ( $image_id && ! is_wp_error( $image_id ) ) {
-            update_post_meta( $fundraiser->ID, '_peerraiser_thumbnail_image_id', $image_id );
-            update_post_meta( $fundraiser->ID, '_peerraiser_thumbnail_image', wp_get_attachment_url( $image_id ) );
+            update_post_meta( $fundraiser_model->ID, '_peerraiser_thumbnail_image_id', $image_id );
+            update_post_meta( $fundraiser_model->ID, '_peerraiser_thumbnail_image', wp_get_attachment_url( $image_id ) );
         }
 
-        add_action( 'peerraiser_individual_registration_completed', $fundraiser );
+        add_action( 'peerraiser_individual_registration_completed', $fundraiser_model );
 
         // Redirect to the new fundraiser
-        wp_safe_redirect( get_permalink( $fundraiser->ID ) );
+        wp_safe_redirect( get_permalink( $fundraiser_model->ID ) );
         exit;
     }
 
