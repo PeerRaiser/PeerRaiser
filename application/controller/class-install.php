@@ -413,7 +413,7 @@ class Install extends Base {
 	/**
 	 * Maybe update the email templates
 	 *
-	 * In version 1.2.0 PeerRaiser changed the way email templates work. If the current version is less than 1.1.0, this
+	 * In version 1.2.0 PeerRaiser changed the way email templates work. If the current version is less than 1.2.0, this
 	 * function will update the templates to the new version.
 	 *
 	 */
@@ -422,7 +422,7 @@ class Install extends Base {
 	    $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
 	    // If current version is not less than 1.2.0, do nothing
-	    if ( $current_version === 0 || version_compare( $current_version, '1.1.7', '>=' ) ) {
+	    if ( $current_version === 0 || version_compare( $current_version, '1.2.0', '>=' ) ) {
 		    return;
 	    }
 
