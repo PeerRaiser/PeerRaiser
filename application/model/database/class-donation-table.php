@@ -95,7 +95,8 @@ class Donation_Table extends Database {
             'status'          => '',
             'orderby'         => 'donation_id',
             'order'           => 'DESC',
-            'is_test'         => 0
+            'is_test'         => 0,
+	        'include_test'    => false
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -319,7 +320,7 @@ class Donation_Table extends Database {
         }
 
         // By test mode or not
-        if ( isset( $args['is_test'] ) ) {
+        if ( isset( $args['is_test'] ) && ! $args['include_test'] ) {
             // Convert boolean to 1 for true and 0 for false
             $is_test = $args['is_test'] ? 1 : 0;
 
@@ -366,6 +367,32 @@ class Donation_Table extends Database {
 
         return $results;
 
+    }
+
+	/**
+	 * Returns a specific donation
+	 *
+	 * @param int    $id
+	 * @param string $by
+	 *
+	 * @return object|\WP_Error
+	 */
+    public function get_donation( $id = 0, $by = 'donation_id' ) {
+    	global $wpdb;
+
+	    $by = $by === 'transaction_id' ? 'transaction_id' : 'donation_id';
+
+	    $query = $wpdb->prepare(
+		    "SELECT * FROM {$this->table_name} WHERE {$by} = %s LIMIT 1;",
+		    $id
+	    );
+	    $results = $wpdb->get_results( $query );
+
+	    if ( empty( $results ) ) {
+		    return new \WP_Error( 'donation_not_found', __( "No donation with that ID exists", "peerraiser" ) );
+	    }
+
+	    return $results[0];
     }
 
     /**
