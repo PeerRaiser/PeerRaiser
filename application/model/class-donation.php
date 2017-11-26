@@ -600,7 +600,7 @@ class Donation {
     }
 
     private function maybe_update_stats( $status ) {
-        if ( $this->is_test || empty( $this->old_status ) || $status === $this->old_status ) {
+        if ( empty( $this->old_status ) || $status === $this->old_status ) {
             return;
         }
 
@@ -858,15 +858,15 @@ class Donation {
     private function increase_donor_amounts() {
         $donor = new Donor_Model( $this->donor_id );
 
-        $donor->increase_donation_count( 1 );
-        $donor->increase_value( $this->total );
+        $donor->increase_donation_count( 1, $this->is_test );
+        $donor->increase_value( $this->total, $this->is_test );
     }
 
     private function decrease_donor_amounts() {
         $donor = new Donor_Model( $this->donor_id );
 
-        $donor->decrease_donation_count( 1 );
-        $donor->decrease_value( abs( $this->total ) );
+        $donor->decrease_donation_count( 1, $this->is_test );
+        $donor->decrease_value( abs( $this->total ), $this->is_test );
     }
 
     private function increase_fundraiser_amounts() {
@@ -876,8 +876,8 @@ class Donation {
 
         $fundraiser = new Fundraiser_Model( $this->fundraiser_id );
 
-        $fundraiser->increase_donation_count( 1 );
-        $fundraiser->increase_value( $this->total );
+        $fundraiser->increase_donation_count( 1, $this->is_test );
+        $fundraiser->increase_value( $this->total, $this->is_test );
     }
 
     private function decrease_fundraiser_amounts() {
@@ -887,8 +887,8 @@ class Donation {
 
         $fundraiser = new Fundraiser_Model( $this->fundraiser_id );
 
-        $fundraiser->decrease_donation_count( 1 );
-        $fundraiser->decrease_value( abs( $this->total ) );
+        $fundraiser->decrease_donation_count( 1, $this->is_test );
+        $fundraiser->decrease_value( abs( $this->total ), $this->is_test );
     }
 
     private function increase_team_amounts() {
@@ -898,8 +898,8 @@ class Donation {
 
         $team = new Team_Model( $this->team_id );
 
-        $team->increase_donation_count( 1 );
-        $team->increase_value( $this->total );
+        $team->increase_donation_count( 1, $this->is_test );
+        $team->increase_value( $this->total, $this->is_test );
     }
 
     private function decrease_team_amounts() {
@@ -909,22 +909,22 @@ class Donation {
 
         $team = new Team_Model( $this->team_id );
 
-        $team->decrease_donation_count( 1 );
-        $team->decrease_value( abs( $this->total ) );
+        $team->decrease_donation_count( 1, $this->is_test );
+        $team->decrease_value( abs( $this->total ), $this->is_test );
     }
 
     private function increase_campaign_amounts() {
         $campaign = new Campaign_Model( $this->campaign_id );
 
-        $campaign->increase_donation_count( 1 );
-        $campaign->increase_value( $this->total );
+        $campaign->increase_donation_count( 1, $this->is_test );
+        $campaign->increase_value( $this->total, $this->is_test );
     }
 
     private function decrease_campaign_amounts() {
         $campaign = new Campaign_Model( $this->campaign_id );
 
-        $campaign->decrease_donation_count( 1 );
-        $campaign->decrease_value( abs( $this->total ) );
+        $campaign->decrease_donation_count( 1, $this->is_test );
+        $campaign->decrease_value( abs( $this->total ), $this->is_test );
     }
 
     private function increase_participant_amounts() {
@@ -934,8 +934,8 @@ class Donation {
 
         $participant = new Participant_Model( $this->participant_id );
 
-        $participant->increase_donation_count( 1 );
-        $participant->increase_value( $this->total );
+        $participant->increase_donation_count( 1, $this->is_test );
+        $participant->increase_value( $this->total, $this->is_test );
     }
 
     private function decrease_participant_amounts() {
@@ -945,7 +945,7 @@ class Donation {
 
         $participant = new Participant_Model( $this->participant_id );
 
-        $participant->decrease_donation_count( 1 );
-        $participant->decrease_value( abs( $this->total ) );
+        $participant->decrease_donation_count( 1, $this->is_test );
+        $participant->decrease_value( abs( $this->total ), $this->is_test );
     }
 }
