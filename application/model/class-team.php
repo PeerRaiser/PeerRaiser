@@ -112,6 +112,20 @@ class Team {
      */
     protected $donation_count = 0;
 
+	/**
+	 * The total amount the team has received in test mode
+	 *
+	 * @var float
+	 */
+	protected $test_donation_value = 0.00;
+
+	/**
+	 * The number of test donations the team has received
+	 *
+	 * @var int
+	 */
+	protected $test_donation_count = 0;
+
     /**
      * Date Team Created
      *
@@ -239,11 +253,15 @@ class Team {
         $this->thumbnail_image_id  = get_term_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
 
         // Money
-        $this->team_goal      = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
-        $donation_value       = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
-        $this->donation_value = $donation_value ? floatval( $donation_value ) : 0.00;
-        $donation_count       = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
-        $this->donation_count = $donation_count ? intval( $donation_count ) : 0;
+        $this->team_goal           = get_term_meta( $this->ID, '_peerraiser_team_goal', true );
+        $donation_value            = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
+        $this->donation_value      = $donation_value ? floatval( $donation_value ) : 0.00;
+        $donation_count            = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
+        $this->donation_count      = $donation_count ? intval( $donation_count ) : 0;
+	    $test_donation_value       = get_term_meta( $this->ID, '_peerraiser_test_donation_value', true );
+	    $this->test_donation_value = $test_donation_value ? floatval( $test_donation_value ) : 0.00;
+	    $test_donation_count       = get_term_meta( $this->ID, '_peerraiser_test_donation_count', true );
+	    $this->test_donation_count = $test_donation_count ? intval( $test_donation_count ) : 0;
 
         // Team info
         $this->created = get_term_meta( $this->ID, '_peerraiser_created', true );
@@ -514,107 +532,166 @@ class Team {
     /**
      * Increase the donation count of the team
      *
-     * @since  1.0.0
-     * @param  integer $count The number to increment by
+     * @since 1.0.0
+     * @param integer $count   The number to increment by
+     * @param bool    $is_test Whether the donation was made in test mode or not
      *
      * @return int The donation count
      */
-    public function increase_donation_count( $count = 1 ) {
+    public function increase_donation_count( $count = 1, $is_test = false ) {
         if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
             return false;
         }
 
-        $new_total = (int) $this->donation_count + (int) $count;
+        if ( $is_test ) {
+	        $new_total = (int) $this->test_donation_count + (int) $count;
 
-        do_action( 'peerraiser_team_pre_increase_donation_count', $count, $this->ID );
+	        do_action( 'peerraiser_team_pre_increase_test_donation_count', $count, $this->ID );
 
-        $this->update_meta( '_peerraiser_donation_count', $new_total );
-        $this->donation_count = $new_total;
+	        $this->update_meta( '_peerraiser_test_donation_count', $new_total );
+	        $this->test_donation_count = $new_total;
 
-        do_action( 'peerraiser_team_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+	        do_action( 'peerraiser_team_post_increase_test_donation_count', $this->test_donation_count, $count, $this->ID );
+        } else {
+	        $new_total = (int) $this->donation_count + (int) $count;
 
-        return $this->donation_count;
+	        do_action( 'peerraiser_team_pre_increase_donation_count', $count, $this->ID );
+
+	        $this->update_meta( '_peerraiser_donation_count', $new_total );
+	        $this->donation_count = $new_total;
+
+	        do_action( 'peerraiser_team_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+        }
+
+        return $is_test ? $this->test_donation_count : $this->donation_count;
     }
 
     /**
      * Decrease the team donation count
      *
-     * @since  1.0.0
-     * @param  integer $count The amount to decrease by
+     * @since 1.0.0
+     * @param integer $count   The amount to decrease by
+     * @param bool    $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new count, otherwise false
      */
-    public function decrease_donation_count( $count = 1 ) {
-
+    public function decrease_donation_count( $count = 1, $is_test = false ) {
         // Make sure it's numeric and not negative
         if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
             return false;
         }
 
-        $new_total = (int) $this->donation_count - (int) $count;
+        if ( $is_test ) {
+	        $new_total = (int) $this->test_donation_count - (int) $count;
 
-        if ( $new_total < 0 ) {
-            $new_total = 0;
+	        if ( $new_total < 0 ) {
+		        $new_total = 0;
+	        }
+
+	        do_action( 'peerraiser_team_pre_decrease_test_donation_count', $count, $this->ID );
+
+	        $this->update_meta( '_peerraiser_test_donation_count', $new_total );
+	        $this->test_donation_count = $new_total;
+
+	        do_action( 'peerraiser_team_post_decrease_test_donation_count', $this->test_donation_count, $count, $this->ID );
+        } else {
+	        $new_total = (int) $this->donation_count - (int) $count;
+
+	        if ( $new_total < 0 ) {
+		        $new_total = 0;
+	        }
+
+	        do_action( 'peerraiser_team_pre_decrease_donation_count', $count, $this->ID );
+
+	        $this->update_meta( '_peerraiser_donation_count', $new_total );
+	        $this->donation_count = $new_total;
+
+	        do_action( 'peerraiser_team_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
         }
 
-        do_action( 'peerraiser_team_pre_decrease_donation_count', $count, $this->ID );
-
-        $this->update_meta( '_peerraiser_donation_count', $new_total );
-        $this->donation_count = $new_total;
-
-        do_action( 'peerraiser_team_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
-
-        return $this->donation_count;
+        return $is_test ? $this->test_donation_count : $this->donation_count;
     }
 
     /**
      * Increase the customer's lifetime value
      *
-     * @since  1.0.0
-     * @param  float $value The value to increase by
+     * @since 1.0.0
+     * @param float $value   The value to increase by
+     * @param bool  $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new value, otherwise false
      */
-    public function increase_value( $value = 0.00 ) {
-        $value = apply_filters( 'peerraiser_team_increase_value', $value, $this );
+    public function increase_value( $value = 0.00, $is_test = false ) {
+        if ( $is_test ) {
+	        $value = apply_filters( 'peerraiser_team_increase_test_value', $value, $this );
 
-        $new_value = floatval( $this->donation_value ) + $value;
+	        $new_value = floatval( $this->test_donation_value ) + $value;
 
-        do_action( 'peerraiser_team_pre_increase_value', $value, $this->ID, $this );
+	        do_action( 'peerraiser_team_pre_increase_test_value', $value, $this->ID, $this );
 
-        $this->update_meta( '_peerraiser_donation_value', $new_value );
-        $this->donation_value = $new_value;
+	        $this->update_meta( '_peerraiser_test_donation_value', $new_value );
+	        $this->test_donation_value = $new_value;
 
-        do_action( 'peerraiser_team_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+	        do_action( 'peerraiser_team_post_increase_value', $this->test_donation_value, $value, $this->ID, $this );
+        } else {
+	        $value = apply_filters( 'peerraiser_team_increase_value', $value, $this );
 
-        return $this->donation_value;
+	        $new_value = floatval( $this->donation_value ) + $value;
+
+	        do_action( 'peerraiser_team_pre_increase_value', $value, $this->ID, $this );
+
+	        $this->update_meta( '_peerraiser_donation_value', $new_value );
+	        $this->donation_value = $new_value;
+
+	        do_action( 'peerraiser_team_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+        }
+
+        return $is_test ? $this->test_donation_value : $this->donation_value;
     }
 
     /**
      * Decrease a customer's lifetime value
      *
-     * @since  1.0.0
-     * @param  float  $value The value to decrease by
+     * @since 1.0.0
+     * @param float $value The value to decrease by
+     * @param bool  $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new value, otherwise false
      */
-    public function decrease_value( $value = 0.00 ) {
-        $value = apply_filters( 'peerraiser_team_decrease_value', $value, $this );
+    public function decrease_value( $value = 0.00, $is_test = false ) {
+        if ( $is_test ) {
+	        $value = apply_filters( 'peerraiser_team_decrease_test_value', $value, $this );
 
-        $new_value = floatval( $this->donation_value ) - $value;
+	        $new_value = floatval( $this->test_donation_value ) - $value;
 
-        if( $new_value < 0 ) {
-            $new_value = 0.00;
+	        if( $new_value < 0 ) {
+		        $new_value = 0.00;
+	        }
+
+	        do_action( 'peerraiser_team_pre_decrease_test_value', $value, $this->ID, $this );
+
+	        $this->update_meta( '_peerraiser_test_donation_value', $new_value );
+	        $this->test_donation_value = $new_value;
+
+	        do_action( 'peerraiser_team_post_decrease_value', $this->test_donation_value, $value, $this->ID, $this );
+        } else {
+	        $value = apply_filters( 'peerraiser_team_decrease_value', $value, $this );
+
+	        $new_value = floatval( $this->donation_value ) - $value;
+
+	        if( $new_value < 0 ) {
+		        $new_value = 0.00;
+	        }
+
+	        do_action( 'peerraiser_team_pre_decrease_value', $value, $this->ID, $this );
+
+	        $this->update_meta( '_peerraiser_donation_value', $new_value );
+	        $this->donation_value = $new_value;
+
+	        do_action( 'peerraiser_team_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
         }
 
-        do_action( 'peerraiser_team_pre_decrease_value', $value, $this->ID, $this );
-
-        $this->update_meta( '_peerraiser_donation_value', $new_value );
-        $this->donation_value = $new_value;
-
-        do_action( 'peerraiser_team_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
-
-        return $this->donation_value;
+        return $is_test ? $this->test_donation_value : $this->donation_value;
     }
 
 	/**
