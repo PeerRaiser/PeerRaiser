@@ -114,7 +114,7 @@ class View {
     public static function get_plugin_mode() {
         $plugin_options = get_option( 'peerraiser_options', array() );
 
-        return ( $plugin_options['plugin_is_in_live_mode'] ) ? 'live' : 'test';
+        return ( wp_validate_boolean( $plugin_options['test_mode'] ) ) ? 'test' : 'live';
     }
 
     /**
