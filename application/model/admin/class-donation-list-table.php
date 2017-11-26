@@ -6,6 +6,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use PeerRaiser\Model\Database\Donation_Table;
 use PeerRaiser\Model\Donation;
 use \PeerRaiser\Model\Donor;
 use \WP_List_Table;
@@ -214,12 +215,11 @@ class Donation_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function get_donations( $per_page = 10, $page_number = 1 ) {
-        $donations = new \PeerRaiser\Model\Database\Donation_Table();
+        $donations = new Donation_Table();
 
         $args = array(
             'number' => $per_page,
             'offset' => ( $page_number - 1 ) * $per_page,
-	        'include_test' => true,
         );
 
         if ( ! empty( $_REQUEST['orderby'] ) ) {
