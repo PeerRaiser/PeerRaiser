@@ -375,11 +375,11 @@ class Campaign {
         $this->thumbnail_image_id   = get_term_meta( $this->ID, '_peerraiser_thumbnail_image_id', true );
 
         // Money
-        $this->campaign_goal			 = get_term_meta( $this->ID, '_peerraiser_campaign_goal', true );
-        $donation_value                  = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
-        $this->donation_value            = $donation_value ? floatval( $donation_value ) : 0.00;
-        $donation_count                  = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
-        $this->donation_count            = $donation_count ? intval( $donation_count ) : 0;
+        $this->campaign_goal  = get_term_meta( $this->ID, '_peerraiser_campaign_goal', true );
+        $donation_value       = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
+        $this->donation_value = $donation_value ? floatval( $donation_value ) : 0.00;
+        $donation_count       = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
+        $this->donation_count = $donation_count ? intval( $donation_count ) : 0;
 
         // Limits
 	    $this->registration_limit        = get_term_meta( $this->ID, '_peerraiser_registration_limit', true );
@@ -397,6 +397,7 @@ class Campaign {
         $this->suggested_team_goal  = get_term_meta( $this->ID, '_peerraiser_suggested_team_goal', true );
         $this->default_team_title   = get_term_meta( $this->ID, '_peerraiser_default_team_title', true );
         $this->default_team_content = get_term_meta( $this->ID, '_peerraiser_default_team_content', true );
+
         // Thank you page
         $this->thank_you_page = get_term_meta( $this->ID, '_peerraiser_thank_you_page', true );
 
