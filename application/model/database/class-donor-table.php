@@ -29,15 +29,17 @@ class Donor_Table extends Database {
     */
     public function get_columns() {
         return array(
-            'donor_id'       => '%d',
-            'user_id'        => '%d',
-            'first_name'     => '%s',
-            'last_name'      => '%s',
-            'full_name'      => '%s',
-            'email_address'  => '%s',
-            'donation_value' => '%f',
-            'donation_count' => '%d',
-            'date'           => '%s',
+            'donor_id'            => '%d',
+            'user_id'             => '%d',
+            'first_name'          => '%s',
+            'last_name'           => '%s',
+            'full_name'           => '%s',
+            'email_address'       => '%s',
+            'donation_value'      => '%f',
+            'donation_count'      => '%d',
+            'test_donation_value' => '%f',
+            'test_donation_count' => '%d',
+            'date'                => '%s',
         );
     }
 
@@ -49,15 +51,17 @@ class Donor_Table extends Database {
     */
     public function get_column_defaults() {
         return array(
-            'donor_id'       => 0,
-            'first_name'     => '',
-            'last_name'      => '',
-            'full_name'      => '',
-            'email_address'  => '',
-            'user_id'        => 0,
-            'donation_value' => '0.00',
-            'donation_count' => 0,
-            'date'           => date( 'Y-m-d H:i:s' ),
+            'donor_id'            => 0,
+            'first_name'          => '',
+            'last_name'           => '',
+            'full_name'           => '',
+            'email_address'       => '',
+            'user_id'             => 0,
+            'donation_value'      => '0.00',
+            'donation_count'      => 0,
+            'test_donation_value' => '0.00',
+            'test_donation_count' => 0,
+            'date'                => date( 'Y-m-d H:i:s' ),
         );
     }
 
@@ -295,6 +299,8 @@ class Donor_Table extends Database {
         full_name text NOT NULL,
         donation_value decimal(13,4) NOT NULL DEFAULT '0.00',
         donation_count bigint(20) NOT NULL DEFAULT 0,
+        test_donation_value decimal(13,4) NOT NULL DEFAULT '0.00',
+        test_donation_count bigint(20) NOT NULL DEFAULT 0,
         date datetime NOT NULL,
         PRIMARY KEY  (donor_id)
         ) CHARACTER SET utf8 COLLATE utf8_general_ci;";
@@ -319,14 +325,16 @@ class Donor_Table extends Database {
         global $wpdb;
 
         $data = array(
-            'first_name'     => $donor->first_name,
-            'last_name'      => $donor->last_name,
-            'full_name'      => $donor->full_name,
-            'email_address'  => $donor->email_address,
-            'user_id'        => $donor->user_id,
-            'donation_value' => $donor->donation_value,
-            'donation_count' => $donor->donation_count,
-            'date'           => $donor->date,
+            'first_name'          => $donor->first_name,
+            'last_name'           => $donor->last_name,
+            'full_name'           => $donor->full_name,
+            'email_address'       => $donor->email_address,
+            'user_id'             => $donor->user_id,
+            'donation_value'      => $donor->donation_value,
+            'donation_count'      => $donor->donation_count,
+            'test_donation_value' => $donor->donation_value,
+            'test_donation_count' => $donor->donation_count,
+            'date'                => $donor->date,
         );
 
         $this->insert( $data );
