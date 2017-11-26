@@ -92,6 +92,20 @@ class Donor {
      */
     protected $donation_count = 0;
 
+	/**
+	 * The total amount the donor has donated in test mode
+	 *
+	 * @var float
+	 */
+	protected $test_donation_value = 0.00;
+
+	/**
+	 * The number of test donations the donor has made
+	 *
+	 * @var int
+	 */
+	protected $test_donation_count = 0;
+
     /**
      * Donor notes
      *
@@ -221,14 +235,16 @@ class Donor {
         // Protected ID (can't be changed)
         $this->_ID = absint( $donor->donor_id);
 
-        $this->first_name     = $donor->first_name;
-        $this->last_name      = $donor->last_name;
-        $this->full_name      = $donor->full_name;
-        $this->email_address  = $donor->email_address;
-        $this->date           = $donor->date;
-        $this->donation_count = $donor->donation_count;
-        $this->donation_value = $donor->donation_value;
-        $this->user_id        = $donor->user_id;
+        $this->first_name          = $donor->first_name;
+        $this->last_name           = $donor->last_name;
+        $this->full_name           = $donor->full_name;
+        $this->email_address       = $donor->email_address;
+        $this->date                = $donor->date;
+        $this->donation_count      = $donor->donation_count;
+        $this->donation_value      = $donor->donation_value;
+	    $this->test_donation_count = $donor->test_donation_count;
+	    $this->test_donation_value = $donor->test_donation_value;
+        $this->user_id             = $donor->user_id;
 
         // Donor Notes
         $donor_notes = $this->get_meta( 'notes', true );
@@ -478,82 +494,126 @@ class Donor {
      * Increase the donation count of the donor
      *
      * @since 1.0.0
-     * @param  integer $count The number to increment by
+     * @param integer $count   The number to increment by
+     * @param bool    $is_test Whether the donation is a test donation or not
      *
      * @return int The donation count
      */
-    public function increase_donation_count( $count = 1 ) {
+    public function increase_donation_count( $count = 1, $is_test = false ) {
         if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
             return false;
         }
 
-        $new_total = (int) $this->donation_count + (int) $count;
+	    if ( $is_test ) {
+		    do_action( 'peerraiser_donor_pre_increase_test_donation_count', $count, $this->ID );
 
-        do_action( 'peerraiser_donor_pre_increase_donation_count', $count, $this->ID );
+		    $new_total = (int) $this->test_donation_count + (int) $count;
 
-        if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
-            $this->donation_count = $new_total;
-        }
+		    if ( $this->update( array( 'test_donation_count' => $new_total ) ) ) {
+			    $this->test_donation_count = $new_total;
+		    }
 
-        do_action( 'peerraiser_donor_post_increase_donation_count', $this->donation_count, $count, $this->ID );
+		    do_action( 'peerraiser_donor_post_increase_test_donation_count', $this->donation_count, $count, $this->ID );
+	    } else {
+		    do_action( 'peerraiser_donor_pre_increase_donation_count', $count, $this->ID );
 
-        return $this->donation_count;
+		    $new_total = (int) $this->donation_count + (int) $count;
+
+		    if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
+			    $this->donation_count = $new_total;
+		    }
+
+		    do_action( 'peerraiser_donor_post_increase_donation_count', $this->donation_count, $count, $this->ID);
+	    }
+
+	    return $is_test ? $this->test_donation_count : $this->donation_count;
     }
 
     /**
      * Decrease the donor donation count
      *
      * @since 1.0.0
-     * @param  integer $count The amount to decrease by
+     * @param integer $count   The amount to decrease by
+     * @param bool    $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new count, otherwise false
      */
-    public function decrease_donation_count( $count = 1 ) {
-
+    public function decrease_donation_count( $count = 1, $is_test = false ) {
         // Make sure it's numeric and not negative
         if ( ! is_numeric( $count ) || $count != absint( $count ) ) {
             return false;
         }
 
-        $new_total = (int) $this->donation_count - (int) $count;
+        if ( $is_test ) {
+	        $new_total = (int) $this->test_donation_count - (int) $count;
 
-        if ( $new_total < 0 ) {
-            $new_total = 0;
+	        if ( $new_total < 0 ) {
+		        $new_total = 0;
+	        }
+
+	        do_action( 'peerraiser_donor_pre_decrease_test_donation_count', $count, $this->ID );
+
+	        if ( $this->update( array( 'test_donation_count' => $new_total ) ) ) {
+		        $this->test_donation_count = $new_total;
+	        }
+
+	        do_action( 'peerraiser_donor_post_decrease_test_donation_count', $this->donation_count, $count, $this->ID );
+        } else {
+	        $new_total = (int) $this->donation_count - (int) $count;
+
+	        if ( $new_total < 0 ) {
+		        $new_total = 0;
+	        }
+
+	        do_action( 'peerraiser_donor_pre_decrease_donation_count', $count, $this->ID );
+
+	        if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
+		        $this->donation_count = $new_total;
+	        }
+
+	        do_action( 'peerraiser_donor_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
         }
 
-        do_action( 'peerraiser_donor_pre_decrease_donation_count', $count, $this->ID );
-
-        if ( $this->update( array( 'donation_count' => $new_total ) ) ) {
-            $this->donation_count = $new_total;
-        }
-
-        do_action( 'peerraiser_donor_post_decrease_donation_count', $this->donation_count, $count, $this->ID );
-
-        return $this->donation_count;
+        return $is_test ? $this->test_donation_count : $this->donation_count;
     }
 
     /**
      * Increase the donor's lifetime value
      *
      * @since 1.0.0
-     * @param  float $value The value to increase by
+     * @param float $value   The value to increase by
+     * @param bool  $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new value, otherwise false
      */
-    public function increase_value( $value = 0.00 ) {
-        $value = apply_filters( 'peerraiser_donor_increase_value', $value, $this );
+    public function increase_value( $value = 0.00, $is_test = false ) {
+    	if ( $is_test ) {
+		    $value = apply_filters( 'peerraiser_donor_increase_test_value', $value, $this );
 
-        $new_value = floatval( $this->donation_value ) + $value;
+		    $new_value = floatval( $this->test_donation_value ) + $value;
 
-        do_action( 'peerraiser_donor_pre_increase_value', $value, $this->ID, $this );
+		    do_action( 'peerraiser_donor_pre_increase_test_value', $value, $this->ID, $this );
 
-        if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
-            $this->donation_value = $new_value;
-        }
+		    if ( $this->update( array( 'test_donation_value' => $new_value ) ) ) {
+			    $this->test_donation_value = $new_value;
+		    }
 
-        do_action( 'peerraiser_donor_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+		    do_action( 'peerraiser_donor_post_increase_value', $this->test_donation_value, $value, $this->ID, $this );
+	    } else {
+		    $value = apply_filters( 'peerraiser_donor_increase_value', $value, $this );
 
-        return $this->donation_value;
+		    $new_value = floatval( $this->donation_value ) + $value;
+
+		    do_action( 'peerraiser_donor_pre_increase_value', $value, $this->ID, $this );
+
+		    if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
+			    $this->donation_value = $new_value;
+		    }
+
+		    do_action( 'peerraiser_donor_post_increase_value', $this->donation_value, $value, $this->ID, $this );
+	    }
+
+        return $is_test ? $this->test_donation_value : $this->donation_value;
     }
 
     /**
@@ -561,27 +621,46 @@ class Donor {
      *
      * @since 1.0.0
      * @param  float  $value The value to decrease by
+     * @param bool  $is_test Whether the donation was made in test mode or not
      *
      * @return mixed If successful, the new value, otherwise false
      */
-    public function decrease_value( $value = 0.00 ) {
-        $value = apply_filters( 'peerraiser_donor_decrease_value', $value, $this );
+    public function decrease_value( $value = 0.00, $is_test = false ) {
+    	if ( $is_test ) {
+		    $value = apply_filters( 'peerraiser_donor_decrease_test_value', $value, $this );
 
-        $new_value = floatval( $this->donation_value ) - $value;
+		    $new_value = floatval( $this->test_donation_value ) - $value;
 
-        if( $new_value < 0 ) {
-            $new_value = 0.00;
-        }
+		    if( $new_value < 0 ) {
+			    $new_value = 0.00;
+		    }
 
-        do_action( 'peerraiser_donor_pre_decrease_value', $value, $this->ID, $this );
+		    do_action( 'peerraiser_donor_pre_decrease_test_value', $value, $this->ID, $this );
 
-        if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
-            $this->donation_value = $new_value;
-        }
+		    if ( $this->update( array( 'test_donation_value' => $new_value ) ) ) {
+			    $this->test_donation_value = $new_value;
+		    }
 
-        do_action( 'peerraiser_donor_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
+		    do_action( 'peerraiser_donor_post_decrease_test_value', $this->test_donation_value, $value, $this->ID, $this );
+	    } else {
+		    $value = apply_filters( 'peerraiser_donor_decrease_value', $value, $this );
 
-        return $this->donation_value;
+		    $new_value = floatval( $this->donation_value ) - $value;
+
+		    if( $new_value < 0 ) {
+			    $new_value = 0.00;
+		    }
+
+		    do_action( 'peerraiser_donor_pre_decrease_value', $value, $this->ID, $this );
+
+		    if ( $this->update( array( 'donation_value' => $new_value ) ) ) {
+			    $this->donation_value = $new_value;
+		    }
+
+		    do_action( 'peerraiser_donor_post_decrease_value', $this->donation_value, $value, $this->ID, $this );
+	    }
+
+        return $is_test ? $this->test_donation_value : $this->donation_value;
     }
 
     /**
