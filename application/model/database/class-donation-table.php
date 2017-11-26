@@ -2,6 +2,7 @@
 namespace PeerRaiser\Model\Database;
 
 use PeerRaiser\Core\Database;
+use PeerRaiser\Helper\View;
 
 class Donation_Table extends Database {
 
@@ -95,8 +96,6 @@ class Donation_Table extends Database {
             'status'          => '',
             'orderby'         => 'donation_id',
             'order'           => 'DESC',
-            'is_test'         => 0,
-	        'include_test'    => false
         );
 
         $args  = wp_parse_args( $args, $defaults );
@@ -319,19 +318,22 @@ class Donation_Table extends Database {
             $where .= " `is_anonymous` = '{$is_anonymous}' ";
         }
 
-        // By test mode or not
-        if ( isset( $args['is_test'] ) && ! $args['include_test'] ) {
-            // Convert boolean to 1 for true and 0 for false
-            $is_test = $args['is_test'] ? 1 : 0;
+        // By test mode or not. Skip if passing a specific donation id
+	    if ( empty( $args['donation_id'] ) ) {
+		    if ( ! isset( $args['is_test'] ) ) {
+			    $args['is_test'] = View::get_plugin_mode() === 'test';
+		    }
 
-            if ( empty( $where ) ) {
-                $where .= " WHERE";
-            } else {
-                $where .= " AND";
-            }
+		    $is_test = $args['is_test'] ? 1 : 0;
 
-            $where .= " `is_test` = '{$is_test}' ";
-        }
+		    if ( empty( $where ) ) {
+			    $where .= " WHERE";
+		    } else {
+			    $where .= " AND";
+		    }
+
+		    $where .= " `is_test` = '{$is_test}' ";
+	    }
 
         $args['orderby'] = ! array_key_exists( $args['orderby'], $this->get_columns() ) ? $this->primary_key : $args['orderby'];
 
