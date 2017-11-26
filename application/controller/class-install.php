@@ -169,8 +169,9 @@ class Install extends Base {
         // Populate default roles
         $this->populate_roles();
 
-        // Perform data updates
+        // Perform database updates
         $this->maybe_update_donation_table();
+        $this->maybe_update_donor_table();
 
         // Update the email templates
 	    $this->maybe_update_email_templates();
@@ -388,26 +389,67 @@ class Install extends Base {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
-        // If current version is not less than 1.1.0, do nothing
-        if ( $current_version === 0 || version_compare( $current_version, '1.1.0', '>=' ) ) {
+        if ( $current_version === 0 ) {
             return;
         }
 
-        $table   = $wpdb->prefix . 'pr_donations';
-        $columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table . ';' );
+        // In version 1.1.0, we added the participant_id column
+        if ( version_compare( $current_version, '1.1.0', '<' ) ) {
+	        $table   = $wpdb->prefix . 'pr_donations';
+	        $columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table . ';' );
 
-        $is_participant_id_present = false;
+	        $is_participant_id_present = false;
 
-        foreach ( $columns as $column ) {
-            if ( $column->Field === 'participant_id' ) {
-                $is_participant_id_present = true;
-            }
+	        foreach ( $columns as $column ) {
+		        if ( $column->Field === 'participant_id' ) {
+			        $is_participant_id_present = true;
+		        }
+	        }
+
+	        // If need to add participant_id field
+	        if ( ! $is_participant_id_present ) {
+		        $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `participant_id` bigint(20) NOT NULL DEFAULT 0 AFTER `team_id`;' );
+	        }
         }
 
-        // If need to add participant_id field
-        if ( ! $is_participant_id_present ) {
-            $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `participant_id` bigint(20) NOT NULL DEFAULT 0 AFTER `team_id`;' );
-        }
+    }
+
+    private function maybe_update_donor_table() {
+	    global $wpdb;
+
+	    $plugin_options  = get_option( 'peerraiser_options', array() );
+	    $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
+
+	    if ( $current_version === 0 ) {
+		    return;
+	    }
+
+	    // In version 1.2.0 we added test_donation_value and test_donation_count columns to track test donations
+	    if ( version_compare( $current_version, '1.2.0', '<' ) ) {
+		    $table   = $wpdb->prefix . 'pr_donors';
+		    $columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table . ';' );
+
+		    $is_test_donation_value_present = false;
+		    $is_test_donation_count_present = false;
+
+		    foreach ( $columns as $column ) {
+			    if ( $column->Field === 'test_donation_value' ) {
+				    $is_test_donation_value_present = true;
+			    } elseif ( $column->Field === 'test_donation_count' ) {
+				    $is_test_donation_value_present = true;
+			    }
+		    }
+
+		    // If need to add test_donation_value field
+		    if ( ! $is_test_donation_value_present ) {
+			    $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `test_donation_value` decimal(13,4) NOT NULL DEFAULT 0.00 AFTER `donation_count`;' );
+		    }
+
+		    // If need to add test_donation_count field
+		    if ( ! $is_test_donation_count_present ) {
+			    $wpdb->query( 'ALTER TABLE ' . $table . ' ADD `test_donation_count` bigint(20) NOT NULL DEFAULT 0 AFTER `test_donation_value`;' );
+		    }
+	    }
     }
 
 	/**
