@@ -109,7 +109,7 @@ class View {
     /**
      * Get current plugin mode.
      *
-     * @return string $mode
+     * @return string $mode The plugin mode, 'test' or 'live'
      */
     public static function get_plugin_mode() {
         $plugin_options = get_option( 'peerraiser_options', array() );
@@ -172,7 +172,6 @@ class View {
         return $formatted;
     }
 
-
     /**
      * Number normalization
      *
@@ -199,14 +198,13 @@ class View {
      * @return string $error_message
      */
     public static function get_error_message( $error_reason, $atts ) {
-        $error_message  = '<div class="lp_shortcodeError">';
+        $error_message  = '<div class="peerraiser-shortcode-error">';
         $error_message .= __( 'Problem with inserted shortcode:', 'peerraiser' ) . '<br>';
         $error_message .= $error_reason;
         $error_message .= '</div>';
 
         return $error_message;
     }
-
 
     public static function get_admin_pagination( $args ){
         $defaults = array(
@@ -253,8 +251,9 @@ class View {
         $previous = intval($page) - 1;
         $previous = esc_attr( add_query_arg( $args['paged_name'], $previous, $_SERVER['REQUEST_URI'] ) );
 
-        if ( $previous && (1 != $page) )
-            $html .= '<li><a href="' . $previous . '">&laquo;</a></li>';
+        if ( $previous && (1 != $page) ) {
+	        $html .= '<li><a href="' . $previous . '">&laquo;</a></li>';
+        }
 
         if ( !empty($min) && !empty($max) ) {
             for( $i = $min; $i <= $max; $i++ ) {
@@ -269,13 +268,14 @@ class View {
 
         $next = intval($page) + 1;
         $next = esc_attr( add_query_arg( $args['paged_name'], $next, $_SERVER['REQUEST_URI'] ) );
-        if ($next && ($count != $page) )
-            $html .= '<li><a href="' . $next . '">&raquo;</a></li>';
+        if ($next && ($count != $page) ) {
+	        $html .= '<li><a href="' . $next . '">&raquo;</a></li>';
+        }
 
-        if ( isset($html) )
-            return $args['before_output'] . $html . $args['after_output'];
+        if ( isset($html) ) {
+	        return $args['before_output'] . $html . $args['after_output'];
+        }
     }
-
 
     public static function add_file_to_media_library( $filename ) {
         // Locate the file /assets/images plugin folder
@@ -309,8 +309,7 @@ class View {
 
         return $result;
     }
-
-
+    
     /**
      * Returns avatar URL
      *
