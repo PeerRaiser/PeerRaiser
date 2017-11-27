@@ -93,16 +93,17 @@ class Campaign_List_Table extends WP_List_Table {
      */
     public function column_default( $campaign, $column_name ) {
     	$admin_campaigns_model = new \PeerRaiser\Model\Admin\Campaigns_Admin();
+    	$is_test = peerraiser_is_test_mode();
 
         switch ( $column_name ) {
             case 'count' :
                 return $campaign->get_total_fundraisers();
             case 'donations' :
-                return $campaign->donation_count;
+                return $is_test ? $campaign->test_donation_count : $campaign->donation_count;
             case 'teams' :
                 return $campaign->get_total_teams();
             case 'raised' :
-                return peerraiser_money_format( $campaign->donation_value );
+                return $is_test ? peerraiser_money_format( $campaign->test_donation_value ) : peerraiser_money_format( $campaign->donation_value );
 	        case 'status' :
 		        return $admin_campaigns_model->get_campaign_status_by_key( $campaign->campaign_status );
 	        case 'start_date' :
