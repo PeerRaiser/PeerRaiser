@@ -24,7 +24,8 @@ class Admin extends Base {
     public function register_actions() {
         add_action( 'cmb2_init',                        array( $this, 'handle_peerraiser_actions' ), 99 );
         add_action( 'admin_menu',                       array( $this, 'add_to_admin_panel' ) );
-        add_action( 'admin_head',                       array( $this, 'on_campaigns_view' ) );
+	    add_action( 'current_screen',                   array( $this, 'maybe_display_test_mode_reminder' ) );
+	    add_action( 'admin_head',                       array( $this, 'on_campaigns_view' ) );
         add_action( 'admin_print_footer_scripts',       array( $this, 'modify_footer' ) );
         add_action( 'admin_enqueue_scripts',            array( $this, 'add_plugin_admin_assets' ) );
         add_action( 'admin_enqueue_scripts',            array( $this, 'add_admin_pointers_script' ) );
@@ -95,6 +96,28 @@ class Admin extends Base {
             $help_action = isset( $page['help'] ) ? $page['help'] : array( $this, 'help_' . $name );
             do_action( 'peerraiser_load_' . $page_id, $help_action );
         }
+    }
+
+    public function maybe_display_test_mode_reminder() {
+	    $current_screen = get_current_screen();
+
+	    // Skip if the current screen isn't for this plugin, or it isn't in test mode
+	    if ( is_null( $current_screen ) ||
+	         ( strpos( $current_screen->base, 'peerraiser' ) === false && $current_screen->post_type !== 'fundraiser' ) ||
+	         ! peerraiser_is_test_mode()
+	    ) {
+		    return;
+	    }
+
+	    // Don't show on the settings page
+	    if ( strpos( $current_screen->base, 'peerraiser-settings' ) !== false ) {
+	    	return;
+	    }
+
+	    $admin_notice_model = new Admin_Notices();
+
+	    $notice = $admin_notice_model->get_notice_message('test_mode_active_reminder');
+	    $admin_notice_model->add_notice( $notice['message'], $notice['class'], $notice['dismissible'] );
     }
 
     /**

@@ -101,6 +101,11 @@ class Admin_Notices {
 			    'message'     => __( 'Participant deleted', 'peerraiser' ),
 			    'class'       => 'notice-info',
 			    'dismissible' => true,
+		    ),
+		    'test_mode_active_reminder' => array(
+		    	'message' => __( 'Test mode is active. Transactions will not be charged, and amounts shown are from test donations only.' ),
+			    'class' => 'notice-info',
+                'dismissible' => true,
 		    )
 	    );
 
