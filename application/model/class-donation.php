@@ -622,8 +622,10 @@ class Donation {
             $this->increase_team_amounts();
             $this->increase_participant_amounts();
 
-            $activity_feed = new Activity_Feed();
-            $activity_feed->add_donation_to_feed( $this );
+            if ( ! $this->is_test ) {
+	            $activity_feed = new Activity_Feed();
+	            $activity_feed->add_donation_to_feed( $this );
+            }
         }
     }
 
