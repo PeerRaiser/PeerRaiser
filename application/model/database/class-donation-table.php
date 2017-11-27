@@ -445,7 +445,11 @@ class Donation_Table extends Database {
     public function get_donations_total() {
         global $wpdb;
 
-        $result =  $wpdb->get_results( "SELECT sum( subtotal ) as subtotal FROM {$this->table_name} WHERE is_test != 1" );
+        $query = "SELECT sum( subtotal ) as subtotal FROM {$this->table_name}";
+
+        $query .= ( View::get_plugin_mode() === 'test' ) ? " WHERE is_test = 1" : " WHERE is_test != 1";
+
+        $result =  $wpdb->get_results( $query );
 
         return $result[0]->subtotal;
     }
