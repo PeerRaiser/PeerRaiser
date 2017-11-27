@@ -75,7 +75,7 @@ class Activity_Feed extends Base {
     }
 
     public function add_donation_to_feed( $donation ) {
-        if ( $donation->status === 'pending' ) {
+        if ( $donation->status === 'pending' || $donation->is_test ) {
             return;
         }
 
