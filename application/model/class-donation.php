@@ -456,15 +456,6 @@ class Donation {
         $this->is_test            = filter_var( $plugin_options['test_mode'], FILTER_VALIDATE_BOOLEAN );
         $this->pending['is_test'] = $this->is_test;
 
-        // If this wasn't in test mode, increase donation stats
-        if ( ! $this->is_test && $this->status === 'completed' ) {
-            $this->increase_donor_amounts();
-            $this->increase_campaign_amounts();
-            $this->increase_fundraiser_amounts();
-            $this->increase_team_amounts();
-            $this->increase_participant_amounts();
-        }
-
         if ( empty( $this->ip ) ) {
             $this->ip = $this->get_ip_address();
         }
@@ -626,6 +617,8 @@ class Donation {
 	            $activity_feed = new Activity_Feed();
 	            $activity_feed->add_donation_to_feed( $this );
             }
+
+	        do_action( 'peerraiser_donation_completed', $this );
         }
     }
 
