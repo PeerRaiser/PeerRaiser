@@ -2,6 +2,7 @@
 
 namespace PeerRaiser\Model;
 
+use PeerRaiser\Helper\View;
 use WP_Query;
 
 /**
@@ -455,7 +456,7 @@ class Fundraiser {
         $defaults = array(
             'post_type'      => 'fundraiser',
             'posts_per_page' => $count,
-            'meta_key'       => '_peerraiser_donation_value',
+            'meta_key'       => ( View::get_plugin_mode() === 'live' ) ? '_peerraiser_donation_value' : '_peerraiser_test_donation_value',
             'orderby'        => 'meta_value_num',
             'order'          => 'DESC'
         );
