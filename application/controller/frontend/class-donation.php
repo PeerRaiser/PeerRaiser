@@ -131,6 +131,17 @@ class Donation extends \PeerRaiser\Controller\Base {
 		$message = strtr( $peerraiser_options['donation_receipt_body'], $vars);
 		$subject = strtr( $peerraiser_options['donation_receipt_subject'], $vars);
 
+	    /**
+	     * Append test notification if the plugin is in test mode.
+	     *
+	     * You can prevent the email from being sent by using this filter:
+	     * add_filter('peerraiser_enable_test_message_in_email', '__return_false');
+	     */
+		if ( peerraiser_is_test_mode() && apply_filters('peerraiser_enable_test_message_in_email', true ) ) {
+			$subject .= ' ' . __( '(TEST MODE)', 'peerraiser' );
+			$message .= "\r\n\r\n" . __( 'Note: This is a test transaction. You will not be charged for this donation.', 'peerraiser' );
+		}
+
 		Email::send_email( $donor->email_address, $subject, wpautop($message), 'peerraiser_donation_receipt', $donation );
 	}
 
@@ -170,6 +181,17 @@ class Donation extends \PeerRaiser\Controller\Base {
 		$message = strtr( $peerraiser_options['new_donation_notification_body'], $vars);
 		$subject = strtr( $peerraiser_options['new_donation_notification_subject'], $vars);
 		$to      = $peerraiser_options['new_donation_notification_to'];
+
+		/**
+		 * Append test notification if the plugin is in test mode.
+		 *
+		 * You can prevent the email from being sent by using this filter:
+		 * add_filter('peerraiser_enable_test_message_in_email', '__return_false');
+		 */
+		if ( peerraiser_is_test_mode() && apply_filters('peerraiser_enable_test_message_in_email', true ) ) {
+			$subject .= ' ' . __( '(TEST MODE)', 'peerraiser' );
+			$message .= "\r\n\r\n" . __( 'Note: This is a test transaction. Donor was not charged for this donation.', 'peerraiser' );
+		}
 
 		Email::send_email( $to, $subject, wpautop($message), 'peerraiser_donation_notification', $donation );
 	}
