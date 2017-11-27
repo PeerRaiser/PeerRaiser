@@ -18,7 +18,7 @@ class Participant {
      * @since  1.0.0
      * @var    integer
      */
-    protected    $ID  = 0;
+    protected $ID  = 0;
 
     /**
      * The Protected User ID
@@ -34,7 +34,7 @@ class Participant {
      * @since  1.0.0
      * @var    integer
      */
-    protected    $username  = '';
+    protected $username  = '';
 
     /**
      * The password
@@ -42,7 +42,7 @@ class Participant {
      * @since  1.0.0
      * @var    integer
      */
-    protected    $password  = '';
+    protected $password  = '';
 
     /**
      * The first name of the participant
@@ -234,13 +234,13 @@ class Participant {
         $this->full_name           = trim( $this->first_name . ' ' . $this->last_name );
         $this->email_address       = $user->user_email;
         $this->date                = get_user_meta( $user->ID, '_peerraiser_date', true );
-	    $donation_value            = get_term_meta( $this->ID, '_peerraiser_donation_value', true );
+	    $donation_value            = get_user_meta( $this->ID, '_peerraiser_donation_value', true );
 	    $this->donation_value      = $donation_value ? floatval( $donation_value ) : 0.00;
-	    $donation_count            = get_term_meta( $this->ID, '_peerraiser_donation_count', true );
+	    $donation_count            = get_user_meta( $this->ID, '_peerraiser_donation_count', true );
 	    $this->donation_count      = $donation_count ? intval( $donation_count ) : 0;
-	    $test_donation_value       = get_term_meta( $this->ID, '_peerraiser_test_donation_value', true );
+	    $test_donation_value       = get_user_meta( $this->ID, '_peerraiser_test_donation_value', true );
 	    $this->test_donation_value = $test_donation_value ? floatval( $test_donation_value ) : 0.00;
-	    $test_donation_count       = get_term_meta( $this->ID, '_peerraiser_test_donation_count', true );
+	    $test_donation_count       = get_user_meta( $this->ID, '_peerraiser_test_donation_count', true );
 	    $this->test_donation_count = $test_donation_count ? intval( $test_donation_count ) : 0;
 
         // Participant Notes
@@ -662,7 +662,7 @@ class Participant {
 
 	        do_action( 'peerraiser_participant_pre_decrease_test_value', $value, $this->ID, $this );
 
-	        if ( $this->update_meta( array( 'test_donation_value' => $new_value ) ) ) {
+	        if ( $this->update_meta( 'test_donation_value', $new_value ) ) {
 		        $this->test_donation_value = $new_value;
 	        }
 
@@ -678,7 +678,7 @@ class Participant {
 
 	        do_action( 'peerraiser_participant_pre_decrease_value', $value, $this->ID, $this );
 
-	        if ( $this->update_meta( array( 'donation_value' => $new_value ) ) ) {
+	        if ( $this->update_meta('donation_value', $new_value ) ) {
 		        $this->donation_value = $new_value;
 	        }
 
