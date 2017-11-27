@@ -2,6 +2,7 @@
 namespace PeerRaiser\Model\Database;
 
 use PeerRaiser\Core\Database;
+use PeerRaiser\Helper\View;
 
 class Donor_Table extends Database {
 
@@ -228,6 +229,8 @@ class Donor_Table extends Database {
     public function get_top_donors( $count = 20 ) {
         global $wpdb;
 
+	    $test_mode = ( View::get_plugin_mode() === 'test' ) ? 1 : 0;
+
         $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
@@ -235,7 +238,7 @@ class Donor_Table extends Database {
                 INNER JOIN {$wpdb->prefix}pr_donors as pr_donors
                 ON pr_donors.donor_id = pr_donations.donor_id
                 AND pr_donations.status = 'completed'  
-                AND pr_donations.is_test = 0
+                AND pr_donations.is_test = {$test_mode}
                 GROUP BY pr_donations.donor_id
                 ORDER BY total DESC
                 LIMIT %d",
@@ -249,7 +252,9 @@ class Donor_Table extends Database {
     public function get_top_donors_to_campaign( $id, $count = 20 ) {
         global $wpdb;
 
-        $results = $wpdb->get_results(
+	    $test_mode = ( View::get_plugin_mode() === 'test' ) ? 1 : 0;
+
+	    $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT pr_donations.donor_id, sum(pr_donations.total) as total, pr_donors.full_name
                 FROM {$wpdb->prefix}pr_donations as pr_donations
@@ -257,7 +262,7 @@ class Donor_Table extends Database {
                 ON pr_donors.donor_id = pr_donations.donor_id
                 WHERE pr_donations.campaign_id = %d 
                 AND pr_donations.status = 'completed'  
-                AND pr_donations.is_test = 0
+                AND pr_donations.is_test = {$test_mode}
                 GROUP BY pr_donations.donor_id
                 ORDER BY total DESC
                 LIMIT %d",
