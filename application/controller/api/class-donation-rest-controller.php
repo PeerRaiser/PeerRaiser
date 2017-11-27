@@ -186,8 +186,6 @@ class Donation_Rest_Controller extends WP_REST_Controller {
         $item->add_note( __( 'Donation completed!', 'peerraiser' ), __( 'PeerRaiser Bot', 'peerraiser' ) );
         $item->save();
 
-        do_action( 'peerraiser_donation_completed', $item );
-
         $data = array(
             'success' => true
         );
