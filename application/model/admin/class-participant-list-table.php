@@ -65,7 +65,7 @@ class Participant_List_Table extends WP_List_Table {
             case 'user_account':
                 return sprintf( '<a href="user-edit.php?user_id=%1$d">%2$s</a>', $user->data->ID, $user->data->user_login);
             case 'raised':
-                $raised = $participant->donation_value ? $participant->donation_value : 0;
+            	$raised = peerraiser_is_test_mode() ? $participant->test_donation_value : $participant->donation_value;
                 return peerraiser_money_format( $raised );
             case 'date':
                 $date = strtotime( $participant->date );

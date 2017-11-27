@@ -194,9 +194,7 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
     }
 
     public function manage_columns( $column_name, $post_id ) {
-        $plugin_options = get_option( 'peerraiser_options', array() );
-        $currency = new \PeerRaiser\Model\Currency();
-        $currency_symbol = $currency->get_currency_symbol_by_iso4217_code($plugin_options['currency']);
+        $is_test = peerraiser_is_test_mode();
 
         switch ( $column_name ) {
             case 'campaign':
@@ -222,7 +220,8 @@ class Fundraisers extends \PeerRaiser\Controller\Base {
                 echo ( !empty($goal_amount) && $goal_amount != '0.00' ) ? peerraiser_money_format( $goal_amount ) : '&mdash;';
                 break;
             case 'amount_raised':
-                $amount_raised = get_post_meta( $post_id, '_peerraiser_donation_value', true);
+            	$meta_key = $is_test ? '_peerraiser_test_donation_value' : '_peerraiser_donation_value';
+                $amount_raised = get_post_meta( $post_id, $meta_key, true);
                 echo  $amount_raised ? peerraiser_money_format( $amount_raised ) : peerraiser_money_format( 0.00 );
                 break;
         }

@@ -61,7 +61,7 @@ class Team_List_Table extends WP_List_Table {
                 return $team->get_total_members();
                 break;
             case 'raised' :
-                return peerraiser_money_format( $team->donation_value );
+                return peerraiser_is_test_mode() ? peerraiser_money_format( $team->test_donation_value ) : peerraiser_money_format( $team->donation_value );
                 break;
             case 'leader' :
                 $user_info = get_userdata( $team->team_leader );

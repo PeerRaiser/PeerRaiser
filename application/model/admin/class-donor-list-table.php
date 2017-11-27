@@ -59,15 +59,16 @@ class Donor_List_Table extends WP_List_Table {
      */
     public function column_default( $item, $column_name ) {
         $donor = new Donor( $item->donor_id );
+        $is_test = peerraiser_is_test_mode();
 
         switch ( $column_name ) {
             case 'email_address':
                 return  empty( $donor->email_address) ? '&mdash;' : $donor->email_address;
             case 'donations' :
-                return $donor->donation_count;
+                return $is_test ? $donor->test_donation_count : $donor->donation_count;
             case 'amount':
-                $amount = $donor->donation_value ? $donor->donation_value : 0;
-                return peerraiser_money_format( $amount );
+            	$amount = $is_test ? $donor->test_donation_value : $donor->donation_value;
+                return $amount ? peerraiser_money_format( $amount ) : 0 ;
             case 'date':
                 $date = strtotime( $donor->date );
                 return date('m-d-Y', $date);
