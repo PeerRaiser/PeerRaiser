@@ -39,7 +39,11 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="stats-wrapper group">
                 <div class="stats-container group first">
                     <div class="stats total-raised">
-                        <p class="title"><?php _e('Donations', 'peerraiser') ?></p>
+                        <?php if ( peerraiser_is_test_mode() ) : ?>
+                            <p class="title"><?php _e('Test Donations', 'peerraiser') ?></p>
+                        <?php else : ?>
+                            <p class="title"><?php _e('Donations', 'peerraiser') ?></p>
+                        <?php endif; ?>
                         <p class="stat"><strong><?php echo $peerraiser['donations_total'] ?></strong></p>
                     </div>
                     <div class="stats-bottom view">
@@ -109,7 +113,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <?php else : ?>
                         <ol>
                             <?php foreach ( $peerraiser['top_fundraisers'] as $fundraiser) : ?>
-                                <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->donation_value ); ?></li></span>
+                                <?php if ( ! peerraiser_is_test_mode() ) : ?>
+                                    <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->donation_value ); ?></li></span>
+                                <?php else : ?>
+                                    <li><a href="post.php?action=edit&post=<?php echo $fundraiser->ID ?>"><?php echo get_the_title( $fundraiser->ID ) ?></a><span class="amount"><?php echo peerraiser_money_format( $fundraiser->test_donation_value ); ?></li></span>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </ol>
                     <?php endif; ?>
