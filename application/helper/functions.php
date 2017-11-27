@@ -21,6 +21,24 @@ function peerraiser_get_option( $option = '' ) {
 }
 
 /**
+ * Returns 'test' if plugin is in test mode or 'live' if not in test mode
+ *
+ * @return string
+ */
+function peerraiser_get_plugin_mode() {
+	return \PeerRaiser\Helper\View::get_plugin_mode();
+}
+
+/**
+ * Returns true if plugin is in test mode, or false if not in test mode
+ *
+ * @return bool
+ */
+function peerraiser_is_test_mode() {
+	return peerraiser_get_plugin_mode() === 'test';
+}
+
+/**
  * Returns a team by team id.
  *
  * @param int $id The ID of the team to retrieve
