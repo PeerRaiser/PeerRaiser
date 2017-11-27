@@ -3,7 +3,7 @@ Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams, peer raiser
 Requires at least: 4.4.0
 Tested up to: 4.8.3
-Stable tag: 1.1.6
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,17 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 4. Donor information
 
 == Changelog ==
+
+= 1.2.0 =
+* Donation notification email fixed
+* Donation receipt email fixed
+* Test mode will now only display test donations
+* Statistics and donation totals are now based on test mode status
+* Fixed issue with Team Name not displaying correctly on donation view
+* Will now check if campaign has reached its limit and if the status isn't active
+* Fixed team URL in "Top Teams" widget
+* Participants no longer allowed to create multiple fundraisers for the same campaign
+* When creating a team, if participant already has a fundraiser, automatically add that fundraiser to the team
 
 = 1.1.6 =
 * Added the ability to change the donation minimum
