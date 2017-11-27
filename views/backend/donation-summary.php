@@ -128,7 +128,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <tr>
                                             <td><strong><?php _e( 'Team', 'peerraiser' ); ?>:</strong></td>
                                             <?php if ( $team_id = $peerraiser['donation']->team_id ) : ?>
-                                                <td><a href="admin.php?page=peerraiser-teams&view=team-details&team=">Team Name</a></td>
+                                                <?php $team = peerraiser_get_team( $team_id ); ?>
+                                                <td><a href="admin.php?page=peerraiser-teams&view=summary&team=<?php echo $team->ID; ?>"><?php echo $team->team_name; ?></a></td>
                                             <?php else : ?>
                                                 <td><?php _e( 'N/A', 'peerraiser' ); ?></td>
                                             <?php endif; ?>
