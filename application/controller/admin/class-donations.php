@@ -208,7 +208,8 @@ class Donations extends \PeerRaiser\Controller\Base {
         // Optional Fields
         $donation->fundraiser_id = isset( $_REQUEST['fundraiser'] ) ? absint( $_REQUEST['fundraiser'] ) : 0;
 
-        if ( isset( $_REQUEST['donation_note'] ) && ! empty( trim( $_REQUEST['donation_note'] ) ) ) {
+        $donation_note = trim( $_REQUEST['donation_note'] );
+        if ( isset( $_REQUEST['donation_note'] ) && ! empty( $donation_note ) ) {
             $user = wp_get_current_user();
             $donation->add_note( $_REQUEST['donation_note'], $user->user_login );
         }
@@ -239,7 +240,8 @@ class Donations extends \PeerRaiser\Controller\Base {
 
         $donation->status = $_REQUEST['donation_status'];
 
-        if ( isset( $_REQUEST['donation_note'] ) && ! empty( trim( $_REQUEST['donation_note'] ) ) ) {
+        $donation_note = trim( $_REQUEST['donation_note'] );
+        if ( isset( $_REQUEST['donation_note'] ) && ! empty( $donation_note ) ) {
             $user = wp_get_current_user();
             $donation->add_note( $_REQUEST['donation_note'], $user->user_login );
         }
