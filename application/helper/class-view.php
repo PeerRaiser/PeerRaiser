@@ -339,4 +339,58 @@ class View {
 
         return get_avatar_url( $email_address, $args );
     }
+
+	public static function get_time_fields( $edit = 1, $date = '' ) {
+		global $wp_locale;
+
+		$time_adj = current_time( 'timestamp' );
+		$date     = empty( $date ) ? current_time( 'timestamp' ) : $date;
+
+		$jj = ( $edit ) ? mysql2date( 'd', $date, false ) : gmdate( 'd', $time_adj );
+		$mm = ( $edit ) ? mysql2date( 'm', $date, false ) : gmdate( 'm', $time_adj );
+		$aa = ( $edit ) ? mysql2date( 'Y', $date, false ) : gmdate( 'Y', $time_adj );
+
+		$cur_jj = gmdate( 'd', $time_adj );
+		$cur_mm = gmdate( 'm', $time_adj );
+		$cur_aa = gmdate( 'Y', $time_adj );
+
+		$month = '<label><span class="screen-reader-text">' . __( 'Month' ) . '</span><select id="mm" name="mm">';
+		for ( $i = 1; $i < 13; $i = $i + 1 ) {
+			$monthnum  = zeroise( $i, 2 );
+			$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
+			$month     .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
+			/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+			$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
+		}
+		$month .= '</select></label>';
+
+		$day    = '<label><span class="screen-reader-text">' . __( 'Day' ) . '</span><input type="text" id="jj" name="jj" value="' . $jj . '" size="2" maxlength="2" utocomplete="off" /></label>';
+		$year   = '<label><span class="screen-reader-text">' . __( 'Year' ) . '</span><input type="text" id="aa" name="aa" value="' . $aa . '" size="4" maxlength="4" utocomplete="off" /></label>';
+
+		echo '<div class="timestamp-wrap">';
+		/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
+		printf( __( '%1$s %2$s, %3$s' ), $month, $day, $year );
+
+		echo "\n\n";
+		$map = array(
+			'mm' => array( $mm, $cur_mm ),
+			'jj' => array( $jj, $cur_jj ),
+			'aa' => array( $aa, $cur_aa ),
+		);
+		foreach ( $map as $timeunit => $value ) {
+			list( $unit, $curr ) = $value;
+
+			echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+			$cur_timeunit = 'cur_' . $timeunit;
+			echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+		}
+		?>
+
+		<p>
+			<a href="#edit_timestamp" class="save-timestamp hide-if-no-js button"><?php _e('OK'); ?></a>
+			<a href="#edit_timestamp" class="cancel-timestamp hide-if-no-js button-cancel"><?php _e('Cancel'); ?></a>
+		</p>
+		<?php
+	}
+
 }
