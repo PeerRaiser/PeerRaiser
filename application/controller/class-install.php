@@ -223,6 +223,7 @@ class Install extends Base {
         $default_options['donation_minimum']                  = $this->config->get( 'donation_minimum' );
         $default_options['fundraiser_slug']                   = 'give';
         $default_options['campaign_slug']                     = 'campaign';
+        $default_options['team_slug']                         = 'team';
         $default_options['disable_css_styles']                = false;
         $default_options['test_mode']                         = true;
         $default_options['show_welcome_message']              = true;
