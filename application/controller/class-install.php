@@ -421,7 +421,7 @@ class Install extends Base {
 	    $plugin_options  = get_option( 'peerraiser_options', array() );
 	    $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
-	    if ( $current_version === 0 ) {
+	    if ( $current_version === '0' ) {
 		    return;
 	    }
 
@@ -465,7 +465,7 @@ class Install extends Base {
 	    $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
 	    // If current version is not less than 1.2.0, do nothing
-	    if ( $current_version === 0 || version_compare( $current_version, '1.2.0', '>=' ) ) {
+	    if ( $current_version === '0' || version_compare( $current_version, '1.2.0', '>=' ) ) {
 		    return;
 	    }
 
