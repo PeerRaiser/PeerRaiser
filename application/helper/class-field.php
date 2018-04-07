@@ -128,7 +128,7 @@ class Field {
 
         $args = array();
 
-        if ( $options['s'] ) {
+        if ( ! empty( $options['s'] ) ) {
             $args['donor_name'] = $options['s'];
         }
 
