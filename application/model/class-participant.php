@@ -473,7 +473,7 @@ class Participant {
      */
     public function get_participants( $args = array(), $total = false ) {
         $participant_term = get_term_by( 'slug', 'participant', 'peerraiser_group' );
-        $participant_ids  = get_objects_in_term( $participant_term->term_id, 'peerraiser_group' );
+        $participant_ids  = $participant_term ? get_objects_in_term( $participant_term->term_id, 'peerraiser_group' ) : array();
 
         if ( $total || empty( $participant_ids ) ) {
             return $total ? count( $participant_ids ) : $participant_ids;
