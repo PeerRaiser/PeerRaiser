@@ -409,8 +409,9 @@ class Campaigns_Admin extends Admin {
     }
 
 	public function get_field_value( $field ) {
-		$campaign_model = new \PeerRaiser\Model\Campaign( $_GET['campaign'] );
-		$short_field = substr( $field['id'], 12 );
+		$campaign_id    = isset( $_GET['campaign'] ) ? $_GET['campaign'] : 0;
+		$campaign_model = new \PeerRaiser\Model\Campaign( $campaign_id );
+		$short_field    = substr( $field['id'], 12 );
 
 		switch ( $field['id'] ) {
 			case '_peerraiser_default_fundraiser_title':
