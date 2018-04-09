@@ -1,0 +1,37 @@
+#peerraiser-fundraiser {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &:after,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+
+  .peerraiser-fundraiser-content {
+    padding: .75rem 15px;
+    box-sizing: border-box;
+
+    &.has-sidebar {
+      width: 75%;
+      float: left;
+    }
+  }
+
+  .peerraiser-fundraiser-sidebar {
+    box-sizing: border-box;
+    padding: .75rem 15px;
+    width: 25%;
+    float: left;
+  }
+}

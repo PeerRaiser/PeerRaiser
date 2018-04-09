@@ -1,0 +1,777 @@
+/**
+ * 01. General
+ * 02. Login Form
+ * 03. Signup Form
+ * 04. Registration Form
+ * 05. Donation Form
+ * 06. Registration Form
+ */
+
+/**
+ * 01. General
+ */
+.peerraiser-error {
+  color: $danger;
+
+  label {
+    color: $danger;
+  }
+
+  .cmb2-metabox-description {
+    color: $danger;
+
+    + label.peerraiser-error {
+      padding-top: 0;
+    }
+  }
+
+  input {
+    border: 1px solid #a94442;
+
+    &.peerraiser-error {
+      font-weight: bold;
+      font-size: 13px;
+      display: block;
+      padding-top: .5em;
+    }
+  }
+}
+
+/**
+ * 02. Login Form
+ */
+.login-form-wrapper {
+  width: 400px;
+  margin: 0 auto 20px;
+  background-color: #fff;
+  border: 1px solid #bce8f1;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-sizing: border-box;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.428571429;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .login-form-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+  }
+
+  a {
+    color: #428bca;
+
+    &:hover,
+    &:focus {
+      color: #2a6496;
+      text-decoration: underline;
+    }
+  }
+
+  h3.login-title{
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+    font-weight: normal;
+  }
+
+  p {
+    margin-bottom: 15px;
+  }
+
+  .forgot-password {
+    float: right;
+    font-size: 80%;
+    position: relative;
+    top: -10px;
+
+    a {
+      text-decoration: none;
+      background: 0 0;
+      font-size: 11px;
+      line-height: 16px;
+      display: block;
+      border: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .login-form-body {
+    padding: 30px 15px 15px;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    width: 100%;
+
+    label {
+      display: inline-block;
+      margin-bottom: 5px;
+      font-weight: 700;
+      width: 100%;
+
+      span {
+        display: block;
+      }
+    }
+
+    &.email,
+    &.password {
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    .checkbox {
+      display: block;
+      min-height: 27px;
+      margin: 0;
+      padding-left: 20px;
+      padding-top: 7px;
+
+      label {
+        display: inline;
+        font-weight: 400;
+        cursor: pointer;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+      }
+
+      input[type=checkbox] {
+        float: left;
+        margin: 4px 0 0 -20px;
+        line-height: normal;
+        box-sizing: border-box;
+        padding: 0;
+      }
+    }
+
+    .form-input {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.428571429;
+      color: #555;
+      background: #fff none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+  }
+
+  .login-submit {
+    margin-top: 10px;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    user-select: none;
+    color: #fff;
+    background: #5cb85c none;
+    border: 1px solid #4cae4c;
+    text-transform: none;
+
+    &:hover {
+      background-color: #47a447;
+      border-color: #398439;
+    }
+
+    &:active {
+      outline: 0;
+      background-image: none;
+      -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+      box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    }
+  }
+
+  .login-form-bottom {
+    border-top: 1px solid #888;
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size:85%;
+
+    a {
+      border-bottom: 0;
+    }
+  }
+
+  .error-message {
+    background-color: #f2dede;
+    color: #a94442;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+}
+
+/**
+ * 03. Signup Form
+ */
+.signup-form-wrapper {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid #bce8f1;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  box-sizing: border-box;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.428571429;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .signup-form-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+  }
+
+  a{
+    color: #428bca;
+
+    &:hover,
+    &:focus {
+      color: #2a6496;
+      text-decoration: underline;
+    }
+  }
+
+  h3.signup-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+    font-weight: normal;
+  }
+
+  p {
+    margin-bottom: 15px;
+  }
+
+  .forgot-password {
+    float: right;
+    font-size: 80%;
+    position: relative;
+    top: -10px;
+
+    a {
+      text-decoration: none;
+      background: 0 0;
+      font-size: 11px;
+      line-height: 16px;
+      display: block;
+      border: 0;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .terms-of-use {
+    a {
+      border: 0;
+    }
+  }
+
+  .signup-form-body {
+    padding: 30px 15px 15px;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    width: 100%;
+
+    label {
+      display: inline-block;
+      margin-bottom: 5px;
+      font-weight: 700;
+      width: 100%;
+
+      span {
+        display: block;
+      }
+    }
+
+    &.name,
+    &.email,
+    &.username,
+    &.password {
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    .checkbox {
+      display: block;
+      min-height: 27px;
+      margin: 0;
+      padding-left: 20px;
+      padding-top: 7px;
+
+      label {
+        display: inline;
+        font-weight: 400;
+        cursor: pointer;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+      }
+
+      input[type=checkbox] {
+        float: left;
+        margin: 4px 0 0 -20px;
+        line-height: normal;
+        box-sizing: border-box;
+        padding: 0;
+      }
+    }
+
+    .form-input {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.428571429;
+      color: #555;
+      background: #fff none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+
+      &.first-name,
+      &.last-name {
+        float: left;
+        width: 49%;
+      }
+
+      &.first-name {
+        margin-right: 2%;
+      }
+    }
+  }
+
+  .signup-submit {
+    margin-top: 10px;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    border-radius: 4px;
+    user-select: none;
+    color: #fff;
+    background: #5cb85c none;
+    border: 1px solid #4cae4c;
+    text-transform: none;
+    margin-bottom: 15px;
+
+    &:hover {
+      background-color: #47a447;
+      border-color: #398439;
+    }
+
+    &:active {
+      outline: 0;
+      background-image: none;
+      -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+      box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    }
+  }
+
+  .signup-form-bottom {
+    border-top: 1px solid #888;
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size: 85%;
+
+    a {
+      border-bottom: 0;
+    }
+  }
+
+  .error-message {
+    background-color: #f2dede;
+    color: #a94442;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+
+}
+
+/**
+ * 04. Registration Form
+ */
+.peerraiser-registration-form {
+  .error-message {
+    background-color: #f2dede;
+    color: #a94442;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+  }
+}
+
+/**
+ * 05. Donation Form
+ */
+.peerraiser-donation-form {
+
+  * {
+    box-sizing: border-box;
+  }
+
+  input[type='url'],
+  input[type='tel'],
+  input[type='email'],
+  input[type='text'],
+  input[type='password'],
+  input[type='number'] {
+    width: 100%;
+
+    &:disabled {
+      background: #ddd;
+    }
+  }
+
+  .hide {
+    display: none;
+  }
+
+  section {
+    margin-bottom: 2rem;
+  }
+
+  label {
+    font-size: 1rem;
+  }
+
+  .peerraiser-campaign-selection select,
+  .peerraiser-fundraiser-selection select {
+    width: 100%;
+  }
+
+  .peerraiser-field {
+    margin-bottom: 1rem;
+  }
+
+  .peerraiser-name-fields {
+    overflow: auto;
+  }
+
+  #peerraiser_field_first_name {
+    float: left;
+    width: 50%;
+    padding-right: .5rem;
+  }
+
+  #peerraiser_field_last_name {
+    float: left;
+    width: 50%;
+    padding-left: .5rem;
+  }
+
+  #peerraiser_field_anonymous label {
+    font-weight: normal;
+    font-size: .85rem;
+  }
+
+  .peerraiser-donation-amount-buttons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: inline-block;
+      margin: 0 1rem 0 0;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    input {
+      position: absolute !important;
+      clip: rect(0, 0, 0, 0);
+      height: 1px;
+      width: 1px;
+      border: 0;
+      overflow: hidden;
+    }
+
+    label {
+      float: left;
+      display: inline-block;
+      color: #fff;
+      background-color: #5cb85c;
+      font-weight: 600;
+      font-size: 1.5rem;
+      border-radius: 5px;
+      text-align: center;
+      padding: 6px 14px;
+      border: 1px solid #4cae4c;
+      transition: all 0.1s ease-in-out;
+      user-select: none;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    input:checked + label {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #398439;
+    }
+  }
+
+  .peerraiser-donation-amount-other,
+  .peerraiser-fundraising-goal {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+
+    .peerraiser-currency-symbol {
+      padding: .5rem .75rem;
+      margin-bottom: 0;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.25;
+      color: #464a4c;
+      text-align: center;
+      background-color: #eceeef;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: .25rem;
+      white-space: nowrap;
+      vertical-align: middle;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      &:not(:last-child) {
+        border-right: 0;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+      }
+
+      &:not(:first-child) {
+        border-left: 0;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+      }
+
+      &:not(:last-child) {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+      }
+    }
+  }
+
+  .peerraiser-donation-amount-other {
+    .peerraiser-donation-input {
+      height: 55px;
+      position: relative;
+      z-index: 2;
+      flex: 1 1 auto;
+      width: 1%;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: .5rem .75rem;
+      font-size: 1rem;
+      line-height: 1.25;
+      color: #464a4c;
+      background: #f7f7f7 none;
+      background-clip: padding-box;
+      border-radius: .25rem;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+
+      &:focus {
+        border-color: rgba(0, 0, 0, 0.15);
+        background-color: #fff;
+      }
+
+      &:not(:first-child) {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+      }
+
+      &:not(:last-child) {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+      }
+    }
+  }
+
+  .peerraiser-fundraising-goal input:not(:first-child) {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+  }
+
+  .peerraiser-submit-button {
+    color: #fff;
+    background-color: #5cb85c;
+    font-weight: 600;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    text-align: center;
+    padding: 6px 14px;
+    border: 1px solid #4cae4c;
+    transition: all 0.1s ease-in-out;
+    user-select: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #398439;
+    }
+  }
+}
+
+/**
+ * 06. Registration Form
+ */
+.peerraiser-fundraising-choices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: block;
+    width: 33.33%;
+    float: left;
+    text-align: center;
+    padding: .5rem;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+
+    a {
+      display: block;
+      background-color: lightgrey;
+      padding: 1rem;
+      width:100%;
+      text-decoration: none;
+    }
+  }
+}
+
+.peerraiser-registration-form {
+  .cmb2-id--peerraiser-body {
+    .cmb-th {
+      padding-bottom: 0;
+    }
+
+    .cmb-td {
+      padding-top: 0;
+      width: 100%;
+    }
+
+    .wp-editor-tabs {
+      float: left;
+    }
+  }
+
+  .cmb2-wrap .cmb-row {
+    margin-bottom: 1rem;
+  }
+
+  .cmb-th {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cmb-td {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.peerraiser-registration-select-campaign {
+  select {
+    min-width: 300px;
+  }
+}
+
+
+.peerraiser-team-search-results {
+  margin: 1rem 0;
+
+  .peerraiser-team {
+    padding-left: 85px;
+    text-align: left;
+    display: block;
+    border: none;
+    position: relative;
+    width: 100%;
+    min-height: 85px;
+    margin-bottom: 20px;
+
+    img {
+      background-color: #eee;
+      border-radius: 72px;
+      border: 1px solid #eee;
+      width: 75px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    h3 {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}

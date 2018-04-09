@@ -1,0 +1,44 @@
+/**
+ * 01. Structure
+ * 02. Fields
+ */
+
+#peerraiser-add-team {
+  overflow: hidden;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /**
+   * 01. Structure
+   */
+  #_fundraiser_campaign,
+  #_fundraiser_team,
+  #_fundraiser_participant {
+    min-width: 300px;
+  }
+
+  /**
+   * 02. Fields
+   */
+  .peerraiser-form .team-info {
+    .label:before {
+      width: 1.28571429em;
+      text-align: center;
+      display: inline-block;
+      font: normal normal normal 14px/1 FontAwesome;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 0 5px 0 0;
+      font-size: 16px;
+      vertical-align: bottom;
+      color: #82878c;
+    }
+
+    .team-date .label:before {
+      content: "\f073";
+    }
+  }
+}

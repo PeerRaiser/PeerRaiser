@@ -1,0 +1,184 @@
+/**
+ * 01. Structure
+ * 02. Donor Card
+ * 03. Publish Box
+ */
+
+#peerraiser-add-donor {
+  overflow: hidden;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /**
+   * 01. Structure
+   */
+  .pr-update-donor,
+  .pr-add-donor {
+    float: right;
+  }
+
+  /**
+   * 02. Donor Card
+   */
+  #donor-card {
+    display: flex;
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    border-left: 4px solid #3498db;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+
+      span {
+        font-size: 50%;
+        display: inline-block;
+        min-width: 10px;
+        padding: 3px 7px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        background-color: #777;
+        border-radius: 10px;
+      }
+    }
+
+    img.profile-image {
+      border-radius: 50%;
+      float: left;
+      margin-right: 10px;
+      width: 96px;
+      height: 96px;
+      background-color: #dddddd;
+
+      &.guest {
+        background-color: #9d9b9b;
+      }
+    }
+
+    #donor-card .donor-meta p {
+      margin: 0;
+    }
+
+    .misc-pub-section {
+      &:before {
+        width: 1.28571429em;
+        text-align: center;
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        padding: 0 5px 0 0;
+        font-size: 16px;
+        vertical-align: bottom;
+        color: #82878c;
+      }
+
+      .donor-date:before {
+        content: "\f073";
+      }
+    }
+
+    .donor-meta p{
+      &:before {
+        width: 1.28571429em;
+        text-align: center;
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        padding: 0 5px 0 0;
+        font-size: 16px;
+        vertical-align: bottom;
+        color: #82878c;
+      }
+
+      &.email:before {
+        content: "\f003";
+      }
+      &.since:before {
+        content: "\f017";
+      }
+      &.user-account:before {
+        content: "\f007";
+      }
+    }
+  }
+
+  /**
+   * 03. Publish Box
+   */
+  #submitpost .donor-info {
+    padding: 0 10px;
+
+    li {
+      border-bottom: 1px solid #dddddd;
+      padding: 10px 0;
+      margin: 0;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      strong {
+        font-size: 14px;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+
+      span {
+        display: inline-block;
+        padding: 3px 7px;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        background-color: #91be4c;
+        border-radius: 10px;
+      }
+    }
+
+    > div {
+      margin-bottom: 1em;
+
+      strong,
+      select,
+      input {
+        margin-left: 27px;
+      }
+
+      .label{
+        display: block;
+
+        &:before {
+          width: 1.28571429em;
+          text-align: center;
+          display: inline-block;
+          font: normal normal normal 14px/1 FontAwesome;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          padding: 0 5px 0 0;
+          font-size: 16px;
+          vertical-align: bottom;
+          color: #82878c;
+        }
+      }
+    }
+
+    .donor-key strong {
+      font: 700 95% monospace;
+    }
+  }
+}

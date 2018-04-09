@@ -1,0 +1,45 @@
+#peerraiser-campaign {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &:after,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+
+  .peerraiser-campaign-content {
+    box-sizing: border-box;
+
+    &.has-sidebar {
+      width: 75%;
+      float: left;
+    }
+  }
+
+  .peerraiser-campaign-sidebar {
+    box-sizing: border-box;
+    padding: .75rem 15px;
+    width: 25%;
+    float: right;
+  }
+
+  .peerraiser-campaign-banner {
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+}

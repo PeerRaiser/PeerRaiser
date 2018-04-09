@@ -15,8 +15,8 @@
 
             <div class="input-wrapper name">
                 <label for="signup-firstname"><span><?php _e( 'Name', 'peerraiser' ) ?></span>
-                    <input id="signup-firstname" class="form-input" type="text" name="firstname" value="" placeholder="<?php _e( 'First', 'peerraiser' ) ?>">
-                    <input id="signup-lastname" class="form-input" type="text" name="lastname" value="" placeholder="<?php _e( 'Last', 'peerraiser' ) ?>">
+                    <input id="signup-firstname" class="form-input first-name" type="text" name="firstname" value="" placeholder="<?php _e( 'First', 'peerraiser' ) ?>">
+                    <input id="signup-lastname" class="form-input last-name" type="text" name="lastname" value="" placeholder="<?php _e( 'Last', 'peerraiser' ) ?>">
                 </label>
             </div>
 

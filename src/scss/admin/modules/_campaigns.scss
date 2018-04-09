@@ -1,0 +1,98 @@
+/**
+ * 01. Add/Update Campaign Form
+ * 02. Campaign Stats (coming soon)
+ */
+
+/**
+ * 01. Add/Update Campaign Form
+ */
+#peerraiser-add-campaign {
+  * {
+    box-sizing: border-box;
+  }
+
+  .cmb2-id--peerraiser-start-date,
+  .cmb2-id--peerraiser-start-time,
+  .cmb2-id--peerraiser-end-date,
+  .cmb2-id--peerraiser-end-time {
+    float: left;
+    width: 50%;
+    height: 90px;
+    box-sizing: border-box;
+
+    .cmb-th {
+      width: 21%;
+    }
+
+    .cmb-td {
+      width: 77%;
+    }
+  }
+
+  .campaign-status {
+    &:before {
+      content: "\f059";
+      width: 1.28571429em;
+      text-align: center;
+      display: inline-block;
+      font: normal normal normal 14px/1 FontAwesome;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 0 5px 0 0;
+      font-size: 16px;
+      vertical-align: bottom;
+      color: #82878c;
+    }
+
+    &.active:before {
+      content: "\f058";
+    }
+    &.private:before {
+      content: "\f023";
+    }
+    &.ended:before {
+      content: "\f253";
+    }
+  }
+}
+
+/**
+ * 02. Campaign Stats
+ */
+#campaign_stats {
+  .campaign-info {
+    padding: 0 10px;
+
+    li {
+      border-bottom: 1px solid #dddddd;
+      padding: 10px 0;
+      margin: 0;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      strong {
+        font-size: 14px;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+
+      span {
+        display: inline-block;
+        padding: 3px 7px;
+        color: $white;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        background-color: $success;
+        border-radius: 10px;
+
+        &.negative {
+          background-color: $danger;
+        }
+      }
+    }
+  }
+}

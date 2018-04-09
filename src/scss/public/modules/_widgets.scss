@@ -1,0 +1,132 @@
+/**
+ * 01. Widgets
+ * 02. Thermometer
+ */
+
+/**
+ * 01. Widgets
+ */
+.peerraiser-widget {
+  margin-bottom: 1rem;
+}
+
+.peerraiser-fundraiser-donate-button a,
+.peerraiser-fundraiser-donate-button a:link,
+.peerraiser-fundraiser-donate-button a:visited,
+.peerraiser-fundraiser-register-button a,
+.peerraiser-fundraiser-register-button a:link,
+.peerraiser-fundraiser-register-button a:visited,
+.peerraiser-team-donate-button a,
+.peerraiser-team-donate-button a:link,
+.peerraiser-team-donate-button a:visited,
+.peerraiser-team-join-button a,
+.peerraiser-team-join-button a:link,
+.peerraiser-team-join-button a:visited {
+  text-decoration: none;
+  display: block;
+  color: #fff;
+  background-color: #d9534f;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid #d9534f;
+  padding: .5rem 1rem;
+  font-size: 1rem;
+  border-radius: .25rem;
+  transition: all .2s ease-in-out;
+  width: auto;
+
+  &:hover {
+    color: #fff;
+    background-color: #c9302c;
+    border-color: #c12e2a;
+  }
+}
+
+.peerraiser-campaign-total-raised,
+.peerraiser-fundraiser-total-raised,
+.peerraiser-team-total-raised {
+  border: 1px solid #333;
+  color: #333;
+  padding: 1rem;
+  text-align: center;
+
+  h3 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.75rem;
+    font-weight: bold;
+    letter-spacing: -.75px;
+  }
+
+  h4 {
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: 1px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.peerraiser-top-teams,
+.peerraiser-top-fundraisers,
+.peerraiser-campaign-donations,
+.peerraiser-fundraiser-donations,
+.peerraiser-team-donations,
+.peerraiser-team-roster {
+
+  a {
+    text-decoration: underline;
+  }
+
+  ol {
+    margin-left: 0;
+    padding-left: 0;
+
+    li {
+      margin-left: 0;
+      padding-left: 0;
+      list-style: decimal inside;
+    }
+  }
+}
+
+/**
+ * 02. Thermometer
+ */
+
+.peerraiser-thermometer-container {
+  text-align: center;
+  font-size: .85rem;
+
+  .peerraiser-thermometer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    width: 100%;
+    background-color: #eee;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    margin-bottom: .25rem;
+
+    .peerraiser-thermometer-bar {
+      height: 20px;
+      display: block;
+      float: left;
+      width: 0;
+      background: #3798d9;
+      box-shadow: inset 0 -1px 2px rgba(0,0,0,0.1);
+      transition: width 0.8s ease-in-out;
+      background-image: -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+      background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.125) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.125) 50%, rgba(255, 255, 255, 0.125) 75%, transparent 75%, transparent);
+      background-size: 35px 35px;
+    }
+  }
+}
