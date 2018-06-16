@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php if ( $number_of_sections > 1 ) : $count = 1; ?>
         <?php do_action( 'peerraiser_before_settings_sub_tabs', $peerraiser ); ?>
 
-        <div class="group">
+        <div class="pr-group">
             <ul class="subsubsub">
                 <?php foreach ($sections as $id => $value) : ?>
                     <li>

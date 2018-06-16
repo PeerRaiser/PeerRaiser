@@ -36,8 +36,8 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             <?php endif; ?>
 
-            <div class="stats-wrapper group">
-                <div class="stats-container group first">
+            <div class="stats-wrapper pr-group">
+                <div class="stats-container pr-group first">
                     <div class="stats total-raised">
                         <?php if ( peerraiser_is_test_mode() ) : ?>
                             <p class="title"><?php _e('Test Donations', 'peerraiser') ?></p>
@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <a href="admin.php?page=peerraiser-donations&view=add" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
                 </div>
-                <div class="stats-container group">
+                <div class="stats-container pr-group">
                     <div class="stats campaigns">
                         <p class="title"><?php echo _n( 'Campaign', 'Campaigns', $peerraiser['campaigns_total'], 'peerraiser' ) ?></p>
                         <p class="stat"><strong><?php echo $peerraiser['campaigns_total'] ?></strong></p>
@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <a href="admin.php?page=peerraiser-campaigns&view=add" class="add-new"><i class="fa fa-plus" aria-hidden="true"></i></a>
                     </div>
                 </div>
-                <div class="stats-container group">
+                <div class="stats-container pr-group">
                     <div class="stats fundraisers">
                         <p class="title"><?php echo _n( 'Fundraiser', 'Fundraisers', $peerraiser['fundraisers_total'], 'peerraiser' ) ?></p>
                         <p class="stat"><strong><?php echo $peerraiser['fundraisers_total'] ?></strong></p>
@@ -91,7 +91,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class="top-lists group">
+            <div class="top-lists pr-group">
                 <div class="top-donors">
                     <p class="title"><?php _e('Top Donors', 'peerraiser') ?></p>
 

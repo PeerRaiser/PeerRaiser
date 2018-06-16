@@ -18,39 +18,19 @@ class Donations extends \PeerRaiser\Controller\Base {
     public function load_assets() {
         parent::load_assets();
 
-        // Register and enqueue styles
-        wp_register_style(
-            'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
-            array('peerraiser-font-awesome'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-        );
-        wp_register_style(
-            'peerraiser-admin-donations',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-donations.css',
-            array('peerraiser-font-awesome', 'peerraiser-admin'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-        );
+        // Enqueue styles
         wp_enqueue_style( 'peerraiser-admin' );
-        wp_enqueue_style( 'peerraiser-admin-donations' );
         wp_enqueue_style( 'peerraiser-font-awesome' );
         wp_enqueue_style( 'peerraiser-select2' );
 
-        // Register and enqueue scripts
-        wp_register_script(
-            'peerraiser-admin-donations',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-donations.js',
-            array( 'jquery', 'peerraiser-admin' ),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
-            true
-        );
-        wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
+        // Enqueue scripts
+        wp_enqueue_script( 'peerraiser-admin' );
         wp_enqueue_script( 'peerraiser-admin-donations' );
         wp_enqueue_script( 'peerraiser-select2' );
 
         // Localize scripts
         wp_localize_script(
-            'peerraiser-admin-donations',
+            'peerraiser-admin',
             'peerraiser_object',
             array(
                 'ajax_url' => admin_url( 'admin-ajax.php' ),

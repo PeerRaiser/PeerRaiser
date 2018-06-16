@@ -53,7 +53,7 @@ gulp.task( 'public-sass', function() {
             maxLineLen: 0
         }))
         .pipe( lineec() )
-        .pipe( gulp.dest('./assets/dist/css') );
+        .pipe( gulp.dest('./dist/css') );
 } );
 
 // Admin Sass

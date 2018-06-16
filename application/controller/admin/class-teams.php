@@ -78,33 +78,13 @@ class Teams extends \PeerRaiser\Controller\Base {
     public function load_assets() {
         parent::load_assets();
 
-        // Register and enqueue styles
-        wp_register_style(
-            'peerraiser-admin',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin.css',
-            array('peerraiser-font-awesome', 'peerraiser-select2'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-        );
-        wp_register_style(
-            'peerraiser-admin-teams',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('css_url') . 'peerraiser-admin-teams.css',
-            array('peerraiser-font-awesome', 'peerraiser-admin', 'peerraiser-select2'),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version')
-        );
+        // Enqueue styles
         wp_enqueue_style( 'peerraiser-admin' );
-        wp_enqueue_style( 'peerraiser-admin-teams' );
         wp_enqueue_style( 'peerraiser-font-awesome' );
         wp_enqueue_style( 'peerraiser-select2' );
 
-        // Register and enqueue scripts
-        wp_register_script(
-            'peerraiser-admin-teams',
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('js_url') . 'peerraiser-admin-teams.js',
-            array( 'jquery', 'peerraiser-admin', 'peerraiser-select2' ),
-            \PeerRaiser\Core\Setup::get_plugin_config()->get('version'),
-            true
-        );
-        wp_enqueue_script( 'peerraiser-admin' ); // Already registered in Admin class
+        // Enqueue scripts
+        wp_enqueue_script( 'peerraiser-admin' );
         wp_enqueue_script( 'peerraiser-admin-teams' );
         wp_enqueue_script( 'peerraiser-select2' );
 

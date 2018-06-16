@@ -27,41 +27,20 @@ class Dashboard extends Base {
         parent::load_assets();
 
         // load page-specific CSS
-        wp_register_style(
-            'peerraiser-admin-dashboard',
-            $this->config->get( 'css_url' ) . 'peerraiser-admin-dashboard.css',
-            array( 'peerraiser-font-awesome' ),
-            $this->config->get( 'version' )
-        );
-        wp_enqueue_style( 'peerraiser-admin-dashboard' );
+        wp_enqueue_style( 'peerraiser-admin' );
+	    wp_enqueue_style( 'peerraiser-font-awesome' );
 
         // load page-specific JS
-        wp_register_script(
-            'peerraiser-select2',
-            $this->config->get( 'js_url' ) . 'vendor/select2.min.js',
-            array( 'jquery' ),
-            $this->config->get( 'version' ),
-            true
-        );
-        wp_register_script(
-            'peerraiser-backend-dashboard',
-            $this->config->get( 'js_url' ) . 'peerraiser-backend-dashboard.js',
-            array( 'jquery', 'peerraiser-select2' ),
-            $this->config->get( 'version' ),
-            true
-        );
         wp_enqueue_script( 'peerraiser-select2' );
-        wp_enqueue_script( 'peerraiser-backend-dashboard' );
+        wp_enqueue_script( 'peerraiser-admin' );
 
-        // translations
+        // Translations
         $i18n = array(
             'total'   => __( 'Total', 'peerraiser' ),
             'sales'   => __( 'sales', 'peerraiser' ),
             'signups' => __( 'signups', 'peerraiser' ),
             'delete'  => __( 'Delete', 'peerraiser' ),
         );
-
-        $plugin_options = get_option( 'peerraiser_options', array() );
 
         wp_localize_script(
             'peerraiser-backend-dashboard',

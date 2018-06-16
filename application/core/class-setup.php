@@ -33,9 +33,9 @@ class Setup {
         $config->set( 'log_url', $upload_directory['baseurl'] . '/peerraiser_logs/');
 
         $plugin_url = $config->get( 'plugin_url' );
-        $config->set( 'css_url', $plugin_url . 'assets/css/' );
-        $config->set( 'js_url', $plugin_url . 'assets/js/' );
-        $config->set( 'images_url', $plugin_url . 'assets/images/' );
+        $config->set( 'css_url', $plugin_url . 'dist/css/' );
+        $config->set( 'js_url', $plugin_url . 'dist/js/' );
+        $config->set( 'images_url', $plugin_url . 'dist/images/' );
 
         $plugin_options = get_option( 'peerraiser_options', array() );
         $config->set( 'in_live_mode', isset( $plugin_options['test_mode'] ) ? $plugin_options['test_mode'] : false );
