@@ -36,6 +36,7 @@ gulp.task( 'public-scripts', function() {
 // Admin JS
 gulp.task( 'admin-scripts', function() {
     return gulp.src([
+        './src/js/admin/peerraiser.admin.js',
         './src/js/admin/*.js'
     ])
         .pipe( concat('peerraiser-admin.js') )
