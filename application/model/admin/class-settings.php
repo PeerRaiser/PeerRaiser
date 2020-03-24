@@ -626,7 +626,7 @@ class Settings extends Admin {
                 0,
                 array(
                     'form_format' => '<form class="cmb-form" method="post" id="%1$s" enctype="multipart/form-data" encoding="multipart/form-data"><input type="hidden" name="object_id" value="%2$s">%3$s<button class="ladda-button" data-style="expand-right" data-color="blue" data-size="s"><span class="ladda-label">%4$s</span></button></form>',
-                    'save_button' => sprintf( '<span class="ladda-label">%s</span>', __( 'Save Settings', 'peerraiser') ),
+                    'save_button' => sprintf( '%s', __( 'Save Settings', 'peerraiser') ),
                 )
             );
             $html .= $field_html;
