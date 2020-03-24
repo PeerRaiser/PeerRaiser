@@ -390,7 +390,7 @@ class Install extends Base {
         $plugin_options  = get_option( 'peerraiser_options', array() );
         $current_version = ( isset( $plugin_options['peerraiser_version'] ) ) ? $plugin_options['peerraiser_version'] : '0';
 
-        if ( $current_version === 0 ) {
+        if ( $current_version === '0' ) {
             return;
         }
 
