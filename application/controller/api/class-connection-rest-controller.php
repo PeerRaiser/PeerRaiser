@@ -59,7 +59,9 @@ class Connection_Rest_Controller extends WP_REST_Controller {
 		    array(
                 'slug' => esc_attr( $slug ),
                 'license_key' => esc_attr( $license_key ),
-            ), 'http://peerraiser.com/wp-json/heart/v1/connect' )
+            ),
+		    'https://peerraiser.com/wp-json/heart/v1/connect' ),
+			array( 'sslverify' => false )
         );
 
         if ( is_wp_error( $response ) ) {
