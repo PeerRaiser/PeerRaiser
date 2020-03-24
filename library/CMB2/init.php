@@ -1,11 +1,6 @@
 <?php
-/************************************************************************
-                  You should not edit the code below
-                  (or any code in the included files)
-                  or things might explode!
-*************************************************************************/
 
-if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
+if ( ! class_exists( 'CMB2_Bootstrap_270', false ) ) {
 
 	/**
 	 * Handles checking for and loading the newest version of CMB2
@@ -14,18 +9,19 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 	 *
 	 * @category  WordPress_Plugin
 	 * @package   CMB2
-	 * @author    WebDevStudios
+	 * @author    CMB2 team
 	 * @license   GPL-2.0+
-	 * @link      http://webdevstudios.com
+	 * @link      https://cmb2.io
 	 */
-	class CMB2_Bootstrap_224 {
+	class CMB2_Bootstrap_270 {
 
 		/**
 		 * Current version number
+		 *
 		 * @var   string
 		 * @since 1.0.0
 		 */
-		const VERSION = '2.2.4';
+		const VERSION = '2.7.0';
 
 		/**
 		 * Current version hook priority.
@@ -34,20 +30,20 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 		 * @var   int
 		 * @since 2.0.0
 		 */
-		const PRIORITY = 9977;
+		const PRIORITY = 9962;
 
 		/**
-		 * Single instance of the CMB2_Bootstrap_224 object
+		 * Single instance of the CMB2_Bootstrap_270 object
 		 *
-		 * @var CMB2_Bootstrap_224
+		 * @var CMB2_Bootstrap_270
 		 */
 		public static $single_instance = null;
 
 		/**
-		 * Creates/returns the single instance CMB2_Bootstrap_224 object
+		 * Creates/returns the single instance CMB2_Bootstrap_270 object
 		 *
 		 * @since  2.0.0
-		 * @return CMB2_Bootstrap_224 Single instance object
+		 * @return CMB2_Bootstrap_270 Single instance object
 		 */
 		public static function initiate() {
 			if ( null === self::$single_instance ) {
@@ -74,6 +70,11 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 				define( 'CMB2_LOADED', self::PRIORITY );
 			}
 
+			if ( ! function_exists( 'add_action' ) ) {
+				// We are running outside of the context of WordPress.
+				return;
+			}
+
 			add_action( 'init', array( $this, 'include_cmb' ), self::PRIORITY );
 		}
 
@@ -98,21 +99,22 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 
 			$this->l10ni18n();
 
-			// Include helper functions
-			require_once 'includes/CMB2_Base.php';
-			require_once 'includes/CMB2.php';
-			require_once 'includes/helper-functions.php';
+			// Include helper functions.
+			require_once CMB2_DIR . 'includes/CMB2_Base.php';
+			require_once CMB2_DIR . 'includes/CMB2.php';
+			require_once CMB2_DIR . 'includes/helper-functions.php';
 
-			// Now kick off the class autoloader
+			// Now kick off the class autoloader.
 			spl_autoload_register( 'cmb2_autoload_classes' );
 
-			// Kick the whole thing off
-			require_once 'bootstrap.php';
+			// Kick the whole thing off.
+			require_once( cmb2_dir( 'bootstrap.php' ) );
 			cmb2_bootstrap();
 		}
 
 		/**
 		 * Registers CMB2 text domain path
+		 *
 		 * @since  2.0.0
 		 */
 		public function l10ni18n() {
@@ -128,7 +130,7 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 			}
 
 			if ( ! $loaded ) {
-				$locale = apply_filters( 'plugin_locale', get_locale(), 'cmb2' );
+				$locale = apply_filters( 'plugin_locale', function_exists( 'determine_locale' ) ? determine_locale() : get_locale(), 'cmb2' );
 				$mofile = dirname( __FILE__ ) . '/languages/cmb2-' . $locale . '.mo';
 				load_textdomain( 'cmb2', $mofile );
 			}
@@ -138,6 +140,6 @@ if ( ! class_exists( 'CMB2_Bootstrap_224', false ) ) {
 	}
 
 	// Make it so...
-	CMB2_Bootstrap_224::initiate();
+	CMB2_Bootstrap_270::initiate();
 
-}
+}// End if().

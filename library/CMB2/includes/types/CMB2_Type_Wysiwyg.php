@@ -6,9 +6,9 @@
  *
  * @category  WordPress_Plugin
  * @package   CMB2
- * @author    WebDevStudios
+ * @author    CMB2 team
  * @license   GPL-2.0+
- * @link      http://webdevstudios.com
+ * @link      https://cmb2.io
  *
  * @method string _id()
  * @method string _desc()
@@ -20,23 +20,33 @@ class CMB2_Type_Wysiwyg extends CMB2_Type_Textarea {
 	 * @since  1.1.0
 	 * @return string Form wysiwyg element
 	 */
-	public function render() {
+	public function render( $args = array() ) {
 		$field = $this->field;
 		$a = $this->parse_args( 'wysiwyg', array(
-			'id'      => $this->_id(),
+			'id'      => $this->_id( '', false ),
 			'value'   => $field->escaped_value( 'stripslashes' ),
 			'desc'    => $this->_desc( true ),
 			'options' => $field->options(),
 		) );
 
 		if ( ! $field->group ) {
+
+			$a = $this->maybe_update_attributes_for_char_counter( $a );
+
+			if ( $this->has_counter ) {
+				$a['options']['editor_class'] = ! empty( $a['options']['editor_class'] )
+					? $a['options']['editor_class'] . ' cmb2-count-chars'
+					: 'cmb2-count-chars';
+			}
+
 			return $this->rendered( $this->get_wp_editor( $a ) . $a['desc'] );
 		}
 
-		// wysiwyg fields in a group need some special handling.
+		// Character counter not currently working for grouped WYSIWYG
+		$this->field->args['char_counter'] = false;
 
-		$field->add_js_dependencies( 'wp-util' );
-		$field->add_js_dependencies( 'cmb2-wysiwyg' );
+		// wysiwyg fields in a group need some special handling.
+		$field->add_js_dependencies( 'wp-util', 'cmb2-wysiwyg' );
 
 		// Hook in our template-output to the footer.
 		add_action( is_admin() ? 'admin_footer' : 'wp_footer', array( $this, 'add_wysiwyg_template_for_group' ) );
@@ -61,6 +71,7 @@ class CMB2_Type_Wysiwyg extends CMB2_Type_Textarea {
 	public function add_wysiwyg_template_for_group() {
 		$group_id = $this->field->group->id();
 		$field_id = $this->field->id( true );
+		$hash     = $this->field->hash_id();
 		$options  = $this->field->options();
 		$options['textarea_name'] = 'cmb2_n_' . $group_id . $field_id;
 
@@ -76,7 +87,7 @@ class CMB2_Type_Wysiwyg extends CMB2_Type_Textarea {
 			'cmb2_n_' . $group_id . $field_id,
 			'cmb2_v_' . $group_id . $field_id,
 			'cmb2_i_' . $group_id . $field_id,
-		), array(
+			), array(
 			'{{ data.name }}',
 			'{{{ data.value }}}',
 			'{{ data.id }}',
@@ -85,7 +96,7 @@ class CMB2_Type_Wysiwyg extends CMB2_Type_Textarea {
 		// And put the editor instance in a JS template wrapper.
 		echo '<script type="text/template" id="tmpl-cmb2-wysiwyg-' . $group_id . '-' . $field_id . '">';
 		// Need to wrap the template in a wrapper div w/ specific data attributes which will be used when adding/removing rows.
-		echo '<div class="cmb2-wysiwyg-inner-wrap" data-iterator="{{ data.iterator }}" data-groupid="'. $group_id .'" data-id="'. $field_id .'">'. $editor .'</div>';
+		echo '<div class="cmb2-wysiwyg-inner-wrap" data-iterator="{{ data.iterator }}" data-groupid="' . $group_id . '" data-id="' . $field_id . '" data-hash="' . $hash . '">' . $editor . '</div>';
 		echo '</script>';
 	}
 
