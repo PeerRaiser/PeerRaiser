@@ -7,6 +7,7 @@
 .idea
 .smushit-status
 .Trashes
+.wordpress-org
 /vendor
 .editorconfig
 composer.lock
