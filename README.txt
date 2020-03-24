@@ -2,8 +2,8 @@
 Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams, peer raiser
 Requires at least: 4.4.0
-Tested up to: 4.9
-Stable tag: 1.2.2
+Tested up to: 5.3.2
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,10 +55,12 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 == Changelog ==
 
-= 1.2.1 =
-* Fixed error causing the "Add Team" admin page to not load correctly
+= 1.3.1 =
+* Updated CMB2 library to 2.7.0
+* Fixed issue with comparing version during install
 
 = 1.2.1 =
+* Fixed error causing the "Add Team" admin page to not load correctly
 * Fixed error "Can't use function return value in write context" caused by older PHP versions (prior to PHP 5.5)
 
 = 1.2.0 =
