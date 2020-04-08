@@ -55,7 +55,7 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 
 == Changelog ==
 
-= 1.3.1 =
+= 1.3.2 =
 * Renamed CMB2_hookup.php to CMB2_Hookup.php to resolve errors on some servers that are case sensitive.
 
 = 1.3.1 =
