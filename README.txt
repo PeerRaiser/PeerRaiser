@@ -2,8 +2,8 @@
 Contributors: nateallen
 Tags: peer to peer, fundraising, donation, donation plugin, nonprofit, donate, crowdfunding, social fundraising, charity, nate allen, fundraising plugin, giving, stripe, donations, non-profit, church, gifts, campaigns, donation plugins, teams, peer raiser
 Requires at least: 4.4.0
-Tested up to: 5.3.2
-Stable tag: 1.3.1
+Tested up to: 5.4
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,9 @@ This plugin is new, so there aren't any "Frequently Asked Questions" yet! Use th
 4. Donor information
 
 == Changelog ==
+
+= 1.3.1 =
+* Renamed CMB2_hookup.php to CMB2_Hookup.php to resolve errors on some servers that are case sensitive.
 
 = 1.3.1 =
 * Updated CMB2 library to 2.7.0
